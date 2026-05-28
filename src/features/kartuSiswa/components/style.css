@@ -1,0 +1,59 @@
+.card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  background-color: #f8f9fa;
+  padding: 30px;
+}
+
+.card {
+  width: 380px;
+  min-height: 500px;
+  background: url('/defaultFrame.png') no-repeat center center;
+  background-size: cover;
+  border-radius: 20px;
+  padding: 25px;
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(135deg, #ff9800, #ffca28);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.profile-image {
+  width: 100px;
+  height: 100px;
+  margin-top: 20px;
+  background: #ccc;
+  object-fit: cover;
+}
+
+.student-name {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 20px;
+  color: #333;
+}
+
+.student-nisn {
+  font-size: 18px;
+  color: gray;
+  margin-bottom: 10px;
+}
