@@ -6,7 +6,7 @@ import { BiodataSiswa } from "../models/biodata";
 import { BiodataGuru } from "../models/biodata-guru";
 
 export const biodataService = {
-  siswa: http.get<BaseResponse<BiodataSiswa[]>>(
+  siswa: http.get<BaseResponse<any[]>>(
     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.biodata.siswa,
     getInitialOptions,
   ),
@@ -24,7 +24,7 @@ export const biodataService = {
     getInitialOptions,
   ),
   checkAttendance: (id: number | string) =>
-    http.get<BaseResponse<BiodataSiswa>>(
+    http.get<BaseResponse<any>>(
       `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.biodata.attedance}`,
       getInitialOptions,
     )({ path: String(id) }),

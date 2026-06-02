@@ -3,6 +3,13 @@ import { userService } from "@/core/services";
 import { useMutation } from "@tanstack/react-query";
 
 export const useUserCreation = () => {
+  const createMutation = useMutation({
+    mutationFn: (payload: UserCreationModel) => userService.createParents(payload),
+  });
+
+  const create = (payload: UserCreationModel) =>
+    createMutation.mutateAsync(payload);
+
   const updateMutation = useMutation({
     mutationFn: (vars: { id: number; payload: UserCreationModel }) =>
       userService.updateUser(vars.id, vars.payload),
@@ -24,6 +31,6 @@ export const useUserCreation = () => {
   return {
     isLoading,
     update,
-    // updateTeacher
+    create,
   };
 };

@@ -735,7 +735,7 @@ export const BaseDataTables = ({
         </div>
       )}
       <BaseFilterBadges
-        filters={columnFilters}
+        filters={columnFilters || []}
         schoolOptions={schoolOptions}
         classroomOptions={classroomOptions}
       />
@@ -748,7 +748,7 @@ export const BaseDataTables = ({
       </div>
 
       <BaseTablePagination
-        table={table}
+        table={table as any}
         totalItems={totalItems}
         pageSize={pageSize}
         pageIndex={pageIndex}

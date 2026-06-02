@@ -39,10 +39,10 @@ export const AttedancesReport = ({ selectedSchool }: AttedancesReportProps) => {
   // console.log("students ada no tlp:", students);
 
   // Refetch semua data saat halaman diakses
-  useEffect(() => {
-    console.log("Refetching data...");
-    // biodata.query.refetch();
-  }, []);
+  // useEffect(() => {
+  //   console.log("Refetching data...");
+  //   // biodata.query.refetch();
+  // }, []);
 
   const formatTime = (time?: string) => {
     return time

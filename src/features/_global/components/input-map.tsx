@@ -68,7 +68,7 @@ export const InputMap = React.memo(
 
     const renderInput = () => {
       return (
-        <div className="grid grid-cols-2 gap-4 mb-4 mt-4 pb-6">
+        <div className="grid grid-cols-2 gap-4">
           <FormItem>
             <FormLabel>{lang.text("latitude")}</FormLabel>
             <FormControl>

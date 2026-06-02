@@ -5,7 +5,7 @@ import { schoolColumns, schoolDataFallback } from "../utils";
 
 export const SchoolTable = () => {
   const school = useSchool();
-  console.log('sekolah alL:', school?.data)
+  // console.log('sekolah alL:', school?.data)
   return (
     <BaseDataTable
       columns={schoolColumns}

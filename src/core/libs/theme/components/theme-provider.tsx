@@ -43,9 +43,11 @@ const mapHslColor = (colors: RawColors) => {
 
 export const ThemeProvider = React.memo((props: ThemeProviderProps) => {
   const [colors, setColors] = useState(mapHslColor(props.colors || RAW_COLORS));
-  const [theme, setTheme] = useState<Theme>(
-    storage.get(props.storageKey || "") || props?.defaultTheme,
-  );
+  // const [theme, setTheme] = useState<Theme>(
+  //   storage.get(props.storageKey || "") || props?.defaultTheme,
+  // );
+
+  const [theme, setTheme] = useState<Theme>("light");
   const colorRef = useRef(colors);
   colorRef.current = colors;
   const colorJson = useMemo(() => JSON.stringify(props.colors), [props.colors]);

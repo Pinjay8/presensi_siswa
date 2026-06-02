@@ -6,7 +6,7 @@ export const TeacherDailyPresence = React.memo(() => {
   const { decodeParams } = useParamDecode();
   return (
     <div>
-      <TeacherDailyPresenceTable id={Number(decodeParams?.id)} />
+      <TeacherDailyPresenceTable id={Number(decodeParams?.userId)} />
     </div>
   );
 });

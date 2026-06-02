@@ -13,8 +13,8 @@ export const useBiodata = () => {
     enabled,
     queryKey: ['biodata-siswa'],
     queryFn: () => biodataService.siswa(),
-    staleTime: 30000, // Cache data selama 30 detik
-    refetchInterval: 10000, // Refetch otomatis setiap 10 detik
+    // staleTime: 30000, // Cache data selama 30 detik
+    // refetchInterval: 10000, // Refetch otomatis setiap 10 detik
     refetchOnWindowFocus: true, // Refetch saat kembali ke halaman
   });
   const data = useMemo(() => query.data?.data || [], [query.data?.data]); // Memproses data

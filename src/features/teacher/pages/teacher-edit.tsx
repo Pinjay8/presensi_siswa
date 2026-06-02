@@ -31,7 +31,7 @@ export const TeacherEdit = () => {
       title={lang.text("editTeacher")}
     >
       <div className="pb-4" />
-      <TeacherCreationForm />
+      <TeacherCreationForm id={params.id} />
       <div className="pb-16 sm:pb-0" />
     </DashboardPageLayout>
   );

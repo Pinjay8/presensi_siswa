@@ -1,4 +1,4 @@
-import logo from "../assets/images/logo.png";
+import logo from "../assets/images/bio_presensi.jpg";
 import logoPt from "../assets/images/logo-pt.png";
 
 export const Images = {
@@ -14,7 +14,6 @@ export function canvasToFile(
     // Menggunakan toBlob untuk mendapatkan Blob dari canvas
     canvas.toBlob((blob) => {
       if (blob) {
-        // Membuat File dari Blob
         const file = new File([blob], fileName, {
           type: blob.type,
           lastModified: Date.now(),

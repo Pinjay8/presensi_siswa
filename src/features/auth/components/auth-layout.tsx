@@ -1,9 +1,6 @@
 import { VokadashHead } from "@/core/libs";
 import { PropsWithChildren } from "react";
 
-const bg =
-  "https://images.unsplash.com/photo-1490642914619-7955a3fd483c?q=80&w=2093&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-
 export interface AuthLayoutProps extends PropsWithChildren {
   title?: string;
   description?: string;
@@ -29,12 +26,20 @@ export const AuthLayout = ({
       )}
       <div className="relative w-full lg:grid lg:grid-cols-2 min-h-[100svh]">
         <div className="relative z-10 flex min-h-[100svh] items-center justify-center py-12">
-          <div className="mx-auto grid w-[350px] gap-4 px-4">
-            {/* {logo && ( */}
-            {/*   <div className="w-full flex-1"> */}
-            {/*     <img className="w-full" src={logo} /> */}
-            {/*   </div> */}
-            {/* )} */}
+          <div className="mx-auto grid w-[420px] gap-2 px-4">
+            {logo && (
+              <div className="w-full flex-1 justify-center flex">
+                <img
+                  src={logo}
+                  style={{
+                    height: "140px",
+                    width: "240px",
+                    borderRadius: "5%",
+                    objectFit: "contain",
+                  }}
+                />
+              </div>
+            )}
 
             {(title || description) && (
               <div className="grid gap-2 text-center">
@@ -50,14 +55,26 @@ export const AuthLayout = ({
             {children}
           </div>
         </div>
-        <div className="hidden bg-muted lg:block">
+        <div className="relative hidden lg:block overflow-hidden">
           <img
-            src={image || bg}
-            alt="Image"
-            width="1920"
-            height="1080"
-            className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+            src={image}
+            className="h-full w-full object-cover brightness-50 dark:brightness-[0.2] dark:grayscale"
           />
+
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black/5" />
+
+          {/* Text Content */}
+          <div className="absolute bottom-10 left-10 z-10 max-w-lg text-white">
+            <h1 className="text-4xl font-bold leading-tight">
+              Welcome to Bio School
+            </h1>
+
+            <p className="mt-4 text-base text-white/80">
+              Empowering students through innovation, education, and community
+              excellence.
+            </p>
+          </div>
         </div>
       </div>
     </>

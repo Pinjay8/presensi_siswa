@@ -4,6 +4,8 @@ import { Images } from "@/core/utils";
 import { AuthLayout } from "../components/auth-layout";
 import { APP_CONFIG } from "@/core/configs";
 import { lang } from "@/core/libs";
+// import LogoPt from "public/public/Group.png";
+import LogoPt from "@/core/assets/images/background_img.webp";
 
 export const AuthPage = () => {
   const auth = useAuth();
@@ -15,7 +17,7 @@ export const AuthPage = () => {
   return (
     <AuthLayout
       logo={Images.logo}
-      image="https://democms.byito.dev/assets/a0bee8fb-070f-4337-911e-4e8a33351494"
+      image={LogoPt}
       title={APP_CONFIG.appName}
       description={lang.text("loginDesc")}
     >

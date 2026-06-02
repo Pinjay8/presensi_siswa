@@ -19,7 +19,7 @@ export const ClassroomCreate = () => {
       ]}
       title={lang.text("addClassroom")}
     >
-      <ClassroomCreationForm />
+      <ClassroomCreationForm onClose={() => {}} />
       <div className="pb-16 sm:pb-0" />
     </DashboardPageLayout>
   );

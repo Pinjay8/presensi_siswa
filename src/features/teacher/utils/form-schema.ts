@@ -7,6 +7,7 @@ export const teacherEditSchema = z.object({
     .string()
     .min(1, { message: lang.text("schoolCreationValidation5") })
     .email({ message: lang.text("schoolCreationValidation6") }),
+  password: z.string().min(6, { message: "Minimum password length is 6" }),
   alamat: z.string().optional(),
   hobi: z.string().optional(),
   name: z.string().min(1, { message: lang.text("schoolCreationValidation1") }),

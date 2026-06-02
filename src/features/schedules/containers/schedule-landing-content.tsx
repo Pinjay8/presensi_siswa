@@ -585,8 +585,6 @@
 //   );
 // }
 
-
-
 // import {
 //   Button,
 //   Dialog,
@@ -1341,16 +1339,27 @@ import {
   TableHeader,
   TableRow,
   Checkbox,
-  FileInput,
 } from "@/core/libs";
 import { useAlert, useVokadialog, Vokadialog } from "@/features/_global";
 import { useCourse } from "@/features/course";
 import { useBiodataGuru } from "@/features/user";
 import { useRef, useState, useEffect, useMemo } from "react";
 import { useScheduleCreation, useSchedules } from "../hooks";
-import { CircleSlashIcon, Download, Pen, Plus, School, School2, Trash, Upload, UploadCloud } from "lucide-react";
+import {
+  CircleSlashIcon,
+  Download,
+  Pen,
+  Plus,
+  School,
+  School2,
+  Trash,
+  Upload,
+  UploadCloud,
+} from "lucide-react";
 import { FaFileExcel, FaRestroom } from "react-icons/fa";
 import * as XLSX from "xlsx";
+import { useClassroom } from "@/features/classroom";
+import { Divider } from "@mui/material";
 
 interface ScheduleItem {
   id: number;
@@ -1370,6 +1379,7 @@ interface ScheduleItem {
 
 interface NewScheduleForm {
   mataPelajaranId: number;
+  kelasId: number;
   guruId: number;
   hari: string;
   jamMulai: string;
@@ -1411,6 +1421,7 @@ export function ScheduleLandingContent() {
   const [formData, setFormData] = useState<NewScheduleForm>({
     mataPelajaranId: 0,
     guruId: 0,
+    kelasId: 0,
     hari: "",
     jamMulai: "",
     jamSelesai: "",
@@ -1419,35 +1430,42 @@ export function ScheduleLandingContent() {
   const courses = useCourse();
   const teachers = useBiodataGuru();
   const schedules = useSchedules();
+  const classes = useClassroom();
+  const classData = classes.data;
 
   // Derive classes from schedules.data
-  const classes = useMemo(() => {
-    if (!schedules?.data) return [];
-    const kelasSet = new Map<number, { id: number; namaKelas: string }>();
-    Object.keys(schedules.data).forEach((day) => {
-      schedules.data[day].forEach((schedule: ScheduleItem) => {
-        const { kelas } = schedule.mataPelajaran;
-        if (kelas && kelas.id != null && kelas.namaKelas) {
-          if (!kelasSet.has(kelas.id)) {
-            kelasSet.set(kelas.id, { id: kelas.id, namaKelas: kelas.namaKelas });
-          }
-        }
-      });
-    });
-    return Array.from(kelasSet.values());
-  }, [schedules?.data]);
+  // const classes = useMemo(() => {
+  //   if (!schedules?.data) return [];
+  //   const kelasSet = new Map<number, { id: number; namaKelas: string }>();
+  //   Object.keys(schedules.data).forEach((day) => {
+  //     schedules.data[day].forEach((schedule: ScheduleItem) => {
+  //       const { kelas } = schedule.mataPelajaran;
+  //       if (kelas && kelas.id != null && kelas.namaKelas) {
+  //         if (!kelasSet.has(kelas.id)) {
+  //           kelasSet.set(kelas.id, { id: kelas.id, namaKelas: kelas.namaKelas });
+  //         }
+  //       }
+  //     });
+  //   });
+  //   return Array.from(kelasSet.values());
+  // }, [schedules?.data]);
 
   // Memoize filtered courses
   const filteredCourses = useMemo(() => {
-    let filtered = courses?.data?.filter((course: any) =>
-      course.namaMataPelajaran.toLowerCase().includes(searchCourse.toLowerCase())
-    ) || [];
-    
+    let filtered =
+      courses?.data?.filter((course: any) =>
+        course.namaMataPelajaran
+          .toLowerCase()
+          .includes(searchCourse.toLowerCase()),
+      ) || [];
+
     // When adding a schedule, further filter by selectedKelasIdForAdd
     if (isAddModalOpen && selectedKelasIdForAdd !== 0) {
-      filtered = filtered.filter((course: any) => course.kelasId === selectedKelasIdForAdd);
+      filtered = filtered.filter(
+        (course: any) => course.kelasId === selectedKelasIdForAdd,
+      );
     }
-    
+
     return filtered;
   }, [courses?.data, searchCourse, isAddModalOpen, selectedKelasIdForAdd]);
 
@@ -1455,7 +1473,7 @@ export function ScheduleLandingContent() {
   const filteredTeachers = useMemo(() => {
     return (
       teachers?.data?.filter((teacher: any) =>
-        teacher.namaGuru.toLowerCase().includes(searchTeacher.toLowerCase())
+        teacher.namaGuru.toLowerCase().includes(searchTeacher.toLowerCase()),
       ) || []
     );
   }, [teachers?.data, searchTeacher]);
@@ -1471,46 +1489,92 @@ export function ScheduleLandingContent() {
       // Collect all unique kelasId
       const kelasIds = new Set<number>();
       Object.keys(schedules.data).forEach((day) => {
-        schedules.data[day].forEach((schedule: ScheduleItem) => {
-          kelasIds.add(schedule.mataPelajaran.kelasId);
-        });
-      });
-
-      // Initialize result for all kelasId and days
-      kelasIds.forEach((kelasId) => {
-        result[kelasId] = daysOrder.reduce((acc, d) => {
-          acc[d] = [];
-          return acc;
-        }, {} as Record<string, ScheduleItem[]>);
-      });
-
-      // Populate schedules
-      Object.keys(schedules.data).forEach((day) => {
-        const normalizedDay = normalizeDay(day);
-        if (daysOrder.includes(normalizedDay)) {
-          schedules.data[day].forEach((schedule: ScheduleItem) => {
-            const kelasId = schedule.mataPelajaran.kelasId;
-            if (result[kelasId]) {
-              result[kelasId][normalizedDay].push(schedule);
-            }
+        if (schedules?.data[day]) {
+          schedules?.data[day].forEach((schedule: ScheduleItem) => {
+            kelasIds.add(schedule.mataPelajaran.kelasId);
           });
         }
       });
 
-      // Sort schedules by jamMulai
+      // Initialize result for all kelasId and days
+      kelasIds.forEach((kelasId) => {
+        result[kelasId] = daysOrder.reduce(
+          (acc, d) => {
+            acc[d] = [];
+            return acc;
+          },
+          {} as Record<string, ScheduleItem[]>,
+        );
+      });
+
+      // Fill result with actual data
       Object.keys(result).forEach((kelasId) => {
-        daysOrder.forEach((day) => {
-          result[kelasId][day].sort((a, b) => {
-            const timeA = new Date(`1970-01-01T${a.jamMulai}:00`);
-            const timeB = new Date(`1970-01-01T${b.jamMulai}:00`);
-            return timeA.getTime() - timeB.getTime();
-          });
+        Object.keys(result[kelasId]).forEach((day) => {
+          if (schedules.data[day]) {
+            result[kelasId][day] = schedules.data[day].filter(
+              (schedule: ScheduleItem) =>
+                schedule.mataPelajaran.kelasId === Number(kelasId),
+            );
+          }
         });
       });
     }
 
     return result;
   }, [schedules?.data]);
+  // const groupedByClassAndDay = useMemo(() => {
+  //   const result: Record<number, Record<string, ScheduleItem[]>> = {};
+
+  //   if (schedules?.data) {
+  //     // Normalize day keys to uppercase
+  //     const normalizeDay = (day: string) => day.toUpperCase();
+
+  //     // Collect all unique kelasId
+  //     const kelasIds = new Set<number>();
+  //     Object.keys(schedules.data).forEach((day) => {
+  //       schedules.data[day].forEach((schedule: ScheduleItem) => {
+  //         kelasIds.add(schedule.mataPelajaran.kelasId);
+  //       });
+  //     });
+
+  //     // Initialize result for all kelasId and days
+  //     kelasIds.forEach((kelasId) => {
+  //       result[kelasId] = daysOrder.reduce(
+  //         (acc, d) => {
+  //           acc[d] = [];
+  //           return acc;
+  //         },
+  //         {} as Record<string, ScheduleItem[]>,
+  //       );
+  //     });
+
+  //     // Populate schedules
+  //     Object.keys(schedules.data).forEach((day) => {
+  //       const normalizedDay = normalizeDay(day);
+  //       if (daysOrder.includes(normalizedDay)) {
+  //         schedules.data[day].forEach((schedule: ScheduleItem) => {
+  //           const kelasId = schedule.mataPelajaran.kelasId;
+  //           if (result[kelasId]) {
+  //             result[kelasId][normalizedDay].push(schedule);
+  //           }
+  //         });
+  //       }
+  //     });
+
+  //     // Sort schedules by jamMulai
+  //     Object.keys(result).forEach((kelasId) => {
+  //       daysOrder.forEach((day) => {
+  //         result[kelasId][day].sort((a, b) => {
+  //           const timeA = new Date(`1970-01-01T${a.jamMulai}:00`);
+  //           const timeB = new Date(`1970-01-01T${b.jamMulai}:00`);
+  //           return timeA.getTime() - timeB.getTime();
+  //         });
+  //       });
+  //     });
+  //   }
+
+  //   return result;
+  // }, [schedules?.data]);
 
   // Download Excel template
   const handleDownloadTemplate = () => {
@@ -1523,7 +1587,9 @@ export function ScheduleLandingContent() {
       document.body.removeChild(link);
       alert.success("Template Excel berhasil diunduh");
     } catch (err: any) {
-      alert.error("Gagal mengunduh template Excel: " + (err.message || "Unknown error"));
+      alert.error(
+        "Gagal mengunduh template Excel: " + (err.message || "Unknown error"),
+      );
     }
   };
 
@@ -1562,8 +1628,8 @@ export function ScheduleLandingContent() {
           // Konversi jamMulai dan jamSelesai ke format HH:mm
           const formatTime = (value: any) => {
             if (value instanceof Date) {
-              const hours = value.getHours().toString().padStart(2, '0');
-              const minutes = value.getMinutes().toString().padStart(2, '0');
+              const hours = value.getHours().toString().padStart(2, "0");
+              const minutes = value.getMinutes().toString().padStart(2, "0");
               return `${hours}:${minutes}`;
             }
             return value?.toString().trim() || "";
@@ -1578,7 +1644,7 @@ export function ScheduleLandingContent() {
             jamSelesai: formatTime(row.jamSelesai),
           };
 
-          console.log('schedule saat ini:', schedule);
+          console.log("schedule saat ini:", schedule);
 
           // Validate required fields, excluding "Catatan"
           if (
@@ -1589,47 +1655,66 @@ export function ScheduleLandingContent() {
             !schedule.jamMulai ||
             !schedule.jamSelesai
           ) {
-            errors.push(`Baris ${index + 2}: Semua kolom wajib diisi (kecuali Catatan). Data: ${JSON.stringify(schedule)}`);
+            errors.push(
+              `Baris ${index + 2}: Semua kolom wajib diisi (kecuali Catatan). Data: ${JSON.stringify(schedule)}`,
+            );
             return;
           }
 
           // Validate namaKelas
-          const kelas = classes.find((k: any) =>
-            k.namaKelas.toLowerCase() === schedule.namaKelas.toLowerCase()
+          const kelas = classData.find(
+            (k: any) =>
+              k.namaKelas.toLowerCase() === schedule.namaKelas.toLowerCase(),
           );
           if (!kelas) {
-            errors.push(`Baris ${index + 2}: Nama kelas '${schedule.namaKelas}' tidak valid`);
+            errors.push(
+              `Baris ${index + 2}: Nama kelas '${schedule.namaKelas}' tidak valid`,
+            );
             return;
           }
 
           // Validate namaMataPelajaran and kelas match
-          const course = courses.data?.find((c: any) =>
-            c.namaMataPelajaran.toLowerCase() === schedule.namaMataPelajaran.toLowerCase() &&
-            c.kelasId === kelas.id
+          const course = courses.data?.find(
+            (c: any) =>
+              c.namaMataPelajaran.toLowerCase() ===
+                schedule.namaMataPelajaran.toLowerCase() &&
+              c.kelasId === kelas.id,
           );
           if (!course) {
-            errors.push(`Baris ${index + 2}: Mata pelajaran '${schedule.namaMataPelajaran}' tidak valid atau tidak sesuai dengan kelas '${schedule.namaKelas}'`);
+            errors.push(
+              `Baris ${index + 2}: Mata pelajaran '${schedule.namaMataPelajaran}' tidak valid atau tidak sesuai dengan kelas '${schedule.namaKelas}'`,
+            );
             return;
           }
 
           // Validate namaGuru
-          const teacher = teachers.data?.find((t: any) =>
-            t.namaGuru.toLowerCase() === schedule.namaGuru.toLowerCase()
+          const teacher = teachers.data?.find(
+            (t: any) =>
+              t.namaGuru.toLowerCase() === schedule.namaGuru.toLowerCase(),
           );
           if (!teacher) {
-            errors.push(`Baris ${index + 2}: Nama guru '${schedule.namaGuru}' tidak valid`);
+            errors.push(
+              `Baris ${index + 2}: Nama guru '${schedule.namaGuru}' tidak valid`,
+            );
             return;
           }
 
           // Validate hari
           if (!validDays.includes(schedule.hari.toUpperCase())) {
-            errors.push(`Baris ${index + 2}: Hari tidak valid (gunakan: ${validDays.join(", ")})`);
+            errors.push(
+              `Baris ${index + 2}: Hari tidak valid (gunakan: ${validDays.join(", ")})`,
+            );
             return;
           }
 
           // Validate time format
-          if (!timeRegex.test(schedule.jamMulai) || !timeRegex.test(schedule.jamSelesai)) {
-            errors.push(`Baris ${index + 2}: Format waktu harus HH:mm (contoh: 08:00). Data: ${schedule.jamMulai}, ${schedule.jamSelesai}`);
+          if (
+            !timeRegex.test(schedule.jamMulai) ||
+            !timeRegex.test(schedule.jamSelesai)
+          ) {
+            errors.push(
+              `Baris ${index + 2}: Format waktu harus HH:mm (contoh: 08:00). Data: ${schedule.jamMulai}, ${schedule.jamSelesai}`,
+            );
             return;
           }
 
@@ -1637,7 +1722,9 @@ export function ScheduleLandingContent() {
           const startTime = new Date(`1970-01-01T${schedule.jamMulai}:00`);
           const endTime = new Date(`1970-01-01T${schedule.jamSelesai}:00`);
           if (endTime <= startTime) {
-            errors.push(`Baris ${index + 2}: Jam selesai harus setelah jam mulai`);
+            errors.push(
+              `Baris ${index + 2}: Jam selesai harus setelah jam mulai`,
+            );
             return;
           }
 
@@ -1645,6 +1732,7 @@ export function ScheduleLandingContent() {
           validSchedules.push({
             mataPelajaranId: course.id,
             guruId: teacher.id,
+            kelasId: kelas.id,
             hari: schedule.hari.toUpperCase(),
             jamMulai: schedule.jamMulai,
             jamSelesai: schedule.jamSelesai,
@@ -1682,7 +1770,7 @@ export function ScheduleLandingContent() {
           alert.success(
             lang.text("successful", {
               context: `Membuat ( ${successCount} jadwal) dan gagal( ${errorCount} jadwal)`,
-            })
+            }),
           );
           schedules.query.refetch();
         }
@@ -1691,26 +1779,34 @@ export function ScheduleLandingContent() {
           alert.error(
             lang.text("failed", {
               context: `Membuat (${successCount} jadwal) dan gagal (${errorCount} jadwal)`,
-            })
+            }),
           );
         }
       };
       reader.readAsArrayBuffer(excelFile);
     } catch (err: any) {
-      alert.error("Gagal memproses file Excel: " + (err.message || "Unknown error"));
+      alert.error(
+        "Gagal memproses file Excel: " + (err.message || "Unknown error"),
+      );
     }
   };
 
   // Restore focus to course search input
   useEffect(() => {
-    if (searchInputRef.current && document.activeElement !== searchInputRef.current) {
+    if (
+      searchInputRef.current &&
+      document.activeElement !== searchInputRef.current
+    ) {
       searchInputRef.current.focus();
     }
   }, [searchCourse]);
 
   // Restore focus to teacher search input
   useEffect(() => {
-    if (teacherSearchInputRef.current && document.activeElement !== teacherSearchInputRef.current) {
+    if (
+      teacherSearchInputRef.current &&
+      document.activeElement !== teacherSearchInputRef.current
+    ) {
       teacherSearchInputRef.current.focus();
     }
   }, [searchTeacher]);
@@ -1725,13 +1821,15 @@ export function ScheduleLandingContent() {
   // Handle day checkbox toggle
   const handleDayToggle = (day: string) => {
     setSelectedDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day],
     );
   };
 
   // Handle "All Days" checkbox toggle
   const handleAllDaysToggle = () => {
-    setSelectedDays((prev) => (prev.length === daysOrder.length ? [] : [...daysOrder]));
+    setSelectedDays((prev) =>
+      prev.length === daysOrder.length ? [] : [...daysOrder],
+    );
   };
 
   const handleConfirmDelete = async () => {
@@ -1744,17 +1842,17 @@ export function ScheduleLandingContent() {
       alert.success(
         lang.text("successful", {
           context: lang.text("dataSuccessDelete", { context: "" }),
-        })
+        }),
       );
       schedules.query.refetch();
       dialog.close();
     } catch (err: any) {
-      alert.error("Error deleting schedule:", err);
+      // alert.error("Error deleting schedule:", err);
       alert.error(
         err?.message ||
           lang.text("failed", {
             context: lang.text("dataFailDelete", { context: "" }),
-          })
+          }),
       );
     }
   };
@@ -1777,7 +1875,10 @@ export function ScheduleLandingContent() {
     }
 
     const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-    if (!timeRegex.test(formData.jamMulai) || !timeRegex.test(formData.jamSelesai)) {
+    if (
+      !timeRegex.test(formData.jamMulai) ||
+      !timeRegex.test(formData.jamSelesai)
+    ) {
       alert.error("Format waktu harus HH:mm (contoh: 08:40)");
       return;
     }
@@ -1789,19 +1890,23 @@ export function ScheduleLandingContent() {
       return;
     }
 
-    const payload = { ...formData };
+    const payload = {
+      ...formData,
+      kelasId: selectedKelasIdForAdd,
+    };
     try {
       await creation.create(payload);
       alert.success(
         lang.text("successful", {
           context: lang.text("scheduleSuccessCreate", { context: "" }),
-        })
+        }),
       );
       schedules.query.refetch();
       setIsAddModalOpen(false);
       setFormData({
         mataPelajaranId: 0,
         guruId: 0,
+        kelasId: 0,
         hari: "",
         jamMulai: "",
         jamSelesai: "",
@@ -1814,7 +1919,7 @@ export function ScheduleLandingContent() {
         err?.message ||
           lang.text("failed", {
             context: lang.text("scheduleFailCreate", { context: "" }),
-          })
+          }),
       );
     }
   };
@@ -1832,7 +1937,10 @@ export function ScheduleLandingContent() {
     }
 
     const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-    if (!timeRegex.test(formData.jamMulai) || !timeRegex.test(formData.jamSelesai)) {
+    if (
+      !timeRegex.test(formData.jamMulai) ||
+      !timeRegex.test(formData.jamSelesai)
+    ) {
       alert.error("Format waktu harus HH:mm (contoh: 08:40)");
       return;
     }
@@ -1850,7 +1958,7 @@ export function ScheduleLandingContent() {
       alert.success(
         lang.text("successful", {
           context: lang.text("scheduleSuccessUpdate", { context: "" }),
-        })
+        }),
       );
       schedules.query.refetch();
       setIsEditModalOpen(false);
@@ -1858,6 +1966,7 @@ export function ScheduleLandingContent() {
         mataPelajaranId: 0,
         guruId: 0,
         hari: "",
+        kelasId: 0,
         jamMulai: "",
         jamSelesai: "",
       });
@@ -1868,7 +1977,7 @@ export function ScheduleLandingContent() {
         err?.message ||
           lang.text("failed", {
             context: lang.text("scheduleFailUpdate", { context: "" }),
-          })
+          }),
       );
     }
   };
@@ -1879,6 +1988,7 @@ export function ScheduleLandingContent() {
       mataPelajaranId: 0,
       guruId: 0,
       hari: "",
+      kelasId: 0,
       jamMulai: "",
       jamSelesai: "",
     });
@@ -1895,6 +2005,7 @@ export function ScheduleLandingContent() {
       mataPelajaranId: schedule.mataPelajaran.id || 0,
       guruId: schedule.guru.id || 0,
       hari: day,
+      kelasId: schedule.mataPelajaran.kelasId || 0,
       jamMulai: schedule.jamMulai,
       jamSelesai: schedule.jamSelesai,
     });
@@ -1916,7 +2027,10 @@ export function ScheduleLandingContent() {
     <>
       <Vokadialog
         visible={dialog.visible}
-        title={'test test'}
+        onOpenChange={(open) => {
+          if (!open) dialog.close();
+        }}
+        title={"Konfirmasi Hapus"}
         content={lang.text("deleteConfirmationDesc", { context: "tersebut" })}
         footer={
           <div className="flex flex-col sm:flex-row gap-2">
@@ -1929,7 +2043,6 @@ export function ScheduleLandingContent() {
           </div>
         }
       />
-
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent>
           <DialogHeader>
@@ -1939,14 +2052,20 @@ export function ScheduleLandingContent() {
             <div className="grid gap-2">
               <label htmlFor="kelasId">Kelas</label>
               <Select
-                onValueChange={(value) => setSelectedKelasIdForAdd(parseInt(value))}
-                value={selectedKelasIdForAdd === 0 ? "" : selectedKelasIdForAdd.toString()}
+                onValueChange={(value) =>
+                  setSelectedKelasIdForAdd(parseInt(value))
+                }
+                value={
+                  selectedKelasIdForAdd === 0
+                    ? ""
+                    : selectedKelasIdForAdd.toString()
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih Kelas" />
                 </SelectTrigger>
                 <SelectContent>
-                  {classes.map((kelas: any) => (
+                  {classData.map((kelas: any) => (
                     <SelectItem key={kelas.id} value={kelas.id.toString()}>
                       {kelas.namaKelas}
                     </SelectItem>
@@ -1957,7 +2076,9 @@ export function ScheduleLandingContent() {
             <div className="grid gap-2">
               <label htmlFor="hari">Hari</label>
               <Select
-                onValueChange={(value) => setFormData({ ...formData, hari: value })}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, hari: value })
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih Hari" />
@@ -1980,7 +2101,13 @@ export function ScheduleLandingContent() {
                 disabled={selectedKelasIdForAdd === 0}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={selectedKelasIdForAdd === 0 ? "Pilih kelas terlebih dahulu" : "Pilih Mata Pelajaran"} />
+                  <SelectValue
+                    placeholder={
+                      selectedKelasIdForAdd === 0
+                        ? "Pilih kelas terlebih dahulu"
+                        : "Pilih Mata Pelajaran"
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent className="px-2">
                   <div className="py-1 mb-2">
@@ -2005,8 +2132,9 @@ export function ScheduleLandingContent() {
               <label htmlFor="guruId">Guru</label>
               <Select
                 onValueChange={(value) =>
-                  setFormData({ ...formData, guruId: parseInt(value) })}
-                >
+                  setFormData({ ...formData, guruId: parseInt(value) })
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih Guru" />
                 </SelectTrigger>
@@ -2034,7 +2162,9 @@ export function ScheduleLandingContent() {
               <Input
                 type="time"
                 value={formData.jamMulai}
-                onChange={(e) => setFormData({ ...formData, jamMulai: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, jamMulai: e.target.value })
+                }
                 className="w-full"
               />
             </div>
@@ -2043,24 +2173,30 @@ export function ScheduleLandingContent() {
               <Input
                 type="time"
                 value={formData.jamSelesai}
-                onChange={(e) => setFormData({ ...formData, jamSelesai: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, jamSelesai: e.target.value })
+                }
                 className="w-full"
               />
             </div>
           </div>
           <DialogFooter>
             <Button onClick={handleAddSchedule}>Simpan</Button>
-            <Button variant="outline" onClick={() => {
-              setIsAddModalOpen(false);
-              setFormData({
-                mataPelajaranId: 0,
-                guruId: 0,
-                hari: '',
-                jamMulai: '',
-                jamSelesai: '',
-              });
-              setSelectedKelasIdForAdd(0);
-            }}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsAddModalOpen(false);
+                setFormData({
+                  mataPelajaranId: 0,
+                  guruId: 0,
+                  hari: "",
+                  kelasId: 0,
+                  jamMulai: "",
+                  jamSelesai: "",
+                });
+                setSelectedKelasIdForAdd(0);
+              }}
+            >
               Batal
             </Button>
           </DialogFooter>
@@ -2078,7 +2214,8 @@ export function ScheduleLandingContent() {
               <Select
                 value={formData.mataPelajaranId.toString()}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, mataPelajaranId: parseInt(value) })}
+                  setFormData({ ...formData, mataPelajaranId: parseInt(value) })
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih Mata Pelajaran" />
@@ -2107,7 +2244,8 @@ export function ScheduleLandingContent() {
               <Select
                 value={formData.guruId.toString()}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, guruId: parseInt(value) })}
+                  setFormData({ ...formData, guruId: parseInt(value) })
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih Guru" />
@@ -2136,7 +2274,9 @@ export function ScheduleLandingContent() {
               <Input
                 type="time"
                 value={formData.jamMulai}
-                onChange={(e) => setFormData({ ...formData, jamMulai: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, jamMulai: e.target.value })
+                }
                 className="w-full"
               />
             </div>
@@ -2145,7 +2285,9 @@ export function ScheduleLandingContent() {
               <Input
                 type="time"
                 value={formData.jamSelesai}
-                onChange={(e) => setFormData({ ...formData, jamSelesai: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, jamSelesai: e.target.value })
+                }
                 className="w-full"
               />
             </div>
@@ -2208,10 +2350,13 @@ export function ScheduleLandingContent() {
           </div>
           <DialogFooter>
             <Button onClick={handleUploadExcel}>Unggah</Button>
-            <Button variant="outline" onClick={() => {
-              setIsUploadModalOpen(false);
-              setExcelFile(null);
-            }}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsUploadModalOpen(false);
+                setExcelFile(null);
+              }}
+            >
               Batal
             </Button>
           </DialogFooter>
@@ -2221,16 +2366,23 @@ export function ScheduleLandingContent() {
       <div className="mt-5 mb-8">
         <div className="w-full mb-4 flex justify-between items-center">
           <div className="flex gap-2">
-            <Button variant='outline' onClick={openAddModal}>
+            <Button variant="outline" onClick={openAddModal}>
               Tambah jadwal baru <Plus />
             </Button>
             <div className="mx-2 h-[36px] py-1 flex items-center justify-center">
               <p>atau</p>
             </div>
-            <Button className="text-green-300 border border-green-700" variant="outline" onClick={handleDownloadTemplate}>
+            <Button
+              className="text-green-300 border border-green-700"
+              variant="outline"
+              onClick={handleDownloadTemplate}
+            >
               Unduh Template Excel <Download />
             </Button>
-            <Button variant="outline" onClick={() => setIsUploadModalOpen(true)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsUploadModalOpen(true)}
+            >
               Unggah Excel <UploadCloud />
             </Button>
           </div>
@@ -2244,7 +2396,7 @@ export function ScheduleLandingContent() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="0">Semua Kelas</SelectItem>
-                {classes.map((kelas: any) => (
+                {classData.map((kelas: any) => (
                   <SelectItem key={kelas.id} value={kelas.id.toString()}>
                     {kelas.namaKelas}
                   </SelectItem>
@@ -2259,20 +2411,25 @@ export function ScheduleLandingContent() {
               {selectedDays.length === daysOrder.length
                 ? "Semua Hari"
                 : selectedDays.length === 0
-                ? "Pilih Hari"
-                : selectedDays.join(", ")}
+                  ? "Pilih Hari"
+                  : selectedDays.join(", ")}
               <span>▼</span>
             </Button>
             <Badge variant="outline" className="py-2.5">
               <span>Jumlah kelas:</span>
-              <span className="ml-2">{classes.length}</span>
+              <span className="ml-2">{classData.length}</span>
             </Badge>
           </div>
         </div>
         <div className="grid gap-8">
-          {Object.keys(groupedByClassAndDay).length > 0 && selectedDays.length > 0 ? (
+          {Object.keys(groupedByClassAndDay).length > 0 &&
+          selectedDays.length > 0 ? (
             Object.keys(groupedByClassAndDay)
-              .filter((kelasId) => selectedClassId === 0 || parseInt(kelasId) === selectedClassId)
+              .filter(
+                (kelasId) =>
+                  selectedClassId === 0 ||
+                  parseInt(kelasId) === selectedClassId,
+              )
               .map((kelasId) => {
                 const classSchedules = groupedByClassAndDay[parseInt(kelasId)];
                 if (!classSchedules) {
@@ -2280,39 +2437,58 @@ export function ScheduleLandingContent() {
                   return null;
                 }
                 return (
-                  <div key={kelasId} className="border rounded-lg p-6 shadow-md">
+                  <div
+                    key={kelasId}
+                    className="border rounded-lg p-6 shadow-md"
+                  >
                     <h1 className="flex gap-5 text-2xl font-bold mb-6">
                       <School2 /> Kelas:{" "}
-                      {classes.find((k: any) => k.id === parseInt(kelasId))?.namaKelas ||
-                        `Kelas ${kelasId}`}
+                      {classData.find((k: any) => k.id === parseInt(kelasId))
+                        ?.namaKelas || `Kelas ${kelasId}`}
                     </h1>
                     <div className="grid grid-cols-2 gap-4">
                       {daysOrder
                         .filter((day) => selectedDays.includes(day))
                         .map((day) => (
-                          <div key={day} className="border rounded-lg p-4 shadow-sm">
+                          <div
+                            key={day}
+                            className="border rounded-lg p-4 shadow-sm"
+                          >
                             <h2 className="text-xl font-bold mb-4">{day}</h2>
-                            {classSchedules[day] && classSchedules[day].length > 0 ? (
+                            {classSchedules[day] &&
+                            classSchedules[day].length > 0 ? (
                               <Table>
                                 <TableHeader>
                                   <TableRow>
                                     <TableHead>{lang.text("time")}</TableHead>
-                                    <TableHead>{lang.text("nameMapel")}</TableHead>
-                                    <TableHead>{lang.text("nameTeacher")}</TableHead>
-                                    <TableHead>{lang.text("actions")}</TableHead>
+                                    <TableHead>
+                                      {lang.text("nameMapel")}
+                                    </TableHead>
+                                    <TableHead>
+                                      {lang.text("nameTeacher")}
+                                    </TableHead>
+                                    <TableHead>
+                                      {lang.text("actions")}
+                                    </TableHead>
                                   </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                   {classSchedules[day].map((item) => (
                                     <TableRow key={item.id}>
                                       <TableCell>{`${item.jamMulai} - ${item.jamSelesai}`}</TableCell>
-                                      <TableCell>{item.mataPelajaran.namaMataPelajaran}</TableCell>
-                                      <TableCell>{item.guru.namaGuru}</TableCell>
+                                      <TableCell>
+                                        {item.mataPelajaran.namaMataPelajaran}
+                                      </TableCell>
+                                      <TableCell>
+                                        {item.guru.namaGuru}
+                                      </TableCell>
                                       <TableCell className="flex gap-2">
                                         <Button
                                           variant="outline"
                                           size="sm"
-                                          onClick={() => openEditModal(day, item)}
+                                          onClick={() =>
+                                            openEditModal(day, item)
+                                          }
                                         >
                                           <Pen />
                                         </Button>
@@ -2332,7 +2508,9 @@ export function ScheduleLandingContent() {
                                 </TableBody>
                               </Table>
                             ) : (
-                              <p className="text-gray-500">No schedule for {day}</p>
+                              <p className="text-gray-500">
+                                No schedule for {day}
+                              </p>
                             )}
                           </div>
                         ))}

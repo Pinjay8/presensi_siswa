@@ -31,11 +31,26 @@ export const userService = {
     `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.user.admin}`,
     getInitialOptions,
   ),
+
   updateUser: (userId: number, req: UserCreationModel) => {
     return http.put<BaseResponse<UserDataModel>, UserCreationModel>(
       `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.user.user}`,
       getInitialOptions,
     )(req, { path: String(userId) });
+  },
+
+  createTeacher: (req: UserCreationModel) => {
+    return http.post<BaseResponse<UserDataModel>, UserCreationModel>(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.user.createTeacher}`,
+      getInitialOptions,
+    )(req);
+  },
+
+  createParents: (req: UserCreationModel) => {
+    return http.post<BaseResponse<UserDataModel>, UserCreationModel>(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.user.createParents}`,
+      getInitialOptions,
+    )(req);
   },
 
   // Test untuk edit guru

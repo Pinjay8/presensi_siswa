@@ -9,6 +9,7 @@ import {
   CredenzaTitle,
 } from "./credenza";
 import { Button, ButtonProps } from "@/core/libs";
+import { Divider } from "@mui/material";
 import React from "react";
 
 export interface VokadialogAction extends ButtonProps {
@@ -42,6 +43,7 @@ export const Vokadialog = React.memo((props: VokadialogProps) => {
               )}
             </CredenzaHeader>
           )}
+          <Divider />
 
           <CredenzaBody>{props.content}</CredenzaBody>
           {props.footer ? (

@@ -20,7 +20,7 @@ export const QUERY_CONFIG = {
 
 export const SERVICE_ENDPOINTS = {
   attedance: {
-    createAttedance: "/api/absen-masuk-manual"
+    createAttedance: "/api/absen-masuk-manual",
   },
   auth: {
     login: "/login",
@@ -36,14 +36,14 @@ export const SERVICE_ENDPOINTS = {
     guru: "/api/get-all-guru",
   },
   student: {
-     list: "/api/user-siswa",
+    list: "/api/user-siswa",
   },
   graduations: {
-     all: "/api/get-kelulusan",
-     create: "/api/create-kelulusan",
+    all: "/api/get-kelulusan",
+    create: "/api/create-kelulusan",
   },
   province: {
-    provinces: '/get-province'
+    provinces: "/get-province",
   },
   school: {
     createSchool: "/create-sekolah",
@@ -71,6 +71,8 @@ export const SERVICE_ENDPOINTS = {
     employees: "/ms-user/api/employees",
     photo: "/ms-user/api/profile/photo",
     changePassword: "/ms-user/api/account/changePassword",
+    createTeacher: "/signup/guru",
+    createParents: "/signup/orangtua",
   },
   otp: {
     verify: "/verify-otp",
@@ -86,7 +88,7 @@ export const SERVICE_ENDPOINTS = {
     all: "/api/get-history-perpus",
     createAbsenManual: "/api/absen-manual-perpus",
   },
-   library: {
-    vistor: "/index.php?p=api/visitor/today"
-  }
+  library: {
+    vistor: "/index.php?p=api/visitor/today",
+  },
 };

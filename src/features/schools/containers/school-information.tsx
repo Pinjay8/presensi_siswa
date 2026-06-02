@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  lang
+  lang,
 } from "@/core/libs";
 import { getStaticFile } from "@/core/utils";
 import { FileUploader, InputMap, ViewMap } from "@/features/_global";
@@ -31,7 +31,13 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import SignatureCanvas from "react-signature-canvas";
 import { z } from "zod";
-import { EditableInfoItem, NonEditableInfoItem, SchoolLogo, SignatureDisplay, SignatureInput } from "../components";
+import {
+  EditableInfoItem,
+  NonEditableInfoItem,
+  SchoolLogo,
+  SignatureDisplay,
+  SignatureInput,
+} from "../components";
 import { useProvinces, useSchoolDetail, UseSchoolDetailProps } from "../hooks";
 import { schoolUpdateFormSchema } from "../utils";
 
@@ -43,7 +49,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
   const detail = useSchoolDetail({
     id: props.id,
     query: {
-      staleTime: 5 * 60 * 1000,
+      staleTime: 1 * 60 * 1000,
       refetchOnWindowFocus: false,
     },
   });
@@ -57,21 +63,25 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isIntentionalSubmit, setIsIntentionalSubmit] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
-  const [initialValues, setInitialValues] = useState<z.infer<typeof schoolUpdateFormSchema> | null>(null);
+  const [initialValues, setInitialValues] = useState<z.infer<
+    typeof schoolUpdateFormSchema
+  > | null>(null);
   const [ckEditorError, setCkEditorError] = useState<string | null>(null);
   const sigCanvas = useRef<SignatureCanvas | null>(null);
+  const biodataStudents = JSON.parse(student.data);
 
-  const students = student.data?.filter(
-    (d) => Number(d?.user?.sekolah?.id) === Number(props.id)
+  const students = biodataStudents.filter(
+    (d) => Number(d?.user?.sekolah?.id) === Number(props.id),
   );
+  console.log("Filtered students:", students);
   const teachers = teacher.data?.filter(
-    (d) => Number(d?.user?.sekolah?.id) === Number(props.id)
+    (d) => Number(d?.user?.sekolah?.id) === Number(props.id),
   );
   const classrooms = classroom.data?.filter(
-    (d) => Number(d?.Sekolah?.id) === Number(props.id)
+    (d) => Number(d?.Sekolah?.id) === Number(props.id),
   );
   const courses = course.data?.filter(
-    (d) => Number(d?.sekolah?.id) === Number(props.id)
+    (d) => Number(d?.sekolah?.id) === Number(props.id),
   );
 
   const form = useForm<z.infer<typeof schoolUpdateFormSchema>>({
@@ -108,7 +118,12 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
   // Deep comparison function
   const deepEqual = (obj1: any, obj2: any): boolean => {
     if (obj1 === obj2) return true;
-    if (typeof obj1 !== "object" || obj1 === null || typeof obj2 !== "object" || obj2 === null) {
+    if (
+      typeof obj1 !== "object" ||
+      obj1 === null ||
+      typeof obj2 !== "object" ||
+      obj2 === null
+    ) {
       return false;
     }
     const keys1 = Object.keys(obj1);
@@ -123,24 +138,24 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
   };
 
   // Check for hook errors
-  useEffect(() => {
-    console.log("useSchoolDetail status:", { isFetching: detail.isFetching, data: detail.data });
-    if (detail.error) console.error("useSchoolDetail error:", detail.error);
-    if (student.error) console.error("useBiodata error:", student.error);
-    if (teacher.error) console.error("useBiodataGuru error:", teacher.error);
-    if (classroom.error) console.error("useClassroom error:", classroom.error);
-    if (course.error) console.error("useCourse error:", course.error);
-    if (province.error) console.error("useProvinces error:", province.error);
-  }, [
-    detail.error,
-    detail.isFetching,
-    detail.data,
-    student.error,
-    teacher.error,
-    classroom.error,
-    course.error,
-    province.error,
-  ]);
+  // useEffect(() => {
+  //   console.log("useSchoolDetail status:", { isFetching: detail.isFetching, data: detail.data });
+  //   if (detail.error) console.error("useSchoolDetail error:", detail.error);
+  //   if (student.error) console.error("useBiodata error:", student.error);
+  //   if (teacher.error) console.error("useBiodataGuru error:", teacher.error);
+  //   if (classroom.error) console.error("useClassroom error:", classroom.error);
+  //   if (course.error) console.error("useCourse error:", course.error);
+  //   if (province.error) console.error("useProvinces error:", province.error);
+  // }, [
+  //   detail.error,
+  //   detail.isFetching,
+  //   detail.data,
+  //   student.error,
+  //   teacher.error,
+  //   classroom.error,
+  //   course.error,
+  //   province.error,
+  // ]);
 
   // Populate form and store initial values
   useEffect(() => {
@@ -203,7 +218,10 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
       const token = localStorage.getItem("token");
       let hasChanges = false;
 
-      if (data.provinceId && data.provinceId !== String(detail.data?.provinceId)) {
+      if (
+        data.provinceId &&
+        data.provinceId !== String(detail.data?.provinceId)
+      ) {
         formData.append("provinceId", data.provinceId);
         hasChanges = true;
       }
@@ -215,7 +233,10 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
         formData.append("npsn", data.schoolNPSN);
         hasChanges = true;
       }
-      if (data.alamatSekolah && data.alamatSekolah !== detail.data?.alamatSekolah) {
+      if (
+        data.alamatSekolah &&
+        data.alamatSekolah !== detail.data?.alamatSekolah
+      ) {
         formData.append("alamatSekolah", data.alamatSekolah);
         hasChanges = true;
       }
@@ -239,15 +260,24 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
         formData.append("serverTiga", data.serverTiga);
         hasChanges = true;
       }
-      if (data.urlYoutube1 && data.urlYoutube1 !== detail.data?.urlYutubeFirst) {
+      if (
+        data.urlYoutube1 &&
+        data.urlYoutube1 !== detail.data?.urlYutubeFirst
+      ) {
         formData.append("urlYutubeFirst", data.urlYoutube1);
         hasChanges = true;
       }
-      if (data.urlYoutube2 && data.urlYoutube2 !== detail.data?.urlYutubeSecond) {
+      if (
+        data.urlYoutube2 &&
+        data.urlYoutube2 !== detail.data?.urlYutubeSecond
+      ) {
         formData.append("urlYutubeSecond", data.urlYoutube2);
         hasChanges = true;
       }
-      if (data.urlYoutube3 && data.urlYoutube3 !== detail.data?.urlYutubeThird) {
+      if (
+        data.urlYoutube3 &&
+        data.urlYoutube3 !== detail.data?.urlYutubeThird
+      ) {
         formData.append("urlYutubeThird", data.urlYoutube3);
         hasChanges = true;
       }
@@ -266,7 +296,10 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
         formData.append("serverPerpustakaan", data.libraryServer);
         hasChanges = true;
       }
-      if (data.libraryName && data.libraryName !== detail.data?.namaPerpustakaan) {
+      if (
+        data.libraryName &&
+        data.libraryName !== detail.data?.namaPerpustakaan
+      ) {
         formData.append("namaPerpustakaan", data.libraryName);
         hasChanges = true;
       }
@@ -291,9 +324,14 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
         }
       }
       if (sigCanvas.current && !sigCanvas.current.isEmpty()) {
-        const signatureData = sigCanvas.current.getTrimmedCanvas().toDataURL("image/png");
+        const signatureData = sigCanvas.current
+          .getTrimmedCanvas()
+          .toDataURL("image/png");
         const byteString = atob(signatureData.split(",")[1]);
-        const mimeString = signatureData.split(",")[0].split(":")[1].split(";")[0];
+        const mimeString = signatureData
+          .split(",")[0]
+          .split(":")[1]
+          .split(";")[0];
         const ab = new ArrayBuffer(byteString.length);
         const ia = new Uint8Array(ab);
         for (let i = 0; i < byteString.length; i++) {
@@ -302,7 +340,10 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
         const blob = new Blob([ab], { type: mimeString });
         formData.append("ttdKepalaSekolah", blob, "signature.png");
         hasChanges = true;
-      } else if (data.ttdKepalaSekolah === null || data.ttdKepalaSekolah === "") {
+      } else if (
+        data.ttdKepalaSekolah === null ||
+        data.ttdKepalaSekolah === ""
+      ) {
         formData.append("ttdKepalaSekolah", "");
         hasChanges = true;
       }
@@ -325,13 +366,13 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
       const response = await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/sekolah/${props.id}`,
         formData,
-        { headers }
+        { headers },
       );
 
       alert.success(
         lang.text("successful", {
           context: lang.text("updateSchoolData"),
-        })
+        }),
       );
       detail?.query.refetch();
       setIsEditMode(false);
@@ -340,9 +381,9 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
       console.error("onSubmit error:", err);
       alert.error(
         err.response?.data?.message ||
-        lang.text("failed", {
-          context: lang.text("updateSchoolData"),
-        })
+          lang.text("failed", {
+            context: lang.text("updateSchoolData"),
+          }),
       );
     } finally {
       setIsSubmitting(false);
@@ -408,10 +449,15 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                     sigCanvas={sigCanvas}
                     onSignatureChange={() => {
                       console.log("SignatureInput changed");
-                      form.setValue("ttdKepalaSekolah", sigCanvas.current?.toDataURL() || null);
+                      form.setValue(
+                        "ttdKepalaSekolah",
+                        sigCanvas.current?.toDataURL() || null,
+                      );
                     }}
                   />
-                  <SignatureDisplay signature={detail.data?.ttdKepalaSekolah ?? undefined} />
+                  <SignatureDisplay
+                    signature={detail.data?.ttdKepalaSekolah ?? undefined}
+                  />
                 </div>
               </div>
             </>
@@ -426,7 +472,9 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                 </div>
                 {detail.data?.ttdKepalaSekolah && (
                   <div className="mt-10">
-                    <p className="text-sm my-6 font-medium">{lang.text("signature")}</p>
+                    <p className="text-sm my-6 font-medium">
+                      {lang.text("signature")}
+                    </p>
                     <div className="w-full">
                       <SignatureDisplay
                         signature={detail.data?.ttdKepalaSekolah ?? undefined}
@@ -633,7 +681,8 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                   type="url"
                   isEditMode={isEditMode}
                   ckEditorError={ckEditorError}
-                  setCkEditorError закрепить={setCkEditorError}
+                  setCkEditorError
+                  закрепить={setCkEditorError}
                 />
                 <EditableInfoItem
                   control={form.control}
@@ -724,7 +773,9 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                     icon={<Globe size={24} />}
                     label={lang.text("province")}
                     value={
-                      province.data?.find((p) => p.id === detail.data?.provinceId)?.name
+                      province.data?.find(
+                        (p) => p.id === detail.data?.provinceId,
+                      )?.name
                     }
                     name="provinceId"
                     type="select"
@@ -766,9 +817,15 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                             <div>
                               <p>{detail.data?.namaSekolah}</p>
                               <Link
-                                className={cn("rounded-sm", "p-0 text-xs underline text-white")}
+                                className={cn(
+                                  "rounded-sm",
+                                  "p-0 text-xs underline text-white",
+                                )}
                                 target="_blank"
-                                to={createGmapUrl(detail.data.latitude, detail.data.longitude)}
+                                to={createGmapUrl(
+                                  detail.data.latitude,
+                                  detail.data.longitude,
+                                )}
                               >
                                 Buka Map
                               </Link>

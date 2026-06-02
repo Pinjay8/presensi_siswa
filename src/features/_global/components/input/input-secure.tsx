@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { cn, Input, InputProps } from "@/core/libs";
 import { Eye, EyeOff } from "lucide-react";
+import { EyeNoneIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 
 export interface InputSecureProps extends InputProps {
   containerStyle?: React.CSSProperties;
@@ -46,7 +47,11 @@ export const InputSecure = React.forwardRef<HTMLInputElement, InputSecureProps>(
           )}
           onClick={handleClickVisible}
         >
-          {visible ? <Eye /> : <EyeOff />}
+          {visible ? (
+            <EyeNoneIcon className="w-5 h-5" />
+          ) : (
+            <EyeOpenIcon className="w-5 h-5" />
+          )}
         </button>
       </div>
     );

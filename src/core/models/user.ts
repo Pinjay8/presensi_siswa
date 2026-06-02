@@ -25,6 +25,8 @@ export interface UserDataModel {
   image: string;
   nis: string;
   nip: string;
+  usernameInstagram: string;
+  noWhatsApp: string;
   nik: string;
   kelas?: Kelas;
   noTlp: string;

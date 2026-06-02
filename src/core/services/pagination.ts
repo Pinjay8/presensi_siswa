@@ -27,7 +27,7 @@ export const studentService = {
       query
     );
 
-    const options = getInitialOptions(); // ✅ Sudah include bearerToken
+    const options = getInitialOptions(); 
 
     const response = await fetch(url, {
       headers: {

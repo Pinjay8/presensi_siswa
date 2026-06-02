@@ -7,6 +7,7 @@ export const parentEditSchema = z.object({
     .string()
     .min(1, { message: lang.text("schoolCreationValidation5") })
     .email({ message: lang.text("schoolCreationValidation6") }),
+  password: z.string().optional(),
   alamat: z.string().optional(),
   hobi: z.string().optional(),
   name: z.string().min(1, { message: lang.text("schoolCreationValidation1") }),
@@ -25,4 +26,6 @@ export const parentEditSchema = z.object({
   isVerified: z.boolean().optional(),
   isActive: z.number().optional(),
   sekolahId: z.number().optional(),
+  usernameInstagram: z.string().optional(),
+  noWhatsApp: z.string().optional(),
 });

@@ -11,9 +11,6 @@ export const ClassroomTable = () => {
   const school = useSchool();
   const [classRoom, setCreateClassRoom] = useState(false);
 
-  console.log('classRoom:', resource)
-  console.log('school:', school)
-
   const columns = useMemo(
     () =>
       classroomColumns({
@@ -31,7 +28,10 @@ export const ClassroomTable = () => {
   return (
     <>
       {
-        <ModalCreateClass show={classRoom} onClose={() => setCreateClassRoom(!classRoom)} />
+        <ModalCreateClass
+          show={classRoom}
+          onClose={() => setCreateClassRoom(!classRoom)}
+        />
       }
       <BaseDataTable
         columns={columns}
@@ -43,8 +43,7 @@ export const ClassroomTable = () => {
         actions={[
           {
             title: lang.text("addClassroom"),
-            // url: "/classrooms/create",
-            onClick: () => setCreateClassRoom(!classRoom)
+            onClick: () => setCreateClassRoom(!classRoom),
           },
         ]}
         searchParamPagination

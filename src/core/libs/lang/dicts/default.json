@@ -265,47 +265,47 @@
   },
   "Library": {
     "en": "Library",
-    "id" : "Perpustakaan"
+    "id": "Perpustakaan"
   },
   "commandWord": {
     "en": "Command word",
-    "id" : "Kata perintah"
+    "id": "Kata perintah"
   },
   "ListOfSubjects": {
     "en": "List of subjects",
-    "id" : "Daftar mata pelajaran"
+    "id": "Daftar mata pelajaran"
   },
   "ProfileInfo": {
     "en": "Profile info",
-    "id" : "Info akun"
+    "id": "Info akun"
   },
   "StudentInfo": {
     "en": "Student info 25503",
-    "id" : "Info siswa 25503"
+    "id": "Info siswa 25503"
   },
   "ListOfClasses": {
     "en": "List of classes",
-    "id" : "Daftar kelas"
+    "id": "Daftar kelas"
   },
   "CreateClass": {
     "en": "Create a class",
-    "id" : "Buat kelas"
+    "id": "Buat kelas"
   },
   "ListOfEvents": {
     "en": "List of events",
-    "id" : "Daftar acara"
+    "id": "Daftar acara"
   },
   "LibraryVisit": {
     "en": "Visit history",
-    "id" : "Riwayat kunjungan"
+    "id": "Riwayat kunjungan"
   },
   "LibraryVisitLibrary": {
     "en": "Visit history (library)",
-    "id" : "Riwayat kunjungan perpustakaan"
+    "id": "Riwayat kunjungan perpustakaan"
   },
   "libraryManagement": {
     "en": "Library Management",
-    "id" : "Manajemen Perpustakaan"
+    "id": "Manajemen Perpustakaan"
   },
   "forgotIdCard": {
     "en": "Forgot ID Card",
@@ -991,6 +991,10 @@
     "id": "Nama Orang Tua",
     "en": "Parent Name"
   },
+  "createParent": {
+    "id": "Tambah Orang Tua",
+    "en": "Add Parent"
+  },
   "editParent": {
     "id": "Edit Orang Tua",
     "en": "Update Parent"
@@ -1276,8 +1280,8 @@
     "en": "Cancel"
   },
   "deleteConfirmationDesc": {
-    "id": "Apakah anda yakin ingin menghapus data [context]? Data yang dihapus mungkin tidak bisa dimunculkan kembali dan mempengaruhi aplikasi.",
-    "en": "Are you sure you want to delete the [context] data? Deleted data may not be recoverable and could impact the application."
+    "id": "Apakah anda yakin ingin menghapus data [context]?",
+    "en": "Are you sure you want to delete the [context] data?"
   },
   "deleteClassroom": {
     "id": "Hapus Kelas",
@@ -1438,6 +1442,10 @@
   "teacherDetail": {
     "id": "Detail Guru",
     "en": "Teacher Detail"
+  },
+  "addTeacher": {
+    "id": "Tambah Guru",
+    "en": "Add Teacher"
   },
   "classroomDetail": {
     "id": "Detail Kelas",
@@ -1662,6 +1670,10 @@
   "teacherName": {
     "id": "Nama Guru",
     "en": "Teacher Name"
+  },
+  "createTeacher": {
+    "id": "Tambah Guru",
+    "en": "Add Teacher"
   },
   "editTeacher": {
     "id": "Edit Guru",
@@ -1912,7 +1924,7 @@
     "en": "Password reset successfully, please login again"
   },
   "loginDesc": {
-    "id": "Manajemen Xpresensi untuk sekolah",
+    "id": "Manajemen presensi untuk sekolah",
     "en": "Xpresence Management for School"
   },
   "lastestAbsence": {
@@ -1943,9 +1955,6 @@
     "id": "Cari Kelas",
     "en": "Search Class"
   },
-
-
-
 
   "addingYoutubeUrl": {
     "id": "Tambahkan List URL Youtube",

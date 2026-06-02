@@ -74,6 +74,8 @@ import { LicensingPage } from "../licensing/pages/licensing";
 import { ScheduleLanding } from "../schedules/pages/schedules-landing";
 import { SchoolDistribution } from "../schools/pages/school-distribution";
 import { LocationLanding } from "../locations/pages/location-landing";
+import { TeacherCreate } from "../teacher/pages/teacher-create";
+import { ParentCreate } from "../parents/pages/parent-create";
 const router = createBrowserRouter(
   [
     {
@@ -226,6 +228,7 @@ const router = createBrowserRouter(
               path: "parents",
               element: <StudentParent />,
             },
+
             {
               path: "library-visit",
               element: <StudentLibrary />,
@@ -249,6 +252,10 @@ const router = createBrowserRouter(
           element: <TeacherLanding />,
         },
         {
+          path: "teachers/create",
+          element: <TeacherCreate />,
+        },
+        {
           path: "teachers/edit/:id",
           element: <TeacherEdit />,
         },
@@ -270,13 +277,18 @@ const router = createBrowserRouter(
           path: "parents/:id",
           element: <ParentDetail />,
         },
+        // create
+        {
+          path: "parents/create",
+          element: <ParentCreate />,
+        },
         {
           path: "parents/edit/:id",
           element: <ParentEdit />,
         },
         {
           path: "/graduation",
-          element: <GraduationLanding />
+          element: <GraduationLanding />,
         },
         {
           path: "admin/users",
@@ -345,7 +357,7 @@ const router = createBrowserRouter(
   ],
   {
     basename: APP_CONFIG.baseName,
-  }
+  },
 );
 
 export const RootApp = () => {

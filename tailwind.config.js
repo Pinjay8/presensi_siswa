@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        nunito: ["Nunito", "sans-serif"],
+        nunito: ["Poppins", "sans-serif"],
       },
       backgroundColor: {
         darkMode: "#0A1739",
@@ -226,5 +226,4 @@ export default {
   experimental: {
     // optimizeUniversalDefaults: true,
   },
-  
 };

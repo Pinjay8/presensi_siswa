@@ -1,8 +1,11 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@layer {
-  @import "./fonts.css";
+
+body {
+  font-family: "Poppins", sans-serif;
 }
 
 .ck-editor-wrapper .ck-editor__editable {
@@ -29,7 +32,10 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
+    /* --primary: 240 5.9% 10%;*/
+    /* --primary: 160 43% 36%; */
+    /* --primary: 221 83% 35%; */
+    --primary: 215 92% 25%;
     --primary-foreground: 0 0% 98%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -95,7 +101,7 @@
   h4,
   h5,
   h6 {
-    @apply font-nunito;
+    /* @apply font-nunito; */
   }
 }
 

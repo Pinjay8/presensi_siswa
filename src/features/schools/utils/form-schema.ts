@@ -27,6 +27,7 @@ export const schoolCreationFormSchema = z
       .string()
       .min(1, { message: lang.text("schoolCreationValidation5") })
       .email({ message: lang.text("schoolCreationValidation6") }),
+
     confirmPassword: z.string().min(1, {
       message: lang.text("fieldIsRequired", {
         field: lang.text("confirmPassword"),
@@ -52,7 +53,7 @@ export const schoolCreationFormSchema = z
     {
       message: lang.text("passwordsDontMatch"),
       path: ["confirmPassword"],
-    }
+    },
   );
 
 export type SchoolCreationFormSchema = typeof schoolCreationFormSchema;
@@ -74,9 +75,7 @@ export const schoolUpdateFormSchema = z.object({
   serverSatu: z.string().optional(),
   serverDua: z.string().optional(),
   serverTiga: z.string().optional(),
-  file: z
-    .any()
-    .optional(),
+  file: z.any().optional(),
   //   // .refine(
   //   //   (file) => {
   //   //     if (!file || file === "" || file === null) return true; // Izinkan file kosong

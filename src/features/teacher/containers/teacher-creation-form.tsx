@@ -15,7 +15,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/core/libs";
 
 import { dayjs, lang } from "@/core/libs";
@@ -39,7 +39,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
-export const TeacherCreationForm = () => {
+export const TeacherCreationForm = ({ id }: any) => {
   const { decodeParams } = useParamDecode();
 
   const school = useSchool();
@@ -54,6 +54,7 @@ export const TeacherCreationForm = () => {
     values: {
       name: detail.data?.name || "",
       email: detail.data?.email || "", // Default value untuk "email"
+      password: detail.data?.password || "", // Default value untuk "password"
       alamat: detail.data?.alamat || "",
       hobi: detail.data?.hobi || "",
       jenisKelamin: detail.data?.jenisKelamin || "",
@@ -75,40 +76,43 @@ export const TeacherCreationForm = () => {
   });
 
   async function onSubmit(data: z.infer<typeof teacherEditSchema>) {
+    const payload = {
+      ...(data.name ? { name: data.name } : {}),
+      ...(data.email ? { email: data.email } : {}),
+      ...(data.rfid ? { rfid: data.rfid } : {}),
+      ...(data.nisn ? { nisn: data.nisn } : {}),
+      ...(data.nrk ? { nrk: data.nrk } : {}),
+      ...(data.nikki ? { nikki: data.nikki } : {}),
+      ...(data.nis ? { nis: data.nis } : {}),
+      ...(data.nip ? { nip: data.nip } : {}),
+      ...(data.nik ? { nik: data.nik } : {}),
+      ...(data.noTlp ? { noTlp: data.noTlp } : {}),
+      ...(data.alamat ? { alamat: data.alamat } : {}),
+      ...(data.tanggalLahir ? { tanggalLahir: data.tanggalLahir } : {}),
+      ...(data.jenisKelamin ? { jenisKelamin: data.jenisKelamin } : {}),
+      ...(data.sekolahId ? { sekolahId: data.sekolahId } : {}),
+    };
+
     try {
-      await creation.update(Number(decodeParams.id), {
-        ...(data.name ? { name: data.name } : {}),
-        ...(data.email ? { email: data.email } : {}),
-        ...(data.rfid ? { rfid: data.rfid } : {}),
-        ...(data.nisn ? { nisn: data.nisn } : {}),
-        ...(data.nrk ? { nrk: data.nrk } : {}),
-        ...(data.nikki ? { nikki: data.nikki } : {}),
-        ...(data.nis ? { nis: data.nis } : {}),
-        ...(data.nip ? { nip: data.nip } : {}),
-        ...(data.nik ? { nik: data.nik } : {}),
-        ...(data.noTlp ? { noTlp: data.noTlp } : {}),
-        ...(data.alamat ? {alamat: data.alamat}: {}),
-        ...(data.tanggalLahir ? {tanggalLahir: data.tanggalLahir}: {}),
-        ...(data.isActive !== undefined && data.isActive !== 0
-          ? { isActive: data.isActive }
-          : {}),
-        ...(data.sekolahId !== undefined && data.sekolahId !== 0
-          ? { sekolahId: data.sekolahId }
-          : {}),
-        ...(data.jenisKelamin ? { jenisKelamin: data.jenisKelamin } : {}),
-      });
+      if (decodeParams?.id) {
+        await creation.update(Number(decodeParams.id), payload);
+      } else {
+        await creation.create(payload);
+      }
 
       alert.success(
-        lang.text("successUpdate", { context: lang.text("teacher") }),
+        decodeParams?.id
+          ? lang.text("successUpdate", { context: lang.text("teacher") })
+          : lang.text("successCreate", { context: lang.text("teacher") }),
       );
 
       navigate(-1);
     } catch (err: any) {
-      console.log('error', err.message)
-      console.log('error', Number(decodeParams.id))
       alert.error(
         err?.message ||
-          lang.text("failUpdate", { context: lang.text("teacher") }),
+          (decodeParams?.id
+            ? lang.text("failUpdate", { context: lang.text("teacher") })
+            : lang.text("failCreate", { context: lang.text("teacher") })),
       );
     }
   }
@@ -205,6 +209,24 @@ export const TeacherCreationForm = () => {
                   <Input
                     type="email"
                     placeholder={lang.text("inputEmail")}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage>{fieldState.error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>{lang.text("password")}</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder={lang.text("inputPassword")}
                     {...field}
                   />
                 </FormControl>
@@ -315,7 +337,7 @@ export const TeacherCreationForm = () => {
                 <FormMessage>{fieldState.error?.message}</FormMessage>
               </FormItem>
             )}
-            />
+          />
 
           <FormField
             control={form.control}
@@ -342,37 +364,37 @@ export const TeacherCreationForm = () => {
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DateCalendar
-                          value={field.value ? dayjs(field.value) : null}
-                          onChange={(newValue) =>
-                            field.onChange(
-                              newValue ? newValue.format("YYYY-MM-DD") : ""
-                            )
-                          }
-                          sx={{
-                            backgroundColor: "#ffffff", // Background putih
-                            color: "#000000", // Teks hitam untuk kontras
-                            "& .MuiPickersDay-root": {
-                              color: "#000000", // Teks hari
-                              "&:hover": {
-                                backgroundColor: "#e0e0e0", // Hover effect
-                              },
-                              "&.Mui-selected": {
-                                backgroundColor: "#1976d2", // Warna saat dipilih
-                                color: "#ffffff", // Teks putih saat dipilih
-                              },
+                      <DateCalendar
+                        value={field.value ? dayjs(field.value) : null}
+                        onChange={(newValue) =>
+                          field.onChange(
+                            newValue ? newValue.format("YYYY-MM-DD") : "",
+                          )
+                        }
+                        sx={{
+                          backgroundColor: "#ffffff", // Background putih
+                          color: "#000000", // Teks hitam untuk kontras
+                          "& .MuiPickersDay-root": {
+                            color: "#000000", // Teks hari
+                            "&:hover": {
+                              backgroundColor: "#e0e0e0", // Hover effect
                             },
-                            "& .MuiPickersCalendarHeader-label": {
-                              color: "#000000", // Teks bulan/tahun
+                            "&.Mui-selected": {
+                              backgroundColor: "#1976d2", // Warna saat dipilih
+                              color: "#ffffff", // Teks putih saat dipilih
                             },
-                            "& .MuiPickersArrowSwitcher-root": {
-                              color: "#000000", // Panah navigasi
-                            },
-                            "& .MuiDayCalendar-weekDayLabel": {
-                              color: "#000000", // Label hari (Sen, Sel, dst)
-                            },
-                          }}
-                        />
+                          },
+                          "& .MuiPickersCalendarHeader-label": {
+                            color: "#000000", // Teks bulan/tahun
+                          },
+                          "& .MuiPickersArrowSwitcher-root": {
+                            color: "#000000", // Panah navigasi
+                          },
+                          "& .MuiDayCalendar-weekDayLabel": {
+                            color: "#000000", // Label hari (Sen, Sel, dst)
+                          },
+                        }}
+                      />
                     </LocalizationProvider>
                   </PopoverContent>
                 </Popover>

@@ -49,7 +49,7 @@ export function SchoolStudentTable(props: SchoolStudentProps) {
   const attedances = profile?.user?.sekolahId !== null ? useAttedances({ id: profile?.user?.sekolahId }) : useAttedances();
   const sekolahId = filter.find((f) => f.id === "sekolahId")?.value;
   const idKelas = filter.find((f) => f.id === "idKelas")?.value;
-  console.log('attedance', attedances)
+  // console.log('attedance', attedances)
   const studentParams = useMemo(() => ({
     page: pagination.pageIndex + 1,
     size: pagination.pageSize,
@@ -66,7 +66,7 @@ export function SchoolStudentTable(props: SchoolStudentProps) {
     }
     const result = checkAttendance(attedances.data, data.students);
     setAttendanceResult(result);
-    console.log('result yang ini', result)
+    // console.log('result yang ini', result)
   }, [attedances.isLoading, attedances.data, isLoading, data?.students]);
 
 
@@ -74,12 +74,12 @@ export function SchoolStudentTable(props: SchoolStudentProps) {
   const [selectedStudent, setSelectedStudent] = useState<Detail | null>(null);
 
   // Log data dari biodata dan school saat diperoleh
-  useEffect(() => {
-    console.log('🚀 ~ Biodata fetched:', biodata.data);
-    console.log('🚀 ~ School data fetched:', school.data);
-  }, [biodata.data, school.data]);
+  // useEffect(() => {
+  //   console.log('🚀 ~ Biodata fetched:', biodata.data);
+  //   console.log('🚀 ~ School data fetched:', school.data);
+  // }, [biodata.data, school.data]);
 
-  console.log('biod', biodata.data)
+  // console.log('biod', biodata.data)
 
   // const datas = useMemo(() => {
   //   const filteredData = biodata.data?.filter(
@@ -98,7 +98,7 @@ export function SchoolStudentTable(props: SchoolStudentProps) {
           value: d.namaSekolah,
         })) || [],
     });
-    console.log('🚀 ~ Generated columns:', columnData);
+    // console.log('🚀 ~ Generated columns:', columnData);
     return columnData;
   }, [school.data]);
 

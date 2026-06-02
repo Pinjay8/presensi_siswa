@@ -22,7 +22,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
-import { useClassroom, useClassroomCreation, useClassroomDetail } from "../hooks";
+import {
+  useClassroom,
+  useClassroomCreation,
+  useClassroomDetail,
+} from "../hooks";
 import { CLASSROOM_LEVEL, classroomCreateSchema } from "../utils";
 
 export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
@@ -66,7 +70,7 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
       alert.success(
         isEdit
           ? lang.text("successUpdate", { context: lang.text("classroom") })
-          : lang.text("successCreate", { context: lang.text("classroom") })
+          : lang.text("successCreate", { context: lang.text("classroom") }),
       );
 
       resource.query.refetch();
@@ -75,7 +79,7 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
         err?.message ||
           (isEdit
             ? lang.text("failUpdate", { context: lang.text("classroom") })
-            : lang.text("failCreate", { context: lang.text("classroom") }))
+            : lang.text("failCreate", { context: lang.text("classroom") })),
       );
     } finally {
       onClose();
@@ -84,7 +88,7 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="mb-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="mb-0">
         <div className="gap-6">
           <div className="basis-1 w-max">
             <div className="flex flex-col gap-4 mb-4">
@@ -101,7 +105,9 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder={lang.text("selectSchool")} />
+                            <SelectValue
+                              placeholder={lang.text("selectSchool")}
+                            />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -148,10 +154,15 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
                   render={({ field }) => (
                     <FormItem className="mb-6">
                       <FormLabel>{lang.text("level")}</FormLabel>
-                      <Select value={field.value} onValueChange={field.onChange}>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder={lang.text("selectLevel")} />
+                            <SelectValue
+                              placeholder={lang.text("selectLevel")}
+                            />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -171,7 +182,7 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
               </div>
             </div>
 
-            <div className="py-4">
+            <div className="pt-2">
               <Button
                 disabled={
                   !form.formState.isDirty ||

@@ -33,7 +33,7 @@ export const ClassroomEdit = () => {
       ]}
       title={lang.text("editClassroom")}
     >
-      <ClassroomCreationForm />
+      <ClassroomCreationForm onClose={() => {}} />
       <div className="pb-16 sm:pb-0" />
     </DashboardPageLayout>
   );

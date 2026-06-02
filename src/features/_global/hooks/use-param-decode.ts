@@ -1,15 +1,20 @@
-import { simpleDecode } from '@/core/libs';
-import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { simpleDecode } from "@/core/libs";
+import { useMemo } from "react";
+import { useParams } from "react-router-dom";
 
 export const useParamDecode = () => {
   const params = useParams();
-  const decodeParams: { biodataId?: string | number; userId?: string | number; text?: string } = useMemo(() => {
+  const decodeParams: {
+    biodataId?: string | number;
+    userId?: string | number;
+    text?: string;
+    id?: string;
+  } = useMemo(() => {
     try {
-      const r = JSON.parse(simpleDecode(params.id || ''));
+      const r = JSON.parse(simpleDecode(params.id || ""));
       return r;
     } catch (err: unknown) {
-      console.log('param not decoded', err);
+      console.log("param not decoded", err);
       return {};
     }
   }, [params?.id]);

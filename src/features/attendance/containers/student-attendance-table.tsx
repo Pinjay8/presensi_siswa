@@ -41,7 +41,7 @@ export function StudentAttendanceTable({ data, totalAttedance }: StudentAttendan
       <BaseDataTable
         columns={columns}
         // totalAttedance={totalAttedance}
-        data={data} // Gunakan data yang diterima dari prop
+        data={data} 
         dataFallback={[]}
         globalSearch
         searchParamPagination

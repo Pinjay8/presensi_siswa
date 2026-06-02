@@ -17,23 +17,36 @@ import { useAlert, useDataTableController } from "@/features/_global";
 import { useClassroom } from "@/features/classroom";
 import { useProfile } from "@/features/profile";
 import { useSchoolDetail } from "@/features/schools";
-import { checkAttendance, StudentTable, useAttedances } from "@/features/student";
-import { Document, Image, Page, pdf, StyleSheet, Text, View } from '@react-pdf/renderer';
+import {
+  checkAttendance,
+  StudentTable,
+  useAttedances,
+} from "@/features/student";
+import {
+  Document,
+  Image,
+  Page,
+  pdf,
+  StyleSheet,
+  Text,
+  View,
+} from "@react-pdf/renderer";
 import axios from "axios";
 import dayjs from "dayjs";
 import { ChevronDown, ChevronUp, UploadIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { FaFilePdf } from "react-icons/fa";
 import { useStudentPagination } from "../hooks/use-student-pagination";
+import { ImportStudentDialog } from "../components/ImportStudentDialog";
 
 // Gaya PDF yang serupa dengan kode pertama
 const pdfStyles = StyleSheet.create({
   page: {
     fontSize: 12,
-    fontFamily: 'Times-Roman',
+    fontFamily: "Times-Roman",
   },
   header: {
-    position: 'relative',
+    position: "relative",
     top: 0,
     left: 0,
     right: 0,
@@ -42,7 +55,7 @@ const pdfStyles = StyleSheet.create({
   headerImage: {
     width: 595,
     maxHeight: 150,
-    objectFit: 'contain',
+    objectFit: "contain",
   },
   contentWrapper: {
     paddingLeft: 32,
@@ -51,68 +64,73 @@ const pdfStyles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 5,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
   },
   content: {
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 1.5,
   },
   table: {
-    display: 'flex',
-    flexDirection: 'column',
-    borderStyle: 'solid',
+    display: "flex",
+    flexDirection: "column",
+    borderStyle: "solid",
     borderWidth: 1,
-    borderColor: '#000',
+    borderColor: "#000",
   },
   tableRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     borderBottomWidth: 1,
-    borderBottomColor: '#000',
+    borderBottomColor: "#000",
   },
   tableCell: {
     padding: 5,
     borderRightWidth: 1,
-    borderRightColor: '#000',
-    textAlign: 'center',
+    borderRightColor: "#000",
+    textAlign: "center",
   },
   tableHeader: {
-    fontWeight: 'bold',
-    backgroundColor: '#f0f0f0',
+    fontWeight: "bold",
+    backgroundColor: "#f0f0f0",
   },
   signature: {
     marginTop: 50,
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   signatureImage: {
     width: 120,
-    height: 'auto',
+    height: "auto",
     maxHeight: 50,
     marginTop: 20,
     marginBottom: 10,
   },
   signatureText: {
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
 
 // Komponen PDF untuk Laporan Absensi Harian
 const DailyAttendancePDF: React.FC<{
   attendanceData: any[];
-  schoolData: { kopSurat: string; namaSekolah: string; namaKepalaSekolah: string; ttdKepalaSekolah: string | undefined };
+  schoolData: {
+    kopSurat: string;
+    namaSekolah: string;
+    namaKepalaSekolah: string;
+    ttdKepalaSekolah: string | undefined;
+  };
   date: string;
 }> = ({ attendanceData, schoolData, date }) => {
   const kopSuratUrl = schoolData.kopSurat
-    ? schoolData.kopSurat.startsWith('data:image')
+    ? schoolData.kopSurat.startsWith("data:image")
       ? schoolData.kopSurat
       : `data:image/png;base64,${schoolData.kopSurat}`
     : undefined;
 
   const signatureUrl = schoolData.ttdKepalaSekolah
-    ? schoolData.ttdKepalaSekolah.startsWith('data:image')
+    ? schoolData.ttdKepalaSekolah.startsWith("data:image")
       ? schoolData.ttdKepalaSekolah
       : `data:image/png;base64,${schoolData.ttdKepalaSekolah}`
     : undefined;
@@ -137,46 +155,60 @@ const DailyAttendancePDF: React.FC<{
           break={pageIndex > 0} // Page break untuk halaman setelah pertama
         >
           <View style={pdfStyles.header} fixed>
-            <Image src={getStaticFile(kopSuratUrl)} style={pdfStyles.headerImage} />
+            <Image
+              src={getStaticFile(kopSuratUrl || "")}
+              style={pdfStyles.headerImage}
+            />
           </View>
           <View style={pdfStyles.contentWrapper}>
             <Text style={pdfStyles.title}>Laporan Absensi Harian</Text>
             <Text style={pdfStyles.content}>
-              Tanggal: {date || 'Tanggal Tidak Diketahui'}
+              Tanggal: {date || "Tanggal Tidak Diketahui"}
             </Text>
             <View style={pdfStyles.table}>
               <View style={[pdfStyles.tableRow, pdfStyles.tableHeader]} fixed>
-                {['No', 'Nama Siswa', 'NIS', 'Kelas', 'Status'].map((header, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      pdfStyles.tableCell,
-                      pdfStyles.tableHeader,
-                      {
-                        width: index === 0 ? '5%' : index === 1 ? '30%' : index === 2 ? '20%' : index === 3 ? '20%' : '25%',
-                      },
-                    ]}
-                  >
-                    <Text>{header}</Text>
-                  </View>
-                ))}
+                {["No", "Nama Siswa", "NIS", "Kelas", "Status"].map(
+                  (header, index) => (
+                    <View
+                      key={index}
+                      style={[
+                        pdfStyles.tableCell,
+                        pdfStyles.tableHeader,
+                        {
+                          width:
+                            index === 0
+                              ? "5%"
+                              : index === 1
+                                ? "30%"
+                                : index === 2
+                                  ? "20%"
+                                  : index === 3
+                                    ? "20%"
+                                    : "25%",
+                        },
+                      ]}
+                    >
+                      <Text>{header}</Text>
+                    </View>
+                  ),
+                )}
               </View>
               {chunk.map((item, index) => (
                 <View style={pdfStyles.tableRow} key={index} wrap={false}>
-                  <View style={[pdfStyles.tableCell, { width: '5%' }]}>
+                  <View style={[pdfStyles.tableCell, { width: "5%" }]}>
                     <Text>{pageIndex * rowsPerPage + index + 1}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '30%' }]}>
-                    <Text>{item?.name || '-'}</Text>
+                  <View style={[pdfStyles.tableCell, { width: "30%" }]}>
+                    <Text>{item?.name || "-"}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '20%' }]}>
-                    <Text>{item?.nis || '-'}</Text>
+                  <View style={[pdfStyles.tableCell, { width: "20%" }]}>
+                    <Text>{item?.nis || "-"}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '20%' }]}>
-                    <Text>{item?.namaKelas || '-'}</Text>
+                  <View style={[pdfStyles.tableCell, { width: "20%" }]}>
+                    <Text>{item?.namaKelas || "-"}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '25%' }]}>
-                    <Text>{item.status || '-'}</Text>
+                  <View style={[pdfStyles.tableCell, { width: "25%" }]}>
+                    <Text>{item.status || "-"}</Text>
                   </View>
                 </View>
               ))}
@@ -187,7 +219,9 @@ const DailyAttendancePDF: React.FC<{
                 {signatureUrl && (
                   <Image src={signatureUrl} style={pdfStyles.signatureImage} />
                 )}
-                <Text style={pdfStyles.signatureText}>{schoolData.namaKepalaSekolah || 'Nama Kepala Sekolah'}</Text>
+                <Text style={pdfStyles.signatureText}>
+                  {schoolData.namaKepalaSekolah || "Nama Kepala Sekolah"}
+                </Text>
               </View>
             )}
           </View>
@@ -195,22 +229,27 @@ const DailyAttendancePDF: React.FC<{
       ))}
     </Document>
   );
-};  
+};
 
 // Komponen PDF untuk Laporan Absensi Bulanan
 const MonthlyAttendancePDF: React.FC<{
   attendanceData: any[];
-  schoolData: { kopSurat: string; namaSekolah: string; namaKepalaSekolah: string; ttdKepalaSekolah: string | undefined };
+  schoolData: {
+    kopSurat: string;
+    namaSekolah: string;
+    namaKepalaSekolah: string;
+    ttdKepalaSekolah: string | undefined;
+  };
   month: string;
 }> = ({ attendanceData, schoolData, month }) => {
   const kopSuratUrl = schoolData.kopSurat
-    ? schoolData.kopSurat.startsWith('data:image')
+    ? schoolData.kopSurat.startsWith("data:image")
       ? schoolData.kopSurat
       : `data:image/png;base64,${schoolData.kopSurat}`
     : undefined;
 
   const signatureUrl = schoolData.ttdKepalaSekolah
-    ? schoolData.ttdKepalaSekolah.startsWith('data:image')
+    ? schoolData.ttdKepalaSekolah.startsWith("data:image")
       ? schoolData.ttdKepalaSekolah
       : `data:image/png;base64,${schoolData.ttdKepalaSekolah}`
     : undefined;
@@ -235,23 +274,44 @@ const MonthlyAttendancePDF: React.FC<{
           break={pageIndex > 0} // Page break untuk halaman setelah pertama
         >
           <View style={pdfStyles.header} fixed>
-            <Image src={getStaticFile(kopSuratUrl)} style={pdfStyles.headerImage} />
+            <Image
+              src={getStaticFile(kopSuratUrl)}
+              style={pdfStyles.headerImage}
+            />
           </View>
           <View style={pdfStyles.contentWrapper}>
             <Text style={pdfStyles.title}>Laporan Absensi Bulanan</Text>
             <Text style={pdfStyles.content}>
-              Bulan: {month || 'Bulan Tidak Diketahui'}
+              Bulan: {month || "Bulan Tidak Diketahui"}
             </Text>
             <View style={pdfStyles.table}>
               <View style={[pdfStyles.tableRow, pdfStyles.tableHeader]} fixed>
-                {['No', 'Nama Siswa', 'NIS', 'Kelas', 'Hadir', 'Izin', 'Sakit', 'Alpa'].map((header, index) => (
+                {[
+                  "No",
+                  "Nama Siswa",
+                  "NIS",
+                  "Kelas",
+                  "Hadir",
+                  "Izin",
+                  "Sakit",
+                  "Alpa",
+                ].map((header, index) => (
                   <View
                     key={index}
                     style={[
                       pdfStyles.tableCell,
                       pdfStyles.tableHeader,
                       {
-                        width: index === 0 ? '5%' : index === 1 ? '25%' : index === 2 ? '15%' : index === 3 ? '15%' : '10%',
+                        width:
+                          index === 0
+                            ? "5%"
+                            : index === 1
+                              ? "25%"
+                              : index === 2
+                                ? "15%"
+                                : index === 3
+                                  ? "15%"
+                                  : "10%",
                       },
                     ]}
                   >
@@ -261,28 +321,28 @@ const MonthlyAttendancePDF: React.FC<{
               </View>
               {chunk.map((item, index) => (
                 <View style={pdfStyles.tableRow} key={index} wrap={false}>
-                  <View style={[pdfStyles.tableCell, { width: '5%' }]}>
+                  <View style={[pdfStyles.tableCell, { width: "5%" }]}>
                     <Text>{pageIndex * rowsPerPage + index + 1}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '25%' }]}>
-                    <Text>{item?.user?.name || '-'}</Text>
+                  <View style={[pdfStyles.tableCell, { width: "25%" }]}>
+                    <Text>{item?.user?.name || "-"}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '15%' }]}>
-                    <Text>{item?.user?.nis || '-'}</Text>
+                  <View style={[pdfStyles.tableCell, { width: "15%" }]}>
+                    <Text>{item?.user?.nis || "-"}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '15%' }]}>
-                    <Text>{item?.user?.namaKelas || '-'}</Text>
+                  <View style={[pdfStyles.tableCell, { width: "15%" }]}>
+                    <Text>{item?.user?.namaKelas || "-"}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '10%' }]}>
+                  <View style={[pdfStyles.tableCell, { width: "10%" }]}>
                     <Text>{item.hadir || 0}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '10%' }]}>
+                  <View style={[pdfStyles.tableCell, { width: "10%" }]}>
                     <Text>{item.izin || 0}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '10%' }]}>
+                  <View style={[pdfStyles.tableCell, { width: "10%" }]}>
                     <Text>{item.sakit || 0}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '10%' }]}>
+                  <View style={[pdfStyles.tableCell, { width: "10%" }]}>
                     <Text>{item.alpa || 0}</Text>
                   </View>
                 </View>
@@ -294,7 +354,9 @@ const MonthlyAttendancePDF: React.FC<{
                 {signatureUrl && (
                   <Image src={signatureUrl} style={pdfStyles.signatureImage} />
                 )}
-                <Text style={pdfStyles.signatureText}>{schoolData.namaKepalaSekolah || 'Nama Kepala Sekolah'}</Text>
+                <Text style={pdfStyles.signatureText}>
+                  {schoolData.namaKepalaSekolah || "Nama Kepala Sekolah"}
+                </Text>
               </View>
             )}
           </View>
@@ -320,15 +382,14 @@ export const generateAttendancePDF = async ({
   schoolData: any;
   schoolIsLoading: boolean;
 }) => {
-
-  console.log('attendanceData', attendanceData)
+  console.log("attendanceData", attendanceData);
   if (schoolIsLoading) {
-    alert.error('Data sekolah masih dimuat, silakan coba lagi.');
+    alert.error("Data sekolah masih dimuat, silakan coba lagi.");
     return;
   }
 
   if (!attendanceData || attendanceData.length === 0) {
-    alert.error('Tidak ada data absensi untuk dihasilkan.');
+    alert.error("Tidak ada data absensi untuk dihasilkan.");
     return;
   }
 
@@ -338,11 +399,12 @@ export const generateAttendancePDF = async ({
         attendanceData={attendanceData}
         schoolData={{
           namaSekolah: nameSchool,
-          kopSurat: schoolData?.kopSurat || '',
-          namaKepalaSekolah: schoolData?.namaKepalaSekolah || 'Nama Kepala Sekolah',
+          kopSurat: schoolData?.kopSurat || "",
+          namaKepalaSekolah:
+            schoolData?.namaKepalaSekolah || "Nama Kepala Sekolah",
           ttdKepalaSekolah: schoolData?.ttdKepalaSekolah,
         }}
-        date={dayjs().format('DD MMMM YYYY')}
+        date={dayjs().format("DD MMMM YYYY")}
       />
     );
 
@@ -350,18 +412,18 @@ export const generateAttendancePDF = async ({
     const pdfBlob = await pdfInstance.toBlob();
 
     const url = window.URL.createObjectURL(pdfBlob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = `Laporan-Absensi-Harian-${dayjs().format('YYYY-MM-DD')}.pdf`;
+    link.download = `Laporan-Absensi-Harian-${dayjs().format("YYYY-MM-DD")}.pdf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
 
-    alert.success('Laporan absensi harian berhasil diunduh.');
+    alert.success("Laporan absensi harian berhasil diunduh.");
   } catch (error) {
-    console.error('Error generating daily attendance PDF:', error);
-    alert.error('Gagal menghasilkan laporan absensi harian.');
+    console.error("Error generating daily attendance PDF:", error);
+    alert.error("Gagal menghasilkan laporan absensi harian.");
   }
 };
 
@@ -381,14 +443,14 @@ export const generateMonthlyAttendancePDF = async ({
   schoolData: any;
   schoolIsLoading: boolean;
 }) => {
-  console.log('atttw', attendanceData)
+  console.log("atttw", attendanceData);
   if (schoolIsLoading) {
-    alert.error('Data sekolah masih dimuat, silakan coba lagi.');
+    alert.error("Data sekolah masih dimuat, silakan coba lagi.");
     return;
   }
 
   if (!attendanceData || attendanceData.length === 0) {
-    alert.error('Tidak ada data absensi untuk dihasilkan.');
+    alert.error("Tidak ada data absensi untuk dihasilkan.");
     return;
   }
 
@@ -405,15 +467,15 @@ export const generateMonthlyAttendancePDF = async ({
         alpa: 0,
       };
     }
-    if (item.status === 'Hadir') acc[studentId].hadir += 1;
-    else if (item.status === 'Izin') acc[studentId].izin += 1;
-    else if (item.status === 'Sakit') acc[studentId].sakit += 1;
-    else if (item.status === 'Alpa') acc[studentId].alpa += 1;
+    if (item.status === "Hadir") acc[studentId].hadir += 1;
+    else if (item.status === "Izin") acc[studentId].izin += 1;
+    else if (item.status === "Sakit") acc[studentId].sakit += 1;
+    else if (item.status === "Alpa") acc[studentId].alpa += 1;
     return acc;
   }, {});
 
   const formattedData = Object.values(monthlyData);
-  console.log('formattte', formattedData)
+  console.log("formattte", formattedData);
 
   try {
     const doc = (
@@ -421,11 +483,12 @@ export const generateMonthlyAttendancePDF = async ({
         attendanceData={formattedData}
         schoolData={{
           namaSekolah: nameSchool,
-          kopSurat: schoolData?.kopSurat || '',
-          namaKepalaSekolah: schoolData?.namaKepalaSekolah || 'Nama Kepala Sekolah',
+          kopSurat: schoolData?.kopSurat || "",
+          namaKepalaSekolah:
+            schoolData?.namaKepalaSekolah || "Nama Kepala Sekolah",
           ttdKepalaSekolah: schoolData?.ttdKepalaSekolah,
         }}
-        month={dayjs().format('MMMM YYYY')}
+        month={dayjs().format("MMMM YYYY")}
       />
     );
 
@@ -433,18 +496,18 @@ export const generateMonthlyAttendancePDF = async ({
     const pdfBlob = await pdfInstance.toBlob();
 
     const url = window.URL.createObjectURL(pdfBlob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = `Laporan-Absensi-Bulanan-${dayjs().format('YYYY-MM')}.pdf`;
+    link.download = `Laporan-Absensi-Bulanan-${dayjs().format("YYYY-MM")}.pdf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
 
-    alert.success('Laporan absensi bulanan berhasil diunduh.');
+    alert.success("Laporan absensi bulanan berhasil diunduh.");
   } catch (error) {
-    console.error('Error generating monthly attendance PDF:', error);
-    alert.error('Gagal menghasilkan laporan absensi bulanan.');
+    console.error("Error generating monthly attendance PDF:", error);
+    alert.error("Gagal menghasilkan laporan absensi bulanan.");
   }
 };
 
@@ -469,45 +532,69 @@ export const StudentLandingTables = () => {
 
   const profile = useProfile();
   const classRoom = useClassroom();
-  const sekolahId = filter.find((f) => f.id === "sekolahId")?.value || profile.user?.sekolahId || 1;
-  const { data: schoolData, isLoading: schoolIsLoading } = useSchoolDetail({ id: sekolahId });
+  const sekolahId =
+    filter.find((f: any) => f.id === "sekolahId")?.value ||
+    profile.user?.sekolahId ||
+    1;
+  const { data: schoolData, isLoading: schoolIsLoading } = useSchoolDetail({
+    id: sekolahId,
+  });
 
   useEffect(() => {
     setProfileSchoolId(profile.user?.sekolahId || null);
   }, [profile.user]);
 
-  const attedances = profileSchoolId !== null ? useAttedances({ id: profileSchoolId }) : useAttedances();
-  const idKelas = filter.find((f) => f.id === "idKelas")?.value;
-  
-  const studentParams = useMemo(() => ({
-    page: pagination.pageIndex + 1,
-    size: pagination.pageSize,
-    sekolahId: sekolahId ? +sekolahId : undefined,
-    idKelas: idKelas ? +idKelas : undefined,
-    keyword: global,
-  }), [pagination.pageIndex, pagination.pageSize, sekolahId, idKelas, global]);
-  
+  const attedances =
+    profileSchoolId !== null
+      ? useAttedances({ id: profileSchoolId })
+      : useAttedances();
+  console.log("attedances", attedances.data);
+  const idKelas = filter.find((f: any) => f.id === "idKelas")?.value;
+
+  const studentParams = useMemo(
+    () => ({
+      page: pagination.pageIndex + 1,
+      size: pagination.pageSize,
+      sekolahId: sekolahId ? +sekolahId : undefined,
+      idKelas: idKelas ? +idKelas : undefined,
+      keyword: global,
+    }),
+    [pagination.pageIndex, pagination.pageSize, sekolahId, idKelas, global],
+  );
+
   const { data, isLoading, refetch } = useStudentPagination(studentParams);
-  console.log('data siswa:', data)
-  useMemo(() => {
-    if (attedances.isLoading || isLoading || !attedances.data || !data?.students) {
+
+  useEffect(() => {
+    if (
+      attedances.isLoading ||
+      isLoading ||
+      !attedances.data ||
+      !data?.students
+    ) {
       return;
     }
+
     const result = checkAttendance(attedances.data, data.students);
     setAttendanceResult(result);
-    console.log('result', result);
   }, [attedances.isLoading, attedances.data, isLoading, data?.students]);
 
-  // Hitung jumlah data dengan status "Hadir"
   const presentCount = useMemo(() => {
     return attendanceResult.filter((item) => item.status === "Hadir").length;
   }, [attendanceResult]);
 
   const handleDownload = (type: string) => {
-    const fileUrl = type === 'excel' ? '/Template-Pendaftaran-Siswa.xlsx' : '/Template-Pendaftaran-Siswa-CSVFormat.csv';
-    const link = document.createElement('a');
+    const fileUrl =
+      type === "excel"
+        ? "/Template-Pendaftaran-Siswa.xlsx"
+        : "/Template-Pendaftaran-Siswa-CSVFormat.csv";
+    const link = document.createElement("a");
     link.href = fileUrl;
-    link.setAttribute('download', type === 'excel' ? 'Template-Pendaftaran-Siswa.xlsx' : 'Template-Pendaftaran-Siswa.csv');
+    link.setAttribute(
+      "download",
+      type === "excel"
+        ? "Template-Pendaftaran-Siswa.xlsx"
+        : "Template-Pendaftaran-Siswa.csv",
+    );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -525,13 +612,13 @@ export const StudentLandingTables = () => {
 
   const importData = async () => {
     if (selectedFile) {
-      const fileExtension = selectedFile.name.split('.').pop().toLowerCase();
-      if (fileExtension !== 'xlsx') {
-        alert.error("Harap unggah file dengan format .xlsx");
-        return;
-      }
+      const fileExtension = selectedFile?.name?.split(".").pop().toLowerCase();
+      // if (fileExtension !== "xlsx") {
+      //   alert.error("Harap unggah file dengan format .xlsx");
+      //   return;
+      // }
 
-      console.log('fileeees', selectedFile);
+      console.log("fileeees", selectedFile);
 
       setIsUploading(true);
 
@@ -554,7 +641,7 @@ export const StudentLandingTables = () => {
               "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         if (!response.data) {
@@ -575,21 +662,18 @@ export const StudentLandingTables = () => {
 
         if (response.data.success) {
           setSelectedFile(null);
-          await Promise.all([
-            attedances.query.refetch(),
-            refetch(),
-          ]);
-          alert.success(formattedMessage);
+          await Promise.all([attedances.query.refetch(), refetch()]);
+          alert.success((formattedMessage && formattedMessage.toString()) || "Data berhasil diimport");
         } else {
           setSelectedFile(null);
-          await Promise.all([
-            attedances.query.refetch(),
-            refetch(),
-          ]);
-          alert.error(formattedMessage);
+          await Promise.all([attedances.query.refetch(), refetch()]);
+          alert.error(
+            (formattedMessage && formattedMessage.toString()) ||
+              "Data gagal diimport",
+          );
         }
 
-        console.log('response:', response);
+        console.log("response:", response);
         setOpenImport(false);
       } catch (error: any) {
         console.error("Error saat mengunggah file:", error);
@@ -609,7 +693,7 @@ export const StudentLandingTables = () => {
         studentParams,
         attendanceData: attendanceResult,
         alert,
-        nameSchool: profile.user?.sekolah?.namaSekolah || "",
+        nameSchool: (profile.user?.sekolah?.namaSekolah || "") as string,
         schoolData,
         schoolIsLoading,
       });
@@ -625,7 +709,7 @@ export const StudentLandingTables = () => {
         studentParams,
         attendanceData: attendanceResult,
         alert,
-        nameSchool: profile.user?.sekolah?.namaSekolah || "",
+        nameSchool: (profile.user?.sekolah?.namaSekolah || "") as string,
         schoolData,
         schoolIsLoading,
       });
@@ -635,24 +719,34 @@ export const StudentLandingTables = () => {
   };
 
   const handleAlert = () => {
-    alert.error(lang.text('shouldClassroom'));
+    alert.error(lang.text("shouldClassroom"));
   };
-
-
-  console.log('attendanceResult', attendanceResult)
 
   return (
     <>
       <div className="flex justify-between items-center pb-4">
         <div className="w-full flex justify-between">
           <div className="flex w-max">
-            <Button className="hidden" variant="outline" onClick={() => handleDownloadExcel('csv')}>
+            <Button
+              className="hidden"
+              variant="outline"
+              onClick={() => handleDownloadExcel("csv")}
+            >
               {lang.text("download")} Template CSV
             </Button>
-            <Button className="mr-4" variant="outline" onClick={() => handleDownloadExcel('excel')}>
+            <Button
+              className="mr-4"
+              variant="outline"
+              onClick={() => handleDownloadExcel("excel")}
+            >
               {lang.text("download")} Template Excel
             </Button>
-            <Button variant="outline" onClick={() => classRoom?.data.length > 0 ? setOpenImport(true) : handleAlert()}>
+            <Button
+              variant="outline"
+              onClick={() =>
+                classRoom?.data.length > 0 ? setOpenImport(true) : handleAlert()
+              }
+            >
               {lang.text("import")} Data
             </Button>
           </div>
@@ -667,7 +761,9 @@ export const StudentLandingTables = () => {
               </Button>
               <div className="w-full flex justify-between">
                 <div className="flex items-center space-x-2">
-                  <DropdownMenu onOpenChange={(open) => setIsDropdownOpen(open)}>
+                  <DropdownMenu
+                    onOpenChange={(open) => setIsDropdownOpen(open)}
+                  >
                     <DropdownMenuTrigger asChild>
                       <Button
                         className="relative bg-red-600 text-white hover:bg-red-700"
@@ -675,7 +771,10 @@ export const StudentLandingTables = () => {
                         aria-label="download pdf"
                         disabled={isGeneratingPDF}
                       >
-                        {isGeneratingPDF ? "Generating..." : lang.text("downloadAttedance")} <FaFilePdf className="ml-2" />
+                        {isGeneratingPDF
+                          ? "Generating..."
+                          : lang.text("downloadAttedance")}{" "}
+                        <FaFilePdf className="ml-2" />
                         {isDropdownOpen ? (
                           <ChevronUp className="ml-2 h-4 w-4" />
                         ) : (
@@ -685,10 +784,10 @@ export const StudentLandingTables = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuItem onClick={handleDownloadPDF}>
-                        {lang.text('downloadAttedanceDay')}
+                        {lang.text("downloadAttedanceDay")}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={handleDownloadMonthlyPDF}>
-                        {lang.text('downloadAttedanceMonthly')}
+                        {lang.text("downloadAttedanceMonthly")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -706,52 +805,23 @@ export const StudentLandingTables = () => {
           pageIndex: pagination.pageIndex,
           pageSize: pagination.pageSize,
           totalItems: data?.pagination?.totalItems || 0,
-          onPageChange: (page) => onPaginationChange({ ...pagination, pageIndex: page }),
-          onSizeChange: (size) => onPaginationChange({ ...pagination, pageSize: size, pageIndex: 0 }),
+          onPageChange: (page) =>
+            onPaginationChange({ ...pagination, pageIndex: page }),
+          onSizeChange: (size) =>
+            onPaginationChange({ ...pagination, pageSize: size, pageIndex: 0 }),
         }}
         sorting={sorting}
         onSortingChange={onSortingChange}
       />
 
-      <Dialog open={openImport} onOpenChange={setOpenImport}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{lang.text("import")} Data Siswa</DialogTitle>
-          </DialogHeader>
-
-          <div className="flex flex-col items-center space-y-4">
-            <label
-              htmlFor="file-upload"
-              className="flex flex-col items-center justify-center w-full p-4 border-2 border-dashed border-gray-500 rounded-lg cursor-pointer hover:border-gray-300 transition"
-            >
-              <UploadIcon className="w-10 h-10 text-gray-400 mb-2" />
-              <span className="text-gray-600 text-sm">
-                {selectedFile ? selectedFile.name : "Pilih file CSV atau Excel"}
-              </span>
-            </label>
-            <Input
-              id="file-upload"
-              type="file"
-              accept=".csv, .xlsx"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-          </div>
-
-          <DialogFooter className="flex justify-between space-x-4">
-            <Button variant="outline" onClick={() => setOpenImport(false)}>
-              {lang.text("cancel")}
-            </Button>
-            <Button
-              variant="default"
-              disabled={!selectedFile || isUploading}
-              onClick={importData}
-            >
-              {isUploading ? "Uploading..." : lang.text("import")} Data
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ImportStudentDialog
+        open={openImport}
+        onOpenChange={setOpenImport}
+        selectedFile={selectedFile}
+        isUploading={isUploading}
+        onFileChange={handleFileUpload}
+        onImport={importData}
+      />
     </>
   );
 };

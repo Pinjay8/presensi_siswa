@@ -27,11 +27,11 @@ export function StudentTable({
 }: StudentTableProps) {
   const schoolOptions = useSchoolOptions();
   const classroomOptions = useClassroomOptions();
-  const { handleAttend } = useAttendanceActions(); // Panggil custom hook
+  const { handleAttend } = useAttendanceActions(); 
   const columns = useMemo(() => studentColumnWithFilter({
     schoolOptions,
     classroomOptions,
-    handleAttend
+    handleAttend  
   }), [schoolOptions, classroomOptions]);
   
   return (
@@ -50,8 +50,7 @@ export function StudentTable({
         totalItems={pagination.totalItems}
         onPageChange={pagination.onPageChange}
         onSizeChange={pagination.onSizeChange}
-
-        schoolOptions={schoolOptions}           // ⬅️ Tambah props ini
+        schoolOptions={schoolOptions}          
         classroomOptions={classroomOptions}
       />
     </>

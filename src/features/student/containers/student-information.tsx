@@ -53,6 +53,7 @@ export const StudentInformation = () => {
   const navigate = useNavigate();
   const detail = useStudentDetail({ id: decodeParams?.id });
   const userDetail = useUserDetail(decodeParams?.biodataId);
+  console.log("userDetail", userDetail)
   const classroom = useClassroom();
   const creation = useUserCreation();
   const biodata = useBiodata();
@@ -156,8 +157,8 @@ export const StudentInformation = () => {
     return true;
   };
 
-  console.log('userDetail', userDetail)
-  console.log('detail', detail)
+  // console.log('userDetail', userDetail)
+  // console.log('detail', detail)
 
   // Populate form and store initial values
   useEffect(() => {

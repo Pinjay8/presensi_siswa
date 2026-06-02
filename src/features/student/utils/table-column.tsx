@@ -1,24 +1,36 @@
-import { Avatar, AvatarFallback, AvatarImage, Badge, Button, cn, dayjs, lang, simpleEncode } from "@/core/libs"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Badge,
+  Button,
+  cn,
+  dayjs,
+  lang,
+  simpleEncode,
+} from "@/core/libs";
 import {
   BiodataSiswa,
   StudentCoursePresenceDataModel,
-} from "@/core/models/biodata"
-import { getStaticFile } from "@/core/utils"
+} from "@/core/models/biodata";
+import { getStaticFile } from "@/core/utils";
 import {
   BaseActionTable,
   // BaseTableFilter,
   BaseTableHeader,
-  BaseUserItem
-} from "@/features/_global"
-import { buildSelectFilter } from "@/features/_global/components/use-table-column-filter"
-import { EvidenceItem, EvidencePreview } from "@/features/attendance/components"
-import { CaretSortIcon } from "@radix-ui/react-icons"
-import { ColumnDef } from "@tanstack/react-table"
-import { Star } from "lucide-react"
+  BaseUserItem,
+} from "@/features/_global";
+import { buildSelectFilter } from "@/features/_global/components/use-table-column-filter";
+import {
+  EvidenceItem,
+  EvidencePreview,
+} from "@/features/attendance/components";
+import { CaretSortIcon } from "@radix-ui/react-icons";
+import { ColumnDef } from "@tanstack/react-table";
+import { Star } from "lucide-react";
 // import { FormRfid } from "../components"
 // import { QueryClient, useQueryClient } from "@tanstack/react-query"
 // Pastikan ada komponen Modal
-
 
 interface FlatStudentModel {
   noStatus?: boolean;
@@ -39,23 +51,21 @@ interface FlatStudentModel {
 }
 
 export const studentColumnWithFilter = ({
-  noStatus=false,
+  noStatus = false,
   schoolOptions = [],
   classroomOptions = [],
-  handleAttend
+  handleAttend,
 }: {
-  
   schoolOptions?: { label: string; value: string | number }[];
   classroomOptions?: { label: string; value: string | number }[];
 }): ColumnDef<FlatStudentModel>[] => {
-  
   // const MemoizedFormRfid = React.memo(FormRfid);
   // const queryClient = useQueryClient();
 
   const classroomFilterMeta = buildSelectFilter(
     "biodataSiswa[0].kelas.namaKelas",
     lang.text("classroom"),
-    classroomOptions
+    classroomOptions,
   );
 
   // const schoolFilterMeta = buildSelectFilter(
@@ -76,19 +86,32 @@ export const studentColumnWithFilter = ({
       ),
       enableGlobalFilter: true,
       cell: ({ row }) => {
-        const nameArr = (row.original.name || row.original.user?.name)?.split(" ") || [];
+        const nameArr =
+          (row.original.name || row.original.user?.name)?.split(" ") || [];
         const initials =
-          nameArr?.[0]?.[0]?.toUpperCase() + (nameArr?.[1]?.[0]?.toUpperCase() || "");
+          nameArr?.[0]?.[0]?.toUpperCase() +
+          (nameArr?.[1]?.[0]?.toUpperCase() || "");
         return (
           <div className="flex flex-row items-center gap-2">
             <Avatar>
               <AvatarImage
-                src={getStaticFile(String((row.original.image || row.original.name) || (row.original.user.image || row.original.user?.name)))}
-                alt={row.original.name || (row.original.user.image || row.original.user?.name)}
+                src={getStaticFile(
+                  String(
+                    row.original.image ||
+                      row.original.name ||
+                      row.original.user.image ||
+                      row.original.user?.name,
+                  ),
+                )}
+                alt={
+                  row.original.name ||
+                  row.original.user.image ||
+                  row.original.user?.name
+                }
               />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
-            <p>{(row.original.user?.name || row.original.name) || '-'}</p>
+            <p>{row.original.user?.name || row.original.name || "-"}</p>
           </div>
         );
       },
@@ -96,14 +119,16 @@ export const studentColumnWithFilter = ({
     {
       accessorKey: "email",
       header: () => <BaseTableHeader>{lang.text("email")}</BaseTableHeader>,
-      cell: ({ row }) => <span>{(row.original.user?.email || row.original.email) || '-'}</span>,
+      cell: ({ row }) => (
+        <span>{row.original.user?.email || row.original.email || "-"}</span>
+      ),
     },
     {
       accessorKey: "nis",
       header: () => <BaseTableHeader>NIS</BaseTableHeader>,
       cell: ({ row }) => {
         const nis = row.original.user?.nis || row.original.nis;
-        return <span>{nis ? String(nis) : '-'}</span>;
+        return <span>{nis ? String(nis) : "-"}</span>;
       },
     },
     {
@@ -111,8 +136,8 @@ export const studentColumnWithFilter = ({
       header: () => <BaseTableHeader>NISN</BaseTableHeader>,
       cell: ({ row }) => {
         const nisn = row.original.user?.nisn || row.original.nisn;
-        return <span>{nisn ? String(nisn) : '-'}</span>; // Ubah nisn menjadi string
-      },    
+        return <span>{nisn ? String(nisn) : "-"}</span>; // Ubah nisn menjadi string
+      },
     },
     // {
     //   accessorKey: "rfid",
@@ -120,12 +145,12 @@ export const studentColumnWithFilter = ({
     //   cell: ({ row }) => {
     //     const rfid = row.original.rfid;
     //     const userId = row.original.id;
-    
+
     //     return (
     //       <div className="w-[150px] h-[50px] m-auto">
     //       {!rfid ? (
-    //             <MemoizedFormRfid 
-    //               userId={userId} 
+    //             <MemoizedFormRfid
+    //               userId={userId}
     //               onSuccess={onRfidSuccess}
     //             />
     //       ) : (
@@ -134,13 +159,21 @@ export const studentColumnWithFilter = ({
     //     </div>
     //     );
     //   },
-    // },    
+    // },
     {
       ...classroomFilterMeta,
-      accessorFn: (row) => (row.biodataSiswa?.[0]?.kelas?.namaKelas || row.original?.namaKelas) || "-",
+      accessorFn: (row) =>
+        row.biodataSiswa?.[0]?.kelas?.namaKelas ||
+        row.original?.namaKelas ||
+        "-",
       header: () => <BaseTableHeader>{lang.text("classroom")}</BaseTableHeader>,
       cell: ({ row }) => (
-        <span>{(row.original.biodataSiswa?.[0]?.kelas?.namaKelas || row.original.kelas?.namaKelas || row.original.namaKelas) || "-"}</span>
+        <span>
+          {row.original.biodataSiswa?.[0]?.kelas?.namaKelas ||
+            row.original.kelas?.namaKelas ||
+            row.original.namaKelas ||
+            "-"}
+        </span>
       ),
       meta: {
         filterLabel: lang.text("classroom"),
@@ -148,7 +181,7 @@ export const studentColumnWithFilter = ({
         filterVariant: "select",
         filterOptions: classroomOptions, // ✅ DI SINI UBAHNYA
       },
-      id:"idKelas"
+      id: "idKelas",
     },
     // {
     //   accessorKey: "sekolah.namaSekolah",
@@ -163,18 +196,35 @@ export const studentColumnWithFilter = ({
     //   },
     //   id: "sekolahId", // ⬅️ Tambahin id custom untuk filter tracking
     // },
-    ...(noStatus === false || noStatus === undefined ? [
-       {
-        accessorKey: "status",
-        header: () => <BaseTableHeader>Status</BaseTableHeader>,
-        cell: ({ row }) => <div className={`w-[100px] text-center px-3 py-1 rounded-sm ${(row.original.user?.status || row.original.status) === 'Hadir' ? 'bg-[#0f4d3f] text-[#3ee07a]' : 'bg-red-700 text-red-300'}`}>{(row.original.user?.status || row.original.status) || '-'}</div>,
-      },
-      {
-        accessorKey: "absen",
-        header: () => <BaseTableHeader>Absen</BaseTableHeader>,
-        cell: ({ row }) => <Button onClick={() => handleAttend(row.original?.id)} disabled={(row.original.user?.status || row.original.status) === 'Hadir'}>{lang.text('attend')}</Button>,
-      },
-      ]  : []),
+    ...(noStatus === false || noStatus === undefined
+      ? [
+          {
+            accessorKey: "status",
+            header: () => <BaseTableHeader>Status</BaseTableHeader>,
+            cell: ({ row }) => (
+              <div
+                className={`w-[100px] text-center px-3 py-1 rounded-sm ${(row.original.user?.status || row.original.status) === "Hadir" ? "bg-[#0f4d3f] text-[#3ee07a]" : "bg-red-700 text-red-300"}`}
+              >
+                {row.original.user?.status || row.original.status || "-"}
+              </div>
+            ),
+          },
+          {
+            accessorKey: "absen",
+            header: () => <BaseTableHeader>Absen</BaseTableHeader>,
+            cell: ({ row }) => (
+              <Button
+                onClick={() => handleAttend(row.original?.id)}
+                disabled={
+                  (row.original.user?.status || row.original.status) === "Hadir"
+                }
+              >
+                {lang.text("attend")}
+              </Button>
+            ),
+          },
+        ]
+      : []),
     //   {
     //   accessorKey: "surveiApps",
     //   header: () => <BaseTableHeader>Rating</BaseTableHeader>,
@@ -207,15 +257,14 @@ export const studentColumnWithFilter = ({
       enableSorting: false,
       header: () => null,
       cell: ({ row }) => {
-
         const encryptPayload = simpleEncode(
           JSON.stringify({
             id: row.original.idBiodataSiswa,
             biodataId: row.original.id,
             text: row.original.name,
-          })
+          }),
         );
-    
+
         return (
           <BaseActionTable
             detailPath={`/students/${encryptPayload}`}
@@ -233,7 +282,7 @@ export const studentColumnWithFilter = ({
     //   cell: ({ row }) => {
     //     const biodataId = row.original.biodataSiswa?.find((b) => b?.id)?.id;
     //     const userId = row.original.id;
-    
+
     //     const encryptPayload = simpleEncode(
     //       JSON.stringify({
     //         id: biodataId,
@@ -241,14 +290,13 @@ export const studentColumnWithFilter = ({
     //         text: row.original.name,
     //       })
     //     );
-    
+
     //     return (
     //       <BaseActionTable
     //         detailPath={`/students/${encryptPayload}`}
     //         editPath={`/students/edit/${encryptPayload}`}
     //       />
     //     );
-
 
     //     // yang baru
     //     // const encryptPayloadUserId = simpleEncode(
@@ -268,7 +316,6 @@ export const studentColumnWithFilter = ({
     //     // );
     //   },
     // },
-    
   ];
 };
 
@@ -286,7 +333,7 @@ export const studentLibraryColumnWithFilter = ({
   const classroomFilterMeta = buildSelectFilter(
     "biodataSiswa[0].kelas.namaKelas",
     lang.text("classroom"),
-    classroomOptions
+    classroomOptions,
   );
 
   return [
@@ -301,19 +348,32 @@ export const studentLibraryColumnWithFilter = ({
       ),
       enableGlobalFilter: true,
       cell: ({ row }) => {
-        const nameArr = (row.original.name || row.original.user?.name)?.split(" ") || [];
+        const nameArr =
+          (row.original.name || row.original.user?.name)?.split(" ") || [];
         const initials =
-          nameArr?.[0]?.[0]?.toUpperCase() + (nameArr?.[1]?.[0]?.toUpperCase() || "");
+          nameArr?.[0]?.[0]?.toUpperCase() +
+          (nameArr?.[1]?.[0]?.toUpperCase() || "");
         return (
           <div className="flex flex-row items-center gap-2">
             <Avatar>
               <AvatarImage
-                src={getStaticFile(String((row.original.image || row.original.name) || (row.original.user.image || row.original.user?.name)))}
-                alt={row.original.name || (row.original.user.image || row.original.user?.name)}
+                src={getStaticFile(
+                  String(
+                    row.original.image ||
+                      row.original.name ||
+                      row.original.user.image ||
+                      row.original.user?.name,
+                  ),
+                )}
+                alt={
+                  row.original.name ||
+                  row.original.user.image ||
+                  row.original.user?.name
+                }
               />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
-            <p>{(row.original.user?.name || row.original.name) || '-'}</p>
+            <p>{row.original.user?.name || row.original.name || "-"}</p>
           </div>
         );
       },
@@ -323,7 +383,7 @@ export const studentLibraryColumnWithFilter = ({
       header: () => <BaseTableHeader>NIS</BaseTableHeader>,
       cell: ({ row }) => {
         const nis = row.original.user?.nis || row.original.nis;
-        return <span>{nis ? String(nis) : '-'}</span>;
+        return <span>{nis ? String(nis) : "-"}</span>;
       },
     },
     {
@@ -331,14 +391,15 @@ export const studentLibraryColumnWithFilter = ({
       header: () => <BaseTableHeader>NISN</BaseTableHeader>,
       cell: ({ row }) => {
         const nisn = row.original.user?.nisn || row.original.nisn;
-        return <span>{nisn ? String(nisn) : '-'}</span>;
+        return <span>{nisn ? String(nisn) : "-"}</span>;
       },
     },
     {
       accessorKey: "surveiApps",
       header: () => <BaseTableHeader>Rating</BaseTableHeader>,
       cell: ({ row }) => {
-        const surveiApps = row.original.user?.surveiApps || row.original.surveiApps;
+        const surveiApps =
+          row.original.user?.surveiApps || row.original.surveiApps;
         if (surveiApps === null || surveiApps === undefined) {
           return <span>-</span>;
         }
@@ -353,7 +414,9 @@ export const studentLibraryColumnWithFilter = ({
                 key={star}
                 className={cn(
                   "h-4 w-4",
-                  star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300 dark:text-gray-600"
+                  star <= rating
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "text-gray-300 dark:text-gray-600",
                 )}
               />
             ))}
@@ -380,7 +443,7 @@ export const tableColumnSiswa: ColumnDef<BiodataSiswa>[] = [
           {"Data Siswa"}
           <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
       return (
@@ -389,7 +452,7 @@ export const tableColumnSiswa: ColumnDef<BiodataSiswa>[] = [
           name={row.original.user?.name}
           text2={dayjs(row.original.attendance?.createdAt).fromNow()}
         />
-      )
+      );
     },
     enableGlobalFilter: true,
   },
@@ -423,15 +486,15 @@ export const tableColumnSiswa: ColumnDef<BiodataSiswa>[] = [
     size: 50,
     enableSorting: false,
     header: () => {
-      return null
+      return null;
     },
     cell: ({ row }) => {
       const encryptPayload = simpleEncode(
         JSON.stringify({
           id: row.original.id,
           text: row.original.user?.name,
-        })
-      )
+        }),
+      );
       return (
         <div className="flex flex-row justify-end">
           <BaseActionTable
@@ -440,10 +503,10 @@ export const tableColumnSiswa: ColumnDef<BiodataSiswa>[] = [
             // deletePath={`/students/delete/${encryptPayload}`}
           />
         </div>
-      )
+      );
     },
   },
-]
+];
 
 export const studentDailyPresenceColumn: ColumnDef<
   BiodataSiswa["absensis"][0]
@@ -458,7 +521,7 @@ export const studentDailyPresenceColumn: ColumnDef<
         >
           {lang.text("date")}
         </BaseTableHeader>
-      )
+      );
     },
     cell: ({ row }) => {
       return (
@@ -467,7 +530,7 @@ export const studentDailyPresenceColumn: ColumnDef<
             ? dayjs(row.original.createdAt).format("DD MMM YYYY")
             : "-"}
         </div>
-      )
+      );
     },
   },
   {
@@ -480,7 +543,7 @@ export const studentDailyPresenceColumn: ColumnDef<
         >
           {lang.text("clockIn")}
         </BaseTableHeader>
-      )
+      );
     },
     cell: ({ row }) => {
       return (
@@ -489,7 +552,7 @@ export const studentDailyPresenceColumn: ColumnDef<
             ? dayjs(row.original.jamMasuk).format("HH:mm")
             : "-"}
         </div>
-      )
+      );
     },
   },
   {
@@ -502,7 +565,7 @@ export const studentDailyPresenceColumn: ColumnDef<
         >
           {lang.text("clockOut")}
         </BaseTableHeader>
-      )
+      );
     },
     cell: ({ row }) => {
       return (
@@ -511,7 +574,7 @@ export const studentDailyPresenceColumn: ColumnDef<
             ? dayjs(row.original.jamPulang).format("HH:mm")
             : "-"}
         </div>
-      )
+      );
     },
   },
   {
@@ -524,7 +587,7 @@ export const studentDailyPresenceColumn: ColumnDef<
         >
           {lang.text("presenceType")}
         </BaseTableHeader>
-      )
+      );
     },
   },
   {
@@ -537,7 +600,7 @@ export const studentDailyPresenceColumn: ColumnDef<
         >
           {lang.text("presenceStatus")}
         </BaseTableHeader>
-      )
+      );
     },
     cell: ({ row }) => (
       <>
@@ -559,17 +622,17 @@ export const studentDailyPresenceColumn: ColumnDef<
         >
           {lang.text("evidence")}
         </BaseTableHeader>
-      )
+      );
     },
     cell: ({ row }) => {
-      const items: EvidenceItem[] = []
+      const items: EvidenceItem[] = [];
 
       if (row.original?.fotoAbsen) {
         items.push({
           title: lang.text("attendanceInPhoto"),
           image: getStaticFile(row.original?.fotoAbsen),
           status: row.original?.statusKehadiran,
-        })
+        });
       }
 
       if (row.original?.fotoAbsenPulang) {
@@ -577,7 +640,7 @@ export const studentDailyPresenceColumn: ColumnDef<
           title: lang.text("attendanceOutPhoto"),
           image: getStaticFile(row.original?.fotoAbsenPulang),
           status: row.original?.statusKehadiran,
-        })
+        });
       }
 
       if (row.original?.dispensasi?.buktiSurat) {
@@ -585,13 +648,13 @@ export const studentDailyPresenceColumn: ColumnDef<
           title: lang.text("evidence"),
           image: getStaticFile(row.original?.dispensasi?.buktiSurat),
           status: row.original?.statusKehadiran,
-        })
+        });
       }
 
-      return <EvidencePreview items={items} />
+      return <EvidencePreview items={items} />;
     },
   },
-]
+];
 
 export const studentCoursePresenceColumn: ColumnDef<StudentCoursePresenceDataModel>[] =
   [
@@ -605,7 +668,7 @@ export const studentCoursePresenceColumn: ColumnDef<StudentCoursePresenceDataMod
           >
             {lang.text("date")}
           </BaseTableHeader>
-        )
+        );
       },
       cell: ({ row }) => {
         return (
@@ -614,7 +677,7 @@ export const studentCoursePresenceColumn: ColumnDef<StudentCoursePresenceDataMod
               ? dayjs(row.original.createdAt).format("DD MMM YYYY")
               : "-"}
           </div>
-        )
+        );
       },
     },
     {
@@ -627,7 +690,7 @@ export const studentCoursePresenceColumn: ColumnDef<StudentCoursePresenceDataMod
           >
             {lang.text("hour")}
           </BaseTableHeader>
-        )
+        );
       },
       cell: ({ row }) => {
         return (
@@ -636,7 +699,7 @@ export const studentCoursePresenceColumn: ColumnDef<StudentCoursePresenceDataMod
               ? dayjs(row.original.jamMasuk).format("HH:mm")
               : "-"}
           </div>
-        )
+        );
       },
     },
     {
@@ -649,7 +712,7 @@ export const studentCoursePresenceColumn: ColumnDef<StudentCoursePresenceDataMod
           >
             {lang.text("presenceType")}
           </BaseTableHeader>
-        )
+        );
       },
     },
     {
@@ -662,7 +725,7 @@ export const studentCoursePresenceColumn: ColumnDef<StudentCoursePresenceDataMod
           >
             {lang.text("course")}
           </BaseTableHeader>
-        )
+        );
       },
     },
     {
@@ -675,7 +738,7 @@ export const studentCoursePresenceColumn: ColumnDef<StudentCoursePresenceDataMod
           >
             {lang.text("presenceStatus")}
           </BaseTableHeader>
-        )
+        );
       },
       cell: ({ row }) => (
         <>
@@ -689,6 +752,6 @@ export const studentCoursePresenceColumn: ColumnDef<StudentCoursePresenceDataMod
         </>
       ),
     },
-  ]
+  ];
 
-export const tableColumnSiswaFallback: BiodataSiswa[] = []
+export const tableColumnSiswaFallback: BiodataSiswa[] = [];

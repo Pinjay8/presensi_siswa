@@ -41,7 +41,6 @@ export const ParentCreationForm = () => {
   const detail = useUserDetail(Number(decodeParams?.id));
   const creation = useUserCreation();
   const alert = useAlert();
-  // const school = useSchool();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof parentEditSchema>>({
@@ -55,6 +54,11 @@ export const ParentCreationForm = () => {
       tanggalLahir: detail.data?.tanggalLahir || "",
       noTlp: detail.data?.noTlp || "",
       isActive: detail.data?.isActive || 0,
+      nis: detail.data?.nis || "",
+      nik: detail.data?.nik || "",
+      password: detail.data?.password || "",
+      usernameInstagram: detail.data?.usernameInstagram || "",
+      noWhatsApp: detail.data?.noWhatsApp || "",
       // nrk: detail.data?.nrk || "",
       // hobi: detail.data?.hobi || "",
       // role: detail.data?.role || "",
@@ -68,36 +72,50 @@ export const ParentCreationForm = () => {
       // sekolahId: detail.data?.sekolahId || 0,
     },
   });
-  
+
   async function onSubmit(data: z.infer<typeof parentEditSchema>) {
     try {
-      await creation.update(Number(decodeParams.id), {
+      const payload = {
         name: data.name || undefined,
         email: data.email || undefined,
         tanggalLahir: data.tanggalLahir || undefined,
         noTlp: data.noTlp || undefined,
-        alamat: data?.alamat || "",
+        alamat: data.alamat || "",
         jenisKelamin: data.jenisKelamin,
-        isActive: data.isActive || 0,
-        // nrk: data.nrk || undefined,
-        // hobi: data.hobi || undefined,
-        // rfid: data.rfid || undefined,
-        // nisn: data.nisn || undefined,
-        // nikki: data.nikki || undefined,
-        // nis: data.nis || undefined,
-        // nip: data.nip || undefined,
-        // sekolahId: data.sekolahId || 0,
-      });
+        // isActive: data.isActive || 0,
+        nisSiswa: data.nis || undefined,
+        nik: data.nik || undefined,
+        password: data.password || undefined,
+        usernameInstagram: data.usernameInstagram || undefined,
+        noWhatsApp: data.noWhatsApp || undefined,
+      };
+      // console.log("payload", payload);
 
-      alert.success(
-        lang.text("successUpdate", { context: lang.text("parent") }),
-      );
+      if (decodeParams.id) {
+        await creation.update(Number(decodeParams.id), payload);
+
+        alert.success(
+          lang.text("successUpdate", {
+            context: lang.text("parent"),
+          }),
+        );
+      } else {
+        await creation.create(payload);
+
+        alert.success(
+          lang.text("successCreate", {
+            context: lang.text("parent"),
+          }),
+        );
+      }
 
       navigate(-1);
     } catch (err: any) {
       alert.error(
         err?.message ||
-          lang.text("failUpdate", { context: lang.text("parent") }),
+          (decodeParams.id
+            ? lang.text("failUpdate", { context: lang.text("parent") })
+            : lang.text("failCreate", { context: lang.text("parent") })),
       );
     }
   }
@@ -182,6 +200,33 @@ export const ParentCreationForm = () => {
 
           <FormField
             control={form.control}
+            name="nik"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Nik</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder={"Nik"} {...field} />
+                </FormControl>
+                <FormMessage>{fieldState.error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="nis"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Nis</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder={"Nis"} {...field} />
+                </FormControl>
+                <FormMessage>{fieldState.error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="name"
             render={({ field, fieldState }) => (
               <FormItem>
@@ -210,6 +255,51 @@ export const ParentCreationForm = () => {
                     placeholder={lang.text("inputEmail")}
                     {...field}
                   />
+                </FormControl>
+                <FormMessage>{fieldState.error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>{lang.text("password")}</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder={lang.text("inputPassword")}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage>{fieldState.error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="usernameInstagram"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Instagram</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder={"Instagram"} {...field} />
+                </FormControl>
+                <FormMessage>{fieldState.error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="noWhatsApp"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>No WhatsApp</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder={"No WhatsApp"} {...field} />
                 </FormControl>
                 <FormMessage>{fieldState.error?.message}</FormMessage>
               </FormItem>
@@ -273,7 +363,9 @@ export const ParentCreationForm = () => {
             name="tanggalLahir"
             render={({ field, fieldState }) => (
               <FormItem className="flex flex-col">
-                <FormLabel className="my-1">{lang.text("dateOfBirth")}</FormLabel>
+                <FormLabel className="my-1">
+                  {lang.text("dateOfBirth")}
+                </FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -306,7 +398,7 @@ export const ParentCreationForm = () => {
               </FormItem>
             )}
           />
-
+          {/* 
           <FormField
             control={form.control}
             name="isActive"
@@ -335,7 +427,7 @@ export const ParentCreationForm = () => {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
         </div>
 
         <div className="py-4">

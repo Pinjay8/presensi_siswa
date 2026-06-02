@@ -8,7 +8,7 @@ import { storage } from "@itokun99/secure-storage";
 
 const langAtom: LanguageKeyType = "id";
 const langStore = createStore();
-const getActiveLang = () => storage.get("lang") || langAtom;
+const getActiveLang: any = () => storage.get("lang") || langAtom;
 const setActiveLang = (key: LanguageKeyType) => storage.save("lang", key);
 
 const text = (

@@ -27,7 +27,7 @@ export function StudentTableLibrary({
 }: StudentTableProps) {
   const schoolOptions = useSchoolOptions();
   const classroomOptions = useClassroomOptions();
-  const { handleAttend } = useAttendanceActions(); // Panggil custom hook
+  const { handleAttend } = useAttendanceActions();
   const columns = useMemo(() => studentLibraryColumnWithFilter({
     schoolOptions,
     classroomOptions,
@@ -51,7 +51,7 @@ export function StudentTableLibrary({
         onPageChange={pagination.onPageChange}
         onSizeChange={pagination.onSizeChange}
 
-        schoolOptions={schoolOptions}           // ⬅️ Tambah props ini
+        schoolOptions={schoolOptions}         
         classroomOptions={classroomOptions}
       />
     </>

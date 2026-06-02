@@ -43,7 +43,7 @@ export function TeacherAttendanceTable({totalAttedance}: attedanceProps) {
     return dataWithAttendance;
   }, [biodata.data]);
 
-  console.log('data guru:', datas)
+  // console.log('data guru:', datas)
 
   const columns = useMemo(
     () =>
