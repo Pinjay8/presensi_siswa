@@ -79,7 +79,7 @@
 // Brand.displayName = "Brand";
 
 
-import imgLogo from "@/core/assets/images/logo.png";
+import imgLogo from "@/core/assets/images/logo_bio_presensi.jpeg";
 import { Avatar, AvatarFallback, AvatarImage, Button, cn } from "@/core/libs";
 import { getStaticFile } from "@/core/utils";
 import { useVokadashContext } from "@/features/_global/hooks";

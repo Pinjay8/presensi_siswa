@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/core/libs";
-import imgLogo from "@/core/assets/images/logo.png";
+import imgLogo from "@/core/assets/images/logo_bio_presensi.jpeg";
 
 import { getStaticFile } from "@/core/utils";
 import { useVokadashContext } from "@/features/_global";

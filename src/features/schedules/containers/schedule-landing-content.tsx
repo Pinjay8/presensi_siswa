@@ -1347,6 +1347,7 @@ import { useRef, useState, useEffect, useMemo } from "react";
 import { useScheduleCreation, useSchedules } from "../hooks";
 import {
   CircleSlashIcon,
+  Divide,
   Download,
   Pen,
   Plus,
@@ -1359,7 +1360,9 @@ import {
 import { FaFileExcel, FaRestroom } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import { useClassroom } from "@/features/classroom";
-import { Divider } from "@mui/material";
+import { CircularProgress, Divider } from "@mui/material";
+import { teacherService } from "@/core/services/teacher";
+import QRCode from "react-qr-code";
 
 interface ScheduleItem {
   id: number;
@@ -1432,6 +1435,46 @@ export function ScheduleLandingContent() {
   const schedules = useSchedules();
   const classes = useClassroom();
   const classData = classes.data;
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+
+  const [selectedQr, setSelectedQr] = useState<{
+    kelasId: number;
+    mataPelajaranId: number;
+    namaKelas: string;
+    namaMapel: string;
+  } | null>(null);
+
+  const [qrCode, setQrCode] = useState("");
+
+  const handleShowQr = async (item: any) => {
+    try {
+      console.log("QR ITEM", item);
+
+      const payload = {
+        kelasId: item.kelasId,
+        mataPelajaranId: item.mataPelajaranId,
+      };
+
+      console.log("QR PAYLOAD", payload);
+
+      setSelectedQr({
+        kelasId: item.kelasId,
+        mataPelajaranId: item.mataPelajaranId,
+        namaKelas: item.kelas?.namaKelas ?? "-",
+        namaMapel: item.mataPelajaran.namaMataPelajaran,
+      });
+
+      setIsQrModalOpen(true);
+
+      const result = await teacherService.qrCodeGenerate(payload);
+
+      console.log("QR RESULT", result);
+
+      setQrCode(result?.data?.qrCodeData ?? result?.collection?.qrCode ?? "");
+    } catch (err: any) {
+      alert.error(err?.message);
+    }
+  };
 
   // Derive classes from schedules.data
   // const classes = useMemo(() => {
@@ -2484,6 +2527,14 @@ export function ScheduleLandingContent() {
                                       </TableCell>
                                       <TableCell className="flex gap-2">
                                         <Button
+                                          variant="default"
+                                          size="sm"
+                                          // startIcon={<QrCode />}
+                                          onClick={() => handleShowQr(item)}
+                                        >
+                                          Show QR
+                                        </Button>
+                                        <Button
                                           variant="outline"
                                           size="sm"
                                           onClick={() =>
@@ -2527,6 +2578,35 @@ export function ScheduleLandingContent() {
           )}
         </div>
       </div>
+      <Dialog open={isQrModalOpen} onOpenChange={setIsQrModalOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>QR Code Presensi</DialogTitle>
+          </DialogHeader>
+          <Divider />
+
+          <div className="space-y-4">
+            <div>
+              <p>
+                <b>Kelas :</b> {selectedQr?.namaKelas}
+              </p>
+
+              <p>
+                <b>Mata Pelajaran :</b> {selectedQr?.namaMapel}
+              </p>
+            </div>
+
+            <div className="flex justify-center mt-3">
+              {qrCode ? (
+                // <img src={qrCode} alt="QR Code" className="w-64 h-64" />
+                <QRCode value={qrCode} size={256} />
+              ) : (
+                <CircularProgress />
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

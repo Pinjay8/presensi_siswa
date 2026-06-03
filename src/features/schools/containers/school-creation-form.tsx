@@ -47,10 +47,10 @@ export interface SchoolInformationProps {
 export const SchoolCreationForm = (props: UseSchoolDetailProps) => {
   const detail = useSchoolDetail({
     id: props.id,
-    query: {
-      staleTime: 5 * 60 * 1000,
-      refetchOnWindowFocus: false,
-    },
+    // query: {
+    //   staleTime: 1 * 60 * 1000,
+    //   refetchOnWindowFocus: false,
+    // },
   });
   const student = useBiodata();
   const classroom = useClassroom();
@@ -64,7 +64,7 @@ export const SchoolCreationForm = (props: UseSchoolDetailProps) => {
   const [hasChanges, setHasChanges] = useState(false);
   const [initialValues, setInitialValues] = useState<z.infer<typeof schoolUpdateFormSchema> | null>(null);
   const sigCanvas = useRef<SignatureCanvas | null>(null);
-  console.log(detail)
+
   const students = student.data?.filter(
     (d) => Number(d?.user?.sekolah?.id) === Number(props.id)
   );
@@ -126,24 +126,24 @@ export const SchoolCreationForm = (props: UseSchoolDetailProps) => {
   };
 
   // Check for hook errors
-  useEffect(() => {
-    console.log("useSchoolDetail status:", { isFetching: detail.isFetching, data: detail.data });
-    if (detail.error) console.error("useSchoolDetail error:", detail.error);
-    if (student.error) console.error("useBiodata error:", student.error);
-    if (teacher.error) console.error("useBiodataGuru error:", teacher.error);
-    if (classroom.error) console.error("useClassroom error:", classroom.error);
-    if (course.error) console.error("useCourse error:", course.error);
-    if (province.error) console.error("useProvinces error:", province.error);
-  }, [
-    detail.error,
-    detail.isFetching,
-    detail.data,
-    student.error,
-    teacher.error,
-    classroom.error,
-    course.error,
-    province.error,
-  ]);
+  // useEffect(() => {
+  //   console.log("useSchoolDetail status:", { isFetching: detail.isFetching, data: detail.data });
+  //   if (detail.error) console.error("useSchoolDetail error:", detail.error);
+  //   if (student.error) console.error("useBiodata error:", student.error);
+  //   if (teacher.error) console.error("useBiodataGuru error:", teacher.error);
+  //   if (classroom.error) console.error("useClassroom error:", classroom.error);
+  //   if (course.error) console.error("useCourse error:", course.error);
+  //   if (province.error) console.error("useProvinces error:", province.error);
+  // }, [
+  //   detail.error,
+  //   detail.isFetching,
+  //   detail.data,
+  //   student.error,
+  //   teacher.error,
+  //   classroom.error,
+  //   course.error,
+  //   province.error,
+  // ]);
 
   // Populate form and store initial values
   useEffect(() => {
@@ -400,7 +400,7 @@ export const SchoolCreationForm = (props: UseSchoolDetailProps) => {
       <InfoItem
         icon={icon}
         label={label}
-        value={value || "-"}
+        value={value || ""}
         {...(value && type === "url" && { link: String(value) })}
       />
     );

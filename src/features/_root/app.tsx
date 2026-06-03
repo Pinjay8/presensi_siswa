@@ -76,6 +76,8 @@ import { SchoolDistribution } from "../schools/pages/school-distribution";
 import { LocationLanding } from "../locations/pages/location-landing";
 import { TeacherCreate } from "../teacher/pages/teacher-create";
 import { ParentCreate } from "../parents/pages/parent-create";
+import { ScanAttendanceTable } from "../ScanAttendance/containers/scan-attendance-table";
+import { ScanAttendanceView } from "../ScanAttendance/pages/scan-attendance-view";
 const router = createBrowserRouter(
   [
     {
@@ -83,6 +85,10 @@ const router = createBrowserRouter(
       element: <RootPage />,
       // errorElement: <Default404 />,
       children: [
+        {
+          path: "qr-scan",
+          element: <ScanAttendanceView />,
+        },
         {
           path: "format",
           element: <LetterPreview />,

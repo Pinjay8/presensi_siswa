@@ -15,7 +15,13 @@ import {
   Send,
   X,
 } from "lucide-react";
-import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
+import React, {
+  PropsWithChildren,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { LangToggle } from "../lang-toggle";
 import { ThemeToggle } from "../theme-toggle";
 import { Sidebar } from "./sidebar";
@@ -618,33 +624,90 @@ export const DashboardLayout = React.memo(
       loadEvents();
     }, []);
 
-    const filteredMenus = menus
-      .map((data) => {
-        if (
-          profile?.user?.role === "superAdmin" &&
-          data?.title === "Manajemen Perpustakaan"
-        ) {
-          return false;
-        }
-        if (data.items) {
-          const filteredItems = data.items.filter((item) => {
-            if (
-              profile?.user?.role === "superAdmin" &&
-              (item.title === "Acara" || item.title === "Kelulusan")
-            ) {
-              return false;
-            }
-            return true;
-          });
+    const filteredMenus = useMemo(() => {
+      const role = profile?.user?.role;
 
-          return filteredItems.length > 0
-            ? { ...data, items: filteredItems }
-            : null;
-        }
-        return data;
-      })
-      .filter(Boolean);
+      if (!role) return [];
 
+      return menus
+        .map((data) => {
+          if (
+            role === "superAdmin" &&
+            data.title === "Manajemen Perpustakaan"
+          ) {
+            return null;
+          }
+
+          if (
+            role === "siswa" &&
+            ![
+              "Dashboard",
+              "Scan Attendance Schedule",
+              "Scan Kehadiran Mapel",
+              "Manajemen Data",
+              "Data Management",
+            ].includes(data.title ?? "")
+          ) {
+            return null;
+          }
+
+          if (
+            role === "guru" &&
+            ![
+              "Dashboard",
+              "Manajemen Data",
+              "Manajemen Kehadiran",
+              "Data Management",
+              "Attendance Management",
+            ].includes(data.title ?? "")
+          ) {
+            return null;
+          }
+
+          if (data.items) {
+            const filteredItems = data.items.filter((item) => {
+              if (
+                role === "superAdmin" &&
+                ["Acara", "Kelulusan"].includes(item.title ?? "")
+              ) {
+                return false;
+              }
+
+              if (
+                role === "siswa" &&
+                [
+                  "Sekolah",
+                  "Acara",
+                  "School",
+                  "Events",
+                  "Siswa",
+                  "Students",
+                ].includes(item.title ?? "")
+              ) {
+                return false;
+              }
+
+              if (
+                role === "guru" &&
+                ["Sekolah", "Acara", "School", "Events"].includes(
+                  item.title ?? "",
+                )
+              ) {
+                return false;
+              }
+
+              return true;
+            });
+
+            return filteredItems.length
+              ? { ...data, items: filteredItems }
+              : null;
+          }
+
+          return data;
+        })
+        .filter(Boolean);
+    }, [menus, profile?.user?.role]);
     return (
       <div className="dashboard-layout grid min-h-[100svh] w-full md:grid-cols-[auto_1fr] lg:grid-cols-[auto_1fr]">
         {/* <SidebarContext.Provider

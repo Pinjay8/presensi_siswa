@@ -100,7 +100,7 @@ export const ParentCreationForm = () => {
           }),
         );
       } else {
-        await creation.create(payload);
+        await creation.createParents(payload);
 
         alert.success(
           lang.text("successCreate", {

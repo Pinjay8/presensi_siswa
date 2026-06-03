@@ -47,7 +47,7 @@ export const SERVICE_ENDPOINTS = {
   },
   school: {
     createSchool: "/create-sekolah",
-    schools: "/sekolah",
+    schools: "/api/sekolah",
     schools2: "/api/sekolah",
     classrooms: "/api/kelas",
     courses: "/api/mata-pelajaran",
@@ -73,6 +73,7 @@ export const SERVICE_ENDPOINTS = {
     changePassword: "/ms-user/api/account/changePassword",
     createTeacher: "/signup/guru",
     createParents: "/signup/orangtua",
+    absenQr: "/api/masuk-mata-pelajaran",
   },
   otp: {
     verify: "/verify-otp",
@@ -83,6 +84,8 @@ export const SERVICE_ENDPOINTS = {
   },
   teacher: {
     detail: "/api/get-guru",
+    waliKelas: "/api/wali-kelas",
+    generateQrCode: "/api/generate-qrcode-mapel",
   },
   libraries: {
     all: "/api/get-history-perpus",

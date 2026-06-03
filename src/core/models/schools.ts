@@ -7,7 +7,7 @@ export interface SchoolDataModel {
   longitude: number;
   file: string;
   modelApiUrl?: string;
-  province: { name: string, id: number } | null | undefined; // Province adalah objek dengan properti name  provinceId?: number | null;
+  province: { name: string; id: number } | null | undefined; // Province adalah objek dengan properti name  provinceId?: number | null;
   provinceId: number | null;
   tokenModel?: string;
   serverSatu?: string;
@@ -21,6 +21,7 @@ export interface SchoolDataModel {
   alamatSekolah?: string;
   ttdKepalaSekolah?: string | null;
   urlYutubeFirst?: string | null;
+  visiMisi?: string | null;
   urlYutubeSecond?: string | null;
   urlYutubeThird?: string | null;
 }
@@ -39,6 +40,7 @@ export interface SchoolCreationModel {
   serverDua?: string;
   serverTiga?: string;
   ttdKepalaSekolah?: string;
+  visiMisi?: string;
   active?: number;
   alamatSekolah?: string;
 }

@@ -61,8 +61,20 @@ export const userService = {
     )(req, { path: String(userId) });
   },
 
+  updateParents: (userId: number, req: UserCreationModel) => {
+    return http.put<BaseResponse<UserDataModel>, UserCreationModel>(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.user.user}`,
+      getInitialOptions,
+    )(req, { path: String(userId) });
+  },
+
   getParents: http.get<BaseResponse<UserDataModel[]>>(
     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.users.parents,
+    getInitialOptions,
+  ),
+
+  absenQr: http.post<BaseResponse<UserDataModel[]>>(
+    API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.absenQr,
     getInitialOptions,
   ),
 };

@@ -733,7 +733,7 @@
   },
   "scheduleMapel": {
     "id": "Jadwal mata pelajaran",
-    "en": "schedule of subjects"
+    "en": "Schedule"
   },
   "time": {
     "id": "Jam",
@@ -959,6 +959,11 @@
     "id": "Guru",
     "en": "Teachers"
   },
+  "homeroom-teacher": {
+    "id": "Wali Kelas",
+    "en": "Homeroom teacher"
+  },
+
   "ReportOverview": {
     "id": "Ikhtisar Laporan",
     "en": "Report Overview"
@@ -2035,5 +2040,9 @@
   "details": {
     "id": "Detail",
     "en": "Details"
+  },
+  "scanAttendanceMapel": {
+    "id": "Scan Kehadiran Mapel",
+    "en": "Scan Attendance Schedule"
   }
 }

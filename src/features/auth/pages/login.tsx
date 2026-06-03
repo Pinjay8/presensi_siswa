@@ -20,9 +20,9 @@ export const LoginPage = () => {
     try {
       const res = await auth.login({ email, password });
 
-      if (Number(res?.data?.isActive) !== 2) {
-        throw new Error(lang.text("needActiovation"));
-      }
+      // if (Number(res?.data?.isActive) !== 2) {
+      //   throw new Error(lang.text("needActiovation"));
+      // }
 
       // Simpan token di localStorage
       const token = res?.data?.token; // Pastikan token ada di response

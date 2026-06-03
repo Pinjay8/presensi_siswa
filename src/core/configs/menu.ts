@@ -28,9 +28,9 @@ export const MENU_STAFF: VokadashProps["menus"] = [
         icon: "User2",
       },
       {
-        title: lang.text('coursePresences'),
-        url: '/attendance/courses',
-        icon: 'Book',
+        title: lang.text("coursePresences"),
+        url: "/attendance/courses",
+        icon: "Book",
       },
       {
         title: lang.text("history"),
@@ -38,6 +38,11 @@ export const MENU_STAFF: VokadashProps["menus"] = [
         icon: "History",
       },
     ],
+  },
+  {
+    title: lang.text("scanAttendanceMapel"),
+    url: "/qr-scan",
+    icon: "QrCode",
   },
   {
     title: lang.text("dataManagement"),
@@ -95,25 +100,25 @@ export const MENU_STAFF: VokadashProps["menus"] = [
   },
 
   // perizinan dispen
-   {
-    title: lang.text('locationDistribution'),
+  {
+    title: lang.text("locationDistribution"),
     url: "/locations",
     icon: "Map",
     items: [
       {
-        title: lang.text('studentLocations'),
+        title: lang.text("studentLocations"),
         url: "/location/students",
         icon: "User",
       },
     ],
   },
   {
-    title: lang.text('LicensingData'),
+    title: lang.text("LicensingData"),
     url: "/data-licensing",
     icon: "Sheet",
     items: [
       {
-        title: lang.text('dispensation'),
+        title: lang.text("dispensation"),
         url: "/licensing",
         icon: "File",
       },
@@ -149,9 +154,9 @@ export const MENU_STAFF: VokadashProps["menus"] = [
     ],
   },
   {
-    title: lang.text('formatManagement'),
+    title: lang.text("formatManagement"),
     url: "/format",
-    icon: 'FileArchive',
+    icon: "FileArchive",
     items: [
       {
         title: lang.text("formatPDF"),

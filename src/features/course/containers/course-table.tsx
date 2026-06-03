@@ -12,6 +12,7 @@ import { useMemo, useState } from "react";
 import { ModalCreateCourse } from "../components";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/core/libs";
 import { CourseDataModel } from "@/core/models/course";
+import { useProfile } from "@/features/profile";
 
 export const CourseTable = () => {
   const resource = useCourse();
@@ -43,16 +44,19 @@ export const CourseTable = () => {
   );
 
   const filteredCourseData = useMemo(
-    () =>
-      distinctObjectsByProperty(resource.data || [], "namaMataPelajaran"),
+    () => distinctObjectsByProperty(resource.data || [], "namaMataPelajaran"),
     [resource.data],
   );
 
-  console.log('editCourse', editCourse);
+  const profile = useProfile();
+  const isTeacher = profile?.user?.role === "guru";
 
   return (
     <>
-      <ModalCreateCourse show={createCourse} onClose={() => setCreateCourse(false)} />
+      <ModalCreateCourse
+        show={createCourse}
+        onClose={() => setCreateCourse(false)}
+      />
       <Dialog open={!!editCourse} onOpenChange={() => setEditCourse(null)}>
         <DialogContent>
           <DialogHeader>
@@ -78,10 +82,16 @@ export const CourseTable = () => {
         globalSearch
         showFilterButton
         actions={[
-          {
-            title: lang.text("addWithContext", { context: lang.text("course") }),
-            onClick: () => setCreateCourse(true),
-          },
+          ...(!isTeacher
+            ? [
+                {
+                  title: lang.text("addWithContext", {
+                    context: lang.text("course"),
+                  }),
+                  onClick: () => setCreateCourse(true),
+                },
+              ]
+            : []),
         ]}
         searchParamPagination
         searchPlaceholder={lang.text("search")}

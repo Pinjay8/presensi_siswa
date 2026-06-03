@@ -6,6 +6,7 @@ import {
   DropdownMenuTrigger,
   lang,
 } from "@/core/libs";
+import { useProfile } from "@/features/profile";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -14,10 +15,14 @@ export interface BaseActionTableProps {
   editPath?: string;
   deletePath?: string;
   detailPath?: string;
+  waliKelasPath?: string;
   onEdit?: () => void; // Add onEdit callback
+  onWaliKelas?: () => void;
 }
 
 export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
+  const profile = useProfile();
+  const isTeacher = profile?.user?.role === "guru";
   return (
     <>
       <DropdownMenu>
@@ -46,6 +51,12 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
           {props.deletePath && (
             <DropdownMenuItem asChild>
               <Link to={props.deletePath}>{lang.text("delete")}</Link>
+            </DropdownMenuItem>
+          )}
+
+          {props.onWaliKelas && (
+            <DropdownMenuItem onClick={props.onWaliKelas}>
+              Wali Kelas
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>

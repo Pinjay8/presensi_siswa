@@ -28,7 +28,7 @@ export const SchoolCreation = () => {
       ]}
       title={lang.text('editSchool')}
     >
-      <SchoolCreationForm />
+      <SchoolCreationForm id={params.id || ''} />
 
       <div className="pb-16 sm:pb-0" />
     </DashboardPageLayout>
