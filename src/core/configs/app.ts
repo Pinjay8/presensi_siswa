@@ -73,7 +73,10 @@ export const SERVICE_ENDPOINTS = {
     changePassword: "/ms-user/api/account/changePassword",
     createTeacher: "/signup/guru",
     createParents: "/signup/orangtua",
+    createSiswa: "/signup/siswa",
     absenQr: "/api/masuk-mata-pelajaran",
+    generateQr: "/api/generate-dynamic-qr",
+    registerFace: "/api/register-face",
   },
   otp: {
     verify: "/verify-otp",

@@ -131,7 +131,7 @@ export const StudentCreationForm = () => {
     try {
       console.log("kelas ID TERPILIH:", data.kelasId);
       console.log("User ID yang akan diupdate:", decodeParams.id);
-      console.log("Data yang dikirim sebelum mapping:", data);
+      // console.log("Data yang dikirim sebelum mapping:", data);
 
       if (!data.kelasId || !resource.data?.some(kelas => String(kelas.id) === data.kelasId)) {
         alert.error("Kelas yang dipilih tidak valid");
@@ -161,8 +161,8 @@ export const StudentCreationForm = () => {
       if (data.isVerified !== undefined && data.isVerified !== detail.data?.isVerified) updatedData.isVerified = data.isVerified ? 1 : 0;
       updatedData.kelasId = Number(data.kelasId);
 
-      console.log("Data yang dikirim ke backend:", updatedData);
-      console.log("ID yang diupdate:", Number(decodeParams.biodataId));
+      // console.log("Data yang dikirim ke backend:", updatedData);
+      // console.log("ID yang diupdate:", Number(decodeParams.biodataId));
 
       await creation.update(Number(decodeParams.biodataId), updatedData);
 

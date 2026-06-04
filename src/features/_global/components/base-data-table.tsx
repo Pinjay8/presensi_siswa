@@ -266,19 +266,18 @@
 //     table.lastPage();
 //   }, [table, searchParamPagination, searchParams, setSearchParams]);
 
-  
 //     // Menghitung jumlah siswa yang hadir pada hari ini secara dinamis
 //     // useEffect(() => {
 //     //   const countPresentToday = () => {
 //     //     const today = dayjs().tz('Asia/Jakarta'); // Tanggal hari ini secara dinamis
 //     //     const startOfDay = today.startOf('day');
 //     //     const endOfDay = today.endOf('day');
-  
+
 //     //     if (!data || data.length === 0) {
 //     //       setPresentCount(0);
 //     //       return;
 //     //     }
-  
+
 //     //     const presentToday = data.filter((d) => {
 //     //       const attendanceDate = dayjs(d.attendance.jamMasuk, 'DD MMM YYYY, HH:mm:ss').tz('Asia/Jakarta');
 //     //       return (
@@ -287,10 +286,10 @@
 //     //         d.attendance.statusKehadiran === 'hadir'
 //     //       );
 //     //     });
-  
+
 //     //     setPresentCount(presentToday.length);
 //     //   };
-  
+
 //     //   countPresentToday();
 //     // }, [data]);
 
@@ -628,7 +627,6 @@
 //         </div>
 //       </div>
 
-
 //       {/* Modal Filter by school and classRoom */}
 //       <Vokadialog
 //         title="Filter"
@@ -659,7 +657,6 @@
 //     </>
 //   );
 // };
-
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
@@ -778,14 +775,14 @@ export const BaseDataTable = ({
 
   const filterSearchParams = useMemo(
     () => searchParams.get("filter"),
-    [searchParams]
+    [searchParams],
   );
 
   const filterDialog = useVokadialog();
 
   const columnFilters: ColFilterState = useMemo(
     () => (filterSearchParams ? jsonHelper.parse(filterSearchParams) : []),
-    [filterSearchParams]
+    [filterSearchParams],
   );
 
   const [globalFilter, setGlobalFilter] = React.useState("");
@@ -796,10 +793,10 @@ export const BaseDataTable = ({
         ? Number(searchParams.get("pageIndex"))
         : 0,
       pageSize: !Number.isNaN(Number(searchParams.get("pageSize")))
-        ? (Number(searchParams.get("pageSize")) || pageSize) || 20
+        ? Number(searchParams.get("pageSize")) || pageSize || 20
         : 20,
     }),
-    [searchParams]
+    [searchParams],
   );
 
   const [pagination, setPagination] = React.useState<PaginationState>({
@@ -810,7 +807,7 @@ export const BaseDataTable = ({
   });
 
   const [sorting, setSorting] = React.useState<SortingState>(
-    initialState?.sorting || []
+    initialState?.sorting || [],
   );
   const [rowSelection, setRowSelection] = React.useState({});
 
@@ -893,7 +890,7 @@ export const BaseDataTable = ({
   }, [table, searchParamPagination, searchParams, setSearchParams]);
 
   // useEffect(() => {
-   
+
   // }, [searchParams, setSearchParams, searchParamPagination]);
 
   const renderTableHeader = () => {
@@ -914,7 +911,7 @@ export const BaseDataTable = ({
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                 </TableHead>
               );
@@ -1096,7 +1093,7 @@ export const BaseDataTable = ({
                           buttonVariants({
                             variant: action?.variant || "default",
                           }),
-                          "w-full sm:w-auto"
+                          "w-full sm:w-auto",
                         )}
                         to={action.url}
                       >

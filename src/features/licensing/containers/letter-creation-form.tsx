@@ -76,7 +76,7 @@ export const LincensingCreationForm = () => {
       const formData = new FormData();
       const token = localStorage.getItem("token");
 
-      console.log("data", data);
+      // console.log("data", data);
 
       formData.append("alasan", data.alasan);
       formData.append("dari", data.dari);

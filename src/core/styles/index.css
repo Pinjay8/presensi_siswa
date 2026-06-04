@@ -8,6 +8,12 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
+#html5-qr-reader video {
+  height: 440px !important;
+  width: 100% !important;
+  object-fit: cover;
+}
+
 .ck-editor-wrapper .ck-editor__editable {
   min-height: 300px;
   background: #fff;

@@ -13,7 +13,9 @@ export interface GetPaginatedStudentParams {
   keyword?: string;
 }
 export const studentService = {
-  getPaginated: async (params: GetPaginatedStudentParams): Promise<StudentPaginationResponse> => {
+  getPaginated: async (
+    params: GetPaginatedStudentParams,
+  ): Promise<StudentPaginationResponse> => {
     const query = {
       page: params.page,
       size: params.size,
@@ -24,10 +26,10 @@ export const studentService = {
 
     const url = withQuery(
       `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.student.list}`,
-      query
+      query,
     );
 
-    const options = getInitialOptions(); 
+    const options = getInitialOptions();
 
     const response = await fetch(url, {
       headers: {
@@ -42,5 +44,17 @@ export const studentService = {
       pagination: json.pagination,
     };
   },
+  getAll: async (): Promise<any> => {
+    const url = `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.student.list}`;
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+
+    const json = await response.json();
+
+    return json.data;
+  },
 };
-  

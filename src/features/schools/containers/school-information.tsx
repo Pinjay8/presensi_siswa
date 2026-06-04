@@ -54,7 +54,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
     // },
   });
 
-  console.log("SchoolInformation props:", props);
+  // console.log("SchoolInformation props:", props);
 
   const student = useBiodata();
   const classroom = useClassroom();

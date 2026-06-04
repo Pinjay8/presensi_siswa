@@ -33,7 +33,7 @@ interface AttendanceCardProps {
 }
 
 const AttendanceCard: React.FC<AttendanceCardProps> = ({ data }) => {
-  console.log("data", data);
+  // console.log("data", data);
 
   // Fungsi untuk memformat jamMasuk
   const formatJamMasuk = (jamMasuk?: string | null) => {

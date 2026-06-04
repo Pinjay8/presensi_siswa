@@ -155,7 +155,7 @@ const AttendanceReportPDF: React.FC<{
       dataChunks.push(chunk);
     }
   }
-  console.log("Data Chunks:", dataChunks); // Debugging
+  // console.log("Data Chunks:", dataChunks); // Debugging
 
   return (
     <Document>

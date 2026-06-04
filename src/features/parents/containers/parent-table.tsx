@@ -59,7 +59,7 @@ export function ParentTable() {
   const [parents, setParents] = useState(false);
 
   const profile = useProfile();
-  const isTeacher = profile?.user?.role === "guru";
+  const isRole = profile?.user?.role === "guru" || profile?.user?.role === "siswa";
   return (
     <>
       {
@@ -77,7 +77,7 @@ export function ParentTable() {
           sorting: [{ id: "name", desc: false }],
         }}
         actions={[
-          ...(!isTeacher
+          ...(!isRole
             ? [
                 {
                   title: lang.text("createParent"),

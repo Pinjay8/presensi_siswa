@@ -1884,6 +1884,18 @@
     "id": "Manajemen Kehadiran",
     "en": "Attendance Management"
   },
+  "ChoosePicture": {
+    "id": "Pilih Foto",
+    "en": "Choose Photo"
+  },
+  "RegisterFace": {
+    "id": "Daftarkan Wajah",
+    "en": "Register Face"
+  },
+  "UploadPicture": {
+    "id": "Unggah Foto",
+    "en": "Upload Photo"
+  },
   "attendanceDescription": {
     "id": "Kelola dan pantau kehadiran siswa, guru, dan staf dengan mudah dan efisien.",
     "en": "Easily and efficiently manage and monitor attendance for students, teachers, and staff."

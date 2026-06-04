@@ -60,7 +60,7 @@ export function SchoolRegisterForm() {
   });
 
   async function onSubmit(data: z.infer<SchoolCreationFormSchema>) {
-    console.log("data", data); // Log data yang akan dikirim ke API;
+    // console.log("data", data); // Log data yang akan dikirim ke API;
     try {
       const payload = {
         namaSekolah: data.schoolName,

@@ -22,7 +22,7 @@ export const usePaginatedQuery = <T>({
   const query = useQuery({
     queryKey: [queryKey, { ...params, page, size }],
     queryFn: async () => {
-      console.log("🔍 Query Params:", { ...params, page, size });
+ 
 
       const response = await http.get(`${API_CONFIG.baseUrl}${endpoint}`, getInitialOptions())({
         params: { ...params, page, size },

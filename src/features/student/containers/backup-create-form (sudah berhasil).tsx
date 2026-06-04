@@ -109,8 +109,8 @@ export const StudentCreationForm = () => {
 
   async function onSubmit(data: z.infer<typeof studentEditSchema>) {
     try {
-      console.log("User ID yang akan diupdate:", decodeParams.id)
-      console.log("Data yang dikirim sebelum mapping:", data)
+      // console.log("User ID yang akan diupdate:", decodeParams.id)
+      // console.log("Data yang dikirim sebelum mapping:", data)
 
       // 🔹 Hanya kirim data yang berubah
       const updatedData: any = {}
@@ -202,7 +202,7 @@ export const StudentCreationForm = () => {
         updatedData.isVerified = data.isVerified ? 1 : 0
       }
 
-      console.log("Data yang dikirim ke backend:", updatedData)
+      // console.log("Data yang dikirim ke backend:", updatedData)
 
       await creation.update(Number(decodeParams.id), updatedData)
 

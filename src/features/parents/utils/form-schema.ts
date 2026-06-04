@@ -18,6 +18,7 @@ export const parentEditSchema = z.object({
   nisn: z.string().optional(),
   nrk: z.string().optional(),
   nikki: z.string().optional(),
+  noTelegram: z.string().optional(),
   image: z.string().optional(),
   nis: z.string().optional(),
   nip: z.string().optional(),
@@ -27,5 +28,5 @@ export const parentEditSchema = z.object({
   isActive: z.number().optional(),
   sekolahId: z.number().optional(),
   usernameInstagram: z.string().optional(),
-  noWhatsApp: z.string().optional(),
+  noWhatsapp: z.string().optional(),
 });

@@ -218,7 +218,7 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({
             <span className="text-sm font-medium text-muted-foreground">
               {label} ({lang.text('today')})
             </span>
-            <span>{getEmoji(label)}</span>
+         
           </div>
           <FaEye
             className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors"

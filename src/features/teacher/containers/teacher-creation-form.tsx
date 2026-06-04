@@ -60,6 +60,7 @@ export const TeacherCreationForm = ({ id }: any) => {
       jenisKelamin: detail.data?.jenisKelamin || "",
       tanggalLahir: detail.data?.tanggalLahir || "",
       // role: detail.data?.role || "",
+      noTelegram: detail.data?.noTelegram || "",
       rfid: detail.data?.rfid || "",
       nisn: detail.data?.nisn || "",
       nrk: detail.data?.nrk || "",
@@ -72,6 +73,8 @@ export const TeacherCreationForm = ({ id }: any) => {
       isVerified: detail.data?.isVerified || false,
       isActive: detail.data?.isActive || 0,
       sekolahId: detail.data?.sekolahId || 0,
+      usernameInstagram: detail.data?.usernameInstagram || "",
+      noWhatsapp: detail.data?.noWhatsapp || "",
     },
   });
 
@@ -84,6 +87,7 @@ export const TeacherCreationForm = ({ id }: any) => {
       ...(data.nrk ? { nrk: data.nrk } : {}),
       ...(data.nikki ? { nikki: data.nikki } : {}),
       ...(data.nis ? { nis: data.nis } : {}),
+      ...(data.noTelegram ? { noTelegram: data.noTelegram } : {}),
       ...(data.nip ? { nip: data.nip } : {}),
       ...(data.nik ? { nik: data.nik } : {}),
       ...(data.noTlp ? { noTlp: data.noTlp } : {}),
@@ -91,6 +95,12 @@ export const TeacherCreationForm = ({ id }: any) => {
       ...(data.tanggalLahir ? { tanggalLahir: data.tanggalLahir } : {}),
       ...(data.jenisKelamin ? { jenisKelamin: data.jenisKelamin } : {}),
       ...(data.sekolahId ? { sekolahId: data.sekolahId } : {}),
+      ...(data.noWhatsapp ? { noWhatsapp: data.noWhatsapp } : {}),
+      ...(data.usernameInstagram
+        ? { usernameInstagram: data.usernameInstagram }
+        : {}),
+      // noWhatsapp
+      // usernameInstagram
     };
 
     try {
@@ -306,6 +316,33 @@ export const TeacherCreationForm = ({ id }: any) => {
           />
           <FormField
             control={form.control}
+            name="usernameInstagram"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Instagram</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder={"Instagram"} {...field} />
+                </FormControl>
+                <FormMessage>{fieldState.error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="noWhatsApp"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>No WhatsApp</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder={"No WhatsApp"} {...field} />
+                </FormControl>
+                <FormMessage>{fieldState.error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="noTlp"
             render={({ field, fieldState }) => (
               <FormItem>
@@ -314,6 +351,23 @@ export const TeacherCreationForm = ({ id }: any) => {
                   <Input
                     type="text"
                     placeholder={lang.text("inputNoHP")}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage>{fieldState.error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="noTelegram"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>No Telegram</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder={"Input No Telegram"}
                     {...field}
                   />
                 </FormControl>

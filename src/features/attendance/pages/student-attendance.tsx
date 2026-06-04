@@ -362,7 +362,6 @@ export const StudentAttendance = () => {
   const biodata = useBiodataNew(profile?.user?.sekolahId || 1);
   // console.log("biodata:", biodata.data);
   const biodataAll = useBiodata();
-  console.log("biodataAll list:", biodataAll);
   const { data: schoolData, isLoading: schoolIsLoading } = useSchoolDetail({
     id: profile?.user?.sekolahId || 1,
   });

@@ -102,7 +102,7 @@ export const SchoolDistribution = () => {
             </>
           }
           <div className='flex justify-between w-full'>
-            
+    
           </div>
         {/* <AttedancesReport selectDate={date} selectedSchool={selectedSchool} /> */}
         <AttedancesReport selectedSchool={selectedSchool} />

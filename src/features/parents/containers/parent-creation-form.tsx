@@ -58,7 +58,8 @@ export const ParentCreationForm = () => {
       nik: detail.data?.nik || "",
       password: detail.data?.password || "",
       usernameInstagram: detail.data?.usernameInstagram || "",
-      noWhatsApp: detail.data?.noWhatsApp || "",
+      noTelegram: detail.data?.noTelegram || "",
+      noWhatsapp: detail.data?.noWhatsapp || "",
       // nrk: detail.data?.nrk || "",
       // hobi: detail.data?.hobi || "",
       // role: detail.data?.role || "",
@@ -87,7 +88,8 @@ export const ParentCreationForm = () => {
         nik: data.nik || undefined,
         password: data.password || undefined,
         usernameInstagram: data.usernameInstagram || undefined,
-        noWhatsApp: data.noWhatsApp || undefined,
+        noTelegram: data.noTelegram || undefined,
+        noWhatsapp: data.noWhatsapp || undefined,
       };
       // console.log("payload", payload);
 
@@ -294,7 +296,7 @@ export const ParentCreationForm = () => {
           />
           <FormField
             control={form.control}
-            name="noWhatsApp"
+            name="noWhatsapp"
             render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>No WhatsApp</FormLabel>
@@ -350,6 +352,23 @@ export const ParentCreationForm = () => {
                   <Input
                     type="text"
                     placeholder={lang.text("inputNoHP")}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage>{fieldState.error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="noTelegram"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>No Telegram</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder={"Input No Telegram"}
                     {...field}
                   />
                 </FormControl>

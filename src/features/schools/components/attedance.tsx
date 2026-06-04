@@ -37,7 +37,13 @@ interface AttendanceDashboardProps {
     dispensasi: AttendanceChange;
   };
   isLoading: boolean;
-  dataNoAccess?: { nis: string; name: string; kelas: string; noTlp?: string; image?: string }[];
+  dataNoAccess?: {
+    nis: string;
+    name: string;
+    kelas: string;
+    noTlp?: string;
+    image?: string;
+  }[];
 }
 
 // Utilitas untuk memformat nomor telepon ke format WhatsApp
@@ -80,15 +86,11 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
 
   // Filter berdasarkan search query
   const filteredDataNoAccess = sortedDataNoAccess.filter((student) =>
-    student.name?.toLowerCase().includes(searchQuery.toLowerCase())
+    student.name?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  console.log("SORTED", sortedDataNoAccess);
-  console.log("FILTERED", filteredDataNoAccess);
-  console.log("SEARCH QUERY", searchQuery);
-
   return (
-    <div className="flex gap-4 w-full justify-between">
+    <div className="flex gap-4 w-full justify-between flex-wrap lg:flex-nowrap">
       <AttendanceCard
         dayData={dayData}
         yesterdayData={yesterdayData}
@@ -131,7 +133,9 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
         percentage={changes.dispensasi.percentage}
         trend={changes.dispensasi.trend}
         bgColor={changes.dispensasi.trend === "neutral" ? "#FFC107" : "#0f4d3f"}
-        textColor={changes.dispensasi.trend === "neutral" ? "#000000" : "#3ee07a"}
+        textColor={
+          changes.dispensasi.trend === "neutral" ? "#000000" : "#3ee07a"
+        }
       />
       <Card className="w-full bg-theme-color-primary/5">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -139,7 +143,6 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
             <span className="text-sm font-medium text-muted-foreground">
               {lang.text("noReport")} ({lang.text("today")})
             </span>
-            <span>😭</span>
           </div>
           <FaEye
             className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors active:scale-[0.98]"
@@ -166,13 +169,14 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
         >
           <SheetHeader>
             <SheetTitle>
-              {lang.text("student")} - {lang.text("noReport")} {lang.text("today")}
+              {lang.text("student")} - {lang.text("noReport")}{" "}
+              {lang.text("today")}
             </SheetTitle>
           </SheetHeader>
           <div className="mt-6">
             {/* Search Input */}
             <Input
-              placeholder={lang.text('search') || "Cari berdasarkan nama"}
+              placeholder={lang.text("search") || "Cari berdasarkan nama"}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="mb-6 bg-slate-800 text-white border-slate-600 focus:border-slate-400"
@@ -191,7 +195,7 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
                         src={
                           student.image ||
                           `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            student.name || "Siswa"
+                            student.name || "Siswa",
                           )}&background=fff&color=000`
                         }
                         alt={`Avatar ${student.name}`}

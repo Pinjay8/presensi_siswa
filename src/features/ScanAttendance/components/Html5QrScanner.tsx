@@ -1,14 +1,19 @@
-import { Html5Qrcode } from 'html5-qrcode';
-import { useEffect, useRef } from 'react';
+import { Html5Qrcode } from "html5-qrcode";
+import { useEffect, useRef } from "react";
 
 type Html5QrScannerProps = {
   active: boolean;
-  facingMode: 'user' | 'environment';
+  facingMode: "user" | "environment";
   onScan: (value: string) => Promise<void>;
   onError?: (err: any) => void;
 };
 
-export const Html5QrScanner = ({ active, facingMode, onScan, onError }: Html5QrScannerProps) => {
+export const Html5QrScanner = ({
+  active,
+  facingMode,
+  onScan,
+  onError,
+}: Html5QrScannerProps) => {
   const qrRef = useRef<HTMLDivElement>(null);
   const qrInstance = useRef<Html5Qrcode | null>(null);
   const scanning = useRef(false);
@@ -16,7 +21,7 @@ export const Html5QrScanner = ({ active, facingMode, onScan, onError }: Html5QrS
   useEffect(() => {
     if (!active || !qrRef.current) return;
 
-    const id = 'html5-qr-reader';
+    const id = "html5-qr-reader";
     qrRef.current.id = id;
 
     const qr = new Html5Qrcode(id);
@@ -26,7 +31,7 @@ export const Html5QrScanner = ({ active, facingMode, onScan, onError }: Html5QrS
       { facingMode },
       {
         fps: 10,
-        qrbox: { width: 300, height: 280 },
+        qrbox: { width: 350, height: 250 },
         disableFlip: true,
       },
       async (decodedText) => {
@@ -34,13 +39,12 @@ export const Html5QrScanner = ({ active, facingMode, onScan, onError }: Html5QrS
         scanning.current = true;
 
         try {
-          console.log('✅ QR VALUE:', decodedText);
+          console.log("✅ QR VALUE:", decodedText);
           await onScan(decodedText);
-          
         } catch (e) {
-        //   scanning.current = false;
+          //   scanning.current = false;
           onError?.(e);
-        }finally{
+        } finally {
           scanning.current = false;
         }
       },
@@ -61,8 +65,8 @@ export const Html5QrScanner = ({ active, facingMode, onScan, onError }: Html5QrS
     <div
       ref={qrRef}
       style={{
-        width: '100%',
-        height: '100%',
+        width: "100%",
+        height: "100%",
         // background: 'black',
       }}
     />

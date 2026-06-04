@@ -41,7 +41,7 @@ export function TeacherTable() {
   );
 
   const profile = useProfile();
-  const isTeacher = profile?.user?.role === "guru";
+  const isRole = profile?.user?.role === "guru" || profile?.user?.role === "siswa";
   const assignWaliKelasMutation = useMutation({
     mutationFn: (payload: { guruId: number; kelasId: number }) => {
       return teacherService.create(payload);
@@ -98,7 +98,7 @@ export function TeacherTable() {
           ],
         }}
         actions={[
-          ...(!isTeacher
+          ...(!isRole
             ? [
                 {
                   title: lang.text("addTeacher"),

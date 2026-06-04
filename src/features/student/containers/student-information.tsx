@@ -302,7 +302,7 @@ export const StudentInformation = () => {
         }
       }
       updatedData.kelasId = Number(data.kelasId);
-      console.log("Data yang dikirim saat submit:", updatedData);
+      // console.log("Data yang dikirim saat submit:", updatedData);
 
       await creation.update(decodeParams?.biodataId!, updatedData);
       setIsEditMode(false);

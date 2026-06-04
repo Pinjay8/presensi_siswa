@@ -49,7 +49,7 @@ export const CourseTable = () => {
   );
 
   const profile = useProfile();
-  const isTeacher = profile?.user?.role === "guru";
+  const isRole = profile?.user?.role === "guru" || profile?.user?.role === "siswa" || profile?.user?.role === "orangTua";
 
   return (
     <>
@@ -82,7 +82,7 @@ export const CourseTable = () => {
         globalSearch
         showFilterButton
         actions={[
-          ...(!isTeacher
+          ...(!isRole
             ? [
                 {
                   title: lang.text("addWithContext", {

@@ -5,6 +5,14 @@ export interface BaseResponse<Data = unknown> {
   success?: boolean;
 }
 
+export interface BaseResponseQr {
+  status: number;
+  message: string;
+  token?: string;
+  success?: boolean;
+  expiresIn: number;
+}
+
 export interface BaseResponseError {
   status: number;
   message: string;

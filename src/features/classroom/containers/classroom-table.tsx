@@ -27,11 +27,11 @@ export const ClassroomTable = () => {
   );
 
   const profile = useProfile();
-  const isTeacher = profile?.user?.role === "guru";
+  const isRole = profile?.user?.role === "guru" || profile?.user?.role === "siswa" || profile?.user?.role === "orangTua";
 
   return (
     <>
-      {!isTeacher && (
+      {!isRole && (
         <ModalCreateClass
           show={classRoom}
           onClose={() => setCreateClassRoom(!classRoom)}
@@ -46,7 +46,7 @@ export const ClassroomTable = () => {
         showFilterButton
         // pageSize={5}
         actions={[
-          ...(!isTeacher
+          ...(!isRole
             ? [
                 {
                   title: lang.text("addClassroom"),
