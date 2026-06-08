@@ -14,7 +14,7 @@ export function TableDataSiswa() {
     const studentWithAttendanceData: BiodataSiswa[] = [];
 
     biodata.data?.forEach((student) => {
-      student.absensis?.forEach((studentAttendance) => {
+      student.absensis?.forEach((studentAttendance: any) => {
         studentWithAttendanceData.push({
           ...student,
           attendance: studentAttendance,

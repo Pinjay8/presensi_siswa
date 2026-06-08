@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { ModalCreateClass } from "../components";
 import { useClassroom } from "../hooks";
 import { classroomColumns, classroomDataFallback } from "../utils";
+import { useProfile } from "@/features/profile";
 
 export const ClassroomTable = () => {
   const resource = useClassroom();
@@ -25,26 +26,32 @@ export const ClassroomTable = () => {
     [school.data],
   );
 
+  const profile = useProfile();
+  const isRole = profile?.user?.role === "guru" || profile?.user?.role === "siswa" || profile?.user?.role === "orangTua";
+
   return (
     <>
-      {
+      {!isRole && (
         <ModalCreateClass
           show={classRoom}
           onClose={() => setCreateClassRoom(!classRoom)}
         />
-      }
+      )}
       <BaseDataTable
         columns={columns}
         data={resource.data}
         dataFallback={classroomDataFallback}
         globalSearch
         showFilterButton
-        // pageSize={5}
         actions={[
-          {
-            title: lang.text("addClassroom"),
-            onClick: () => setCreateClassRoom(!classRoom),
-          },
+          ...(!isRole
+            ? [
+                {
+                  title: lang.text("addClassroom"),
+                  onClick: () => setCreateClassRoom(!classRoom),
+                },
+              ]
+            : []),
         ]}
         searchParamPagination
         searchPlaceholder={lang.text("search")}

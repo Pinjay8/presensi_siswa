@@ -33,7 +33,7 @@ const form = useForm<z.infer<typeof attendanceCreateSchema>>({
 
 const userId = form.watch("userId");
 const isValue = userId !== 0;
-console.log('isValue:', isValue, 'userId:', userId);
+// console.log('isValue:', isValue, 'userId:', userId);
 
 async function onSubmit(data: z.infer<typeof attendanceCreateSchema>) {
   try {

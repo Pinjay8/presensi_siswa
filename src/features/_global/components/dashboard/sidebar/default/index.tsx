@@ -25,7 +25,6 @@
 
 // DefaultSidebar.displayName = "DashboardSidebar";
 
-
 import { cn } from "@/core/libs";
 import React from "react";
 import { Nav } from "../_components/Nav";
@@ -49,7 +48,10 @@ export const DefaultSidebar = React.memo((props: SidebarProps) => {
     >
       <div className="sidebar-content flex h-full max-h-screen items-center flex-col gap-2">
         <Brand isCollapsed={!props.visible} />
-        <div className="px-4 overflow-y-auto py-2">
+        <div
+          className="px-1 overflow-y-auto py-2 w-full"
+          style={{ width: "100% important" }}
+        >
           <Nav items={props.menus} isCollapsed={!props.visible} />
         </div>
       </div>

@@ -15,7 +15,13 @@ import {
   Send,
   X,
 } from "lucide-react";
-import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
+import React, {
+  PropsWithChildren,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { LangToggle } from "../lang-toggle";
 import { ThemeToggle } from "../theme-toggle";
 import { Sidebar } from "./sidebar";
@@ -82,9 +88,9 @@ const Chatbot = ({
     const lowerMessage = message.toLowerCase();
     let newContext = { ...context };
 
-    console.log("Processing query:", lowerMessage);
-    console.log("schoolData:", schoolData);
-    console.log("studentData:", studentData);
+    // console.log("Processing query:", lowerMessage);
+    // console.log("schoolData:", schoolData);
+    // console.log("studentData:", studentData);
 
     // Deteksi konteks sekolah dengan pengecekan lebih aman
     let schoolMatch = null;
@@ -185,8 +191,8 @@ const Chatbot = ({
         lowerMessage.includes("info kelas") ||
         lowerMessage.includes("semua kelas")
       ) {
-        console.log("kelassss", classroomData);
-        console.log("newContext", newContext);
+        // console.log("kelassss", classroomData);
+        // console.log("newContext", newContext);
         if (!Array.isArray(classroomData)) {
           return {
             reply: "Data kelas belum tersedia. Silakan coba lagi nanti.",
@@ -281,7 +287,7 @@ const Chatbot = ({
         lowerMessage.includes("siswa")
       ) {
         const student = nameMatch || nisMatch || nisnMatch;
-        console.log("student", student);
+        // console.log("student", student);
         if (!student) {
           return {
             reply:
@@ -294,7 +300,7 @@ const Chatbot = ({
         const studentDetail =
           Array.isArray(studentDetailData?.data) &&
           studentDetailData?.data?.find((d) => d.id === student.id);
-        console.log("info siswa 751", studentDetail);
+        // console.log("info siswa 751", studentDetail);
         const reply = `Detail siswa:\nNama: ${studentDetail.user?.name || "-"}\nNIS: ${studentDetail.user?.nis || "-"}\nNISN: ${studentDetail.user?.nisn || "-"}\nEmail: ${studentDetail.user?.email || "-"}\nKelas: ${studentDetail.kelas?.namaKelas || "-"}`;
         return {
           reply,
@@ -352,7 +358,7 @@ const Chatbot = ({
         lowerMessage.includes("pelajaran di") ||
         lowerMessage.includes("kursus")
       ) {
-        console.log("mapel", courseData);
+        // console.log("mapel", courseData);
         if (!Array.isArray(courseData)) {
           return {
             reply:
@@ -379,7 +385,7 @@ const Chatbot = ({
         lowerMessage.includes("akun saya") ||
         lowerMessage.includes("profile")
       ) {
-        console.log("akun", profileData);
+        // console.log("akun", profileData);
         if (!profileData?.user) {
           return {
             reply: "Data profil belum tersedia. Silakan coba lagi nanti.",
@@ -449,7 +455,7 @@ const Chatbot = ({
 
   const renderData = (data: any) => {
     if (!data || !data.length) return null;
-    console.log("hasil data cek di sini", data);
+    // console.log("hasil data cek di sini", data);
 
     // Menentukan kolom berdasarkan jenis data
     let headers = [];
@@ -465,7 +471,7 @@ const Chatbot = ({
         item?.user?.noTlp || "0",
         item?.kelas?.namaKelas || "-",
       ]);
-      console.log("hai", rows);
+      // console.log("hai", rows);
     } else if (data[0]?.level) {
       // Data mata pelajaran
       headers = ["Nama kelas", "Tingkat"];
@@ -618,33 +624,146 @@ export const DashboardLayout = React.memo(
       loadEvents();
     }, []);
 
-    const filteredMenus = menus
-      .map((data) => {
-        if (
-          profile?.user?.role === "superAdmin" &&
-          data?.title === "Manajemen Perpustakaan"
-        ) {
-          return false;
-        }
-        if (data.items) {
-          const filteredItems = data.items.filter((item) => {
-            if (
-              profile?.user?.role === "superAdmin" &&
-              (item.title === "Acara" || item.title === "Kelulusan")
-            ) {
-              return false;
-            }
-            return true;
-          });
+    const filteredMenus = useMemo(() => {
+      const role = profile?.user?.role;
 
-          return filteredItems.length > 0
-            ? { ...data, items: filteredItems }
-            : null;
-        }
-        return data;
-      })
-      .filter(Boolean);
+      if (!role) return [];
 
+      return menus
+        .map((data) => {
+          if (
+            role === "superAdmin" &&
+            data.title === "Manajemen Perpustakaan"
+          ) {
+            return null;
+          }
+
+          if (
+            (role === "admin" && data.title === "Scan Kehadiran Mapel") ||
+            data.title === "Scan Attendance Schedule"
+          ) {
+            return null;
+          }
+
+          if (
+            role === "siswa" &&
+            ![
+              "Dashboard",
+              "Scan Attendance Schedule",
+              "Scan Kehadiran Mapel",
+              "Manajemen Data",
+              "Data Management",
+            ].includes(data.title ?? "")
+          ) {
+            return null;
+          }
+
+          if (
+            role === "guru" &&
+            ![
+              "Dashboard",
+              "Manajemen Data",
+              "Manajemen Kehadiran",
+              "Data Management",
+
+              "Attendance Management",
+            ].includes(data.title ?? "")
+          ) {
+            return null;
+          }
+
+          if (
+            role === "orangTua" &&
+            ![
+              "Dashboard",
+              "Manajemen Data",
+              "Manajemen Kehadiran",
+              "Data Management",
+
+              "Attendance Management",
+            ].includes(data.title ?? "")
+          ) {
+            return null;
+          }
+
+          if (data.items) {
+            const filteredItems = data.items.filter((item) => {
+              if (
+                role === "superAdmin" &&
+                ["Acara", "Kelulusan"].includes(item.title ?? "")
+              ) {
+                return false;
+              }
+
+              if (
+                role === "siswa" &&
+                [
+                  "Sekolah",
+                  "Acara",
+                  "School",
+                  "Events",
+                  "Siswa",
+                  "Guru",
+                  "teachers",
+                  "Students",
+                ].includes(item.title ?? "")
+              ) {
+                return false;
+              }
+
+              if (
+                role === "admin" &&
+                ["Riwayat", "History"].includes(item.title ?? "")
+              ) {
+                return false;
+              }
+
+              if (
+                role === "orangTua" &&
+                [
+                  "Sekolah",
+                  "Kehadiran Guru",
+                  "Teacher Attendance",
+                  "Acara",
+                  "School",
+                  "Events",
+                  "Guru",
+                  "Teacher",
+                  "Orang Tua",
+                  "Riwayat",
+                  "History",
+                ].includes(item.title ?? "")
+              ) {
+                return false;
+              }
+
+              if (
+                role === "guru" &&
+                [
+                  "Sekolah",
+
+                  "Acara",
+                  "School",
+                  "Events",
+                  "Riwayat",
+                  "History",
+                ].includes(item.title ?? "")
+              ) {
+                return false;
+              }
+
+              return true;
+            });
+
+            return filteredItems.length
+              ? { ...data, items: filteredItems }
+              : null;
+          }
+
+          return data;
+        })
+        .filter(Boolean);
+    }, [menus, profile?.user?.role]);
     return (
       <div className="dashboard-layout grid min-h-[100svh] w-full md:grid-cols-[auto_1fr] lg:grid-cols-[auto_1fr]">
         {/* <SidebarContext.Provider

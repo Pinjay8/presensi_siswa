@@ -54,7 +54,7 @@ export const LibraryHomePage = () => {
   );
 
   const { data, isLoading, refetch } = useStudentPagination(studentParams);
-  console.log("data lib siswa survey:", data);
+  // console.log("data lib siswa survey:", data);
 
   const encryptPayload = simpleEncode(
     JSON.stringify({ id: school?.data?.id, text: school?.data?.namaSekolah })

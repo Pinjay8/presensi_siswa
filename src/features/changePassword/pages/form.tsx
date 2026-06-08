@@ -30,7 +30,7 @@ export function ChangePasswordFormPage() {
   });
 
   async function onSubmit(data: ChangePasswordSchema) {
-    console.log("@@@ onSubmit: ", data);
+    // console.log("@@@ onSubmit: ", data);
     try {
       await profile.changePassword(data);
       alert.success("Kata sandi berhasil di perbarui");

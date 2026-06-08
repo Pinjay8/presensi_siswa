@@ -244,7 +244,6 @@ export const AttedancesReport = ({ selectedSchool }: AttedancesReportProps) => {
       return !dayDataNis.includes(student.nis);
     });
 
-    console.log('misssssng', missingStudents)
 
     // Ambil nis, name, dan kelas dari siswa yang tidak ada di dayData
     const missingNisAndNames = missingStudents.map((student) => ({
@@ -257,7 +256,6 @@ export const AttedancesReport = ({ selectedSchool }: AttedancesReportProps) => {
       noTlpOrtu: student.noTlpOrtu || 0, // Ambil kelas atau fallback
     }));
 
-    // console.log('missinggggggggg', missingNisAndNames)
     return missingNisAndNames;
   };
 

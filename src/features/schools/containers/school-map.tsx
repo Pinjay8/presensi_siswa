@@ -2,22 +2,30 @@ import { Button, Input, lang, Progress } from "@/core/libs";
 import { Card, CardContent, CardHeader } from "@/core/libs"; // Import Card components
 import { Regions } from "@/core/models";
 import { provinceModel } from "@/core/models/province";
-import { Feature } from 'geojson';
+import { Feature } from "geojson";
 import L from "leaflet";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useMemo, useState } from "react";
-import { FaArrowDown, FaArrowUp, FaGripLines } from 'react-icons/fa';
-import { GeoJSON, MapContainer, Marker, Polyline, Popup, TileLayer, useMapEvent } from "react-leaflet";
-import { RegionDropdown } from '../components/school-region-dropdown';
-import { useProvinces, useSchool } from '../hooks';
-import { regionConfig } from '../utils/region-config';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import { FaArrowDown, FaArrowUp, FaGripLines } from "react-icons/fa";
+import {
+  GeoJSON,
+  MapContainer,
+  Marker,
+  Polyline,
+  Popup,
+  TileLayer,
+  useMapEvent,
+} from "react-leaflet";
+import { RegionDropdown } from "../components/school-region-dropdown";
+import { useProvinces, useSchool } from "../hooks";
+import { regionConfig } from "../utils/region-config";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 // Configure Leaflet marker icon
 const DefaultIcon = L.icon({
-  iconUrl: '/other.png',
+  iconUrl: "/other.png",
   shadowUrl: markerShadow,
   iconSize: [24, 24],
   iconAnchor: [12, 24],
@@ -30,7 +38,7 @@ export const SchoolMap = () => {
   const [zoom] = useState<number>(12);
   const [activeLineMarker, setActiveLineMarker] = useState<boolean>(false);
   const [lineMarkers, setLineMarkers] = useState<any>(null);
-  const [searchLocation, setSearchLocation] = useState<string>('');
+  const [searchLocation, setSearchLocation] = useState<string>("");
   const [regions, setRegions] = useState<Regions>({
     central: true,
     south: false,
@@ -47,8 +55,13 @@ export const SchoolMap = () => {
   };
 
   const onEachFeature = (feature: Feature, layer: L.Layer) => {
-    if (feature?.properties && (feature?.properties?.NAMOBJ || feature?.properties?.namobj)) {
-      layer.bindTooltip(feature?.properties?.NAMOBJ ?? feature?.properties?.namobj);
+    if (
+      feature?.properties &&
+      (feature?.properties?.NAMOBJ || feature?.properties?.namobj)
+    ) {
+      layer.bindTooltip(
+        feature?.properties?.NAMOBJ ?? feature?.properties?.namobj,
+      );
     }
   };
 
@@ -72,10 +85,7 @@ export const SchoolMap = () => {
         Number(school.lat),
         Number(school.lng),
       ]),
-      [
-        Number(schoolData[0]?.lat),
-        Number(schoolData[0]?.lng),
-      ],
+      [Number(schoolData[0]?.lat), Number(schoolData[0]?.lng)],
     ];
     setLineMarkers(linesDataMarker);
   }, [schoolData.length]);
@@ -92,7 +102,7 @@ export const SchoolMap = () => {
     return (
       <Card className="w-full h-full">
         <CardContent className="flex items-center justify-center h-full">
-          <p className="text-muted-foreground">{lang.text('loading')}</p>
+          <p className="text-muted-foreground">{lang.text("loading")}</p>
         </CardContent>
       </Card>
     );
@@ -112,7 +122,9 @@ export const SchoolMap = () => {
   // Mengambil nama provinsi dan jumlah sekolah hanya untuk yang memiliki data
   const result = provinces.data
     ? provinces.data
-        ?.filter((province: provinceModel) => schoolCountByProvince[province.id] > 0)
+        ?.filter(
+          (province: provinceModel) => schoolCountByProvince[province.id] > 0,
+        )
         ?.map((province: provinceModel) => ({
           name: province.name,
           count: schoolCountByProvince[province.id],
@@ -125,7 +137,7 @@ export const SchoolMap = () => {
 
     // Judul dokumen
     doc.setFontSize(18);
-    doc.text('Laporan Sebaran Sekolah (Provinsi)', 14, 20);
+    doc.text("Laporan Sebaran Sekolah (Provinsi)", 14, 20);
 
     // Menghitung total jumlah sekolah
     const totalCount = result.reduce((sum, item) => sum + item.count, 0);
@@ -134,7 +146,8 @@ export const SchoolMap = () => {
     const tableData = result
       .sort((a, b) => b.count - a.count)
       .map((data, index) => {
-        const percentage = totalCount > 0 ? (data.count / totalCount) * fno100 : 0;
+        const percentage =
+          totalCount > 0 ? (data.count / totalCount) * fno100 : 0;
         return [
           (index + 1).toString(), // No
           data.name, // Nama Provinsi
@@ -145,10 +158,10 @@ export const SchoolMap = () => {
 
     // Terapkan autoTable ke dokumen
     autoTable(doc, {
-      head: [['No', 'Nama Provinsi', 'Jumlah Sekolah', 'Persentase']],
+      head: [["No", "Nama Provinsi", "Jumlah Sekolah", "Persentase"]],
       body: tableData,
       startY: 30,
-      theme: 'grid',
+      theme: "grid",
       headStyles: { fillColor: [0, 51, 102], textColor: [255, 255, 255] },
       styles: { fontSize: 10, cellPadding: 2 },
       columnStyles: {
@@ -160,24 +173,26 @@ export const SchoolMap = () => {
     });
 
     // Simpan dokumen sebagai PDF
-    doc.save('sebaran_sekolah_per_provinsi.pdf');
+    doc.save("sebaran_sekolah_per_provinsi.pdf");
   };
 
   return (
     <Card className="z-[1] w-full my-12 mb-12 bg-theme-color-primary/5">
       <CardContent className="pt-6">
-        <div className="w-full flex gap-4 h-[500px]">
+        <div className="w-full flex gap-4   lg:h-[500px] flex-wrap lg:flex-nowrap">
           {/* Left - Stats and Progress */}
-          <Card className="w-[30%] bg-theme-color-primary/5">
+          <Card className="w-full lg:w-[30%] bg-theme-color-primary/5">
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
               <div>
-                <h3 className="text-lg font-semibold">{lang.text('schoolDistribution')}</h3>
+                <h3 className="text-lg font-semibold">
+                  {lang.text("schoolDistribution")}
+                </h3>
                 <div className="flex items-center gap-4 mt-2">
-                  <h2 className="text-3xl text-foreground">{schoolData.length}</h2>
-                  <div
-                    className="bg-[#0f4d3f] text-[#3ee07a] w-max flex items-center text-xs font-sans rounded px-2 py-1"
-                  >
-                    {'20.7%'} <FaArrowUp className="rotate-[30deg] ml-2" />
+                  <h2 className="text-3xl text-foreground">
+                    {schoolData.length}
+                  </h2>
+                  <div className="bg-[#0f4d3f] text-[#3ee07a] w-max flex items-center text-xs font-sans rounded px-2 py-1">
+                    {"20.7%"} <FaArrowUp className="rotate-[30deg] ml-2" />
                   </div>
                 </div>
               </div>
@@ -186,7 +201,7 @@ export const SchoolMap = () => {
                 onClick={handleExportPercentage}
                 className="flex items-center gap-2"
               >
-                {lang.text('export')} <FaArrowDown />
+                {lang.text("export")} <FaArrowDown />
               </Button>
             </CardHeader>
             <CardContent>
@@ -195,8 +210,12 @@ export const SchoolMap = () => {
                   {[...result]
                     .sort((a, b) => b.count - a.count)
                     .map((data, index) => {
-                      const totalCount = result.reduce((sum, item) => sum + item.count, 0);
-                      const percentage = totalCount > 0 ? (data.count / totalCount) * 100 : 0;
+                      const totalCount = result.reduce(
+                        (sum, item) => sum + item.count,
+                        0,
+                      );
+                      const percentage =
+                        totalCount > 0 ? (data.count / totalCount) * 100 : 0;
                       let indicatorColor: string;
                       switch (index) {
                         case 0:
@@ -224,25 +243,29 @@ export const SchoolMap = () => {
                               indicatorClassName={indicatorColor}
                               value={percentage}
                             />
-                            <p className="text-sm text-muted-foreground">{percentage.toFixed(2)}%</p>
+                            <p className="text-sm text-muted-foreground">
+                              {percentage.toFixed(2)}%
+                            </p>
                           </div>
                         </div>
                       );
                     })}
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground">{lang.text('noReport')}</p>
+                <p className="text-sm text-muted-foreground">
+                  {lang.text("noReport")}
+                </p>
               )}
             </CardContent>
           </Card>
 
           {/* Right - Map */}
-          <Card className="w-[70%]">
+          <Card className="w-full lg:w-[70%] h-[600px] lg:h-[500px]">
             <CardContent className="p-0 h-full">
               <div className="relative rounded-lg border border-border h-full overflow-hidden">
                 <div className="absolute right-4 top-4 z-[11] flex items-center gap-2">
                   <Input
-                    placeholder={lang.text('searchLocation')}
+                    placeholder={lang.text("searchLocation")}
                     value={searchLocation || ""}
                     onChange={(e) => setSearchLocation(String(e.target?.value))}
                     className="sm:max-w-[300px] flex-1"
@@ -251,13 +274,18 @@ export const SchoolMap = () => {
                     variant={activeLineMarker ? "default" : "outline"}
                     onClick={() => setActiveLineMarker(!activeLineMarker)}
                     className={`flex items-center justify-center w-[38px] h-[38px] ${
-                      activeLineMarker ? 'bg-blue-500 text-white' : 'text-foreground'
+                      activeLineMarker
+                        ? "bg-blue-500 text-white"
+                        : "text-foreground"
                     }`}
                     title="line-marker"
                   >
                     <FaGripLines className="text-sm" />
                   </Button>
-                  <RegionDropdown regions={regions} toggleRegion={toggleRegion} />
+                  <RegionDropdown
+                    regions={regions}
+                    toggleRegion={toggleRegion}
+                  />
                 </div>
                 <MapContainer
                   className="w-full h-full"
@@ -273,13 +301,17 @@ export const SchoolMap = () => {
                   <MapEventsHandler />
                   <TileLayer
                     url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                    attribution={'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>'}
+                    attribution={
+                      '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>'
+                    }
                   />
                   {schoolData && schoolData.length > 0
                     ? schoolData
                         .filter((data: any) => {
-                          if (searchLocation && searchLocation !== '') {
-                            return (data.namaSekolah.toLowerCase()).includes(searchLocation.toLowerCase());
+                          if (searchLocation && searchLocation !== "") {
+                            return data.namaSekolah
+                              .toLowerCase()
+                              .includes(searchLocation.toLowerCase());
                           }
                           return true;
                         })
@@ -291,7 +323,8 @@ export const SchoolMap = () => {
                           >
                             <Popup>
                               <strong>{school.namaSekolah}</strong> <br />
-                              {school.alamatSekolah || "Alamat belum ditentukan"}
+                              {school.alamatSekolah ||
+                                "Alamat belum ditentukan"}
                             </Popup>
                           </Marker>
                         ))
@@ -305,9 +338,11 @@ export const SchoolMap = () => {
                           style={style}
                           onEachFeature={onEachFeature}
                         />
-                      )
+                      ),
                   )}
-                  {activeLineMarker && <Polyline positions={lineMarkers} color="#008ada" />}
+                  {activeLineMarker && (
+                    <Polyline positions={lineMarkers} color="#008ada" />
+                  )}
                 </MapContainer>
               </div>
             </CardContent>

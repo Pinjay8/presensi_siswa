@@ -2,7 +2,7 @@ import { BaseDataTable } from '@/features/_global';
 import { columns } from '../utils';
 
 interface StudentAttendanceTableProps {
-  data: [];
+  data: any[];
 }
 
 export function MatpelAttendanceTable({ data }: StudentAttendanceTableProps) {

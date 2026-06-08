@@ -7,6 +7,9 @@ export default {
       fontFamily: {
         nunito: ["Poppins", "sans-serif"],
       },
+      zIndex: {
+        toast: "9999",
+      },
       backgroundColor: {
         darkMode: "#0A1739",
       },

@@ -1,9 +1,10 @@
 import { http } from "@itokun99/http";
 import { API_CONFIG, SERVICE_ENDPOINTS } from "../configs/app";
 import { getInitialOptions } from "../utils/http";
-import { BaseResponse } from "../models/http";
+import { BaseResponse, BaseResponseQr } from "../models/http";
 import { UserCreationModel, UserDataModel } from "../models/user";
 import { Profile } from "../models/profile";
+import { getToken } from "@/features/auth";
 
 export const userService = {
   getProfile: http.get<BaseResponse<Profile>>(
@@ -53,6 +54,13 @@ export const userService = {
     )(req);
   },
 
+  createSiswa: (req: UserCreationModel) => {
+    return http.post<BaseResponse<UserDataModel>, UserCreationModel>(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.user.createSiswa}`,
+      getInitialOptions,
+    )(req);
+  },
+
   // Test untuk edit guru
   updateTeacher: (userId: number, req: UserCreationModel) => {
     return http.put<BaseResponse<UserDataModel>, UserCreationModel>(
@@ -61,8 +69,53 @@ export const userService = {
     )(req, { path: String(userId) });
   },
 
+  updateParents: (userId: number, req: UserCreationModel) => {
+    return http.put<BaseResponse<UserDataModel>, UserCreationModel>(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.user.user}`,
+      getInitialOptions,
+    )(req, { path: String(userId) });
+  },
+
   getParents: http.get<BaseResponse<UserDataModel[]>>(
     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.users.parents,
     getInitialOptions,
   ),
+
+  absenQr: http.post<BaseResponse<UserDataModel[]>>(
+    API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.absenQr,
+    getInitialOptions,
+  ),
+  generateQr: http.get<BaseResponseQr>(
+    API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.generateQr,
+    getInitialOptions,
+  ),
+  // registerFace: (payload: FormData) =>
+  //   http.post(
+  //     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.registerFace,
+  //     getInitialOptions(),
+  //   )(payload),
+  registerFace: async (payload: FormData) => {
+    return await fetch(
+      API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.registerFace,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: payload,
+      },
+    ).then((res) => res.json());
+  },
+  registerFaceTeacher: async (payload: FormData) => {
+    return await fetch(
+      API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.registerFaceTeacher,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: payload,
+      },
+    ).then((res) => res.json());
+  },
 };

@@ -76,6 +76,7 @@ export const schoolUpdateFormSchema = z.object({
   serverDua: z.string().optional(),
   serverTiga: z.string().optional(),
   file: z.any().optional(),
+  ttdKepalaSekolah: z.any().optional(),
   //   // .refine(
   //   //   (file) => {
   //   //     if (!file || file === "" || file === null) return true; // Izinkan file kosong

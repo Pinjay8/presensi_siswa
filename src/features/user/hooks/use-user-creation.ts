@@ -4,7 +4,13 @@ import { useMutation } from "@tanstack/react-query";
 
 export const useUserCreation = () => {
   const createMutation = useMutation({
-    mutationFn: (payload: UserCreationModel) => userService.createParents(payload),
+    mutationFn: (payload: UserCreationModel) =>
+      userService.createTeacher(payload),
+  });
+
+  const createMutationParents = useMutation({
+    mutationFn: (payload: UserCreationModel) =>
+      userService.createParents(payload),
   });
 
   const create = (payload: UserCreationModel) =>
@@ -13,6 +19,12 @@ export const useUserCreation = () => {
   const updateMutation = useMutation({
     mutationFn: (vars: { id: number; payload: UserCreationModel }) =>
       userService.updateUser(vars.id, vars.payload),
+  });
+
+
+  const updateParentsMutation = useMutation({
+    mutationFn: (vars: { id: number; payload: UserCreationModel }) =>
+      userService.updateParents(vars.id, vars.payload),
   });
 
   const update = (id: number, payload: UserCreationModel) =>
@@ -32,5 +44,7 @@ export const useUserCreation = () => {
     isLoading,
     update,
     create,
+    createParents: createMutationParents.mutateAsync,
+    updateParents: updateParentsMutation.mutateAsync,
   };
 };

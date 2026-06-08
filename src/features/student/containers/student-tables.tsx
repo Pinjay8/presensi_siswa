@@ -1,16 +1,28 @@
 import {
   Button,
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+  Calendar,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
   Input,
   lang,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Textarea,
+  toast,
 } from "@/core/libs";
 import { getStaticFile } from "@/core/utils";
 import { useAlert, useDataTableController } from "@/features/_global";
@@ -22,494 +34,34 @@ import {
   StudentTable,
   useAttedances,
 } from "@/features/student";
-import {
-  Document,
-  Image,
-  Page,
-  pdf,
-  StyleSheet,
-  Text,
-  View,
-} from "@react-pdf/renderer";
+
+import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import axios from "axios";
 import dayjs from "dayjs";
-import { ChevronDown, ChevronUp, UploadIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  ChevronDown,
+  ChevronUp,
+  Import,
+  UploadIcon,
+  XIcon,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { FaFilePdf } from "react-icons/fa";
+import { FaFileExcel, FaFilePdf } from "react-icons/fa";
 import { useStudentPagination } from "../hooks/use-student-pagination";
 import { ImportStudentDialog } from "../components/ImportStudentDialog";
-
-// Gaya PDF yang serupa dengan kode pertama
-const pdfStyles = StyleSheet.create({
-  page: {
-    fontSize: 12,
-    fontFamily: "Times-Roman",
-  },
-  header: {
-    position: "relative",
-    top: 0,
-    left: 0,
-    right: 0,
-    marginBottom: 20,
-  },
-  headerImage: {
-    width: 595,
-    maxHeight: 150,
-    objectFit: "contain",
-  },
-  contentWrapper: {
-    paddingLeft: 32,
-    paddingRight: 32,
-    marginTop: 10,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 5,
-    textTransform: "uppercase",
-  },
-  content: {
-    marginBottom: 10,
-    textAlign: "center",
-    lineHeight: 1.5,
-  },
-  table: {
-    display: "flex",
-    flexDirection: "column",
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderColor: "#000",
-  },
-  tableRow: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    borderBottomColor: "#000",
-  },
-  tableCell: {
-    padding: 5,
-    borderRightWidth: 1,
-    borderRightColor: "#000",
-    textAlign: "center",
-  },
-  tableHeader: {
-    fontWeight: "bold",
-    backgroundColor: "#f0f0f0",
-  },
-  signature: {
-    marginTop: 50,
-    alignItems: "flex-end",
-  },
-  signatureImage: {
-    width: 120,
-    height: "auto",
-    maxHeight: 50,
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  signatureText: {
-    textAlign: "center",
-  },
-});
-
-// Komponen PDF untuk Laporan Absensi Harian
-const DailyAttendancePDF: React.FC<{
-  attendanceData: any[];
-  schoolData: {
-    kopSurat: string;
-    namaSekolah: string;
-    namaKepalaSekolah: string;
-    ttdKepalaSekolah: string | undefined;
-  };
-  date: string;
-}> = ({ attendanceData, schoolData, date }) => {
-  const kopSuratUrl = schoolData.kopSurat
-    ? schoolData.kopSurat.startsWith("data:image")
-      ? schoolData.kopSurat
-      : `data:image/png;base64,${schoolData.kopSurat}`
-    : undefined;
-
-  const signatureUrl = schoolData.ttdKepalaSekolah
-    ? schoolData.ttdKepalaSekolah.startsWith("data:image")
-      ? schoolData.ttdKepalaSekolah
-      : `data:image/png;base64,${schoolData.ttdKepalaSekolah}`
-    : undefined;
-
-  // Bagi data menjadi kelompok untuk setiap halaman
-  const rowsPerPage = 25; // Jumlah baris per halaman
-  const dataChunks = [];
-  for (let i = 0; i < attendanceData.length; i += rowsPerPage) {
-    const chunk = attendanceData.slice(i, i + rowsPerPage);
-    if (chunk.length > 0) {
-      dataChunks.push(chunk);
-    }
-  }
-
-  return (
-    <Document>
-      {dataChunks.map((chunk, pageIndex) => (
-        <Page
-          key={pageIndex}
-          size="A4"
-          style={pdfStyles.page}
-          break={pageIndex > 0} // Page break untuk halaman setelah pertama
-        >
-          <View style={pdfStyles.header} fixed>
-            <Image
-              src={getStaticFile(kopSuratUrl || "")}
-              style={pdfStyles.headerImage}
-            />
-          </View>
-          <View style={pdfStyles.contentWrapper}>
-            <Text style={pdfStyles.title}>Laporan Absensi Harian</Text>
-            <Text style={pdfStyles.content}>
-              Tanggal: {date || "Tanggal Tidak Diketahui"}
-            </Text>
-            <View style={pdfStyles.table}>
-              <View style={[pdfStyles.tableRow, pdfStyles.tableHeader]} fixed>
-                {["No", "Nama Siswa", "NIS", "Kelas", "Status"].map(
-                  (header, index) => (
-                    <View
-                      key={index}
-                      style={[
-                        pdfStyles.tableCell,
-                        pdfStyles.tableHeader,
-                        {
-                          width:
-                            index === 0
-                              ? "5%"
-                              : index === 1
-                                ? "30%"
-                                : index === 2
-                                  ? "20%"
-                                  : index === 3
-                                    ? "20%"
-                                    : "25%",
-                        },
-                      ]}
-                    >
-                      <Text>{header}</Text>
-                    </View>
-                  ),
-                )}
-              </View>
-              {chunk.map((item, index) => (
-                <View style={pdfStyles.tableRow} key={index} wrap={false}>
-                  <View style={[pdfStyles.tableCell, { width: "5%" }]}>
-                    <Text>{pageIndex * rowsPerPage + index + 1}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "30%" }]}>
-                    <Text>{item?.name || "-"}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "20%" }]}>
-                    <Text>{item?.nis || "-"}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "20%" }]}>
-                    <Text>{item?.namaKelas || "-"}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "25%" }]}>
-                    <Text>{item.status || "-"}</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-            {pageIndex === dataChunks.length - 1 && (
-              <View style={pdfStyles.signature}>
-                <Text style={pdfStyles.signatureText}>Kepala Sekolah,</Text>
-                {signatureUrl && (
-                  <Image src={signatureUrl} style={pdfStyles.signatureImage} />
-                )}
-                <Text style={pdfStyles.signatureText}>
-                  {schoolData.namaKepalaSekolah || "Nama Kepala Sekolah"}
-                </Text>
-              </View>
-            )}
-          </View>
-        </Page>
-      ))}
-    </Document>
-  );
-};
-
-// Komponen PDF untuk Laporan Absensi Bulanan
-const MonthlyAttendancePDF: React.FC<{
-  attendanceData: any[];
-  schoolData: {
-    kopSurat: string;
-    namaSekolah: string;
-    namaKepalaSekolah: string;
-    ttdKepalaSekolah: string | undefined;
-  };
-  month: string;
-}> = ({ attendanceData, schoolData, month }) => {
-  const kopSuratUrl = schoolData.kopSurat
-    ? schoolData.kopSurat.startsWith("data:image")
-      ? schoolData.kopSurat
-      : `data:image/png;base64,${schoolData.kopSurat}`
-    : undefined;
-
-  const signatureUrl = schoolData.ttdKepalaSekolah
-    ? schoolData.ttdKepalaSekolah.startsWith("data:image")
-      ? schoolData.ttdKepalaSekolah
-      : `data:image/png;base64,${schoolData.ttdKepalaSekolah}`
-    : undefined;
-
-  // Bagi data menjadi kelompok untuk setiap halaman
-  const rowsPerPage = 25; // Jumlah baris per halaman
-  const dataChunks = [];
-  for (let i = 0; i < attendanceData.length; i += rowsPerPage) {
-    const chunk = attendanceData.slice(i, i + rowsPerPage);
-    if (chunk.length > 0) {
-      dataChunks.push(chunk);
-    }
-  }
-
-  return (
-    <Document>
-      {dataChunks.map((chunk, pageIndex) => (
-        <Page
-          key={pageIndex}
-          size="A4"
-          style={pdfStyles.page}
-          break={pageIndex > 0} // Page break untuk halaman setelah pertama
-        >
-          <View style={pdfStyles.header} fixed>
-            <Image
-              src={getStaticFile(kopSuratUrl)}
-              style={pdfStyles.headerImage}
-            />
-          </View>
-          <View style={pdfStyles.contentWrapper}>
-            <Text style={pdfStyles.title}>Laporan Absensi Bulanan</Text>
-            <Text style={pdfStyles.content}>
-              Bulan: {month || "Bulan Tidak Diketahui"}
-            </Text>
-            <View style={pdfStyles.table}>
-              <View style={[pdfStyles.tableRow, pdfStyles.tableHeader]} fixed>
-                {[
-                  "No",
-                  "Nama Siswa",
-                  "NIS",
-                  "Kelas",
-                  "Hadir",
-                  "Izin",
-                  "Sakit",
-                  "Alpa",
-                ].map((header, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      pdfStyles.tableCell,
-                      pdfStyles.tableHeader,
-                      {
-                        width:
-                          index === 0
-                            ? "5%"
-                            : index === 1
-                              ? "25%"
-                              : index === 2
-                                ? "15%"
-                                : index === 3
-                                  ? "15%"
-                                  : "10%",
-                      },
-                    ]}
-                  >
-                    <Text>{header}</Text>
-                  </View>
-                ))}
-              </View>
-              {chunk.map((item, index) => (
-                <View style={pdfStyles.tableRow} key={index} wrap={false}>
-                  <View style={[pdfStyles.tableCell, { width: "5%" }]}>
-                    <Text>{pageIndex * rowsPerPage + index + 1}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "25%" }]}>
-                    <Text>{item?.user?.name || "-"}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "15%" }]}>
-                    <Text>{item?.user?.nis || "-"}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "15%" }]}>
-                    <Text>{item?.user?.namaKelas || "-"}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "10%" }]}>
-                    <Text>{item.hadir || 0}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "10%" }]}>
-                    <Text>{item.izin || 0}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "10%" }]}>
-                    <Text>{item.sakit || 0}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "10%" }]}>
-                    <Text>{item.alpa || 0}</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-            {pageIndex === dataChunks.length - 1 && (
-              <View style={pdfStyles.signature}>
-                <Text style={pdfStyles.signatureText}>Kepala Sekolah,</Text>
-                {signatureUrl && (
-                  <Image src={signatureUrl} style={pdfStyles.signatureImage} />
-                )}
-                <Text style={pdfStyles.signatureText}>
-                  {schoolData.namaKepalaSekolah || "Nama Kepala Sekolah"}
-                </Text>
-              </View>
-            )}
-          </View>
-        </Page>
-      ))}
-    </Document>
-  );
-};
-
-// Fungsi untuk menghasilkan PDF absensi harian
-export const generateAttendancePDF = async ({
-  studentParams,
-  attendanceData,
-  alert,
-  nameSchool,
-  schoolData,
-  schoolIsLoading,
-}: {
-  studentParams: any;
-  attendanceData: any[];
-  alert: any;
-  nameSchool: string;
-  schoolData: any;
-  schoolIsLoading: boolean;
-}) => {
-  console.log("attendanceData", attendanceData);
-  if (schoolIsLoading) {
-    alert.error("Data sekolah masih dimuat, silakan coba lagi.");
-    return;
-  }
-
-  if (!attendanceData || attendanceData.length === 0) {
-    alert.error("Tidak ada data absensi untuk dihasilkan.");
-    return;
-  }
-
-  try {
-    const doc = (
-      <DailyAttendancePDF
-        attendanceData={attendanceData}
-        schoolData={{
-          namaSekolah: nameSchool,
-          kopSurat: schoolData?.kopSurat || "",
-          namaKepalaSekolah:
-            schoolData?.namaKepalaSekolah || "Nama Kepala Sekolah",
-          ttdKepalaSekolah: schoolData?.ttdKepalaSekolah,
-        }}
-        date={dayjs().format("DD MMMM YYYY")}
-      />
-    );
-
-    const pdfInstance = pdf(doc);
-    const pdfBlob = await pdfInstance.toBlob();
-
-    const url = window.URL.createObjectURL(pdfBlob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `Laporan-Absensi-Harian-${dayjs().format("YYYY-MM-DD")}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-
-    alert.success("Laporan absensi harian berhasil diunduh.");
-  } catch (error) {
-    console.error("Error generating daily attendance PDF:", error);
-    alert.error("Gagal menghasilkan laporan absensi harian.");
-  }
-};
-
-// Fungsi untuk menghasilkan PDF absensi bulanan
-export const generateMonthlyAttendancePDF = async ({
-  studentParams,
-  attendanceData,
-  alert,
-  nameSchool,
-  schoolData,
-  schoolIsLoading,
-}: {
-  studentParams: any;
-  attendanceData: any[];
-  alert: any;
-  nameSchool: string;
-  schoolData: any;
-  schoolIsLoading: boolean;
-}) => {
-  console.log("atttw", attendanceData);
-  if (schoolIsLoading) {
-    alert.error("Data sekolah masih dimuat, silakan coba lagi.");
-    return;
-  }
-
-  if (!attendanceData || attendanceData.length === 0) {
-    alert.error("Tidak ada data absensi untuk dihasilkan.");
-    return;
-  }
-
-  // Proses data absensi untuk menghitung jumlah hadir, izin, sakit, dan alpa per siswa
-  const monthlyData = attendanceData.reduce((acc, item) => {
-    const studentId = item?.id;
-    if (!acc[studentId]) {
-      acc[studentId] = {
-        user: item,
-        // kelas: item.kelas,
-        hadir: 0,
-        izin: 0,
-        sakit: 0,
-        alpa: 0,
-      };
-    }
-    if (item.status === "Hadir") acc[studentId].hadir += 1;
-    else if (item.status === "Izin") acc[studentId].izin += 1;
-    else if (item.status === "Sakit") acc[studentId].sakit += 1;
-    else if (item.status === "Alpa") acc[studentId].alpa += 1;
-    return acc;
-  }, {});
-
-  const formattedData = Object.values(monthlyData);
-  console.log("formattte", formattedData);
-
-  try {
-    const doc = (
-      <MonthlyAttendancePDF
-        attendanceData={formattedData}
-        schoolData={{
-          namaSekolah: nameSchool,
-          kopSurat: schoolData?.kopSurat || "",
-          namaKepalaSekolah:
-            schoolData?.namaKepalaSekolah || "Nama Kepala Sekolah",
-          ttdKepalaSekolah: schoolData?.ttdKepalaSekolah,
-        }}
-        month={dayjs().format("MMMM YYYY")}
-      />
-    );
-
-    const pdfInstance = pdf(doc);
-    const pdfBlob = await pdfInstance.toBlob();
-
-    const url = window.URL.createObjectURL(pdfBlob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `Laporan-Absensi-Bulanan-${dayjs().format("YYYY-MM")}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-
-    alert.success("Laporan absensi bulanan berhasil diunduh.");
-  } catch (error) {
-    console.error("Error generating monthly attendance PDF:", error);
-    alert.error("Gagal menghasilkan laporan absensi bulanan.");
-  }
-};
+import { pdfStyles } from "../components/pdfStylles";
+import { generateAttendancePDF } from "../components/generateAttendancePDF";
+import { generateMonthlyAttendancePDF } from "../components/GenerateMonthlyAttendancePDF";
+import { Box } from "@mui/material";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CreateSiswaFormValues, createSiswaSchema } from "@/core/models";
+import { userService } from "@/core/services";
+import { useForm } from "react-hook-form";
+import { useSchools } from "@/features/classroom/hooks/useSchool";
+import { io } from "socket.io-client";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import StudentFormDialog from "../components/StudentFormDialog";
 
 export const StudentLandingTables = () => {
   const [openImport, setOpenImport] = useState(false);
@@ -528,7 +80,7 @@ export const StudentLandingTables = () => {
     pagination,
     onSortingChange,
     onPaginationChange,
-  } = useDataTableController({ defaultPageSize: 50 });
+  } = useDataTableController({ defaultPageSize: 10 });
 
   const profile = useProfile();
   const classRoom = useClassroom();
@@ -548,7 +100,7 @@ export const StudentLandingTables = () => {
     profileSchoolId !== null
       ? useAttedances({ id: profileSchoolId })
       : useAttedances();
-  console.log("attedances", attedances.data);
+
   const idKelas = filter.find((f: any) => f.id === "idKelas")?.value;
 
   const studentParams = useMemo(
@@ -563,6 +115,7 @@ export const StudentLandingTables = () => {
   );
 
   const { data, isLoading, refetch } = useStudentPagination(studentParams);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (
@@ -573,13 +126,18 @@ export const StudentLandingTables = () => {
     ) {
       return;
     }
-
     const result = checkAttendance(attedances.data, data.students);
     setAttendanceResult(result);
-  }, [attedances.isLoading, attedances.data, isLoading, data?.students]);
+  }, [
+    attedances.isLoading,
+    attedances.data,
+    isLoading,
+    data?.students,
+    reloadKey,
+  ]);
 
   const presentCount = useMemo(() => {
-    return attendanceResult.filter((item) => item.status === "Hadir").length;
+    return attendanceResult.filter((item) => item.status === "hadir").length;
   }, [attendanceResult]);
 
   const handleDownload = (type: string) => {
@@ -612,12 +170,12 @@ export const StudentLandingTables = () => {
 
   const importData = async () => {
     if (selectedFile) {
-      const fileExtension = selectedFile?.name?.split(".").pop().toLowerCase();
-      // if (fileExtension !== "xlsx") {
-      //   alert.error("Harap unggah file dengan format .xlsx");
-      //   return;
-      // }
+      const fileExtension = selectedFile?.name?.split(".").pop()?.toLowerCase();
 
+      if (!["xlsx", "csv"].includes(fileExtension || "")) {
+        alert.error("Harap unggah file dengan format .xlsx atau .csv");
+        return;
+      }
       console.log("fileeees", selectedFile);
 
       setIsUploading(true);
@@ -663,7 +221,10 @@ export const StudentLandingTables = () => {
         if (response.data.success) {
           setSelectedFile(null);
           await Promise.all([attedances.query.refetch(), refetch()]);
-          alert.success((formattedMessage && formattedMessage.toString()) || "Data berhasil diimport");
+          alert.success(
+            (formattedMessage && formattedMessage.toString()) ||
+              "Data berhasil diimport",
+          );
         } else {
           setSelectedFile(null);
           await Promise.all([attedances.query.refetch(), refetch()]);
@@ -673,7 +234,6 @@ export const StudentLandingTables = () => {
           );
         }
 
-        console.log("response:", response);
         setOpenImport(false);
       } catch (error: any) {
         console.error("Error saat mengunggah file:", error);
@@ -722,22 +282,124 @@ export const StudentLandingTables = () => {
     alert.error(lang.text("shouldClassroom"));
   };
 
+  const [openFormSiswa, setOpenFormSiswa] = useState(false);
+
+  const defaultValues: any = {
+    name: "",
+    email: "",
+    nis: "",
+    nisn: "",
+    noTlp: "",
+    noTlpOrtu: "",
+    alamat: "",
+    password: "",
+    sekolahId: "",
+    jenisKelamin: "Male",
+    tanggalLahir: "",
+    // rfid: "",
+  };
+
+  const form = useForm<CreateSiswaFormValues>({
+    resolver: zodResolver(createSiswaSchema),
+    defaultValues,
+  });
+
+  // const { students, loading, refetch: refetchStudents } = useStudents();
+  const queryCLient = useQueryClient();
+
+  const onSubmit = async (values: CreateSiswaFormValues) => {
+    try {
+      const payload = {
+        ...values,
+        tanggalLahir: dayjs(values.tanggalLahir).toISOString(),
+      };
+
+      const result = await userService.createSiswa(payload);
+      await refetch();
+      await queryCLient.invalidateQueries({
+        queryKey: ["students"],
+      });
+      setReloadKey((prev) => prev + 1);
+      setOpenFormSiswa(false);
+      await alert.success(result.message || "Siswa berhasil dibuat");
+      form.reset();
+    } catch (error: any) {
+      alert.error(error?.message || "Gagal membuat siswa");
+    }
+  };
+
+  const { schools } = useSchools();
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const socket = io("http://192.168.1.116:15219", {
+      transports: ["websocket"],
+    });
+
+    socket.on("connect", () => {
+      console.log("Connected", socket.id);
+    });
+
+    socket.on("absen", async (data) => {
+      console.log("[ABSEN]", data);
+      await refetch();
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["studentsPaginated"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["attedances-new"],
+        }),
+      ]);
+      setReloadKey((prev) => prev + 1);
+    });
+
+    socket.on("absen-barcode", async (data) => {
+      console.log("[BARCODE]", data);
+
+      await refetch();
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected");
+    });
+
+    socket.on("error", (err) => {
+      console.error("[ERROR]", err);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [refetch]);
+
+  const handleCloseFormSiswa = () => {
+    form.reset(defaultValues);
+    setOpenFormSiswa(false);
+  };
+
   return (
     <>
       <div className="flex justify-between items-center pb-4">
-        <div className="w-full flex justify-between">
-          <div className="flex w-max">
+        <div className="w-full flex justify-between lg:flex-nowrap flex-wrap gap-2">
+          <div className="flex w-max gap-2 items-center">
             <Button
               className="hidden"
               variant="outline"
               onClick={() => handleDownloadExcel("csv")}
+              // icon
+              iconPosition="left"
+              icon={<FaFileExcel />}
             >
               {lang.text("download")} Template CSV
             </Button>
             <Button
-              className="mr-4"
+              className=""
               variant="outline"
               onClick={() => handleDownloadExcel("excel")}
+              iconPosition="left"
+              icon={<FaFileExcel />}
             >
               {lang.text("download")} Template Excel
             </Button>
@@ -746,12 +408,21 @@ export const StudentLandingTables = () => {
               onClick={() =>
                 classRoom?.data.length > 0 ? setOpenImport(true) : handleAlert()
               }
+              iconPosition="left"
+              icon={<Import />}
             >
               {lang.text("import")} Data
             </Button>
+            <Button
+              variant="default"
+              onClick={() => setOpenFormSiswa(true)}
+              style={{ padding: "2px 4px" }}
+            >
+              Create Siswa
+            </Button>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="flex justify-between items-center pb-4 gap-4">
+            <div className="flex justify-between items-center pb-0 gap-4">
               <Button
                 variant="outline"
                 aria-label="presentCount"
@@ -812,6 +483,278 @@ export const StudentLandingTables = () => {
         }}
         sorting={sorting}
         onSortingChange={onSortingChange}
+      />
+
+      {/* <Dialog
+        open={openFormSiswa}
+        onClose={handleCloseFormSiswa}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {lang.text("formStudents")}
+          <IconButton onClick={handleCloseFormSiswa}>
+            <XIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Box>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nama</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Nama siswa" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="nis"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>NIS</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="nisn"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>NISN</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="noTlpOrtu"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nomor Telepon Ortu</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="noTlp"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>No Telepon</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="alamat"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Alamat</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                   <FormField
+                    control={form.control}
+                    name="rfid"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>RFID</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  /> 
+
+                  <FormField
+                    control={form.control}
+                    name="jenisKelamin"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Jenis Kelamin</FormLabel>
+
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Pilih Jenis Kelamin" />
+                            </SelectTrigger>
+                          </FormControl>
+
+                          <SelectContent className="z-[9999]">
+                            <SelectItem value="Male">Laki-Laki</SelectItem>
+                            <SelectItem value="Female">Perempuan</SelectItem>
+                          </SelectContent>
+                        </Select>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="tanggalLahir"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tanggal Lahir</FormLabel>
+                        <br />
+
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="justify-start text-left font-normal"
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {field.value
+                                ? dayjs(field.value).format("DD MMM YYYY")
+                                : "Pilih tanggal"}
+                            </Button>
+                          </PopoverTrigger>
+
+                          <PopoverContent className="w-auto p-0 z-[9999]">
+                            <Calendar
+                              mode="single"
+                              selected={
+                                field.value ? new Date(field.value) : undefined
+                              }
+                              onSelect={(date) =>
+                                field.onChange(
+                                  date ? dayjs(date).format("YYYY-MM-DD") : "",
+                                )
+                              }
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="sekolahId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Sekolah</FormLabel>
+
+                        <Select
+                          value={field.value?.toString()}
+                          onValueChange={(value) =>
+                            field.onChange(Number(value))
+                          }
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Pilih Sekolah" />
+                            </SelectTrigger>
+                          </FormControl>
+
+                          <SelectContent className="z-[9999]">
+                            {schools?.map((school) => (
+                              <SelectItem
+                                key={school.id}
+                                value={school.id.toString()}
+                              >
+                                {school.namaSekolah}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="mt-6">
+                  <Button type="submit">{lang.text("saveChanges")}</Button>
+                </div>
+              </form>
+            </Form>
+          </Box>
+        </DialogContent>
+      </Dialog> */}
+
+      <StudentFormDialog
+        open={openFormSiswa}
+        onClose={handleCloseFormSiswa}
+        form={form}
+        onSubmit={onSubmit}
+        schools={schools ?? []}
       />
 
       <ImportStudentDialog

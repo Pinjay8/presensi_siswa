@@ -48,11 +48,14 @@ export interface SchoolInformationProps {
 export const SchoolInformation = (props: UseSchoolDetailProps) => {
   const detail = useSchoolDetail({
     id: props.id,
-    query: {
-      staleTime: 1 * 60 * 1000,
-      refetchOnWindowFocus: false,
-    },
+    // query: {
+    //   staleTime: 1 * 60 * 1000,
+    //   refetchOnWindowFocus: false,
+    // },
   });
+
+  // console.log("SchoolInformation props:", props);
+
   const student = useBiodata();
   const classroom = useClassroom();
   const teacher = useBiodataGuru();
@@ -68,10 +71,10 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
   > | null>(null);
   const [ckEditorError, setCkEditorError] = useState<string | null>(null);
   const sigCanvas = useRef<SignatureCanvas | null>(null);
-  const biodataStudents = JSON.parse(student.data);
+  const biodataStudents: any[] = student.data;
 
   const students = biodataStudents.filter(
-    (d) => Number(d?.user?.sekolah?.id) === Number(props.id),
+    (d: any) => Number(d?.user?.sekolah?.id) === Number(props.id),
   );
   console.log("Filtered students:", students);
   const teachers = teacher.data?.filter(
@@ -391,7 +394,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
     }
   }
 
-  const safeHTML = DOMPurify.sanitize(detail.data?.visiMisi);
+  const safeHTML = DOMPurify.sanitize(detail.data?.visiMisi || "");
 
   return (
     <Form {...form}>
@@ -681,14 +684,14 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                   type="url"
                   isEditMode={isEditMode}
                   ckEditorError={ckEditorError}
-                  setCkEditorError
-                  закрепить={setCkEditorError}
+                  setCkEditorError={setCkEditorError}
+                  // закрепить={setCkEditorError}
                 />
                 <EditableInfoItem
                   control={form.control}
                   icon={<Globe size={24} />}
                   label={lang.text("urlYoutube1")}
-                  value={detail.data?.urlYutubeFirst}
+                  value={detail.data?.urlYutubeFirst || ""}
                   name="urlYoutube1"
                   type="url"
                   isEditMode={isEditMode}
@@ -710,7 +713,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                   control={form.control}
                   icon={<Globe size={24} />}
                   label={lang.text("urlYoutube3")}
-                  value={detail.data?.urlYutubeThird}
+                  value={detail.data?.urlYutubeThird || ""}
                   name="urlYoutube3"
                   type="url"
                   isEditMode={isEditMode}
@@ -732,7 +735,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                   control={form.control}
                   icon={<Globe size={24} />}
                   label={lang.text("urlYoutube2")}
-                  value={detail.data?.urlYutubeSecond}
+                  value={detail.data?.urlYutubeSecond || ""}
                   name="urlYoutube2"
                   type="url"
                   isEditMode={isEditMode}
@@ -755,7 +758,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                       control={form.control}
                       icon={<Globe size={24} />}
                       label={lang.text("visionMission")}
-                      value={detail.data?.visiMisi}
+                      value={detail.data?.visiMisi || ""}
                       name="visiMisi"
                       type="editor"
                       isEditMode={isEditMode}
@@ -774,12 +777,12 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                     label={lang.text("province")}
                     value={
                       province.data?.find(
-                        (p) => p.id === detail.data?.provinceId,
+                        (p: any) => p.id === detail.data?.provinceId,
                       )?.name
                     }
                     name="provinceId"
                     type="select"
-                    options={province.data?.map((p) => ({
+                    options={province.data?.map((p: any) => ({
                       value: String(p.id),
                       label: p.name,
                     }))}

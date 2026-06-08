@@ -17,6 +17,9 @@ export const useProfile = () => {
     queryKey: ["profile"],
     queryFn: () => userService.getProfile(),
     enabled: auth.isAuthenticated(),
+    staleTime: 1000 * 60 * 30, // 30 minutes
+    gcTime: 1000 * 60 * 60, // 1 hour
+    refetchOnWindowFocus: false,
   });
 
   const mutation = useMutation({

@@ -14,6 +14,7 @@ import {
   lang,
 } from "@/core/libs";
 import { ModalCreateParents } from "../components/ModalCreateParents";
+import { useProfile } from "@/features/profile";
 export function ParentTable() {
   const parent = useParent();
   const student = useBiodata();
@@ -56,6 +57,9 @@ export function ParentTable() {
   }, [parent.data, student.data, school.data]);
 
   const [parents, setParents] = useState(false);
+
+  const profile = useProfile();
+  const isRole = profile?.user?.role === "guru" || profile?.user?.role === "siswa";
   return (
     <>
       {
@@ -73,10 +77,14 @@ export function ParentTable() {
           sorting: [{ id: "name", desc: false }],
         }}
         actions={[
-          {
-            title: lang.text("createParent"),
-            onClick: () => navigate("/parents/create"),
-          },
+          ...(!isRole
+            ? [
+                {
+                  title: lang.text("createParent"),
+                  onClick: () => navigate("/parents/create"),
+                },
+              ]
+            : []),
         ]}
         searchParamPagination
         showFilterButton

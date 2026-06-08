@@ -8,7 +8,7 @@ export interface UseStudentDetailProps {
   id?: number;
 }
 
-export const useStudentDetail = (props?: UseStudentDetailProps) => {
+export const useStudentDetail = (props?: any) => {
   const auth = useAuth();
   const profile = useProfile();
   const enabled =

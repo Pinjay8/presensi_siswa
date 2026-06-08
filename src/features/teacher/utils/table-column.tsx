@@ -102,6 +102,7 @@ export const tableColumnGuru: ColumnDef<BiodataGuru>[] = [
           <BaseActionTable
             detailPath={`/teachers/${encryptPayload}`}
             editPath={`/teachers/edit/${encryptPayload}`}
+            // waliKelasPath={`/teachers/wali-kelas/${encryptPayload}`}
             // deletePath={`/students/delete/${encryptPayload}`}
           />
         </div>
@@ -112,8 +113,10 @@ export const tableColumnGuru: ColumnDef<BiodataGuru>[] = [
 
 export const teacherColumnWithFilter = ({
   schoolOptions = [],
+  onWaliKelas,
 }: {
   schoolOptions: BaseDataTableFilterValueItem[];
+  onWaliKelas?: (teacher: any) => void;
 }): ColumnDef<BiodataGuru>[] => {
   return [
     {
@@ -239,6 +242,7 @@ export const teacherColumnWithFilter = ({
           <BaseActionTable
             detailPath={`/teachers/${encryptPayload}`}
             editPath={`/teachers/edit/${encryptPayload}`}
+            onWaliKelas={() => onWaliKelas?.(row.original)}
           />
         );
       },

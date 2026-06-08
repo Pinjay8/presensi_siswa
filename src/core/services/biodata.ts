@@ -33,4 +33,5 @@ export const biodataService = {
       `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.teacher.detail}`,
       getInitialOptions,
     )({ path: String(id) }),
+    
 };

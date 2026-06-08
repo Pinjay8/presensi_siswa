@@ -13,7 +13,9 @@ export interface GetPaginatedStudentParams {
   keyword?: string;
 }
 export const studentService = {
-  getPaginated: async (params: GetPaginatedStudentParams): Promise<StudentPaginationResponse> => {
+  getPaginated: async (
+    params: GetPaginatedStudentParams,
+  ): Promise<StudentPaginationResponse> => {
     const query = {
       page: params.page,
       size: params.size,
@@ -24,10 +26,10 @@ export const studentService = {
 
     const url = withQuery(
       `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.student.list}`,
-      query
+      query,
     );
 
-    const options = getInitialOptions(); 
+    const options = getInitialOptions();
 
     const response = await fetch(url, {
       headers: {
@@ -42,5 +44,149 @@ export const studentService = {
       pagination: json.pagination,
     };
   },
+  getAll: async (): Promise<any> => {
+    const url = `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.student.list}`;
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+
+    const json = await response.json();
+
+    return json.data;
+  },
 };
-  
+
+export interface GetAttendanceParams {
+  filter: string;
+  page: number;
+  limit: number;
+  type: string;
+  kelasId?: number;
+  sekolahId?: number;
+  startDate?: string;
+  endDate?: string;
+  tanggal?: string;
+  sortBy?: string;
+  sortDir?: "asc" | "desc";
+  search?: string;
+}
+
+export const attendanceService = {
+  getPaginated: async (params: GetAttendanceParams): Promise<any> => {
+    const query = {
+      filter: params.filter,
+      page: params.page,
+      limit: params.limit,
+      type: params.type,
+
+      ...(params.kelasId !== undefined && {
+        kelasId: params.kelasId,
+      }),
+
+      ...(params.sekolahId !== undefined && {
+        sekolahId: params.sekolahId,
+      }),
+
+      ...(params.startDate && {
+        startDate: params.startDate,
+      }),
+
+      ...(params.endDate && {
+        endDate: params.endDate,
+      }),
+
+      ...(params.tanggal && {
+        tanggal: params.tanggal,
+      }),
+
+      ...(params.sortBy && {
+        sortBy: params.sortBy,
+      }),
+
+      ...(params.sortDir && {
+        sortDir: params.sortDir,
+      }),
+
+      ...(params.search && {
+        search: params.search,
+      }),
+    };
+
+    const url = withQuery(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.attendances.list}`,
+      query,
+    );
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const json = await response.json();
+
+    return json;
+  },
+};
+
+export const attendanceServiceMataPelajaran = {
+  getPaginated: async (params: GetAttendanceParams): Promise<any> => {
+    const query = {
+      filter: params.filter,
+      page: params.page,
+      limit: params.limit,
+
+      ...(params.kelasId !== undefined && {
+        kelasId: params.kelasId,
+      }),
+
+      ...(params.sekolahId !== undefined && {
+        sekolahId: params.sekolahId,
+      }),
+
+      ...(params.startDate && {
+        startDate: params.startDate,
+      }),
+
+      ...(params.endDate && {
+        endDate: params.endDate,
+      }),
+
+      ...(params.tanggal && {
+        tanggal: params.tanggal,
+      }),
+
+      ...(params.sortBy && {
+        sortBy: params.sortBy,
+      }),
+
+      ...(params.sortDir && {
+        sortDir: params.sortDir,
+      }),
+
+      ...(params.search && {
+        search: params.search,
+      }),
+    };
+
+    const url = withQuery(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.attendances.listMataPelajaran}`,
+      query,
+    );
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const json = await response.json();
+
+    return json;
+  },
+};

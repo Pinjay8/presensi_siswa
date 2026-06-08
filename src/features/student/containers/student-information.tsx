@@ -20,7 +20,12 @@ import { formatGender, getStaticFile } from "@/core/utils";
 import { useAlert, useParamDecode } from "@/features/_global/hooks";
 import { EditableInfoItem, NonEditableInfoItem } from "../components";
 import { useClassroom } from "@/features/classroom";
-import { GENDER_OPTIONS, STATUS_OPTIONS, useUserCreation, useUserDetail } from "@/features/user";
+import {
+  GENDER_OPTIONS,
+  STATUS_OPTIONS,
+  useUserCreation,
+  useUserDetail,
+} from "@/features/user";
 import { useBiodata } from "@/features/user/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -43,17 +48,14 @@ import { StudentPhoto } from "../components";
 import { useStudentDetail } from "../hooks";
 import { studentEditSchema } from "../utils";
 import { debounce } from "lodash";
-import { FaGolfBall } from "react-icons/fa";
-import { FaceIcon } from "@radix-ui/react-icons";
-
-export interface StudentInformationProps { }
+import { Divider } from "@mui/material";
+export interface StudentInformationProps {}
 
 export const StudentInformation = () => {
   const { decodeParams } = useParamDecode();
   const navigate = useNavigate();
-  const detail = useStudentDetail({ id: decodeParams?.id });
+  const detail = useStudentDetail({ id: decodeParams?.biodataId });
   const userDetail = useUserDetail(decodeParams?.biodataId);
-  console.log("userDetail", userDetail)
   const classroom = useClassroom();
   const creation = useUserCreation();
   const biodata = useBiodata();
@@ -65,7 +67,9 @@ export const StudentInformation = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
-  const [initialValues, setInitialValues] = useState<z.infer<typeof studentEditSchema> | null>(null);
+  const [initialValues, setInitialValues] = useState<z.infer<
+    typeof studentEditSchema
+  > | null>(null);
 
   // Validasi ID
   useEffect(() => {
@@ -84,6 +88,7 @@ export const StudentInformation = () => {
       email: "",
       alamat: "",
       // hobi: "",
+
       jenisKelamin: "",
       tanggalLahir: "",
       rfid: "",
@@ -102,13 +107,13 @@ export const StudentInformation = () => {
 
   // Memoized options
   const genderOptions = useMemo(
-    () => GENDER_OPTIONS.map(opt => ({ value: opt.label, label: opt.value })),
-    []
+    () => GENDER_OPTIONS.map((opt) => ({ value: opt.label, label: opt.value })),
+    [],
   );
 
   const statusOptions = useMemo(
-    () => STATUS_OPTIONS.map(opt => ({ value: opt.value, label: opt.label })),
-    []
+    () => STATUS_OPTIONS.map((opt) => ({ value: opt.value, label: opt.label })),
+    [],
   );
 
   const verificationOptions = useMemo(
@@ -116,34 +121,49 @@ export const StudentInformation = () => {
       { value: true, label: lang.text("isVerified") },
       { value: false, label: lang.text("isNotVerified") },
     ],
-    []
+    [],
   );
 
   const classroomOptions = useMemo(
-    () => classroom.data?.map(k => ({ value: String(k.id), label: k.namaKelas })) || [],
-    [classroom.data]
+    () =>
+      classroom.data?.map((k) => ({
+        value: String(k.id),
+        label: k.namaKelas,
+      })) || [],
+    [classroom.data],
   );
 
   // Memoized derived values
   const formattedGender = useMemo(
     () => formatGender(userDetail.data?.jenisKelamin),
-    [userDetail.data?.jenisKelamin]
+    [userDetail.data?.jenisKelamin],
   );
 
   const formattedStatus = useMemo(
-    () => (userDetail.data?.isActive === 2 ? lang.text("active") : lang.text("nonActive")),
-    [userDetail.data?.isActive]
+    () =>
+      userDetail.data?.isActive === 2
+        ? lang.text("active")
+        : lang.text("nonActive"),
+    [userDetail.data?.isActive],
   );
 
   const formattedVerification = useMemo(
-    () => (userDetail.data?.isVerified ? lang.text("isVerified") : lang.text("isNotVerified")),
-    [userDetail.data?.isVerified]
+    () =>
+      userDetail.data?.isVerified
+        ? lang.text("isVerified")
+        : lang.text("isNotVerified"),
+    [userDetail.data?.isVerified],
   );
 
   // Deep comparison function
   const deepEqual = (obj1: any, obj2: any): boolean => {
     if (obj1 === obj2) return true;
-    if (typeof obj1 !== "object" || obj1 === null || typeof obj2 !== "object" || obj2 === null) {
+    if (
+      typeof obj1 !== "object" ||
+      obj1 === null ||
+      typeof obj2 !== "object" ||
+      obj2 === null
+    ) {
       return false;
     }
     const keys1 = Object.keys(obj1);
@@ -163,9 +183,13 @@ export const StudentInformation = () => {
   // Populate form and store initial values
   useEffect(() => {
     if (detail.data && userDetail.data && classroom.data && !isEditMode) {
-      const validKelasId = detail.data?.idKelas && classroom.data.some(kelas => kelas.id === detail.data.idKelas)
-        ? String(detail.data.idKelas)
-        : classroom.data.length > 0 ? String(classroom.data[0].id) : "";
+      const validKelasId =
+        detail.data?.idKelas &&
+        classroom.data.some((kelas) => kelas.id === detail?.data.idKelas)
+          ? String(detail.data.idKelas)
+          : classroom.data.length > 0
+            ? String(classroom.data[0].id)
+            : "";
 
       const newValues = {
         kelasId: validKelasId,
@@ -190,9 +214,9 @@ export const StudentInformation = () => {
 
       form.reset(newValues, { keepDirty: true });
       setInitialValues(newValues);
-      setHasChanges(false);
+      // setHasChanges(false);
     }
-  }, [detail.data, userDetail.data, classroom.data, isEditMode, form]);
+  }, [detail.data, userDetail.data, classroom.data]);
 
   // Optimized form.watch with debounce
   useEffect(() => {
@@ -201,7 +225,7 @@ export const StudentInformation = () => {
         debounce((currentValues) => {
           const hasFormChanges = !deepEqual(currentValues, initialValues);
           setHasChanges(hasFormChanges);
-        }, 300)
+        }, 300),
       );
       return () => subscription.unsubscribe();
     }
@@ -211,43 +235,80 @@ export const StudentInformation = () => {
   async function onSubmit(data: z.infer<typeof studentEditSchema>) {
     setIsSubmitting(true);
     try {
-      if (!data.kelasId || !classroom.data?.some(kelas => String(kelas.id) === data.kelasId)) {
+      if (
+        !data.kelasId ||
+        !classroom.data?.some((kelas) => String(kelas.id) === data.kelasId)
+      ) {
         alert.error("Kelas yang dipilih tidak valid");
         return;
       }
 
       const updatedData: any = {};
-      if (data.name && data.name !== (detail.data?.user?.name || userDetail.data?.name)) {
+      if (
+        data.name &&
+        data.name !== (detail.data?.user?.name || userDetail.data?.name)
+      ) {
         updatedData.name = data.name;
       }
-      if (data.email && data.email !== userDetail.data?.email) updatedData.email = data.email;
-      if (data.tanggalLahir && data.tanggalLahir !== userDetail.data?.tanggalLahir) updatedData.tanggalLahir = data.tanggalLahir;
-      if (data.rfid && data.rfid !== userDetail.data?.rfid) updatedData.rfid = data.rfid;
-      if (data.nisn && data.nisn !== userDetail.data?.nisn) updatedData.nisn = data.nisn;
-      if (data.nrk && data.nrk !== userDetail.data?.nrk) updatedData.nrk = data.nrk;
-      if (data.nikki && data.nikki !== userDetail.data?.nikki) updatedData.nikki = data.nikki;
-      if (data.nis && data.nis !== userDetail.data?.nis) updatedData.nis = data.nis;
-      if (data.nip && data.nip !== userDetail.data?.nip) updatedData.nip = data.nip;
-      if (data.nik && data.nik !== userDetail.data?.nik) updatedData.nik = data.nik;
-      if (data.noTlp && data.noTlp !== userDetail.data?.noTlp) updatedData.noTlp = data.noTlp;
-      if (data.alamat && data.alamat !== userDetail.data?.alamat) updatedData.alamat = data.alamat;
+      if (data.email && data.email !== userDetail.data?.email)
+        updatedData.email = data.email;
+      if (
+        data.tanggalLahir &&
+        data.tanggalLahir !== userDetail.data?.tanggalLahir
+      )
+        updatedData.tanggalLahir = data.tanggalLahir;
+      if (data.rfid && data.rfid !== userDetail.data?.rfid)
+        updatedData.rfid = data.rfid;
+      if (data.nisn && data.nisn !== userDetail.data?.nisn)
+        updatedData.nisn = data.nisn;
+      if (data.nrk && data.nrk !== userDetail.data?.nrk)
+        updatedData.nrk = data.nrk;
+      if (data.nikki && data.nikki !== userDetail.data?.nikki)
+        updatedData.nikki = data.nikki;
+      if (data.nis && data.nis !== userDetail.data?.nis)
+        updatedData.nis = data.nis;
+      if (data.nip && data.nip !== userDetail.data?.nip)
+        updatedData.nip = data.nip;
+      if (data.nik && data.nik !== userDetail.data?.nik)
+        updatedData.nik = data.nik;
+      if (data.noTlp && data.noTlp !== userDetail.data?.noTlp)
+        updatedData.noTlp = data.noTlp;
+      if (data.alamat && data.alamat !== userDetail.data?.alamat)
+        updatedData.alamat = data.alamat;
       // if (data.hobi && data.hobi !== userDetail.data?.hobi) updatedData.hobi = data.hobi;
-      if (data.isActive !== undefined && data.isActive !== userDetail.data?.isActive) updatedData.isActive = data.isActive;
-      if (data.sekolahId !== undefined && data.sekolahId !== userDetail.data?.sekolahId) updatedData.sekolahId = data.sekolahId;
-      if (data.jenisKelamin && data.jenisKelamin !== userDetail.data?.jenisKelamin) updatedData.jenisKelamin = data.jenisKelamin;
+      if (
+        data.isActive !== undefined &&
+        data.isActive !== userDetail.data?.isActive
+      )
+        updatedData.isActive = data.isActive;
+      if (
+        data.sekolahId !== undefined &&
+        data.sekolahId !== userDetail.data?.sekolahId
+      )
+        updatedData.sekolahId = data.sekolahId;
+      if (
+        data.jenisKelamin &&
+        data.jenisKelamin !== userDetail.data?.jenisKelamin
+      )
+        updatedData.jenisKelamin = data.jenisKelamin;
       if (data.isVerified !== undefined) {
         // Konversi userDetail.data?.isVerified ke boolean untuk perbandingan
-        const serverIsVerified = userDetail.data?.isVerified === true || userDetail.data?.isVerified === 1 || userDetail.data?.isVerified === "1";
+        const serverIsVerified =
+          userDetail.data?.isVerified === true ||
+          userDetail.data?.isVerified === 1 ||
+          userDetail.data?.isVerified === "1";
         if (data.isVerified !== serverIsVerified) {
           updatedData.isVerified = data.isVerified; // Kirim true/false langsung
         }
       }
       updatedData.kelasId = Number(data.kelasId);
-      console.log("Data yang dikirim saat submit:", updatedData);
+      // console.log("Data yang dikirim saat submit:", updatedData);
 
       await creation.update(decodeParams?.biodataId!, updatedData);
       setIsEditMode(false);
-      alert.success(lang.text("successUpdate", { context: lang.text("student") }));
+      alert.success(
+        lang.text("successUpdate", { context: lang.text("student") }),
+      );
       setIsSubmitting(false);
       await Promise.all([
         biodata.query.refetch(),
@@ -257,7 +318,8 @@ export const StudentInformation = () => {
       setHasChanges(false);
     } catch (err: any) {
       alert.error(
-        err?.message || lang.text("failUpdate", { context: lang.text("student") })
+        err?.message ||
+          lang.text("failUpdate", { context: lang.text("student") }),
       );
     }
   }
@@ -285,7 +347,7 @@ export const StudentInformation = () => {
         </div>
         <div className="md:col-span-2 lg:col-span-3">
           <Card className="w-full">
-            <CardHeader className="border-b border-white/10 mb-6 flex flex-row items-center justify-between">
+            <CardHeader className="border-b border-white/10 mb-1 flex flex-row items-center justify-between pb-4">
               <div className="flex items-center gap-4">
                 {isEditMode ? (
                   <FormField
@@ -305,7 +367,9 @@ export const StudentInformation = () => {
                     )}
                   />
                 ) : (
-                  <CardTitle className="border border-white/10 px-4 py-3 rounded-md">{detail.data?.user?.name}</CardTitle>
+                  <CardTitle className="border border-white/10 px-0 py-3 rounded-md !capitalize">
+                    {userDetail.data?.name}
+                  </CardTitle>
                 )}
                 {isEditMode ? (
                   <FormField
@@ -325,9 +389,10 @@ export const StudentInformation = () => {
                     )}
                   />
                 ) : (
-                  <CardDescription>{`NIS: ${detail?.data?.user?.nis || "-"}`}</CardDescription>
+                  <CardDescription>{`NIS: ${userDetail?.data?.nis ?? "-"}`}</CardDescription>
                 )}
               </div>
+
               <div className="flex gap-2">
                 {isEditMode ? (
                   <>
@@ -344,7 +409,12 @@ export const StudentInformation = () => {
                       size="sm"
                       disabled={isSubmitting}
                       onClick={() => {
-                        if (hasChanges && window.confirm("Perubahan belum disimpan. Yakin ingin membatalkan?")) {
+                        if (
+                          hasChanges &&
+                          window.confirm(
+                            "Perubahan belum disimpan. Yakin ingin membatalkan?",
+                          )
+                        ) {
                           form.reset();
                           setIsEditMode(false);
                           setHasChanges(false);
@@ -374,7 +444,11 @@ export const StudentInformation = () => {
                     control={form.control}
                     icon={<IdCard size={24} />}
                     label={lang.text("classRoom")}
-                    value={classroom.data?.find(k => k.id === Number(form.getValues("kelasId")))?.namaKelas}
+                    value={
+                      classroom.data?.find(
+                        (k) => k.id === Number(form.getValues("kelasId")),
+                      )?.namaKelas
+                    }
                     name="kelasId"
                     type="select"
                     options={classroomOptions}
@@ -451,7 +525,9 @@ export const StudentInformation = () => {
                 <NonEditableInfoItem
                   icon={<LogInIcon size={24} />}
                   label={lang.text("lastLogin")}
-                  value={dayjs(userDetail.data?.lastLogin).format("HH:mm, DD MMM YYYY")}
+                  value={dayjs(userDetail.data?.lastLogin).format(
+                    "HH:mm, DD MMM YYYY",
+                  )}
                   isEditMode={isEditMode}
                 />
                 {/* <EditableInfoItem
@@ -495,12 +571,17 @@ export const StudentInformation = () => {
                   renderValue={
                     detail.data?.location ? (
                       <Link
-                        to={createGmapUrl(detail.data.location.latitude, detail.data.location.longitude)}
+                        to={createGmapUrl(
+                          detail.data.location.latitude,
+                          detail.data.location.longitude,
+                        )}
                         target="_blank"
                       >
                         {lang.text("seeOnMap")}
                       </Link>
-                    ) : "-"
+                    ) : (
+                      "-"
+                    )
                   }
                   isEditMode={isEditMode}
                 />

@@ -1,4 +1,5 @@
-import QRCode from 'react-qr-code';
+import { lang } from "@/core/libs";
+import QRCode from "react-qr-code";
 
 interface QRCodeDisplayProps {
   generateQrCode: () => void;
@@ -15,11 +16,11 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
     <button
       onClick={generateQrCode}
       className={`bg-blue-500 text-white py-2 px-6 rounded-lg ${
-        isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'
+        isDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"
       }`}
       disabled={isDisabled}
     >
-      Generate QR
+      {lang.text("generateQr")}
     </button>
     {qrCodeData && (
       <div className="mt-4 bg-white p-2 shadow-md rounded border-4">

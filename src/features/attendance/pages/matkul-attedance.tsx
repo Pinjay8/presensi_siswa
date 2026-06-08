@@ -1,22 +1,42 @@
-import { APP_CONFIG } from '@/core/configs';
-import { Badge, Button, Input, Label, lang, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/core/libs';
-import { getStaticFile } from '@/core/utils';
-import { DashboardPageLayout } from '@/features/_global';
-import { useClassroom } from '@/features/classroom';
-import { useCourse } from '@/features/course';
-import { useProfile } from '@/features/profile';
-import { useSchoolDetail } from '@/features/schools';
-import { useBiodata } from '@/features/user/hooks';
-import { Document, Image, Page, pdf, StyleSheet, Text, View } from '@react-pdf/renderer';
-import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
-import { motion } from 'framer-motion';
-import Papa from 'papaparse';
-import { useEffect, useMemo, useState } from 'react';
-import { FaFile } from 'react-icons/fa';
-import * as XLSX from 'xlsx';
-import { MatpelAttendanceTable } from '../containers/matpelAttedance';
+import { APP_CONFIG } from "@/core/configs";
+import {
+  Badge,
+  Button,
+  Input,
+  Label,
+  lang,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/core/libs";
+import { getStaticFile } from "@/core/utils";
+import { DashboardPageLayout } from "@/features/_global";
+import { useClassroom } from "@/features/classroom";
+import { useCourse } from "@/features/course";
+import { useProfile } from "@/features/profile";
+import { useSchoolDetail } from "@/features/schools";
+import { useBiodata } from "@/features/user/hooks";
+import {
+  Document,
+  Image,
+  Page,
+  pdf,
+  StyleSheet,
+  Text,
+  View,
+} from "@react-pdf/renderer";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import { motion } from "framer-motion";
+import Papa from "papaparse";
+import { useEffect, useMemo, useState } from "react";
+import { FaFile } from "react-icons/fa";
+import * as XLSX from "xlsx";
+import { MatpelAttendanceTable } from "../containers/matpelAttedance";
+import { useMapelAttedance } from "../hooks/useMapelAttedance";
 
 // Konfigurasi dayjs untuk timezone
 dayjs.extend(utc);
@@ -26,10 +46,10 @@ dayjs.extend(timezone);
 const pdfStyles = StyleSheet.create({
   page: {
     fontSize: 12,
-    fontFamily: 'Times-Roman',
+    fontFamily: "Times-Roman",
   },
   header: {
-    position: 'relative',
+    position: "relative",
     top: 0,
     left: 0,
     right: 0,
@@ -38,7 +58,7 @@ const pdfStyles = StyleSheet.create({
   headerImage: {
     width: 595,
     maxHeight: 150,
-    objectFit: 'contain',
+    objectFit: "contain",
   },
   contentWrapper: {
     paddingLeft: 32,
@@ -47,79 +67,85 @@ const pdfStyles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 20,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
   },
   table: {
-    display: 'flex',
-    width: 'auto',
-    borderStyle: 'solid',
+    display: "flex",
+    width: "auto",
+    borderStyle: "solid",
     borderWidth: 1,
-    borderColor: '#bfbfbf',
+    borderColor: "#bfbfbf",
   },
   tableRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     borderBottomWidth: 1,
-    borderBottomColor: '#bfbfbf',
+    borderBottomColor: "#bfbfbf",
   },
   tableHeader: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     padding: 5,
-    textAlign: 'center',
+    textAlign: "center",
     borderRightWidth: 1,
-    borderRightColor: '#bfbfbf',
+    borderRightColor: "#bfbfbf",
   },
   tableCell: {
     padding: 5,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
     borderRightWidth: 1,
-    borderRightColor: '#bfbfbf',
+    borderRightColor: "#bfbfbf",
     fontSize: 10,
   },
   signature: {
     marginTop: 50,
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   signatureImage: {
     width: 120,
-    height: 'auto',
+    height: "auto",
     maxHeight: 50,
     marginTop: 20,
     marginBottom: 10,
   },
   signatureText: {
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
 
 // Komponen PDF untuk laporan kehadiran
 const AttendanceReportPDF: React.FC<{
   data: any[];
-  schoolData: { kopSurat?: string; namaSekolah?: string; namaKepalaSekolah?: string; ttdKepalaSekolah?: string };
+  schoolData: {
+    kopSurat?: string;
+    namaSekolah?: string;
+    namaKepalaSekolah?: string;
+    ttdKepalaSekolah?: string;
+  };
   dateRange: string;
 }> = ({ data, schoolData, dateRange }) => {
   const kopSuratUrl = schoolData.kopSurat
-    ? schoolData.kopSurat.startsWith('data:image')
+    ? schoolData.kopSurat.startsWith("data:image")
       ? schoolData.kopSurat
       : `data:image/png;base64,${schoolData.kopSurat}`
     : undefined;
 
   const signatureUrl = schoolData.ttdKepalaSekolah
-    ? schoolData.ttdKepalaSekolah.startsWith('data:image')
+    ? schoolData.ttdKepalaSekolah.startsWith("data:image")
       ? schoolData.ttdKepalaSekolah
       : `data:image/png;base64,${schoolData.ttdKepalaSekolah}`
     : undefined;
 
-  const title = dateRange === 'today'
-    ? 'Laporan Kehadiran MatPel Hari Ini'
-    : dateRange === 'month'
-      ? 'Laporan Kehadiran MatPel Bulan Ini'
-      : 'Laporan Kehadiran MatPel 2025';
+  const title =
+    dateRange === "today"
+      ? "Laporan Kehadiran MatPel Hari Ini"
+      : dateRange === "month"
+        ? "Laporan Kehadiran MatPel Bulan Ini"
+        : "Laporan Kehadiran MatPel 2025";
 
   // Bagi data menjadi kelompok untuk setiap halaman
   const rowsPerPage = 25; // Disesuaikan untuk tinggi halaman
@@ -130,7 +156,7 @@ const AttendanceReportPDF: React.FC<{
       dataChunks.push(chunk);
     }
   }
-  console.log('Data Chunks:', dataChunks); // Debugging
+  // console.log("Data Chunks:", dataChunks); // Debugging
 
   return (
     <Document>
@@ -144,7 +170,10 @@ const AttendanceReportPDF: React.FC<{
           {/* Header Kop Surat */}
           {kopSuratUrl && (
             <View style={pdfStyles.header} fixed>
-              <Image src={getStaticFile(kopSuratUrl)} style={pdfStyles.headerImage} />
+              <Image
+                src={getStaticFile(kopSuratUrl)}
+                style={pdfStyles.headerImage}
+              />
             </View>
           )}
 
@@ -157,13 +186,13 @@ const AttendanceReportPDF: React.FC<{
               {/* Table Header */}
               <View style={pdfStyles.tableRow} fixed>
                 {[
-                  'No',
-                  'Nama',
-                  'NISN',
-                  'Kelas',
-                  'Mata Pelajaran',
-                  'Status',
-                  'Jam Masuk',
+                  "No",
+                  "Nama",
+                  "NIS",
+                  "Kelas",
+                  "Mata Pelajaran",
+                  "Status",
+                  // "Jam Masuk",
                 ].map((header, index) => (
                   <View
                     key={index}
@@ -172,18 +201,18 @@ const AttendanceReportPDF: React.FC<{
                       {
                         width:
                           index === 0
-                            ? '5%'
+                            ? "5%"
                             : index === 1
-                              ? '20%'
+                              ? "20%"
                               : index === 2
-                                ? '15%'
+                                ? "15%"
                                 : index === 3
-                                  ? '10%'
+                                  ? "10%"
                                   : index === 4
-                                    ? '20%'
+                                    ? "20%"
                                     : index === 5
-                                      ? '15%'
-                                      : '15%',
+                                      ? "15%"
+                                      : "15%",
                       },
                     ]}
                   >
@@ -195,27 +224,32 @@ const AttendanceReportPDF: React.FC<{
               {/* Table Body */}
               {chunk.map((item, index) => (
                 <View style={pdfStyles.tableRow} key={index} wrap={false}>
-                  <View style={[pdfStyles.tableCell, { width: '5%' }]}>
+                  <View style={[pdfStyles.tableCell, { width: "5%" }]}>
                     <Text>{item.No}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '20%' }]}>
+                  <View style={[pdfStyles.tableCell, { width: "20%" }]}>
                     <Text>{item.Nama}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '15%' }]}>
-                    <Text>{item.NISN}</Text>
+                  <View style={[pdfStyles.tableCell, { width: "15%" }]}>
+                    <Text>{item.NIS}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '10%' }]}>
+                  <View style={[pdfStyles.tableCell, { width: "10%" }]}>
                     <Text>{item.Kelas}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '20%' }]}>
+                  <View style={[pdfStyles.tableCell, { width: "20%" }]}>
                     <Text>{item.MataPelajaran}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '15%' }]}>
+                  <View
+                    style={[
+                      pdfStyles.tableCell,
+                      { width: "15%", textTransform: "capitalize" },
+                    ]}
+                  >
                     <Text>{item.StatusKehadiran}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: '15%' }]}>
+                  {/* <View style={[pdfStyles.tableCell, { width: "15%" }]}>
                     <Text>{item.JamMasuk}</Text>
-                  </View>
+                  </View> */}
                 </View>
               ))}
             </View>
@@ -228,7 +262,7 @@ const AttendanceReportPDF: React.FC<{
                   <Image src={signatureUrl} style={pdfStyles.signatureImage} />
                 )}
                 <Text style={pdfStyles.signatureText}>
-                  {schoolData.namaKepalaSekolah || 'Nama Kepala Sekolah'}
+                  {schoolData.namaKepalaSekolah || "Nama Kepala Sekolah"}
                 </Text>
               </View>
             )}
@@ -240,11 +274,11 @@ const AttendanceReportPDF: React.FC<{
 };
 
 export const MatkulAttendance = () => {
-  const [selectedClasses, setSelectedClasses] = useState<string>('all');
-  const [searchStudentName, setSearchStudentName] = useState<string>('');
-  const [selectedCourse, setSelectedCourse] = useState<string>('all');
-  const [selectedDateRange, setSelectedDateRange] = useState<string>('year');
-  const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [selectedClasses, setSelectedClasses] = useState<string>("all");
+  const [searchStudentName, setSearchStudentName] = useState<string>("");
+  const [selectedCourse, setSelectedCourse] = useState<string>("all");
+  const [selectedDateRange, setSelectedDateRange] = useState<string>("year");
+  const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [listClassRoom, setListClassRoom] = useState<any[]>([]);
 
@@ -256,16 +290,16 @@ export const MatkulAttendance = () => {
 
   const classRoom = useClassroom();
   const profile = useProfile();
-  const school = useSchoolDetail({ id: profile?.user?.sekolahId });
+  const school = useSchoolDetail({ id: profile?.user?.sekolahId || "" });
 
   useEffect(() => {
-    localStorage.setItem('attendanceTarget', 'students');
+    localStorage.setItem("attendanceTarget", "students");
   }, []);
 
   const formatTime = (time?: string) => {
     return time
-      ? dayjs(time).tz('Asia/Jakarta').format('DD MMM YYYY, HH:mm:ss')
-      : 'N/A';
+      ? dayjs(time).tz("Asia/Jakarta").format("DD MMM YYYY, HH:mm:ss")
+      : "N/A";
   };
 
   useMemo(() => {
@@ -277,119 +311,173 @@ export const MatkulAttendance = () => {
       new Set(resource.data?.map((course) => course.namaMataPelajaran) || []),
     );
   }, [resource.data]);
+  const [filters, setFilter] = useState<
+    "harian" | "mingguan" | "bulanan" | "tahunan"
+  >("harian");
 
-  const filteredData = useMemo(() => {
-    const today = '2025-05-18';
-    const currentMonth = '2025-05';
-    const currentYear = '2025';
-    let data = biodata.data
-      ?.flatMap((student) =>
-        student.kehadiranBulananMataPelajaran?.flatMap((monthlyAttendance) =>
-          monthlyAttendance.absensisMataPelajaran?.flatMap((attendance) =>
-            attendance.kehadiranMapel?.map((mapel) => ({
-              user: {
-                image: student.user?.image || '',
-                name: student.user?.name || 'N/A',
-                nisn: student.user?.nisn || 'N/A',
-              },
-              kelas: {
-                namaKelas: student.kelas?.namaKelas || 'N/A',
-              },
-              attendance: {
-                statusKehadiran: mapel.statusKehadiran || 'Tidak Hadir',
-                namaMataPelajaran: attendance.mataPelajaran?.namaMataPelajaran || 'N/A',
-                tanggal: formatTime(mapel.tanggal),
-                jamMasuk: formatTime(attendance.jamMasuk),
-              },
-            })),
-          ),
-        ),
-      )
-      ?.filter((entry) => {
-        const date = dayjs(entry.attendance.tanggal, 'DD MMM YYYY, HH:mm:ss').tz('Asia/Jakarta');
-        if (selectedDateRange === 'today') {
-          return date.format('YYYY-MM-DD') === today;
-        } else if (selectedDateRange === 'month') {
-          return date.format('YYYY-MM') === currentMonth;
-        } else {
-          return date.format('YYYY') === currentYear;
-        }
-      })
-      ?.filter((entry) =>
-        selectedClasses === 'all' || entry.kelas.namaKelas === selectedClasses,
-      )
-      ?.filter((entry) =>
-        selectedCourse !== 'all'
-          ? entry.attendance.namaMataPelajaran === selectedCourse
-          : true,
-      )
-      ?.filter((entry) =>
-        searchStudentName
-          ? entry.user.name.toLowerCase().includes(searchStudentName.toLowerCase())
-          : true,
-      )
-      ?.filter((entry) =>
-        selectedStatus !== 'all'
-          ? entry.attendance.statusKehadiran.toLowerCase() === selectedStatus.toLowerCase()
-          : true,
-      ) || [];
+  // const filteredData = useMemo(() => {
+  //   const today = dayjs().tz("Asia/Jakarta").format("YYYY-MM-DD");
+  //   const currentMonth = dayjs().tz("Asia/Jakarta").format("YYYY-MM");
+  //   const currentYear = dayjs().tz("Asia/Jakarta").format("YYYY");
+  //   let data =
+  //     biodata.data
+  //       ?.flatMap((student) =>
+  //         student.kehadiranBulananMataPelajaran?.flatMap(
+  //           (monthlyAttendance: any) =>
+  //             monthlyAttendance.absensisMataPelajaran?.flatMap(
+  //               (attendance: any) =>
+  //                 attendance.kehadiranMapel?.map((mapel: any) => ({
+  //                   user: {
+  //                     image: student.user?.image || "",
+  //                     name: student.user?.name || "N/A",
+  //                     nisn: student.user?.nisn || "N/A",
+  //                   },
+  //                   kelas: {
+  //                     namaKelas: student.kelas?.namaKelas || "N/A",
+  //                   },
+  //                   attendance: {
+  //                     statusKehadiran: mapel.statusKehadiran
+  //                       ? mapel.statusKehadiran.charAt(0).toUpperCase() +
+  //                         mapel.statusKehadiran.slice(1).toLowerCase()
+  //                       : "Tidak Hadir",
+  //                     namaMataPelajaran:
+  //                       attendance.mataPelajaran?.namaMataPelajaran || "N/A",
+  //                     tanggal: formatTime(mapel.tanggal),
+  //                     jamMasuk: formatTime(student.absensis?.[0]?.jamMasuk),
+  //                     jamPulang: formatTime(student.absensis?.[0]?.jamPulang),
+  //                   },
+  //                 })),
+  //             ),
+  //         ),
+  //       )
+  //       ?.filter((entry) => {
+  //         const date = dayjs(
+  //           entry.attendance.tanggal,
+  //           "DD MMM YYYY, HH:mm:ss",
+  //         ).tz("Asia/Jakarta");
+  //         if (selectedDateRange === "today") {
+  //           return date.format("YYYY-MM-DD") === today;
+  //         } else if (selectedDateRange === "month") {
+  //           return date.format("YYYY-MM") === currentMonth;
+  //         } else {
+  //           return date.format("YYYY") === currentYear;
+  //         }
+  //       })
+  //       ?.filter(
+  //         (entry) =>
+  //           selectedClasses === "all" ||
+  //           entry.kelas.namaKelas === selectedClasses,
+  //       )
+  //       ?.filter((entry) =>
+  //         selectedCourse !== "all"
+  //           ? entry.attendance.namaMataPelajaran === selectedCourse
+  //           : true,
+  //       )
+  //       ?.filter((entry) =>
+  //         searchStudentName
+  //           ? entry.user.name
+  //               .toLowerCase()
+  //               .includes(searchStudentName.toLowerCase())
+  //           : true,
+  //       )
+  //       ?.filter((entry) =>
+  //         selectedStatus !== "all"
+  //           ? entry.attendance.statusKehadiran.toLowerCase() ===
+  //             selectedStatus.toLowerCase()
+  //           : true,
+  //       ) || [];
 
-    return data.sort((a, b) =>
-      dayjs(b.attendance.tanggal, 'DD MMM YYYY, HH:mm:ss').diff(
-        dayjs(a.attendance.tanggal, 'DD MMM YYYY, HH:mm:ss'),
-      ),
-    );
-  }, [biodata.data, selectedClasses, selectedCourse, searchStudentName, selectedDateRange, selectedStatus]);
+  //   return data.sort((a, b) =>
+  //     dayjs(b.attendance.tanggal, "DD MMM YYYY, HH:mm:ss").diff(
+  //       dayjs(a.attendance.tanggal, "DD MMM YYYY, HH:mm:ss"),
+  //     ),
+  //   );
+  // }, [
+  //   biodata.data,
+  //   selectedClasses,
+  //   selectedCourse,
+  //   searchStudentName,
+  //   selectedDateRange,
+  //   selectedStatus,
+  // ]);
 
-  const handleExport = async (format: 'csv' | 'excel' | 'pdf') => {
+  const {
+    data: mapelData,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useMapelAttedance({
+    filter: filters,
+    page: 1,
+    limit: 100,
+  });
+
+  const filteredData = mapelData?.data || [];
+
+  const handleExport = async (format: "csv" | "excel" | "pdf") => {
     if (filteredData.length === 0) {
-      alert('Tidak ada data untuk diekspor.');
+      alert("Tidak ada data untuk diekspor.");
       return;
     }
 
     // Data untuk CSV dan Excel (semua kolom)
-    const fullExportData = filteredData.map((data, index) => ({
+    const fullExportData = filteredData.map((data: any, index: any) => ({
       No: index + 1,
-      Nama: data.user.name || '',
-      NISN: data.user.nisn || '',
-      Kelas: data.kelas.namaKelas || 'N/A',
-      Sekolah:
-        biodata.data?.find((s) => s.user?.nisn === data.user.nisn)?.user?.sekolah?.namaSekolah ||
-        'N/A',
-      MataPelajaran: data.attendance.namaMataPelajaran || 'N/A',
-      StatusKehadiran: data.attendance.statusKehadiran || 'N/A',
-      Tanggal: data.attendance.tanggal,
-      JamMasuk: data.attendance.jamMasuk,
+      Nama: data.namaSiswa || "",
+      // NISN: data.user.nisn || "",
+      NIS: data.nis || "",
+      Kelas: data.namaKelas || "N/A",
+      // Sekolah:
+      //   biodata.data?.find((s) => s.user?.nisn === data.user.nisn)?.user
+      //     ?.sekolah?.namaSekolah || "N/A",
+      MataPelajaran: data.namaMataPelajaran || "N/A",
+      StatusKehadiran: data.statusKehadiran || "N/A",
+      Tanggal: data.tanggal,
+      JamMasuk: data.jamMasuk,
     }));
 
     // Data untuk PDF (termasuk Mata Pelajaran)
-    const pdfExportData = filteredData.map((data, index) => ({
+    const pdfExportData = filteredData.map((data: any, index: any) => ({
       No: index + 1,
-      Nama: data.user.name || '',
-      NISN: data.user.nisn || '',
-      Kelas: data.kelas.namaKelas || 'N/A',
-      MataPelajaran: data.attendance.namaMataPelajaran || 'N/A',
-      StatusKehadiran: data.attendance.statusKehadiran || 'N/A',
-      JamMasuk: data.attendance.jamMasuk,
+      Nama: data.namaSiswa || "",
+      // NISN: data.user.nisn || "",
+      NIS: data.nis || "",
+      Kelas: data.namaKelas || "N/A",
+      MataPelajaran: data.namaMataPelajaran || "N/A",
+      StatusKehadiran: data.statusKehadiran || "N/A",
+      JamMasuk: data.jamMasuk,
     }));
 
-    if (format === 'csv') {
-      const csv = Papa.unparse(fullExportData, { delimiter: ';' });
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
+    if (format === "csv") {
+      const csv = Papa.unparse(fullExportData, { delimiter: ";" });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `attendance_data_${selectedDateRange === 'today' ? 'hari-ini' : selectedDateRange === 'month' ? 'mei-2025' : '2025'
-        }.csv`;
+      link.download = `attendance_data_${
+        selectedDateRange === "today"
+          ? "hari-ini"
+          : selectedDateRange === "month"
+            ? "mei-2025"
+            : "2025"
+      }.csv`;
       link.click();
-    } else if (format === 'excel') {
+    } else if (format === "excel") {
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(fullExportData);
-      XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
-      XLSX.writeFile(wb, `attendance_data_${selectedDateRange === 'today' ? 'hari-ini' : selectedDateRange === 'month' ? 'mei-2025' : '2025'
-        }.xlsx`);
-    } else if (format === 'pdf') {
+      XLSX.utils.book_append_sheet(wb, ws, "Attendance");
+      XLSX.writeFile(
+        wb,
+        `attendance_data_${
+          selectedDateRange === "today"
+            ? "hari-ini"
+            : selectedDateRange === "month"
+              ? "mei-2025"
+              : "2025"
+        }.xlsx`,
+      );
+    } else if (format === "pdf") {
       if (school.isLoading) {
-        alert('Data sekolah masih dimuat. Coba lagi nanti.');
+        alert("Data sekolah masih dimuat. Coba lagi nanti.");
         return;
       }
       try {
@@ -397,10 +485,10 @@ export const MatkulAttendance = () => {
           <AttendanceReportPDF
             data={pdfExportData}
             schoolData={{
-              kopSurat: school.data?.kopSurat,
+              kopSurat: school.data?.kopSurat || "",
               namaSekolah: school.data?.namaSekolah,
-              namaKepalaSekolah: school.data?.namaKepalaSekolah,
-              ttdKepalaSekolah: school.data?.ttdKepalaSekolah,
+              namaKepalaSekolah: school.data?.namaKepalaSekolah || "",
+              ttdKepalaSekolah: school.data?.ttdKepalaSekolah || "",
             }}
             dateRange={selectedDateRange}
           />
@@ -409,45 +497,53 @@ export const MatkulAttendance = () => {
         const pdfInstance = pdf(doc);
         const pdfBlob = await pdfInstance.toBlob();
         const url = window.URL.createObjectURL(pdfBlob);
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = url;
-        link.download = selectedDateRange === 'today'
-          ? 'Laporan-kehadiran-hari-ini.pdf'
-          : selectedDateRange === 'month'
-            ? 'Laporan-kehadiran-mei-2025.pdf'
-            : 'Laporan-kehadiran-2025.pdf';
+        link.download =
+          selectedDateRange === "today"
+            ? "Laporan-kehadiran-hari-ini.pdf"
+            : selectedDateRange === "month"
+              ? "Laporan-kehadiran-mei-2025.pdf"
+              : "Laporan-kehadiran-2025.pdf";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
       } catch (error) {
-        console.error('Error generating PDF:', error);
-        alert('Gagal menghasilkan PDF.');
+        console.error("Error generating PDF:", error);
+        alert("Gagal menghasilkan PDF.");
       }
     }
     setIsModalOpen(false);
   };
 
   const resetFilters = () => {
-    setSearchStudentName('');
-    setSelectedClasses('all');
-    setSelectedCourse('all');
-    setSelectedDateRange('year');
-    setSelectedStatus('all');
+    setSearchStudentName("");
+    setSelectedClasses("all");
+    setSelectedCourse("all");
+    setSelectedDateRange("year");
+    setSelectedStatus("all");
   };
 
   return (
     <DashboardPageLayout
-      siteTitle={`${lang.text('coursePresences')} | ${APP_CONFIG.appName}`}
-      breadcrumbs={[{ label: lang.text('coursePresences'), url: '/students' }]}
-      title={lang.text('coursePresences')}
+      siteTitle={`${lang.text("coursePresences")} | ${APP_CONFIG.appName}`}
+      breadcrumbs={[{ label: lang.text("coursePresences"), url: "/students" }]}
+      title={lang.text("coursePresences")}
     >
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
         {/* Filters */}
         <div className="mb-6 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
             <div>
-              <Label htmlFor="student-filter" className="block text-sm font-medium mb-2">
+              <Label
+                htmlFor="student-filter"
+                className="block text-sm font-medium mb-2"
+              >
                 Nama Siswa
               </Label>
               <Input
@@ -460,10 +556,16 @@ export const MatkulAttendance = () => {
               />
             </div>
             <div>
-              <Label htmlFor="class-filter" className="block text-sm font-medium mb-2">
+              <Label
+                htmlFor="class-filter"
+                className="block text-sm font-medium mb-2"
+              >
                 Kelas
               </Label>
-              <Select value={selectedClasses} onValueChange={setSelectedClasses}>
+              <Select
+                value={selectedClasses}
+                onValueChange={setSelectedClasses}
+              >
                 <SelectTrigger id="class-filter" className="w-full">
                   <SelectValue placeholder="Pilih Kelas" />
                 </SelectTrigger>
@@ -478,7 +580,10 @@ export const MatkulAttendance = () => {
               </Select>
             </div>
             <div>
-              <Label htmlFor="course-filter" className="block text-sm font-medium mb-2">
+              <Label
+                htmlFor="course-filter"
+                className="block text-sm font-medium mb-2"
+              >
                 Mata Pelajaran
               </Label>
               <Select value={selectedCourse} onValueChange={setSelectedCourse}>
@@ -496,22 +601,31 @@ export const MatkulAttendance = () => {
               </Select>
             </div>
             <div>
-              <Label htmlFor="date-filter" className="block text-sm font-medium mb-2">
+              <Label
+                htmlFor="date-filter"
+                className="block text-sm font-medium mb-2"
+              >
                 Tanggal
               </Label>
-              <Select value={selectedDateRange} onValueChange={setSelectedDateRange}>
+              <Select
+                value={selectedDateRange}
+                onValueChange={setSelectedDateRange}
+              >
                 <SelectTrigger id="date-filter" className="w-full">
                   <SelectValue placeholder="Pilih Tanggal" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="year">Tahun Ini (2025)</SelectItem>
-                  <SelectItem value="month">Bulan Ini (Mei 2025)</SelectItem>
-                  <SelectItem value="today">Hari Ini (18 Mei 2025)</SelectItem>
+                  <SelectItem value="year">Tahun Ini</SelectItem>
+                  <SelectItem value="month">Bulan Ini (Mei 2026)</SelectItem>
+                  <SelectItem value="today">Hari Ini (18 Mei 2026)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label htmlFor="status-filter" className="block text-sm font-medium mb-2">
+              <Label
+                htmlFor="status-filter"
+                className="block text-sm font-medium mb-2"
+              >
                 Status Kehadiran
               </Label>
               <Select value={selectedStatus} onValueChange={setSelectedStatus}>
@@ -528,22 +642,27 @@ export const MatkulAttendance = () => {
             </div>
           </div>
           <div className="flex items-center gap-4 flex-wrap">
-            <Button variant="outline" onClick={resetFilters} className="w-full sm:w-auto">
+            <Button
+              variant="outline"
+              onClick={resetFilters}
+              className="w-full sm:w-auto"
+            >
               Reset Filter
             </Button>
-            {selectedClasses !== 'all' && (
-              <Badge className="py-2 bg-white text-black" variant={'outline'}>
+            {selectedClasses !== "all" && (
+              <Badge className="py-2 bg-white text-black" variant={"outline"}>
                 {selectedClasses}
               </Badge>
             )}
-            {selectedCourse !== 'all' && (
-              <Badge className="py-2 bg-white text-black" variant={'outline'}>
+            {selectedCourse !== "all" && (
+              <Badge className="py-2 bg-white text-black" variant={"outline"}>
                 {selectedCourse}
               </Badge>
             )}
-            {selectedStatus !== 'all' && (
-              <Badge className="py-2 bg-white text-black" variant={'outline'}>
-                {selectedStatus.charAt(0).toUpperCase() + selectedStatus.slice(1)}
+            {selectedStatus !== "all" && (
+              <Badge className="py-2 bg-white text-black" variant={"outline"}>
+                {selectedStatus.charAt(0).toUpperCase() +
+                  selectedStatus.slice(1)}
               </Badge>
             )}
           </div>
@@ -553,11 +672,11 @@ export const MatkulAttendance = () => {
         <div className="mb-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              {selectedDateRange === 'today'
-                ? 'Kehadiran Hari Ini (18 Mei 2025)'
-                : selectedDateRange === 'month'
-                  ? 'Kehadiran Bulan Mei 2025'
-                  : 'Kehadiran Tahun 2025'}
+              {selectedDateRange === "today"
+                ? "Kehadiran Hari Ini (18 Mei 2026)"
+                : selectedDateRange === "month"
+                  ? "Kehadiran Bulan Mei 2026"
+                  : "Kehadiran Tahun 2026"}
             </h3>
             <div className="flex gap-4">
               <Button
@@ -565,7 +684,7 @@ export const MatkulAttendance = () => {
                 onClick={() => setIsModalOpen(true)}
                 className="px-4 py-2 rounded-lg transition duration-300"
               >
-                {lang.text('export')} Data <FaFile />
+                {lang.text("export")} Data <FaFile />
               </Button>
             </div>
           </div>
@@ -582,12 +701,20 @@ export const MatkulAttendance = () => {
               className="bg-background text-foreground rounded-lg p-6 w-full max-w-md shadow-lg"
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-lg font-semibold mb-4">Export & Filter Kelas</h2>
+              <h2 className="text-lg font-semibold mb-4">
+                Export & Filter Kelas
+              </h2>
               <div className="mb-4">
-                <Label htmlFor="class-filter" className="block text-sm font-medium mb-2">
-                  {lang.text('selectClassRoom')}
+                <Label
+                  htmlFor="class-filter"
+                  className="block text-sm font-medium mb-2"
+                >
+                  {lang.text("selectClassRoom")}
                 </Label>
-                <Select value={selectedClasses} onValueChange={setSelectedClasses}>
+                <Select
+                  value={selectedClasses}
+                  onValueChange={setSelectedClasses}
+                >
                   <SelectTrigger id="class-filter" className="w-full">
                     <SelectValue placeholder="Pilih Kelas" />
                   </SelectTrigger>
@@ -602,13 +729,21 @@ export const MatkulAttendance = () => {
                 </Select>
               </div>
               <div className="flex space-x-4">
-                <Button onClick={() => handleExport('csv')} className="w-full">
+                <Button onClick={() => handleExport("csv")} className="w-full">
                   Export CSV
                 </Button>
-                <Button onClick={() => handleExport('excel')} className="w-full" variant="secondary">
+                <Button
+                  onClick={() => handleExport("excel")}
+                  className="w-full"
+                  variant="secondary"
+                >
                   Export Excel
                 </Button>
-                <Button onClick={() => handleExport('pdf')} className="w-full" variant="destructive">
+                <Button
+                  onClick={() => handleExport("pdf")}
+                  className="w-full"
+                  variant="destructive"
+                >
                   Export PDF
                 </Button>
               </div>

@@ -6,7 +6,7 @@ export const useAlert = () => {
   const success = (message: string) => {
     toast({
       title: lang.text("success"),
-      variant: "default",
+      variant: "success",
       description: message,
     });
   };

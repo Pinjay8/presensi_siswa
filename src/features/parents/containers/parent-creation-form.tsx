@@ -58,6 +58,7 @@ export const ParentCreationForm = () => {
       nik: detail.data?.nik || "",
       password: detail.data?.password || "",
       usernameInstagram: detail.data?.usernameInstagram || "",
+      noTelegram: detail.data?.noTelegram || "",
       noWhatsApp: detail.data?.noWhatsApp || "",
       // nrk: detail.data?.nrk || "",
       // hobi: detail.data?.hobi || "",
@@ -87,6 +88,7 @@ export const ParentCreationForm = () => {
         nik: data.nik || undefined,
         password: data.password || undefined,
         usernameInstagram: data.usernameInstagram || undefined,
+        noTelegram: data.noTelegram || undefined,
         noWhatsApp: data.noWhatsApp || undefined,
       };
       // console.log("payload", payload);
@@ -100,7 +102,7 @@ export const ParentCreationForm = () => {
           }),
         );
       } else {
-        await creation.create(payload);
+        await creation.createParents(payload);
 
         alert.success(
           lang.text("successCreate", {
@@ -350,6 +352,23 @@ export const ParentCreationForm = () => {
                   <Input
                     type="text"
                     placeholder={lang.text("inputNoHP")}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage>{fieldState.error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="noTelegram"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>No Telegram</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder={"Input No Telegram"}
                     {...field}
                   />
                 </FormControl>

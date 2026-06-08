@@ -9,11 +9,15 @@ import {
   SelectValue,
 } from "@/core/libs";
 import { getStaticFile } from "@/core/utils";
-import { useAlert, DashboardPageLayout } from "@/features/_global";
+import {
+  useAlert,
+  DashboardPageLayout,
+  useDataTableController,
+} from "@/features/_global";
 import { useProfile } from "@/features/profile";
 import { useBiodataNew } from "@/features/user/hooks/use-biodata-new";
 import { useSchoolDetail } from "@/features/schools";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
@@ -32,6 +36,10 @@ import * as XLSX from "xlsx";
 import { StudentAttendanceTable } from "../containers";
 import { useBiodata } from "@/features/user";
 import { FaFilePdf } from "react-icons/fa";
+import { useStudentAttendance } from "../hooks/useStudentAttedance";
+import { useQueryClient } from "@tanstack/react-query";
+import { io } from "socket.io-client";
+import { useSearchParams } from "react-router-dom";
 
 // Konfigurasi dayjs untuk timezone
 dayjs.extend(utc);
@@ -111,6 +119,12 @@ const pdfStyles = StyleSheet.create({
   },
 });
 
+const formatDateTime = (value?: string | null) => {
+  if (!value) return "-";
+
+  return dayjs(value).tz("Asia/Jakarta").format("DD MMM YYYY HH:mm:ss");
+};
+
 // PDF Component for Student Attendance
 const StudentAttendancePDF: React.FC<{
   attendanceData: any[];
@@ -120,7 +134,7 @@ const StudentAttendancePDF: React.FC<{
     namaKepalaSekolah: string;
     ttdKepalaSekolah: string | undefined;
   };
-  mode: "daily" | "monthly";
+  mode: any;
   date?: string;
   period?: string;
 }> = ({ attendanceData, schoolData, mode, date, period }) => {
@@ -162,17 +176,17 @@ const StudentAttendancePDF: React.FC<{
               />
             ) : (
               <Text style={{ textAlign: "center", fontSize: 12 }}>
-                Kop Surat Tidak Tersedia
+                {/* Kop Surat Tidak Tersedia */}
               </Text>
             )}
           </View>
           <View style={pdfStyles.contentWrapper}>
             <Text style={pdfStyles.title}>Laporan Kehadiran Siswa</Text>
             <Text style={pdfStyles.content}>
-              Mode: {mode === "daily" ? "Harian" : "Bulanan"}
+              Mode: {mode === "harian" ? "Harian" : "Bulanan"}
             </Text>
             <Text style={pdfStyles.content}>
-              {mode === "daily"
+              {mode === "harian"
                 ? `Tanggal: ${date || "Tanggal Tidak Diketahui"}`
                 : `Periode: ${period || "Periode Tidak Diketahui"}`}
             </Text>
@@ -278,7 +292,7 @@ const generateStudentAttendancePDF = async ({
     | undefined;
   schoolData: any;
   schoolIsLoading: boolean;
-  mode: "daily" | "monthly";
+  mode: "harian" | "bulanan" | "tahunan" | "mingguan";
   date?: string;
   period?: string;
 }) => {
@@ -351,7 +365,9 @@ const generateStudentAttendancePDF = async ({
 export const StudentAttendance = () => {
   const [selectedClass, setSelectedClass] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [dataMode, setDataMode] = useState<"daily" | "monthly">("daily");
+  const [dataMode, setDataMode] = useState<
+    "harian" | "mingguan" | "bulanan" | "tahunan"
+  >("harian");
 
   useEffect(() => {
     localStorage.setItem("attendanceTarget", "students");
@@ -362,7 +378,6 @@ export const StudentAttendance = () => {
   const biodata = useBiodataNew(profile?.user?.sekolahId || 1);
   // console.log("biodata:", biodata.data);
   const biodataAll = useBiodata();
-  console.log("biodataAll list:", biodataAll);
   const { data: schoolData, isLoading: schoolIsLoading } = useSchoolDetail({
     id: profile?.user?.sekolahId || 1,
   });
@@ -374,165 +389,162 @@ export const StudentAttendance = () => {
     dayjs().tz("Asia/Jakarta").format("YYYY-MM"),
   );
 
-  const formatTime = (time?: string) => {
-    return time
-      ? dayjs(time).tz("Asia/Jakarta").format("DD MMM YYYY, HH:mm:ss")
-      : "N/A";
-  };
+  const [filters, setFilter] = useState<
+    "harian" | "mingguan" | "bulanan" | "tahunan"
+  >("harian");
 
-  const filteredData = useMemo(() => {
-    const biodataList = Array.isArray(biodata.data?.data)
-      ? biodata.data.data
-      : [];
+  // const {
+  //   global,
+  //   sorting,
+  //   filter,
+  //   pagination,
+  //   onSortingChange,
+  //   onPaginationChange,
+  // } = useDataTableController({ defaultPageSize: 10 });
 
-    const biodataAllList = Array.isArray(biodataAll.data)
-      ? biodataAll.data
-      : typeof biodataAll.data === "string"
-        ? JSON.parse(biodataAll.data)
-        : [];
-    if (dataMode === "daily") {
-      if (!biodataList.length) return [];
+  const {
+    data: attendanceData,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useStudentAttendance({
+    filter: filters,
+    page: 1,
+    limit: 100,
+    type: "siswa",
+  });
 
-      const today = dayjs().tz("Asia/Jakarta").format("YYYY-MM-DD");
+  const filteredData = attendanceData?.data || [];
 
-      const flatData =
-        biodataList?.flatMap((student: any) =>
-          student.absensis
-            ?.filter((attendance: any) => {
-              const attendanceDate = dayjs(attendance.jamMasuk)
-                .tz("Asia/Jakarta")
-                .format("YYYY-MM-DD");
+  useEffect(() => {
+    const socket = io("http://192.168.1.116:15219", {
+      transports: ["websocket"],
+    });
 
-              return attendanceDate === today;
-            })
-            .map((attendance: any) => ({
-              ...student,
-              attendance: {
-                ...attendance,
-                jamMasuk: formatTime(attendance.jamMasuk),
-                jamPulang: formatTime(attendance.jamPulang),
-              },
-            })),
-        ) || [];
+    socket.on("connect", () => {
+      console.log("Connected");
+    });
 
-      const result = flatData.filter((student: any) => {
-        const match = selectedClass
-          ? student.kelas?.namaKelas === selectedClass
-          : true;
+    socket.on("absen", async (data) => {
+      await refetch();
+    });
 
-        return match;
-      });
+    socket.on("absen-barcode", async (data) => {
+      console.log("[BARCODE]", data);
 
-      return result;
-    } else {
-      if (!biodataAllList.length) return [];
+      await refetch();
+    });
 
-      return biodataAllList
-        .flatMap((student: any) =>
-          student.absensis
-            ?.filter((attendance: any) =>
-              dayjs(attendance.jamMasuk)
-                .tz("Asia/Jakarta")
-                .isBetween(
-                  dayjs(selectedStartMonth).startOf("month"),
-                  dayjs(selectedEndMonth).endOf("month"),
-                  null,
-                  "[]",
-                ),
-            )
-            .map((attendance: any) => ({
-              ...student,
-              attendance: {
-                ...attendance,
-                jamMasuk: formatTime(attendance.jamMasuk),
-                jamPulang: formatTime(attendance.jamPulang),
-              },
-            })),
-        )
-        .filter((student: any) =>
-          selectedClass ? student.kelas?.namaKelas === selectedClass : true,
-        );
-    }
-  }, [
-    dataMode,
-    biodata.data,
-    biodataAll.data,
-    selectedStartMonth,
-    selectedEndMonth,
-    selectedClass,
-  ]);
+    socket.on("disconnect", () => {
+      console.log("Disconnected");
+    });
 
-  // console.log("filtered data:", filteredData);
+    socket.on("error", (err) => {
+      console.error("[ERROR]", err);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [refetch]);
 
   const handleExport = async (format: "csv" | "excel" | "pdf") => {
-    if (filteredData.length === 0) {
+    if (!filteredData.length) {
       alert.error("Tidak ada data untuk diekspor.");
       return;
     }
 
-    const exportData = filteredData.map((data: any, index: number) => ({
+    const exportData = filteredData.map((item: any, index: number) => ({
       No: index + 1,
-      Nama: data.user?.name || "",
-      NISN: data.user?.nisn || "",
-      Kelas: data.kelas?.namaKelas || "N/A",
-      Sekolah: data.user?.sekolah?.namaSekolah || "N/A",
-      StatusKehadiran: data.attendance?.statusKehadiran || "N/A",
-      JamMasuk: data.attendance?.jamMasuk,
-      JamPulang: data.attendance?.jamPulang,
+      Nama: item.siswa?.nama ?? "",
+      NISN: item.siswa?.nisn ?? "",
+      Kelas: item.siswa?.kelas ?? "N/A",
+      Sekolah: item.siswa?.sekolah ?? "N/A",
+      StatusKehadiran: item.statusKehadiran ?? "N/A",
+      JamMasuk: formatDateTime(item.jamMasuk),
+      JamPulang: formatDateTime(item.jamPulang),
     }));
 
-    if (format === "csv") {
-      const csv = Papa.unparse(exportData, { delimiter: ";" });
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = `attendance_data_${dataMode}_${dayjs().format("YYYYMMDD")}.csv`;
-      link.click();
-    } else if (format === "excel") {
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(exportData);
-      XLSX.utils.book_append_sheet(wb, ws, "Attendance");
-      XLSX.writeFile(
-        wb,
-        `attendance_data_${dataMode}_${dayjs().format("YYYYMMDD")}.xlsx`,
-      );
-    } else if (format === "pdf") {
-      await generateStudentAttendancePDF({
-        attendanceData: exportData,
-        alert,
-        schoolData: schoolData || {},
-        schoolIsLoading,
-        mode: dataMode,
-        date:
-          dataMode === "daily"
-            ? dayjs().tz("Asia/Jakarta").format("DD MMMM YYYY")
-            : undefined,
-        period:
-          dataMode === "monthly"
-            ? `${dayjs(selectedStartMonth).format("MMMM, YYYY")}`
-            : undefined,
-      });
+    const fileName = `attendance_data_${dataMode}_${dayjs().format("YYYYMMDD")}`;
+
+    switch (format) {
+      case "csv": {
+        const csv = Papa.unparse(exportData, {
+          delimiter: ";",
+        });
+
+        const blob = new Blob([csv], {
+          type: "text/csv;charset=utf-8;",
+        });
+
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${fileName}.csv`;
+        link.click();
+        break;
+      }
+
+      case "excel": {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(exportData);
+
+        XLSX.utils.book_append_sheet(wb, ws, `Attendance-${dataMode}`);
+
+        XLSX.writeFile(wb, `${fileName}.xlsx`);
+        break;
+      }
+
+      case "pdf": {
+        let period: string | undefined;
+
+        switch (dataMode) {
+          case "mingguan":
+            period = `${dayjs()
+              .startOf("week")
+              .format("DD MMM YYYY")} - ${dayjs()
+              .endOf("week")
+              .format("DD MMM YYYY")}`;
+            break;
+
+          case "bulanan":
+            period = dayjs(selectedStartMonth).format("MMMM YYYY");
+            break;
+
+          case "tahunan":
+            period = dayjs().format("YYYY");
+            break;
+
+          default:
+            period = undefined;
+        }
+
+        await generateStudentAttendancePDF({
+          attendanceData: exportData,
+          alert,
+          schoolData: schoolData || {},
+          schoolIsLoading,
+          mode: dataMode,
+          date:
+            dataMode === "harian"
+              ? dayjs().tz("Asia/Jakarta").format("DD MMMM YYYY")
+              : undefined,
+          period,
+        });
+
+        break;
+      }
     }
 
     setIsModalOpen(false);
   };
 
   const studentList = Array.isArray(
-    dataMode === "daily" ? biodata.data : biodataAll.data,
+    dataMode === "harian" ? biodata.data : biodataAll.data,
   )
-    ? dataMode === "daily"
+    ? dataMode === "harian"
       ? biodata.data
       : biodataAll.data
     : [];
-
-  // const classOptions = Array.from(
-
-  //   new Set(
-  //     (dataMode === 'daily' ? biodata.data : biodataAll.data)?.map(
-  //       (student) => student.kelas?.namaKelas
-  //     ) || []
-  //   )
-  // );
 
   const classOptions = Array.from(
     new Set(studentList?.map((student: any) => student.kelas?.namaKelas)),
@@ -560,39 +572,54 @@ export const StudentAttendance = () => {
           </Button>
           <Select
             value={dataMode}
-            onValueChange={(value: "daily" | "monthly") => setDataMode(value)}
+            onValueChange={(
+              value: "harian" | "bulanan" | "mingguan" | "tahunan",
+            ) => {
+              setDataMode(value);
+              setFilter(value);
+            }}
           >
             <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="Pilih mode" />
             </SelectTrigger>
+
             <SelectContent>
-              <SelectItem value="daily">Harian</SelectItem>
-              <SelectItem value="monthly">Bulanan</SelectItem>
+              <SelectItem value="harian">Harian</SelectItem>
+              <SelectItem value="mingguan">Mingguan</SelectItem>
+              <SelectItem value="bulanan">Bulanan</SelectItem>
+              <SelectItem value="tahunan">Tahunan</SelectItem>
             </SelectContent>
           </Select>
         </div>
+
         <Button
           variant="outline"
           aria-label="attendanceCount"
           className="hover:bg-transparent cursor-default"
         >
-          Hadir: {attendanceCount}
+          {lang.text("present")}: {attendanceCount}
         </Button>
       </div>
+      {/* <AttendanceFilter
+        period={dataMode}
+        attendanceCount={attendanceCount}
+        setIsModalOpen={setIsModalOpen}
+        onPeriodChange={setDataMode as (value: string) => void}
+      /> */}
+
       <StudentAttendanceTable totalAttedance={true} data={filteredData} />
       <div className="pb-16 sm:pb-0" />
-
       {isModalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
           onClick={() => setIsModalOpen(false)}
         >
           <div
-            className="bg-gray-900 text-white rounded-lg p-6 w-full max-w-md shadow-lg"
+            className="bg-gray-900 text-white rounded-lg p-6 w-full max-w-lg shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-lg font-semibold mb-4">Export & Filter</h2>
-            {dataMode === "monthly" && (
+            {dataMode === "mingguan" && (
               <div className="mb-4">
                 <label className="block text-sm font-medium mb-2">
                   Pilih Rentang Bulan

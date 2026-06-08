@@ -145,7 +145,7 @@ export const useSchoolUpdateForm = ({ onClose }: UseSchoolUpdateFormProps) => {
         { headers }
       );
 
-      console.log("✅ Data sekolah berhasil terupdate:", response.data);
+      // console.log("✅ Data sekolah berhasil terupdate:", response.data);
       alert.success(
         lang.text("successful", {
           context: lang.text("updateSchoolData"),

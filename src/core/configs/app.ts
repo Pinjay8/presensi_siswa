@@ -47,7 +47,7 @@ export const SERVICE_ENDPOINTS = {
   },
   school: {
     createSchool: "/create-sekolah",
-    schools: "/sekolah",
+    schools: "/api/sekolah",
     schools2: "/api/sekolah",
     classrooms: "/api/kelas",
     courses: "/api/mata-pelajaran",
@@ -73,6 +73,11 @@ export const SERVICE_ENDPOINTS = {
     changePassword: "/ms-user/api/account/changePassword",
     createTeacher: "/signup/guru",
     createParents: "/signup/orangtua",
+    createSiswa: "/signup/siswa",
+    absenQr: "/api/masuk-mata-pelajaran",
+    generateQr: "/api/generate-dynamic-qr",
+    registerFace: "/api/register-face",
+    registerFaceTeacher: "/api/register-face-guru",
   },
   otp: {
     verify: "/verify-otp",
@@ -83,6 +88,8 @@ export const SERVICE_ENDPOINTS = {
   },
   teacher: {
     detail: "/api/get-guru",
+    waliKelas: "/api/wali-kelas",
+    generateQrCode: "/api/generate-qrcode-mapel",
   },
   libraries: {
     all: "/api/get-history-perpus",
@@ -90,5 +97,18 @@ export const SERVICE_ENDPOINTS = {
   },
   library: {
     vistor: "/index.php?p=api/visitor/today",
+  },
+  cards: {
+    all: "/api/cards/unassigned",
+    get: "/api/cards",
+    create: "/api/cards",
+    update: "/api/cards",
+    delete: "/api/cards",
+    assignCardToUser: "/api/cards/{card_id}/assign",
+    unAsssignCardToUser: "/api/cards/{card_id}/unassign",
+  },
+  attendances: {
+    list: "/api/riwayat-absensi",
+    listMataPelajaran: "/api/riwayat-absensi-mapel",
   },
 };

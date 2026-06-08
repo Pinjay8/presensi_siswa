@@ -1,4 +1,3 @@
-
 import { SERVICE_ENDPOINTS } from "@/core/configs/app";
 import { usePaginatedQuery } from "@/features/schools/hooks/usePaginatedQuery";
 
@@ -9,12 +8,15 @@ interface UseStudentsProps {
   kelas?: string;
 }
 
-export const useStudents = ({ page, size, sekolahId, kelas }: UseStudentsProps) => {
-
-  console.log("📍 Query Params:", { page, size, sekolahId, kelas });
+export const useStudents = ({
+  page,
+  size,
+  sekolahId,
+  kelas,
+}: UseStudentsProps) => {
   return usePaginatedQuery({
     queryKey: "students",
-    endpoint: SERVICE_ENDPOINTS.student.list, // Sesuaikan dengan endpoint biodata siswa
+    endpoint: SERVICE_ENDPOINTS.student.list,
     params: { sekolahId, kelas },
     page,
     size,

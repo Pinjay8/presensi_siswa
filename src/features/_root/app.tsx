@@ -76,6 +76,11 @@ import { SchoolDistribution } from "../schools/pages/school-distribution";
 import { LocationLanding } from "../locations/pages/location-landing";
 import { TeacherCreate } from "../teacher/pages/teacher-create";
 import { ParentCreate } from "../parents/pages/parent-create";
+import { ScanAttendanceView } from "../ScanAttendance/pages/scan-attendance-view";
+import { CardCreate } from "../cards/pages/CardCreate";
+import { CardEdit } from "../cards/pages/CardEdit";
+import { CardsDelete } from "../cards/pages/CardsDelete";
+import { CardView } from "../cards";
 const router = createBrowserRouter(
   [
     {
@@ -83,6 +88,10 @@ const router = createBrowserRouter(
       element: <RootPage />,
       // errorElement: <Default404 />,
       children: [
+        {
+          path: "qr-scan",
+          element: <ScanAttendanceView />,
+        },
         {
           path: "format",
           element: <LetterPreview />,
@@ -317,6 +326,22 @@ const router = createBrowserRouter(
         {
           path: "attendance/teachers",
           element: <TeacherAttendance />,
+        },
+        {
+          path: "cards",
+          element: <CardView />,
+        },
+        {
+          path: "cards/create",
+          element: <CardCreate />,
+        },
+        {
+          path: "cards/edit/:id",
+          element: <CardEdit />,
+        },
+        {
+          path: "cards/delete/:id",
+          element: <CardsDelete />,
         },
         {
           path: "logout",

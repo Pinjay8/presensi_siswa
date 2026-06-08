@@ -21,6 +21,8 @@ export interface UserDataModel {
   rfid: string;
   nisn: string;
   nrk: string;
+  noTelegram: string;
+  noTlpOrtu: string;
   nikki: string;
   image: string;
   nis: string;
@@ -75,3 +77,22 @@ export interface UserCreationModel {
   isActive?: number;
   sekolahId?: number;
 }
+
+import { z } from "zod";
+
+export const createSiswaSchema = z.object({
+  name: z.string().min(1, "Nama wajib diisi"),
+  email: z.string().min(1, "Email wajib diisi").email("Email tidak valid"),
+  nis: z.string().min(1, "NIS wajib diisi"),
+  nisn: z.string().min(1, "NISN wajib diisi"),
+  noTlp: z.string().min(1, "No Telepon wajib diisi"),
+  noTlpOrtu: z.string().optional(),
+  alamat: z.string().min(1, "Alamat wajib diisi"),
+  password: z.string().optional(),
+  sekolahId: z.number(),
+  jenisKelamin: z.enum(["Male", "Female"]),
+  tanggalLahir: z.string(),
+  rfid: z.string().optional(),
+});
+
+export type CreateSiswaFormValues = z.infer<typeof createSiswaSchema>;

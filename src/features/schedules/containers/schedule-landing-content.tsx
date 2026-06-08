@@ -1,1322 +1,3 @@
-// import {
-//   Button,
-//   Dialog,
-//   DialogContent,
-//   DialogFooter,
-//   DialogHeader,
-//   DialogTitle,
-//   Input,
-//   lang,
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/core/libs";
-// import { useAlert, useVokadialog, Vokadialog } from "@/features/_global";
-// import { useCourse } from "@/features/course";
-// import { useBiodataGuru } from "@/features/user";
-// import { useRef, useState, useEffect, useMemo } from "react";
-// import { useScheduleCreation, useSchedules } from "../hooks";
-
-// interface ScheduleItem {
-//   id: number;
-//   hari: string;
-//   jamMulai: string;
-//   jamSelesai: string;
-//   mataPelajaran: { id: number; namaMataPelajaran: string };
-//   guru: { id: number; namaGuru: string };
-//   createdAt: string;
-//   updatedAt: string;
-// }
-
-// interface NewScheduleForm {
-//   mataPelajaranId: number;
-//   guruId: number;
-//   hari: string;
-//   jamMulai: string;
-//   jamSelesai: string;
-// }
-
-// const daysOrder = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT"];
-
-// export function ScheduleLandingContent() {
-//   const alert = useAlert();
-//   const creation = useScheduleCreation();
-//   const dialog = useVokadialog();
-//   const showRef = useRef<typeof dialog.open>();
-//   showRef.current = dialog.open;
-//   const [id, setId] = useState<number>(0);
-//   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-//   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-//   const [selectedDay, setSelectedDay] = useState<string>("");
-//   const [editScheduleId, setEditScheduleId] = useState<number>(0);
-//   const [searchCourse, setSearchCourse] = useState<string>("");
-//   const [searchTeacher, setSearchTeacher] = useState<string>("");
-//   const searchInputRef = useRef<HTMLInputElement>(null);
-//   const teacherSearchInputRef = useRef<HTMLInputElement>(null);
-//   const [formData, setFormData] = useState<NewScheduleForm>({
-//     mataPelajaranId: 0,
-//     guruId: 0,
-//     hari: "",
-//     jamMulai: "",
-//     jamSelesai: "",
-//   });
-
-//   const courses = useCourse();
-//   const teachers = useBiodataGuru();
-//   const schedules = useSchedules();
-
-//   console.log('course', courses);
-//   console.log('teachers', teachers);
-//   console.log('schedules', schedules?.data);
-
-//   // Restore focus to course search input after searchCourse updates
-//   useEffect(() => {
-//     if (searchInputRef.current) {
-//       const activeElement = document.activeElement;
-//       console.log('Course Search Active Element:', activeElement?.tagName, activeElement?.className);
-//       if (activeElement !== searchInputRef.current) {
-//         console.log('Restoring focus to course search input');
-//         searchInputRef.current.focus();
-//       }
-//     }
-//   }, [searchCourse]);
-
-//   // Restore focus to teacher search input after searchTeacher updates
-//   useEffect(() => {
-//     if (teacherSearchInputRef.current) {
-//       const activeElement = document.activeElement;
-//       console.log('Teacher Search Active Element:', activeElement?.tagName, activeElement?.className);
-//       if (activeElement !== teacherSearchInputRef.current) {
-//         console.log('Restoring focus to teacher search input');
-//         teacherSearchInputRef.current.focus();
-//       }
-//     }
-//   }, [searchTeacher]);
-
-//   // Memoize filtered courses
-//   const filteredCourses = useMemo(() => {
-//     return courses?.data?.filter((course: any) =>
-//       course.namaMataPelajaran.toLowerCase().includes(searchCourse.toLowerCase())
-//     ) || [];
-//   }, [courses?.data, searchCourse]);
-
-//   // Memoize filtered teachers
-//   const filteredTeachers = useMemo(() => {
-//     return teachers?.data?.filter((teacher: any) =>
-//       teacher.namaGuru.toLowerCase().includes(searchTeacher.toLowerCase())
-//     ) || [];
-//   }, [teachers?.data, searchTeacher]);
-
-//   // Handle keydown to prevent focus shift to dropdown options
-//   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-//     if (['ArrowDown', 'ArrowUp', 'Enter'].includes(e.key)) {
-//       e.preventDefault();
-//     }
-//   };
-
-//   if (!schedules?.data || schedules.isLoading) {
-//     return (
-//       <div className="w-full h-[400px] border-dashed border-black/10 rounded-md flex items-center justify-center text-center">
-//         <p>{lang.text("loadingScheduleMapel")}</p>
-//       </div>
-//     );
-//   }
-
-//   // Group data by day
-//   const groupedByDay = daysOrder.reduce((acc, day) => {
-//     acc[day] = schedules?.data[day] || [];
-//     return acc;
-//   }, {} as Record<string, ScheduleItem[]>);
-
-//   // Sort schedules by jamMulai for each day
-//   Object.keys(groupedByDay).forEach((day) => {
-//     groupedByDay[day].sort((a, b) => {
-//       const timeA = new Date(`1970-01-01T${a.jamMulai}:00`);
-//       const timeB = new Date(`1970-01-01T${b.jamMulai}:00`);
-//       return timeA.getTime() - timeB.getTime();
-//     });
-//   });
-
-//   const handleConfirmDelete = async () => {
-//     if (id === 0) {
-//       alert.error("Anda perlu ID");
-//       return;
-//     }
-//     try {
-//       await creation.delete(id);
-//       alert.success(
-//         lang.text("successful", {
-//           context: lang.text("dataSuccessDelete", {
-//             context: "",
-//           }),
-//         })
-//       );
-//       schedules.query.refetch();
-//       dialog.close();
-//     } catch (err: any) {
-//       alert.error(
-//         err?.message ||
-//           lang.text("failed", {
-//             context: lang.text("dataFailDelete", {
-//               context: "",
-//             }),
-//           })
-//       );
-//     }
-//   };
-
-//   const handleAddSchedule = async () => {
-//     if (
-//       !formData.mataPelajaranId ||
-//       !formData.guruId ||
-//       !formData.jamMulai ||
-//       !formData.jamSelesai
-//     ) {
-//       alert.error("Semua field harus diisi");
-//       return;
-//     }
-
-//     // Validate time format (HH:mm)
-//     const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-//     if (!timeRegex.test(formData.jamMulai) || !timeRegex.test(formData.jamSelesai)) {
-//       alert.error("Format waktu harus HH:mm (contoh: 08:40)");
-//       return;
-//     }
-
-//     // Validate that jamSelesai is after jamMulai
-//     const startTime = new Date(`1970-01-01T${formData.jamMulai}:00`);
-//     const endTime = new Date(`1970-01-01T${formData.jamSelesai}:00`);
-//     if (endTime <= startTime) {
-//       alert.error("Jam selesai harus setelah jam mulai");
-//       return;
-//     }
-
-//     const payload = { ...formData, hari: selectedDay };
-//     console.log('Data to be sent:', payload);
-
-//     try {
-//       await creation.create({ ...formData, hari: selectedDay });
-//       alert.success(
-//         lang.text("successful", {
-//           context: lang.text("scheduleSuccessCreate", {
-//             context: "",
-//           }),
-//         })
-//       );
-//       schedules.query.refetch();
-//       setIsAddModalOpen(false);
-//       setFormData({
-//         mataPelajaranId: 0,
-//         guruId: 0,
-//         hari: "",
-//         jamMulai: "",
-//         jamSelesai: "",
-//       });
-//       setSearchCourse("");
-//       setSearchTeacher("");
-//     } catch (err: any) {
-//       alert.error(
-//         err?.message ||
-//           lang.text("failed", {
-//             context: lang.text("scheduleFailCreate", {
-//               context: "",
-//             }),
-//           })
-//       );
-//     }
-//   };
-
-//   const handleEditSchedule = async () => {
-//     if (
-//       !formData.mataPelajaranId ||
-//       !formData.guruId ||
-//       !formData.jamMulai ||
-//       !formData.jamSelesai
-//     ) {
-//       alert.error("Semua field harus diisi");
-//       return;
-//     }
-
-//     // Validate time format (HH:mm)
-//     const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-//     if (!timeRegex.test(formData.jamMulai) || !timeRegex.test(formData.jamSelesai)) {
-//       alert.error("Format waktu harus HH:mm (contoh: 08:40)");
-//       return;
-//     }
-
-//     // Validate that jamSelesai is after jamMulai
-//     const startTime = new Date(`1970-01-01T${formData.jamMulai}:00`);
-//     const endTime = new Date(`1970-01-01T${formData.jamSelesai}:00`);
-//     if (endTime <= startTime) {
-//       alert.error("Jam selesai harus setelah jam mulai");
-//       return;
-//     }
-
-//     try {
-//       await creation.update(editScheduleId, { ...formData, hari: selectedDay });
-//       alert.success(
-//         lang.text("successful", {
-//           context: lang.text("scheduleSuccessUpdate", {
-//             context: "",
-//           }),
-//         })
-//       );
-//       schedules.query.refetch();
-//       setIsEditModalOpen(false);
-//       setFormData({
-//         mataPelajaranId: 0,
-//         guruId: 0,
-//         hari: "",
-//         jamMulai: "",
-//         jamSelesai: "",
-//       });
-//       setSearchCourse("");
-//       setSearchTeacher("");
-//     } catch (err: any) {
-//       alert.error(
-//         err?.message ||
-//           lang.text("failed", {
-//             context: lang.text("scheduleFailUpdate", {
-//               context: "",
-//             }),
-//           })
-//       );
-//     }
-//   };
-
-//   const openAddModal = (day: string) => {
-//     setSelectedDay(day);
-//     setFormData({ ...formData, hari: day });
-//     setSearchCourse("");
-//     setSearchTeacher("");
-//     setIsAddModalOpen(true);
-//   };
-
-//   const openEditModal = (day: string, schedule: ScheduleItem) => {
-//     setSelectedDay(day);
-//     setEditScheduleId(schedule.id);
-//     setFormData({
-//       mataPelajaranId: schedule.mataPelajaran.id || 0,
-//       guruId: schedule.guru.id || 0,
-//       hari: day,
-//       jamMulai: schedule.jamMulai,
-//       jamSelesai: schedule.jamSelesai,
-//     });
-//     setSearchCourse("");
-//     setSearchTeacher("");
-//     setIsEditModalOpen(true);
-//   };
-
-//   return (
-//     <>
-//       <Vokadialog
-//         visible={dialog.visible}
-//         title={lang.text("deleteConfirmation")}
-//         content={lang.text("deleteConfirmationDesc", {
-//           context: "tersebut",
-//         })}
-//         footer={
-//           <div className="flex flex-col sm:flex-row gap-2">
-//             <Button onClick={handleConfirmDelete} variant="destructive">
-//               {lang.text("delete")}
-//             </Button>
-//             <Button onClick={dialog.close} variant="outline">
-//               {lang.text("cancel")}
-//             </Button>
-//           </div>
-//         }
-//       />
-
-//       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-//         <DialogContent>
-//           <DialogHeader>
-//             <DialogTitle>Tambah Jadwal - {selectedDay}</DialogTitle>
-//           </DialogHeader>
-//           <div className="grid gap-4 py-4">
-//             <div className="grid gap-2">
-//               <label htmlFor="mataPelajaranId">Mata Pelajaran</label>
-//               <Select
-//                 onValueChange={(value) =>
-//                   setFormData({ ...formData, mataPelajaranId: parseInt(value) })
-//                 }
-//               >
-//                 <SelectTrigger>
-//                   <SelectValue placeholder="Pilih Mata Pelajaran" />
-//                 </SelectTrigger>
-//                 <SelectContent className="px-2">
-//                   <div className="py-1 mb-2">
-//                     <Input
-//                       ref={searchInputRef}
-//                       placeholder="Cari Mata Pelajaran..."
-//                       value={searchCourse}
-//                       onChange={(e) => setSearchCourse(e.target.value)}
-//                       onKeyDown={handleSearchKeyDown}
-//                       className="w-full"
-//                     />
-//                   </div>
-//                   {filteredCourses.map((course: any) => (
-//                     <SelectItem
-//                       key={course.id}
-//                       value={course.id.toString()}
-//                     >
-//                       {course.namaMataPelajaran}
-//                     </SelectItem>
-//                   ))}
-//                 </SelectContent>
-//               </Select>
-//             </div>
-//             <div className="grid gap-2">
-//               <label htmlFor="guruId">Guru</label>
-//               <Select
-//                 onValueChange={(value) =>
-//                   setFormData({ ...formData, guruId: parseInt(value) })
-//                 }
-//               >
-//                 <SelectTrigger>
-//                   <SelectValue placeholder="Pilih Guru" />
-//                 </SelectTrigger>
-//                 <SelectContent className="px-2">
-//                   <div className="py-1 mb-2">
-//                     <Input
-//                       ref={teacherSearchInputRef}
-//                       placeholder="Cari Guru..."
-//                       value={searchTeacher}
-//                       onChange={(e) => setSearchTeacher(e.target.value)}
-//                       onKeyDown={handleSearchKeyDown}
-//                       className="w-full"
-//                     />
-//                   </div>
-//                   {filteredTeachers.map((teacher: any) => (
-//                     <SelectItem
-//                       key={teacher.id}
-//                       value={teacher.id.toString()}
-//                     >
-//                       {teacher.namaGuru}
-//                     </SelectItem>
-//                   ))}
-//                 </SelectContent>
-//               </Select>
-//             </div>
-//             <div className="grid gap-2">
-//               <label htmlFor="jamMulai">Jam Mulai</label>
-//               <Input
-//                 type="time"
-//                 value={formData.jamMulai}
-//                 onChange={(e) => setFormData({ ...formData, jamMulai: e.target.value })}
-//                 className="w-full"
-//               />
-//             </div>
-//             <div className="grid gap-2">
-//               <label htmlFor="jamSelesai">Jam Selesai</label>
-//               <Input
-//                 type="time"
-//                 value={formData.jamSelesai}
-//                 onChange={(e) => setFormData({ ...formData, jamSelesai: e.target.value })}
-//                 className="w-full"
-//               />
-//             </div>
-//           </div>
-//           <DialogFooter>
-//             <Button onClick={handleAddSchedule}>Simpan</Button>
-//             <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>
-//               Batal
-//             </Button>
-//           </DialogFooter>
-//         </DialogContent>
-//       </Dialog>
-
-//       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-//         <DialogContent>
-//           <DialogHeader>
-//             <DialogTitle>Edit Jadwal - {selectedDay}</DialogTitle>
-//           </DialogHeader>
-//           <div className="grid gap-4 py-4">
-//             <div className="grid gap-2">
-//               <label htmlFor="mataPelajaranId">Mata Pelajaran</label>
-//               <Select
-//                 value={formData.mataPelajaranId.toString()}
-//                 onValueChange={(value) =>
-//                   setFormData({ ...formData, mataPelajaranId: parseInt(value) })
-//                 }
-//               >
-//                 <SelectTrigger>
-//                   <SelectValue placeholder="Pilih Mata Pelajaran" />
-//                 </SelectTrigger>
-//                 <SelectContent className="px-2">
-//                   <div className="py-1 mb-2">
-//                     <Input
-//                       ref={searchInputRef}
-//                       placeholder="Cari Mata Pelajaran..."
-//                       value={searchCourse}
-//                       onChange={(e) => setSearchCourse(e.target.value)}
-//                       onKeyDown={handleSearchKeyDown}
-//                       className="w-full"
-//                     />
-//                   </div>
-//                   {filteredCourses.map((course: any) => (
-//                     <SelectItem key={course.id} value={course.id.toString()}>
-//                       {course.namaMataPelajaran}
-//                     </SelectItem>
-//                   ))}
-//                 </SelectContent>
-//               </Select>
-//             </div>
-//             <div className="grid gap-2">
-//               <label htmlFor="guruId">Guru</label>
-//               <Select
-//                 value={formData.guruId.toString()}
-//                 onValueChange={(value) =>
-//                   setFormData({ ...formData, guruId: parseInt(value) })
-//                 }
-//               >
-//                 <SelectTrigger>
-//                   <SelectValue placeholder="Pilih Guru" />
-//                 </SelectTrigger>
-//                 <SelectContent className="px-2">
-//                   <div className="py-1 mb-2">
-//                     <Input
-//                       ref={teacherSearchInputRef}
-//                       placeholder="Cari Guru..."
-//                       value={searchTeacher}
-//                       onChange={(e) => setSearchTeacher(e.target.value)}
-//                       onKeyDown={handleSearchKeyDown}
-//                       className="w-full"
-//                     />
-//                   </div>
-//                   {filteredTeachers.map((teacher: any) => (
-//                     <SelectItem key={teacher.id} value={teacher.id.toString()}>
-//                       {teacher.namaGuru}
-//                     </SelectItem>
-//                   ))}
-//                 </SelectContent>
-//               </Select>
-//             </div>
-//             <div className="grid gap-2">
-//               <label htmlFor="jamMulai">Jam Mulai</label>
-//               <Input
-//                 type="time"
-//                 value={formData.jamMulai}
-//                 onChange={(e) => setFormData({ ...formData, jamMulai: e.target.value })}
-//                 className="w-full"
-//               />
-//             </div>
-//             <div className="grid gap-2">
-//               <label htmlFor="jamSelesai">Jam Selesai</label>
-//               <Input
-//                 type="time"
-//                 value={formData.jamSelesai}
-//                 onChange={(e) => setFormData({ ...formData, jamSelesai: e.target.value })}
-//                 className="w-full"
-//               />
-//             </div>
-//           </div>
-//           <DialogFooter>
-//             <Button onClick={handleEditSchedule}>Simpan</Button>
-//             <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
-//               Batal
-//             </Button>
-//           </DialogFooter>
-//         </DialogContent>
-//       </Dialog>
-
-//       <div className="grid grid-cols-2 gap-6 mt-5 mb-8">
-//         {daysOrder.map((day) => (
-//           <div key={day} className="border rounded-lg p-4 shadow-sm">
-//             <h2 className="text-xl font-bold mb-4">{day}</h2>
-//             {groupedByDay[day].length > 0 ? (
-//               <Table>
-//                 <TableHeader>
-//                   <TableRow>
-//                     <TableHead>{lang.text("time")}</TableHead>
-//                     <TableHead>{lang.text("nameMapel")}</TableHead>
-//                     <TableHead>{lang.text("nameTeacher")}</TableHead>
-//                     <TableHead>{lang.text("actions")}</TableHead>
-//                   </TableRow>
-//                 </TableHeader>
-//                 <TableBody>
-//                   {groupedByDay[day].map((item) => (
-//                     <TableRow key={item.id}>
-//                       <TableCell>{`${item.jamMulai} - ${item.jamSelesai}`}</TableCell>
-//                       <TableCell>{item.mataPelajaran.namaMataPelajaran}</TableCell>
-//                       <TableCell>{item.guru.namaGuru}</TableCell>
-//                       <TableCell className="flex gap-2">
-//                         <Button
-//                           variant="outline"
-//                           size="sm"
-//                           onClick={() => openEditModal(day, item)}
-//                         >
-//                           Edit
-//                         </Button>
-//                         <Button
-//                           variant="destructive"
-//                           size="sm"
-//                           onClick={() => {
-//                             setId(item.id);
-//                             showRef.current?.();
-//                           }}
-//                         >
-//                           Remove
-//                         </Button>
-//                       </TableCell>
-//                     </TableRow>
-//                   ))}
-//                 </TableBody>
-//               </Table>
-//             ) : (
-//               <p className="text-gray-500">No schedule for {day}</p>
-//             )}
-//             <div className="border-t border-white/10 pt-4">
-//               <Button onClick={() => openAddModal(day)}>
-//                 Tambah Jadwal
-//               </Button>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </>
-//   );
-// }
-
-// import {
-//   Button,
-//   Dialog,
-//   DialogContent,
-//   DialogFooter,
-//   DialogHeader,
-//   DialogTitle,
-//   Input,
-//   lang,
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/core/libs";
-// import { useAlert, useVokadialog, Vokadialog } from "@/features/_global";
-// import { useCourse } from "@/features/course";
-// import { useBiodataGuru } from "@/features/user";
-// import { useRef, useState, useEffect, useMemo } from "react";
-// import { useScheduleCreation, useSchedules } from "../hooks";
-// import { CircleSlashIcon, Pen, School, School2, Trash } from "lucide-react";
-// import { FaRestroom } from "react-icons/fa";
-
-// interface ScheduleItem {
-//   id: number;
-//   hari: string;
-//   jamMulai: string;
-//   jamSelesai: string;
-//   mataPelajaran: {
-//     id: number;
-//     namaMataPelajaran: string;
-//     kelasId: number;
-//     kelas: { id: number; namaKelas: string } | null;
-//   };
-//   guru: { id: number; namaGuru: string };
-//   createdAt: string;
-//   updatedAt: string;
-// }
-
-// interface NewScheduleForm {
-//   mataPelajaranId: number;
-//   guruId: number;
-//   hari: string;
-//   jamMulai: string;
-//   jamSelesai: string;
-//   kelasId: number;
-// }
-
-// const daysOrder = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT"];
-
-// export function ScheduleLandingContent() {
-//   const alert = useAlert();
-//   const creation = useScheduleCreation();
-//   const dialog = useVokadialog();
-//   const showRef = useRef<typeof dialog.open>();
-//   showRef.current = dialog.open;
-//   const [id, setId] = useState<number>(0);
-//   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-//   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-//   const [selectedDay, setSelectedDay] = useState<string>("");
-//   const [editScheduleId, setEditScheduleId] = useState<number>(0);
-//   const [searchCourse, setSearchCourse] = useState<string>("");
-//   const [searchTeacher, setSearchTeacher] = useState<string>("");
-//   const [searchClass, setSearchClass] = useState<string>("");
-//   const searchInputRef = useRef<HTMLInputElement>(null);
-//   const teacherSearchInputRef = useRef<HTMLInputElement>(null);
-//   const classSearchInputRef = useRef<HTMLInputElement>(null);
-//   const [formData, setFormData] = useState<NewScheduleForm>({
-//     mataPelajaranId: 0,
-//     guruId: 0,
-//     hari: "",
-//     jamMulai: "",
-//     jamSelesai: "",
-//     kelasId: 0,
-//   });
-
-//   const courses = useCourse();
-//   const teachers = useBiodataGuru();
-//   const schedules = useSchedules();
-
-//   console.log('schedules:', schedules?.data)
-
-//   // Derive classes from schedules.data
-//   const classes = useMemo(() => {
-//     if (!schedules?.data) return [];
-//     const kelasSet = new Map<number, { id: number; namaKelas: string }>();
-//     Object.keys(schedules.data).forEach((day) => {
-//       schedules.data[day].forEach((schedule: ScheduleItem) => {
-//         const { kelas } = schedule.mataPelajaran;
-//         if (kelas && kelas.id != null && kelas.namaKelas) {
-//           if (!kelasSet.has(kelas.id)) {
-//             kelasSet.set(kelas.id, { id: kelas.id, namaKelas: kelas.namaKelas });
-//           }
-//         }
-//       });
-//     });
-//     return Array.from(kelasSet.values());
-//   }, [schedules?.data]);
-
-//   // Memoize filtered courses
-//   const filteredCourses = useMemo(() => {
-//     return (
-//       courses?.data?.filter((course: any) =>
-//         course.namaMataPelajaran.toLowerCase().includes(searchCourse.toLowerCase())
-//       ) || []
-//     );
-//   }, [courses?.data, searchCourse]);
-
-//   // Memoize filtered teachers
-//   const filteredTeachers = useMemo(() => {
-//     return (
-//       teachers?.data?.filter((teacher: any) =>
-//         teacher.namaGuru.toLowerCase().includes(searchTeacher.toLowerCase())
-//       ) || []
-//     );
-//   }, [teachers?.data, searchTeacher]);
-
-//   // Memoize filtered classes
-//   const filteredClasses = useMemo(() => {
-//     return (
-//       classes?.filter((kelas: any) =>
-//         kelas.namaKelas.toLowerCase().includes(searchClass.toLowerCase())
-//       ) || []
-//     );
-//   }, [classes, searchClass]);
-
-//   // Group data by kelasId and then by day
-//   const groupedByClassAndDay = useMemo(() => {
-//     const result: Record<number, Record<string, ScheduleItem[]>> = {};
-
-//     if (schedules?.data) {
-//       // Normalize day keys to uppercase
-//       const normalizeDay = (day: string) => day.toUpperCase();
-
-//       // Collect all unique kelasId
-//       const kelasIds = new Set<number>();
-//       Object.keys(schedules.data).forEach((day) => {
-//         schedules.data[day].forEach((schedule: ScheduleItem) => {
-//           kelasIds.add(schedule.mataPelajaran.kelasId);
-//         });
-//       });
-
-//       // Initialize result for all kelasId and days
-//       kelasIds.forEach((kelasId) => {
-//         result[kelasId] = daysOrder.reduce((acc, d) => {
-//           acc[d] = [];
-//           return acc;
-//         }, {} as Record<string, ScheduleItem[]>);
-//       });
-
-//       // Populate schedules
-//       Object.keys(schedules.data).forEach((day) => {
-//         const normalizedDay = normalizeDay(day);
-//         if (daysOrder.includes(normalizedDay)) {
-//           schedules.data[day].forEach((schedule: ScheduleItem) => {
-//             const kelasId = schedule.mataPelajaran.kelasId;
-//             if (result[kelasId]) {
-//               result[kelasId][normalizedDay].push(schedule);
-//             }
-//           });
-//         }
-//       });
-
-//       // Sort schedules by jamMulai
-//       Object.keys(result).forEach((kelasId) => {
-//         daysOrder.forEach((day) => {
-//           result[kelasId][day].sort((a, b) => {
-//             const timeA = new Date(`1970-01-01T${a.jamMulai}:00`);
-//             const timeB = new Date(`1970-01-01T${b.jamMulai}:00`);
-//             return timeA.getTime() - timeB.getTime();
-//           });
-//         });
-//       });
-//     }
-
-//     return result;
-//   }, [schedules?.data]);
-
-//   // Debug groupedByClassAndDay
-//   console.log("groupedByClassAndDay", groupedByClassAndDay);
-
-//   // Restore focus to course search input
-//   useEffect(() => {
-//     if (searchInputRef.current && document.activeElement !== searchInputRef.current) {
-//       searchInputRef.current.focus();
-//     }
-//   }, [searchCourse]);
-
-//   // Restore focus to teacher search input
-//   useEffect(() => {
-//     if (teacherSearchInputRef.current && document.activeElement !== teacherSearchInputRef.current) {
-//       teacherSearchInputRef.current.focus();
-//     }
-//   }, [searchTeacher]);
-
-//   // Restore focus to class search input
-//   useEffect(() => {
-//     if (classSearchInputRef.current && document.activeElement !== classSearchInputRef.current) {
-//       classSearchInputRef.current.focus();
-//     }
-//   }, [searchClass]);
-
-//   // Handle keydown to prevent focus shift
-//   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-//     if (["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) {
-//       e.preventDefault();
-//     }
-//   };
-
-//   const handleConfirmDelete = async () => {
-//     if (id === 0) {
-//       alert.error("Anda perlu ID");
-//       return;
-//     }
-//     try {
-//       await creation.delete(id);
-//       alert.success(
-//         lang.text("successful", {
-//           context: lang.text("dataSuccessDelete", { context: "" }),
-//         })
-//       );
-//       schedules.query.refetch();
-//       dialog.close();
-//     } catch (err: any) {
-//       alert.error(
-//         err?.message ||
-//           lang.text("failed", {
-//             context: lang.text("dataFailDelete", { context: "" }),
-//           })
-//       );
-//     }
-//   };
-
-//   const handleAddSchedule = async () => {
-//     if (
-//       !formData.mataPelajaranId ||
-//       !formData.guruId ||
-//       !formData.hari ||
-//       !formData.jamMulai ||
-//       !formData.jamSelesai ||
-//       !formData.kelasId
-//     ) {
-//       alert.error("Semua field harus diisi");
-//       return;
-//     }
-
-//     const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-//     if (!timeRegex.test(formData.jamMulai) || !timeRegex.test(formData.jamSelesai)) {
-//       alert.error("Format waktu harus HH:mm (contoh: 08:40)");
-//       return;
-//     }
-
-//     const startTime = new Date(`1970-01-01T${formData.jamMulai}:00`);
-//     const endTime = new Date(`1970-01-01T${formData.jamSelesai}:00`);
-//     if (endTime <= startTime) {
-//       alert.error("Jam selesai harus setelah jam mulai");
-//       return;
-//     }
-
-//     const payload = { ...formData };
-//     try {
-//       await creation.create(payload);
-//       alert.success(
-//         lang.text("successful", {
-//           context: lang.text("scheduleSuccessCreate", { context: "" }),
-//         })
-//       );
-//       schedules.query.refetch();
-//       setIsAddModalOpen(false);
-//       setFormData({
-//         mataPelajaranId: 0,
-//         guruId: 0,
-//         hari: "",
-//         jamMulai: "",
-//         jamSelesai: "",
-//         kelasId: 0,
-//       });
-//       setSearchCourse("");
-//       setSearchTeacher("");
-//       setSearchClass("");
-//     } catch (err: any) {
-//       alert.error(
-//         err?.message ||
-//           lang.text("failed", {
-//             context: lang.text("scheduleFailCreate", { context: "" }),
-//           })
-//       );
-//     }
-//   };
-
-//   const handleEditSchedule = async () => {
-//     if (
-//       !formData.mataPelajaranId ||
-//       !formData.guruId ||
-//       !formData.hari ||
-//       !formData.jamMulai ||
-//       !formData.jamSelesai ||
-//       !formData.kelasId
-//     ) {
-//       alert.error("Semua field harus diisi");
-//       return;
-//     }
-
-//     const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-//     if (!timeRegex.test(formData.jamMulai) || !timeRegex.test(formData.jamSelesai)) {
-//       alert.error("Format waktu harus HH:mm (contoh: 08:40)");
-//       return;
-//     }
-
-//     const startTime = new Date(`1970-01-01T${formData.jamMulai}:00`);
-//     const endTime = new Date(`1970-01-01T${formData.jamSelesai}:00`);
-//     if (endTime <= startTime) {
-//       alert.error("Jam selesai harus setelah jam mulai");
-//       return;
-//     }
-
-//     try {
-//       await creation.update(editScheduleId, { ...formData });
-//       alert.success(
-//         lang.text("successful", {
-//           context: lang.text("scheduleSuccessUpdate", { context: "" }),
-//         })
-//       );
-//       schedules.query.refetch();
-//       setIsEditModalOpen(false);
-//       setFormData({
-//         mataPelajaranId: 0,
-//         guruId: 0,
-//         hari: "",
-//         jamMulai: "",
-//         jamSelesai: "",
-//         kelasId: 0,
-//       });
-//       setSearchCourse("");
-//       setSearchTeacher("");
-//       setSearchClass("");
-//     } catch (err: any) {
-//       alert.error(
-//         err?.message ||
-//           lang.text("failed", {
-//             context: lang.text("scheduleFailUpdate", { context: "" }),
-//           })
-//       );
-//     }
-//   };
-
-//   const openAddModal = (day: string, kelasId: number) => {
-//     setSelectedDay(day);
-//     setFormData({ ...formData, hari: day, kelasId });
-//     setSearchCourse("");
-//     setSearchTeacher("");
-//     setSearchClass("");
-//     setIsAddModalOpen(true);
-//   };
-
-//   const openEditModal = (day: string, schedule: ScheduleItem) => {
-//     setSelectedDay(day);
-//     setEditScheduleId(schedule.id);
-//     setFormData({
-//       mataPelajaranId: schedule.mataPelajaran.id || 0,
-//       guruId: schedule.guru.id || 0,
-//       hari: day,
-//       jamMulai: schedule.jamMulai,
-//       jamSelesai: schedule.jamSelesai,
-//       kelasId: schedule.mataPelajaran.kelasId || 0,
-//     });
-//     setSearchCourse("");
-//     setSearchTeacher("");
-//     setSearchClass("");
-//     setIsEditModalOpen(true);
-//   };
-
-//   // Render loading state
-//   if (!schedules?.data || schedules.isLoading) {
-//     return (
-//       <div className="w-full h-[400px] border-dashed border-black/10 rounded-md flex items-center justify-center text-center">
-//         <p>{lang.text("loadingScheduleMapel")}</p>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <>
-//       <Vokadialog
-//         visible={dialog.visible}
-//         title={lang.text("deleteConfirmation")}
-//         content={lang.text("deleteConfirmationDesc", { context: "tersebut" })}
-//         footer={
-//           <div className="flex flex-col sm:flex-row gap-2">
-//             <Button onClick={handleConfirmDelete} variant="destructive">
-//               {lang.text("delete")}
-//             </Button>
-//             <Button onClick={dialog.close} variant="outline">
-//               {lang.text("cancel")}
-//             </Button>
-//           </div>
-//         }
-//       />
-
-//       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-//         <DialogContent>
-//           <DialogHeader>
-//             <DialogTitle>Tambah Jadwal - {selectedDay}</DialogTitle>
-//           </DialogHeader>
-//           <div className="grid gap-4 py-4">
-//             <div className="grid gap-2">
-//               <label htmlFor="kelasId">Kelas</label>
-//               <Select
-//                 onValueChange={(value) =>
-//                   setFormData({ ...formData, kelasId: parseInt(value) })
-//                 }
-//               >
-//                 <SelectTrigger>
-//                   <SelectValue placeholder="Pilih Kelas" />
-//                 </SelectTrigger>
-//                 <SelectContent className="px-2">
-//                   <div className="py-1 mb-2">
-//                     <Input
-//                       ref={classSearchInputRef}
-//                       placeholder="Cari Kelas..."
-//                       value={searchClass}
-//                       onChange={(e) => setSearchClass(e.target.value)}
-//                       onKeyDown={handleSearchKeyDown}
-//                       className="w-full"
-//                     />
-//                   </div>
-//                   {filteredClasses.map((kelas: any) => (
-//                     <SelectItem key={kelas.id} value={kelas.id.toString()}>
-//                       {kelas.namaKelas}
-//                     </SelectItem>
-//                   ))}
-//                 </SelectContent>
-//               </Select>
-//             </div>
-//             <div className="grid gap-2">
-//               <label htmlFor="mataPelajaranId">Mata Pelajaran</label>
-//               <Select
-//                 onValueChange={(value) =>
-//                   setFormData({ ...formData, mataPelajaranId: parseInt(value) })
-//                 }
-//               >
-//                 <SelectTrigger>
-//                   <SelectValue placeholder="Pilih Mata Pelajaran" />
-//                 </SelectTrigger>
-//                 <SelectContent className="px-2">
-//                   <div className="py-1 mb-2">
-//                     <Input
-//                       ref={searchInputRef}
-//                       placeholder="Cari Mata Pelajaran..."
-//                       value={searchCourse}
-//                       onChange={(e) => setSearchCourse(e.target.value)}
-//                       onKeyDown={handleSearchKeyDown}
-//                       className="w-full"
-//                     />
-//                   </div>
-//                   {filteredCourses
-//                     .filter((course: any) => course.kelasId === formData.kelasId || !formData.kelasId)
-//                     .map((course: any) => (
-//                       <SelectItem key={course.id} value={course.id.toString()}>
-//                         {course.namaMataPelajaran}
-//                       </SelectItem>
-//                     ))}
-//                 </SelectContent>
-//               </Select>
-//             </div>
-//             <div className="grid gap-2">
-//               <label htmlFor="guruId">Guru</label>
-//               <Select
-//                 onValueChange={(value) =>
-//                   setFormData({ ...formData, guruId: parseInt(value) })
-//                 }
-//               >
-//                 <SelectTrigger>
-//                   <SelectValue placeholder="Pilih Guru" />
-//                 </SelectTrigger>
-//                 <SelectContent className="px-2">
-//                   <div className="py-1 mb-2">
-//                     <Input
-//                       ref={teacherSearchInputRef}
-//                       placeholder="Cari Guru..."
-//                       value={searchTeacher}
-//                       onChange={(e) => setSearchTeacher(e.target.value)}
-//                       onKeyDown={handleSearchKeyDown}
-//                       className="w-full"
-//                     />
-//                   </div>
-//                   {filteredTeachers.map((teacher: any) => (
-//                     <SelectItem key={teacher.id} value={teacher.id.toString()}>
-//                       {teacher.namaGuru}
-//                     </SelectItem>
-//                   ))}
-//                 </SelectContent>
-//               </Select>
-//             </div>
-//             <div className="grid gap-2">
-//               <label htmlFor="jamMulai">Jam Mulai</label>
-//               <Input
-//                 type="time"
-//                 value={formData.jamMulai}
-//                 onChange={(e) => setFormData({ ...formData, jamMulai: e.target.value })}
-//                 className="w-full"
-//               />
-//             </div>
-//             <div className="grid gap-2">
-//               <label htmlFor="jamSelesai">Jam Selesai</label>
-//               <Input
-//                 type="time"
-//                 value={formData.jamSelesai}
-//                 onChange={(e) => setFormData({ ...formData, jamSelesai: e.target.value })}
-//                 className="w-full"
-//               />
-//             </div>
-//           </div>
-//           <DialogFooter>
-//             <Button onClick={handleAddSchedule}>Simpan</Button>
-//             <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>
-//               Batal
-//             </Button>
-//           </DialogFooter>
-//         </DialogContent>
-//       </Dialog>
-
-//       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-//         <DialogContent>
-//           <DialogHeader>
-//             <DialogTitle>Edit Jadwal - {selectedDay}</DialogTitle>
-//           </DialogHeader>
-//           <div className="grid gap-4 py-4">
-//             <div className="grid gap-2">
-//               <label htmlFor="kelasId">Kelas</label>
-//               <Select
-//                 value={formData.kelasId.toString()}
-//                 onValueChange={(value) =>
-//                   setFormData({ ...formData, kelasId: parseInt(value) })
-//                 }
-//               >
-//                 <SelectTrigger>
-//                   <SelectValue placeholder="Pilih Kelas" />
-//                 </SelectTrigger>
-//                 <SelectContent className="px-2">
-//                   <div className="py-1 mb-2">
-//                     <Input
-//                       ref={classSearchInputRef}
-//                       placeholder="Cari Kelas..."
-//                       value={searchClass}
-//                       onChange={(e) => setSearchClass(e.target.value)}
-//                       onKeyDown={handleSearchKeyDown}
-//                       className="w-full"
-//                     />
-//                   </div>
-//                   {filteredClasses.map((kelas: any) => (
-//                     <SelectItem key={kelas.id} value={kelas.id.toString()}>
-//                       {kelas.namaKelas}
-//                     </SelectItem>
-//                   ))}
-//                 </SelectContent>
-//               </Select>
-//             </div>
-//             <div className="grid gap-2">
-//               <label htmlFor="mataPelajaranId">Mata Pelajaran</label>
-//               <Select
-//                 value={formData.mataPelajaranId.toString()}
-//                 onValueChange={(value) =>
-//                   setFormData({ ...formData, mataPelajaranId: parseInt(value) })
-//                 }
-//               >
-//                 <SelectTrigger>
-//                   <SelectValue placeholder="Pilih Mata Pelajaran" />
-//                 </SelectTrigger>
-//                 <SelectContent className="px-2">
-//                   <div className="py-1 mb-2">
-//                     <Input
-//                       ref={searchInputRef}
-//                       placeholder="Cari Mata Pelajaran..."
-//                       value={searchCourse}
-//                       onChange={(e) => setSearchCourse(e.target.value)}
-//                       onKeyDown={handleSearchKeyDown}
-//                       className="w-full"
-//                     />
-//                   </div>
-//                   {filteredCourses
-//                     .filter((course: any) => course.kelasId === formData.kelasId || !formData.kelasId)
-//                     .map((course: any) => (
-//                       <SelectItem key={course.id} value={course.id.toString()}>
-//                         {course.namaMataPelajaran}
-//                       </SelectItem>
-//                     ))}
-//                 </SelectContent>
-//               </Select>
-//             </div>
-//             <div className="grid gap-2">
-//               <label htmlFor="guruId">Guru</label>
-//               <Select
-//                 value={formData.guruId.toString()}
-//                 onValueChange={(value) =>
-//                   setFormData({ ...formData, guruId: parseInt(value) })
-//                 }
-//               >
-//                 <SelectTrigger>
-//                   <SelectValue placeholder="Pilih Guru" />
-//                 </SelectTrigger>
-//                 <SelectContent className="px-2">
-//                   <div className="py-1 mb-2">
-//                     <Input
-//                       ref={teacherSearchInputRef}
-//                       placeholder="Cari Guru..."
-//                       value={searchTeacher}
-//                       onChange={(e) => setSearchTeacher(e.target.value)}
-//                       onKeyDown={handleSearchKeyDown}
-//                       className="w-full"
-//                     />
-//                   </div>
-//                   {filteredTeachers.map((teacher: any) => (
-//                     <SelectItem key={teacher.id} value={teacher.id.toString()}>
-//                       {teacher.namaGuru}
-//                     </SelectItem>
-//                   ))}
-//                 </SelectContent>
-//               </Select>
-//             </div>
-//             <div className="grid gap-2">
-//               <label htmlFor="jamMulai">Jam Mulai</label>
-//               <Input
-//                 type="time"
-//                 value={formData.jamMulai}
-//                 onChange={(e) => setFormData({ ...formData, jamMulai: e.target.value })}
-//                 className="w-full"
-//               />
-//             </div>
-//             <div className="grid gap-2">
-//               <label htmlFor="jamSelesai">Jam Selesai</label>
-//               <Input
-//                 type="time"
-//                 value={formData.jamSelesai}
-//                 onChange={(e) => setFormData({ ...formData, jamSelesai: e.target.value })}
-//                 className="w-full"
-//               />
-//             </div>
-//           </div>
-//           <DialogFooter>
-//             <Button onClick={handleEditSchedule}>Simpan</Button>
-//             <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
-//               Batal
-//             </Button>
-//           </DialogFooter>
-//         </DialogContent>
-//       </Dialog>
-
-//       <div className="grid gap-8 mt-5 mb-8">
-//         {Object.keys(groupedByClassAndDay).length > 0 ? (
-//           Object.keys(groupedByClassAndDay).map((kelasId) => {
-//             const classSchedules = groupedByClassAndDay[parseInt(kelasId)];
-//             if (!classSchedules) {
-//               console.warn(`No schedules found for kelasId: ${kelasId}`);
-//               return null;
-//             }
-//             return (
-//               <div key={kelasId} className="border rounded-lg p-6 shadow-md">
-//                 <h1 className="flex gap-5 text-2xl font-bold mb-6">
-//                   <School2 /> Kelas: {classes.find((k: any) => k.id === parseInt(kelasId))?.namaKelas || `Kelas ${kelasId}`}
-//                 </h1>
-//                 <div className="grid grid-cols-2 gap-4">
-//                   {daysOrder.map((day) => (
-//                     <div key={day} className="border rounded-lg p-4 shadow-sm">
-//                       <h2 className="text-xl font-bold mb-4">{day}</h2>
-//                       {classSchedules[day] && classSchedules[day].length > 0 ? (
-//                         <Table>
-//                           <TableHeader>
-//                             <TableRow>
-//                               <TableHead>{lang.text("time")}</TableHead>
-//                               <TableHead>{lang.text("nameMapel")}</TableHead>
-//                               <TableHead>{lang.text("nameTeacher")}</TableHead>
-//                               <TableHead>{lang.text("actions")}</TableHead>
-//                             </TableRow>
-//                           </TableHeader>
-//                           <TableBody>
-//                             {classSchedules[day].map((item) => (
-//                               <TableRow key={item.id}>
-//                                 <TableCell>{`${item.jamMulai} - ${item.jamSelesai}`}</TableCell>
-//                                 <TableCell>{item.mataPelajaran.namaMataPelajaran}</TableCell>
-//                                 <TableCell>{item.guru.namaGuru}</TableCell>
-//                                 <TableCell className="flex gap-2">
-//                                   <Button
-//                                     variant="outline"
-//                                     size="sm"
-//                                     onClick={() => openEditModal(day, item)}
-//                                   >
-//                                     <Pen />
-//                                   </Button>
-//                                   <Button
-//                                     variant="destructive"
-//                                     size="sm"
-//                                     onClick={() => {
-//                                       setId(item.id);
-//                                       showRef.current?.();
-//                                     }}
-//                                   >
-//                                     <Trash />
-//                                   </Button>
-//                                 </TableCell>
-//                               </TableRow>
-//                             ))}
-//                           </TableBody>
-//                         </Table>
-//                       ) : (
-//                         <p className="text-gray-500">No schedule for {day}</p>
-//                       )}
-//                       <div className="border-t border-white/10 pt-4">
-//                         <Button onClick={() => openAddModal(day, parseInt(kelasId))}>
-//                           Tambah Jadwal
-//                         </Button>
-//                       </div>
-//                     </div>
-//                   ))}
-//                 </div>
-//               </div>
-//             );
-//           })
-//         ) : (
-//           <p className="text-gray-500 text-center">Tidak ada jadwal tersedia.</p>
-//         )}
-//       </div>
-//     </>
-//   );
-// }
-
 import {
   Badge,
   Button,
@@ -1347,6 +28,7 @@ import { useRef, useState, useEffect, useMemo } from "react";
 import { useScheduleCreation, useSchedules } from "../hooks";
 import {
   CircleSlashIcon,
+  Divide,
   Download,
   Pen,
   Plus,
@@ -1359,7 +41,11 @@ import {
 import { FaFileExcel, FaRestroom } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import { useClassroom } from "@/features/classroom";
-import { Divider } from "@mui/material";
+import { CircularProgress, Divider } from "@mui/material";
+import { teacherService } from "@/core/services/teacher";
+import QRCode from "react-qr-code";
+import { QrAttendanceDialog } from "../components/QrAttendanceDialog";
+import { useProfile } from "@/features/profile";
 
 interface ScheduleItem {
   id: number;
@@ -1432,6 +118,53 @@ export function ScheduleLandingContent() {
   const schedules = useSchedules();
   const classes = useClassroom();
   const classData = classes.data;
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+
+  const [selectedQr, setSelectedQr] = useState<{
+    kelasId: number;
+    mataPelajaranId: number;
+    namaKelas: string;
+    namaMapel: string;
+  } | null>(null);
+
+  const profile = useProfile();
+  const isRole =
+    profile?.user?.role === "admin" ||
+    profile?.user?.role === "superAdmin" ||
+    profile?.user?.role === "siswa" ||
+    profile?.user?.role === "orangTua";
+
+  const [qrCode, setQrCode] = useState("");
+
+  const handleShowQr = async (item: any) => {
+    try {
+      console.log("QR ITEM", item);
+
+      const payload = {
+        kelasId: item.kelasId,
+        mataPelajaranId: item.mataPelajaranId,
+      };
+
+      console.log("QR PAYLOAD", payload);
+
+      setSelectedQr({
+        kelasId: item.kelasId,
+        mataPelajaranId: item.mataPelajaranId,
+        namaKelas: item.kelas?.namaKelas ?? "-",
+        namaMapel: item.mataPelajaran.namaMataPelajaran,
+      });
+
+      setIsQrModalOpen(true);
+
+      const result = await teacherService.qrCodeGenerate(payload);
+
+      console.log("QR RESULT", result);
+
+      setQrCode(result?.data?.qrCodeData ?? result?.collection?.qrCode ?? "");
+    } catch (err: any) {
+      alert.error(err?.message);
+    }
+  };
 
   // Derive classes from schedules.data
   // const classes = useMemo(() => {
@@ -1998,6 +731,62 @@ export function ScheduleLandingContent() {
     setIsAddModalOpen(true);
   };
 
+  const qrRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadQr = () => {
+    const svg = qrRef.current?.querySelector("svg");
+
+    if (!svg) return;
+
+    const serializer = new XMLSerializer();
+    const svgString = serializer.serializeToString(svg);
+
+    const svgBlob = new Blob([svgString], {
+      type: "image/svg+xml;charset=utf-8",
+    });
+
+    const url = URL.createObjectURL(svgBlob);
+
+    const img = new Image();
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const size = 600;
+
+      canvas.width = size;
+      canvas.height = size;
+
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) return;
+
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, size, size);
+
+      // padding supaya tidak kepotong
+      const padding = 30;
+
+      ctx.drawImage(
+        img,
+        padding,
+        padding,
+        size - padding * 2,
+        size - padding * 2,
+      );
+
+      URL.revokeObjectURL(url);
+
+      const png = canvas.toDataURL("image/png");
+
+      const link = document.createElement("a");
+      link.href = png;
+      link.download = `qr-presensi-${selectedQr?.namaKelas || "kelas"}.png`;
+      link.click();
+    };
+
+    img.src = url;
+  };
+
   const openEditModal = (day: string, schedule: ScheduleItem) => {
     setSelectedDay(day);
     setEditScheduleId(schedule.id);
@@ -2483,6 +1272,16 @@ export function ScheduleLandingContent() {
                                         {item.guru.namaGuru}
                                       </TableCell>
                                       <TableCell className="flex gap-2">
+                                        {!isRole && (
+                                          <Button
+                                            variant="default"
+                                            size="sm"
+                                            // startIcon={<QrCode />}
+                                            onClick={() => handleShowQr(item)}
+                                          >
+                                            Show QR
+                                          </Button>
+                                        )}
                                         <Button
                                           variant="outline"
                                           size="sm"
@@ -2527,6 +1326,12 @@ export function ScheduleLandingContent() {
           )}
         </div>
       </div>
+      <QrAttendanceDialog
+        open={isQrModalOpen}
+        onOpenChange={setIsQrModalOpen}
+        qrCode={qrCode}
+        selectedQr={selectedQr}
+      />
     </>
   );
 }

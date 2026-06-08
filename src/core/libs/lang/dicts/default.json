@@ -155,6 +155,10 @@
     "en": "Presence",
     "id": "Kehadiran"
   },
+  "formStudents": {
+    "en": "Form Students",
+    "id": "Formulir Siswa"
+  },
   "addAttendance": {
     "en": "Add Attendance",
     "id": "Tambah Kehadiran"
@@ -733,7 +737,7 @@
   },
   "scheduleMapel": {
     "id": "Jadwal mata pelajaran",
-    "en": "schedule of subjects"
+    "en": "Schedule"
   },
   "time": {
     "id": "Jam",
@@ -959,6 +963,11 @@
     "id": "Guru",
     "en": "Teachers"
   },
+  "homeroom-teacher": {
+    "id": "Wali Kelas",
+    "en": "Homeroom teacher"
+  },
+
   "ReportOverview": {
     "id": "Ikhtisar Laporan",
     "en": "Report Overview"
@@ -1039,9 +1048,37 @@
     "id": "Email admin sekolah harus diisi",
     "en": "School admin email is required"
   },
+  "emailVerif": {
+    "id": "Email wajib diisi",
+    "en": "Email is required"
+  },
   "schoolCreationValidation6": {
     "id": "Format email tidak valid, silahkan cek kembali!",
     "en": "Invalid email format"
+  },
+  "minimumPassword": {
+    "id": "Kata sandi minimal 6 karakter",
+    "en": "Password must be at least 6 characters"
+  },
+  "nipValidation": {
+    "id": "NIP harus 18 karakter",
+    "en": "NIP must be 18 characters long"
+  },
+  "registerFaceValidation": {
+    "id": "Gagal mendaftarkan muka, silahkan coba lagi",
+    "en": "Failed to register face, please try again"
+  },
+  "nameGuruValidation": {
+    "id": "Nama Guru harus diisi",
+    "en": "Name is required"
+  },
+  "nikidValidation": {
+    "id": "NIK harus 6 karakter",
+    "en": "NIK must be 6 characters long"
+  },
+  "nrkValidation": {
+    "id": "NRK harus 6 karakter",
+    "en": "NRK must be 6 characters long"
   },
   "schoolName": {
     "id": "Nama Sekolah",
@@ -1879,6 +1916,18 @@
     "id": "Manajemen Kehadiran",
     "en": "Attendance Management"
   },
+  "ChoosePicture": {
+    "id": "Pilih Foto",
+    "en": "Choose Photo"
+  },
+  "RegisterFace": {
+    "id": "Daftarkan Wajah",
+    "en": "Register Face"
+  },
+  "UploadPicture": {
+    "id": "Unggah Foto",
+    "en": "Upload Photo"
+  },
   "attendanceDescription": {
     "id": "Kelola dan pantau kehadiran siswa, guru, dan staf dengan mudah dan efisien.",
     "en": "Easily and efficiently manage and monitor attendance for students, teachers, and staff."
@@ -2035,5 +2084,41 @@
   "details": {
     "id": "Detail",
     "en": "Details"
+  },
+  "scanAttendanceMapel": {
+    "id": "Scan Kehadiran Mapel",
+    "en": "Scan Attendance Schedule"
+  },
+  "cards": {
+    "id": "Kartu",
+    "en": "Cards"
+  },
+  "numberCards": {
+    "id": "Nomor Kartu",
+    "en": "Number Card"
+  },
+  "type": {
+    "id": "Tipe",
+    "en": "Type"
+  },
+  "numberNfc": {
+    "id": "Nomor NFC",
+    "en": "NFC Number"
+  },
+  "addCards": {
+    "id": "Tambah Kartu",
+    "en": "Add Card"
+  },
+  "editCards": {
+    "id": "Ubah Kartu",
+    "en": "Edit Card"
+  },
+  "generateQr": {
+    "id": "Buat Kode QR",
+    "en": "Generate QR"
+  },
+  "present": {
+    "id": "Hadir",
+    "en": "Present"
   }
 }
