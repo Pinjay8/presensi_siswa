@@ -1,11 +1,15 @@
+import { lang } from "@/core/libs";
+import { Box, Divider, IconButton } from "@mui/material";
+import { XIcon } from "lucide-react";
+
 interface ExportFilterModalProps {
   open: boolean;
   onClose: () => void;
   dataMode: string;
   selectedStartMonth: string;
   selectedEndMonth: string;
-  selectedClass: string;
-  classOptions: string[];
+  selectedClass?: string | null;
+  classOptions?: string[] | null;
   setSelectedStartMonth: (value: string) => void;
   setSelectedEndMonth: (value: string) => void;
   setSelectedClass: (value: string) => void;
@@ -33,15 +37,26 @@ const ExportFilterModal = ({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded-lg bg-gray-900 p-6 text-white shadow-lg"
+        className="w-full max-w-lg rounded-lg bg-white p-6 text-white shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="mb-4 text-lg font-semibold">Export & Filter</h2>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ mb: 0 }}
+        >
+          <h2 className="text-black text-lg font-semibold">Export & Filter</h2>
+          <IconButton onClick={onClose}>
+            <XIcon className="text-black" />
+          </IconButton>
+        </Box>
+        <Divider sx={{ mb: 2 }} />
 
         {dataMode === "mingguan" && (
           <div className="mb-4">
-            <label className="mb-2 block text-sm font-medium">
-              Pilih Rentang Bulan
+            <label className="mb-2 block text-sm font-medium text-black">
+              {lang.text("rangeMonth")}
             </label>
 
             <div className="flex space-x-4">
@@ -49,7 +64,7 @@ const ExportFilterModal = ({
                 type="month"
                 value={selectedStartMonth}
                 onChange={(e) => setSelectedStartMonth(e.target.value)}
-                className="w-full rounded-lg border border-gray-700 bg-gray-800 p-2 text-white"
+                className="w-full rounded-lg border border-gray-700  p-2 text-black"
               />
 
               <span className="mt-2">-</span>
@@ -58,23 +73,25 @@ const ExportFilterModal = ({
                 type="month"
                 value={selectedEndMonth}
                 onChange={(e) => setSelectedEndMonth(e.target.value)}
-                className="w-full rounded-lg border border-gray-700 bg-gray-800 p-2 text-white"
+                className="w-full rounded-lg border border-gray-700  p-2 text-black"
               />
             </div>
           </div>
         )}
 
         <div className="mb-4">
-          <label className="mb-2 block text-sm font-medium">Pilih Kelas</label>
+          <label className="mb-2 block text-sm font-medium text-black">
+            {lang.text("chooseClassroom")}
+          </label>
 
           <select
-            value={selectedClass}
+            value={selectedClass || ""}
             onChange={(e) => setSelectedClass(e.target.value)}
-            className="w-full rounded-lg border border-gray-700 bg-gray-800 p-2 text-white"
+            className="w-full rounded-lg border border-gray-700  p-2 text-black"
           >
-            <option value="">Semua Kelas</option>
+            <option value="">{lang.text("allClassRoom")}</option>
 
-            {classOptions.map((kelas) => (
+            {classOptions?.map((kelas) => (
               <option key={kelas} value={kelas}>
                 {kelas}
               </option>

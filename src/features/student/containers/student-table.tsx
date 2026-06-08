@@ -52,9 +52,9 @@ export function StudentTable({
 
       const res = await userService.registerFace(formData);
 
-      console.log("res", res);
+      // console.log("res", res);
 
-      alert.success(lang.text("registerFaceValidation"));
+      alert.success(lang.text("successRegister"));
     } catch (error: any) {
       alert.error(error?.message || "Gagal mendaftarkan wajah");
     }

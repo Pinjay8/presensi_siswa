@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { XIcon } from "lucide-react";
 import { Button, lang } from "@/core/libs";
+import { FileUploader } from "../../../file-uploader";
 
 interface RegisterFaceDialogProps {
   open: boolean;
@@ -69,7 +70,7 @@ export default function RegisterFaceDialog({
             {lang.text("UploadPicture")}
           </label>
 
-          <input
+          {/* <input
             ref={fileRef}
             type="file"
             accept="image/*"
@@ -83,10 +84,29 @@ export default function RegisterFaceDialog({
                 setPreviewImage(URL.createObjectURL(file));
               }
             }}
+          /> */}
+
+          <FileUploader
+            value={fotoTampakDepan || undefined}
+            buttonPlaceholder={lang.text("ChoosePicture")}
+            onChange={(file) => {
+              setFotoTampakDepan(file);
+
+              if (file) {
+                setPreviewImage(URL.createObjectURL(file));
+              } else {
+                setPreviewImage("");
+              }
+            }}
+            // onError={(message) => {
+            //   // showSwal("error", message);
+            //   alert.error(message);
+            // }}
+            maxSize={1 * 1024 * 1024}
           />
 
           <Box mt={2}>
-            <Button
+            {/* <Button
               onClick={() => fileRef.current?.click()}
               style={{
                 width: "100%",
@@ -109,7 +129,7 @@ export default function RegisterFaceDialog({
                   }}
                 />
               </Box>
-            )}
+            )} */}
 
             <Button
               onClick={handleSubmit}

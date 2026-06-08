@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/core/libs";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  lang,
+} from "@/core/libs";
 import { SchoolUpdateForm } from "./school-update-form";
 import { useSchoolUpdateDialog } from "../hooks";
 import { Divider } from "@mui/material";
@@ -12,7 +18,7 @@ export const SchoolUpdateDialog = () => {
       <DialogContent className="min-w-[70vw] h-max">
         <DialogHeader className="flex justify-between border-b border-b-white/10">
           <DialogTitle className="flex items-baseline">
-            <p>Lengkapi data sekolah</p>
+            <p>{lang.text("completeDataSchool")}</p>
           </DialogTitle>
           <Divider />
         </DialogHeader>

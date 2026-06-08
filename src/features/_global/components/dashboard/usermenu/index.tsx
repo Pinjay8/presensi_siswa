@@ -32,7 +32,7 @@ import { QrAttendanceDialog } from "./components/QrAttendanceDialog";
 import { useAlert } from "@/features/_global/hooks";
 import { studentService } from "@/core/services/pagination";
 import { useStudents } from "./components/useStudents";
-
+import { FileUploader } from "../../file-uploader";
 
 export interface UserMenuItem {
   title?: string;
@@ -128,7 +128,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
         await userService.registerFaceTeacher(formData);
       }
 
-      alert.success("Register face berhasil");
+      alert.success(lang.text("successRegister"));
 
       setOpenDialogRegister(false);
       setFotoTampakDepan(null);
@@ -143,15 +143,6 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
   const fileRef = React.useRef<HTMLInputElement>(null);
   // const [students, setStudents] = useState<any[]>([]);
   const [selectedStudent, setSelectedStudent] = useState("");
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const res = await studentService.getAll();
-  //     setStudents(res);
-  //   };
-
-  //   fetchData();
-  // }, []);
 
   const { data: students } = useStudents();
 
@@ -305,11 +296,11 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
               </Box>
             )}
             <div className="flex flex-col">
-              <label className="text-black text-md font-semibold mb-2 flex items-center gap-2 mb-2">
+              <label className="text-black text-md font-semibold mb-0 flex items-center gap-2 mb-2">
                 {lang.text("UploadPicture")}
               </label>
               <div className="relative">
-                <input
+                {/* <input
                   ref={fileRef}
                   type="file"
                   accept="image/*"
@@ -320,16 +311,34 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
 
                     if (file) setPreviewImage(URL.createObjectURL(file));
                   }}
+                /> */}
+                <FileUploader
+                  value={fotoTampakDepan || undefined}
+                  buttonPlaceholder={lang.text("ChoosePicture")}
+                  onChange={(file) => {
+                    setFotoTampakDepan(file);
+
+                    if (file) {
+                      setPreviewImage(URL.createObjectURL(file));
+                    } else {
+                      setPreviewImage("");
+                    }
+                  }}
+                  // onError={(message) => {
+                  //   // showSwal("error", message);
+                  //   alert.error(message);
+                  // }}
+                  maxSize={1 * 1024 * 1024}
                 />
 
                 <Box mt={2}>
-                  <Button
+                  {/* <Button
                     onClick={() => fileRef.current?.click()}
                     style={{ width: "100%", marginBottom: "10px" }}
                   >
                     {lang.text("ChoosePicture")}
-                  </Button>
-                  {previewImage && (
+                  </Button> */}
+                  {/* {previewImage && (
                     <Box mb={2}>
                       <img
                         src={previewImage}
@@ -342,7 +351,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                         }}
                       />
                     </Box>
-                  )}
+                  )} */}
 
                   <Button
                     onClick={handleRegisterFace}

@@ -57,7 +57,7 @@ export function FileUploader({
   };
 
   return (
-    <Card className="w-full mx-auto mt-8">
+    <Card className="w-full mx-auto mt-0">
       <CardContent className="pt-6">
         <div className="space-y-6">
           <div className="flex items-center justify-center w-full">
@@ -84,10 +84,20 @@ export function FileUploader({
             </Label>
           </div>
           {value && (
-            <div className="flex items-center space-x-2 text-sm">
-              {getFileIcon(value.name)}
-              <span className="font-medium">{value.name}</span>
-            </div>
+            <>
+              {value.type.startsWith("image/") ? (
+                <img
+                  src={URL.createObjectURL(value)}
+                  alt="Preview"
+                  className="w-full max-h-72 object-contain rounded-lg border"
+                />
+              ) : (
+                <div className="flex items-center space-x-2 text-sm">
+                  {getFileIcon(value.name)}
+                  <span className="font-medium">{value.name}</span>
+                </div>
+              )}
+            </>
           )}
           {showButton && (
             <Button

@@ -41,6 +41,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { io } from "socket.io-client";
 import { useSearchParams } from "react-router-dom";
 import ExportFilterModal from "../components/ExpertFilterModal";
+import { AttendanceFilter } from "../components/AttendanceFilter";
 
 // Konfigurasi dayjs untuk timezone
 dayjs.extend(utc);
@@ -562,55 +563,19 @@ export const StudentAttendance = () => {
       ]}
       title={lang.text("studentAttendance")}
     >
-      <div className="flex justify-between items-center mb-4 space-x-4">
-        <div className="flex items-center space-x-4">
-          <Button
-            variant="outline"
-            onClick={() => setIsModalOpen(true)}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg transition duration-300"
-          >
-            {lang.text("export")} Data
-            <FaFilePdf />
-          </Button>
-          <Select
-            value={dataMode}
-            onValueChange={(
-              value: "harian" | "bulanan" | "mingguan" | "tahunan",
-            ) => {
-              setDataMode(value);
-              setFilter(value);
-            }}
-          >
-            <SelectTrigger className="w-[120px]">
-              <SelectValue placeholder="Pilih mode" />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="harian">Harian</SelectItem>
-              <SelectItem value="mingguan">Mingguan</SelectItem>
-              <SelectItem value="bulanan">Bulanan</SelectItem>
-              <SelectItem value="tahunan">Tahunan</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <Button
-          variant="outline"
-          aria-label="attendanceCount"
-          className="hover:bg-transparent cursor-default"
-        >
-          {lang.text("present")}: {attendanceCount}
-        </Button>
-      </div>
-      {/* <AttendanceFilter
+      <AttendanceFilter
         period={dataMode}
         attendanceCount={attendanceCount}
         setIsModalOpen={setIsModalOpen}
-        onPeriodChange={setDataMode as (value: string) => void}
-      /> */}
+        onPeriodChange={(
+          value: "harian" | "bulanan" | "mingguan" | "tahunan",
+        ) => {
+          setDataMode(value);
+          setFilter(value);
+        }}
+      />
 
       <StudentAttendanceTable totalAttedance={true} data={filteredData} />
-      <div className="pb-16 sm:pb-0" />
       <ExportFilterModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}

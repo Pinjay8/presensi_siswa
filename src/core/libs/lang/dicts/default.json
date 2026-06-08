@@ -211,6 +211,38 @@
     "en": "Logout",
     "id": "Keluar"
   },
+  "daily": {
+    "en": "Daily",
+    "id": "Harian"
+  },
+  "weeks": {
+    "en": "Weeks",
+    "id": "Mingguan"
+  },
+  "months": {
+    "en": "Months",
+    "id": "Bulanan"
+  },
+  "years": {
+    "en": "Years",
+    "id": "Tahunan"
+  },
+  "selectPeriod": {
+    "en": "Select Period",
+    "id": "Pilih Periode"
+  },
+  "chooseClassroom": {
+    "en": "Choose Classroom",
+    "id": "Pilih Kelas"
+  },
+  "allClassRoom": {
+    "en": "All Classroom",
+    "id": "Semua Kelas"
+  },
+  "rangeMonth": {
+    "en": "Choose Range Month",
+    "id": "Pilih Rentang Bulan"
+  },
   "graduation": {
     "en": "Graduation",
     "id": "Kelulusan"
@@ -1064,6 +1096,10 @@
     "id": "NIP harus 18 karakter",
     "en": "NIP must be 18 characters long"
   },
+  "successRegister": {
+    "id": "Pendaftaran Wajah berhasil",
+    "en": "Registration face successful"
+  },
   "registerFaceValidation": {
     "id": "Gagal mendaftarkan muka, silahkan coba lagi",
     "en": "Failed to register face, please try again"
@@ -1431,6 +1467,10 @@
   "completeDataClassroom": {
     "id": "Lengkapi data kelas",
     "en": "Complete the class data"
+  },
+  "completeDataSchool": {
+    "id": "Lengkapi data sekolah",
+    "en": "Complete the school data"
   },
   "selectClassroom": {
     "id": "Pilih kelas",

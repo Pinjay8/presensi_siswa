@@ -1,4 +1,3 @@
-import { StudentPaginationResponse } from "@/core/models/pagination";
 import {
   attendanceService,
   GetPaginatedStudentParams,
@@ -11,6 +10,6 @@ export const useStudentAttendance = (params: any) => {
     queryKey: ["studentsPaginated", params],
     queryFn: () => attendanceService.getPaginated(params),
     // keepPreviousData: true,
-    enabled: !!params.page && !!params.limit, 
+    enabled: !!params.page && !!params.limit,
   });
 };

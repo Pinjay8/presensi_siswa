@@ -41,12 +41,12 @@ export const useSchoolUpdateDialog = () => {
           !school.data?.longitude;
 
         if (hasEmptyField && !hasShownDialog) {
-          console.log("📌 [useSchoolUpdateDialog] Opening dialog: Empty fields detected and no prior dialog shown");
+          // console.log("📌 [useSchoolUpdateDialog] Opening dialog: Empty fields detected and no prior dialog shown");
           setIsModalOpen(true);
           localStorage.setItem("hasShownSchoolDialog", "true");
         }
       } else {
-        console.log("📌 [useSchoolUpdateDialog] Opening dialog: No school data found");
+        // console.log("📌 [useSchoolUpdateDialog] Opening dialog: No school data found");
         if (!hasShownDialog) {
           setIsModalOpen(true);
           localStorage.setItem("hasShownSchoolDialog", "true");

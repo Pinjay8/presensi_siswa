@@ -23,6 +23,8 @@ import { teacherAttendanceColumn } from "../utils";
 import { FaFilePdf } from "react-icons/fa";
 import { useStudentAttendance } from "../hooks/useStudentAttedance";
 import { io } from "socket.io-client";
+import { AttendanceFilter } from "../components/AttendanceFilter";
+import { TeacherExportModal } from "../components/TeacherExportDialog";
 
 interface attedanceProps {
   totalAttedance?: boolean;
@@ -210,48 +212,18 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
 
   return (
     <>
-      <div className="w-full flex justify-between mb-4">
-        <div className="flex justify-between items-center mb-4 space-x-4">
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="outline"
-              onClick={() => setIsModalOpen(true)}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg transition duration-300"
-            >
-              {lang.text("export")} Data
-              <FaFilePdf />
-            </Button>
-            <Select
-              value={dataMode}
-              onValueChange={(
-                value: "harian" | "bulanan" | "mingguan" | "tahunan",
-              ) => {
-                setDataMode(value);
-                setFilter(value);
-              }}
-            >
-              <SelectTrigger className="w-[120px]">
-                <SelectValue placeholder="Pilih mode" />
-              </SelectTrigger>
+      <AttendanceFilter
+        period={dataMode}
+        attendanceCount={attendanceCount}
+        setIsModalOpen={setIsModalOpen}
+        onPeriodChange={(
+          value: "harian" | "bulanan" | "mingguan" | "tahunan",
+        ) => {
+          setDataMode(value);
+          setFilter(value);
+        }}
+      />
 
-              <SelectContent>
-                <SelectItem value="harian">Harian</SelectItem>
-                <SelectItem value="mingguan">Mingguan</SelectItem>
-                <SelectItem value="bulanan">Bulanan</SelectItem>
-                <SelectItem value="tahunan">Tahunan</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <Button
-          variant="outline"
-          aria-label="attendanceCount"
-          className="hover:bg-transparent cursor-default"
-        >
-          {lang.text("present")}: {attendanceCount}
-        </Button>
-      </div>
       <BaseDataTable
         columns={columns}
         data={filteredData}
@@ -277,59 +249,15 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
         isLoading={biodata.query.isLoading}
       />
 
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
-          onClick={() => setIsModalOpen(false)}
-        >
-          <div
-            className="bg-gray-900 text-white rounded-lg p-6 w-full max-w-lg shadow-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="text-lg font-semibold mb-4">Export & Filter</h2>
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">
-                Pilih Rentang Bulan
-              </label>
-              <div className="flex space-x-4">
-                <input
-                  type="month"
-                  value={selectedStartMonth}
-                  onChange={(e) => setSelectedStartMonth(e.target.value)}
-                  className="bg-gray-800 text-white p-2 rounded-lg w-full border border-gray-700"
-                />
-                <span className="text-white mt-2">-</span>
-                <input
-                  type="month"
-                  value={selectedEndMonth}
-                  onChange={(e) => setSelectedEndMonth(e.target.value)}
-                  className="bg-gray-800 text-white p-2 rounded-lg w-full border border-gray-700"
-                />
-              </div>
-            </div>
-            <div className="flex space-x-4">
-              <button
-                onClick={() => handleExport("csv")}
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300 w-full"
-              >
-                Export CSV
-              </button>
-              <button
-                onClick={() => handleExport("excel")}
-                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300 w-full"
-              >
-                Export Excel
-              </button>
-              <button
-                onClick={() => handleExport("pdf")}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 w-full"
-              >
-                Export PDF
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <TeacherExportModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        selectedStartMonth={selectedStartMonth}
+        selectedEndMonth={selectedEndMonth}
+        setSelectedStartMonth={setSelectedStartMonth}
+        setSelectedEndMonth={setSelectedEndMonth}
+        onExport={handleExport}
+      />
     </>
   );
 }

@@ -22,7 +22,7 @@ export const HomePage = () => {
       <SchoolDistribution />
       <SummaryHeaderSection />
       <div className="pb-16 sm:pb-0" />
-      {isAdmin && <SchoolUpdateDialog />}
+      {/* {isAdmin && <SchoolUpdateDialog />} */}
     </DashboardPageLayout>
   );
 };
