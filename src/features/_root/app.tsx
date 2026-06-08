@@ -81,6 +81,7 @@ import { CardCreate } from "../cards/pages/CardCreate";
 import { CardEdit } from "../cards/pages/CardEdit";
 import { CardsDelete } from "../cards/pages/CardsDelete";
 import { CardView } from "../cards";
+import { SettingsNotification } from "../settings/pages/settings-notification";
 const router = createBrowserRouter(
   [
     {
@@ -342,6 +343,10 @@ const router = createBrowserRouter(
         {
           path: "cards/delete/:id",
           element: <CardsDelete />,
+        },
+        {
+          path: "setting/",
+          element: <SettingsNotification />,
         },
         {
           path: "logout",

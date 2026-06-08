@@ -207,6 +207,30 @@
     "en": "Setting",
     "id": "Pengaturan"
   },
+    "settings": {
+    "en": "Settings",
+    "id": "Pengaturan"
+  },
+  "studentAttendanceNotification": {
+    "en": "Student Attendace Notification",
+    "id": "Notifikasi Absensi Murid"
+  },
+  "teacherAttendanceNotification": {
+    "en": "Teacher Attendace Notification",
+    "id": "Notifikasi Absensi Guru"
+  },
+  "parentAttendanceNotification": {
+    "en": "Parent Attendace Notification",
+    "id": "Notifikasi Absensi Orang Tua"
+  },
+  "courseAttendanceNotification": {
+    "en": "Course Attendace Notification",
+    "id": "Notifikasi Absensi Mata Pelajaran"
+  },
+  "extracurricularAttendanceNotification": {
+    "en": "Extracurricular Attendace Notification",
+    "id": "Notifikasi Absensi Ekstrakurikuler"
+  },
   "logout": {
     "en": "Logout",
     "id": "Keluar"
