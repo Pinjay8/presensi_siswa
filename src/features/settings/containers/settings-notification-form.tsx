@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { settingsSchema } from "../utils/form-schema";
+import { settingsSchema, settingsSchemaNew } from "../utils/form-schema";
 import CustomSwitch from "@/core/libs/shadcn/components/ui/customSwitch";
 
 export const SettingsNotificationForm = () => {
@@ -24,6 +24,7 @@ export const SettingsNotificationForm = () => {
   const navigate = useNavigate();
   const alert = useAlert();
 
+  /*
   const form = useForm<z.infer<typeof settingsSchema>>({
     resolver: zodResolver(settingsSchema),
     mode: "all",
@@ -141,6 +142,126 @@ export const SettingsNotificationForm = () => {
                         )
                     }}
                 />
+                </div>
+
+                <div className="flex justify-start mt-6 pt-6 border-t border-slate-100 dark:border-zinc-800">
+                    <Button type="submit">{lang.text("save")}</Button>
+                </div>
+            </div>
+        </form>
+    </Form>
+  )
+  */
+
+  const form = useForm<z.infer<typeof settingsSchemaNew>>({
+    resolver: zodResolver(settingsSchemaNew),
+    mode: "all",
+    values: {
+        attendance: {
+            siswa: false,
+            orangTua: false,
+        },
+        attendanceMapel: {
+            siswa: false,
+            orangTua: false,
+        }
+    }
+  });
+
+  return (
+    <Form {...form}>
+        <form onSubmit={form.handleSubmit((data) => console.log("Form data: ", data))} className="mb-8">
+            <div className="bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl shadow-sm p-6 max-w-lg">
+                <div className="grid gap-6">
+                    {/* Section 1: Notifikasi Absensi Harian */}
+                    <div>
+                        <h3 className="font-semibold text-slate-900 dark:text-zinc-100 mb-4">{lang.text("dailyAttendanceNotification")}</h3>
+                        <div className="grid gap-4">
+                            <FormField
+                                control={form.control}
+                                name="attendance.siswa"
+                                render={({field, fieldState}) => (
+                                    <FormItem className="w-full">
+                                        <div className="flex flex-row items-center justify-between w-full">
+                                            <FormLabel className="text-sm font-normal text-slate-600 dark:text-zinc-400">{lang.text("student")}</FormLabel>
+                                            <FormControl>
+                                                <CustomSwitch
+                                                    checked={field.value}
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.onChange(e.target.checked)}
+                                                />
+                                            </FormControl>
+                                        </div>
+                                        <FormMessage>{fieldState.error?.message}</FormMessage>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="attendance.orangTua"
+                                render={({field, fieldState}) => (
+                                    <FormItem className="w-full">
+                                        <div className="flex flex-row items-center justify-between w-full">
+                                            <FormLabel className="text-sm font-normal text-slate-600 dark:text-zinc-400">{lang.text("parent")}</FormLabel>
+                                            <FormControl>
+                                                <CustomSwitch
+                                                    checked={field.value}
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.onChange(e.target.checked)}
+                                                />
+                                            </FormControl>
+                                        </div>
+                                        <FormMessage>{fieldState.error?.message}</FormMessage>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Divider */}
+                    <div className="border-t border-slate-100 dark:border-zinc-800" />
+
+                    {/* Section 2: Notifikasi Absensi Mata Pelajaran */}
+                    <div>
+                        <h3 className="font-semibold text-slate-900 dark:text-zinc-100 mb-4">{lang.text("courseAttendanceNotification")}</h3>
+                        
+                        <div className="grid gap-4">
+                            <FormField
+                                control={form.control}
+                                name="attendanceMapel.siswa"
+                                render={({field, fieldState}) => (
+                                    <FormItem className="w-full">
+                                        <div className="flex flex-row items-center justify-between w-full">
+                                            <FormLabel className="text-sm font-normal text-slate-600 dark:text-zinc-400">{lang.text("student")}</FormLabel>
+                                            <FormControl>
+                                                <CustomSwitch
+                                                    checked={field.value}
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.onChange(e.target.checked)}
+                                                />
+                                            </FormControl>
+                                        </div>
+                                        <FormMessage>{fieldState.error?.message}</FormMessage>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="attendanceMapel.orangTua"
+                                render={({field, fieldState}) => (
+                                    <FormItem className="w-full">
+                                        <div className="flex flex-row items-center justify-between w-full">
+                                            <FormLabel className="text-sm font-normal text-slate-600 dark:text-zinc-400">{lang.text("parent")}</FormLabel>
+                                            <FormControl>
+                                                <CustomSwitch
+                                                    checked={field.value}
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.onChange(e.target.checked)}
+                                                />
+                                            </FormControl>
+                                        </div>
+                                        <FormMessage>{fieldState.error?.message}</FormMessage>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 <div className="flex justify-start mt-6 pt-6 border-t border-slate-100 dark:border-zinc-800">

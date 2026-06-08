@@ -231,6 +231,11 @@
     "en": "Extracurricular Attendace Notification",
     "id": "Notifikasi Absensi Ekstrakurikuler"
   },
+  "dailyAttendanceNotification": {
+    "en": "Daily Attendance Notification",
+    "id": "Notifikasi Absensi Harian"
+  },
+  
   "logout": {
     "en": "Logout",
     "id": "Keluar"
