@@ -712,6 +712,13 @@ export const DashboardLayout = React.memo(
               }
 
               if (
+                role === "admin" &&
+                ["Riwayat", "History"].includes(item.title ?? "")
+              ) {
+                return false;
+              }
+
+              if (
                 role === "orangTua" &&
                 [
                   "Sekolah",

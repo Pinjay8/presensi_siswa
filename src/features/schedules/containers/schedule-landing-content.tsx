@@ -45,6 +45,7 @@ import { CircularProgress, Divider } from "@mui/material";
 import { teacherService } from "@/core/services/teacher";
 import QRCode from "react-qr-code";
 import { QrAttendanceDialog } from "../components/QrAttendanceDialog";
+import { useProfile } from "@/features/profile";
 
 interface ScheduleItem {
   id: number;
@@ -125,6 +126,13 @@ export function ScheduleLandingContent() {
     namaKelas: string;
     namaMapel: string;
   } | null>(null);
+
+  const profile = useProfile();
+  const isRole =
+    profile?.user?.role === "admin" ||
+    profile?.user?.role === "superAdmin" ||
+    profile?.user?.role === "siswa" ||
+    profile?.user?.role === "orangTua";
 
   const [qrCode, setQrCode] = useState("");
 
@@ -1264,14 +1272,16 @@ export function ScheduleLandingContent() {
                                         {item.guru.namaGuru}
                                       </TableCell>
                                       <TableCell className="flex gap-2">
-                                        <Button
-                                          variant="default"
-                                          size="sm"
-                                          // startIcon={<QrCode />}
-                                          onClick={() => handleShowQr(item)}
-                                        >
-                                          Show QR
-                                        </Button>
+                                        {!isRole && (
+                                          <Button
+                                            variant="default"
+                                            size="sm"
+                                            // startIcon={<QrCode />}
+                                            onClick={() => handleShowQr(item)}
+                                          >
+                                            Show QR
+                                          </Button>
+                                        )}
                                         <Button
                                           variant="outline"
                                           size="sm"

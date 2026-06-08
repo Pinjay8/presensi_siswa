@@ -36,6 +36,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FaFile } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import { MatpelAttendanceTable } from "../containers/matpelAttedance";
+import { useMapelAttedance } from "../hooks/useMapelAttedance";
 
 // Konfigurasi dayjs untuk timezone
 dayjs.extend(utc);
@@ -187,11 +188,11 @@ const AttendanceReportPDF: React.FC<{
                 {[
                   "No",
                   "Nama",
-                  "NISN",
+                  "NIS",
                   "Kelas",
                   "Mata Pelajaran",
                   "Status",
-                  "Jam Masuk",
+                  // "Jam Masuk",
                 ].map((header, index) => (
                   <View
                     key={index}
@@ -230,7 +231,7 @@ const AttendanceReportPDF: React.FC<{
                     <Text>{item.Nama}</Text>
                   </View>
                   <View style={[pdfStyles.tableCell, { width: "15%" }]}>
-                    <Text>{item.NISN}</Text>
+                    <Text>{item.NIS}</Text>
                   </View>
                   <View style={[pdfStyles.tableCell, { width: "10%" }]}>
                     <Text>{item.Kelas}</Text>
@@ -238,12 +239,17 @@ const AttendanceReportPDF: React.FC<{
                   <View style={[pdfStyles.tableCell, { width: "20%" }]}>
                     <Text>{item.MataPelajaran}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: "15%" }]}>
+                  <View
+                    style={[
+                      pdfStyles.tableCell,
+                      { width: "15%", textTransform: "capitalize" },
+                    ]}
+                  >
                     <Text>{item.StatusKehadiran}</Text>
                   </View>
-                  <View style={[pdfStyles.tableCell, { width: "15%" }]}>
+                  {/* <View style={[pdfStyles.tableCell, { width: "15%" }]}>
                     <Text>{item.JamMasuk}</Text>
-                  </View>
+                  </View> */}
                 </View>
               ))}
             </View>
@@ -278,14 +284,13 @@ export const MatkulAttendance = () => {
 
   const resource = useCourse();
   const biodata = useBiodata();
-  console.log("biodata", biodata.data);
   if (typeof biodata.data === "string") {
     biodata.data = JSON.parse(biodata.data);
   }
 
   const classRoom = useClassroom();
   const profile = useProfile();
-  const school = useSchoolDetail({ id: profile?.user?.sekolahId });
+  const school = useSchoolDetail({ id: profile?.user?.sekolahId || "" });
 
   useEffect(() => {
     localStorage.setItem("attendanceTarget", "students");
@@ -306,92 +311,108 @@ export const MatkulAttendance = () => {
       new Set(resource.data?.map((course) => course.namaMataPelajaran) || []),
     );
   }, [resource.data]);
+  const [filters, setFilter] = useState<
+    "harian" | "mingguan" | "bulanan" | "tahunan"
+  >("harian");
 
-  const filteredData = useMemo(() => {
-    const today = dayjs().tz("Asia/Jakarta").format("YYYY-MM-DD");
-    const currentMonth = dayjs().tz("Asia/Jakarta").format("YYYY-MM");
-    const currentYear = dayjs().tz("Asia/Jakarta").format("YYYY");
-    let data =
-      biodata.data
-        ?.flatMap((student) =>
-          student.kehadiranBulananMataPelajaran?.flatMap(
-            (monthlyAttendance: any) =>
-              monthlyAttendance.absensisMataPelajaran?.flatMap(
-                (attendance: any) =>
-                  attendance.kehadiranMapel?.map((mapel: any) => ({
-                    user: {
-                      image: student.user?.image || "",
-                      name: student.user?.name || "N/A",
-                      nisn: student.user?.nisn || "N/A",
-                    },
-                    kelas: {
-                      namaKelas: student.kelas?.namaKelas || "N/A",
-                    },
-                    attendance: {
-                      statusKehadiran: mapel.statusKehadiran
-                        ? mapel.statusKehadiran.charAt(0).toUpperCase() +
-                          mapel.statusKehadiran.slice(1).toLowerCase()
-                        : "Tidak Hadir",
-                      namaMataPelajaran:
-                        attendance.mataPelajaran?.namaMataPelajaran || "N/A",
-                      tanggal: formatTime(mapel.tanggal),
-                      jamMasuk: formatTime(student.absensis?.[0]?.jamMasuk),
-                      jamPulang: formatTime(student.absensis?.[0]?.jamPulang),
-                    },
-                  })),
-              ),
-          ),
-        )
-        ?.filter((entry) => {
-          const date = dayjs(
-            entry.attendance.tanggal,
-            "DD MMM YYYY, HH:mm:ss",
-          ).tz("Asia/Jakarta");
-          if (selectedDateRange === "today") {
-            return date.format("YYYY-MM-DD") === today;
-          } else if (selectedDateRange === "month") {
-            return date.format("YYYY-MM") === currentMonth;
-          } else {
-            return date.format("YYYY") === currentYear;
-          }
-        })
-        ?.filter(
-          (entry) =>
-            selectedClasses === "all" ||
-            entry.kelas.namaKelas === selectedClasses,
-        )
-        ?.filter((entry) =>
-          selectedCourse !== "all"
-            ? entry.attendance.namaMataPelajaran === selectedCourse
-            : true,
-        )
-        ?.filter((entry) =>
-          searchStudentName
-            ? entry.user.name
-                .toLowerCase()
-                .includes(searchStudentName.toLowerCase())
-            : true,
-        )
-        ?.filter((entry) =>
-          selectedStatus !== "all"
-            ? entry.attendance.statusKehadiran.toLowerCase() ===
-              selectedStatus.toLowerCase()
-            : true,
-        ) || [];
+  // const filteredData = useMemo(() => {
+  //   const today = dayjs().tz("Asia/Jakarta").format("YYYY-MM-DD");
+  //   const currentMonth = dayjs().tz("Asia/Jakarta").format("YYYY-MM");
+  //   const currentYear = dayjs().tz("Asia/Jakarta").format("YYYY");
+  //   let data =
+  //     biodata.data
+  //       ?.flatMap((student) =>
+  //         student.kehadiranBulananMataPelajaran?.flatMap(
+  //           (monthlyAttendance: any) =>
+  //             monthlyAttendance.absensisMataPelajaran?.flatMap(
+  //               (attendance: any) =>
+  //                 attendance.kehadiranMapel?.map((mapel: any) => ({
+  //                   user: {
+  //                     image: student.user?.image || "",
+  //                     name: student.user?.name || "N/A",
+  //                     nisn: student.user?.nisn || "N/A",
+  //                   },
+  //                   kelas: {
+  //                     namaKelas: student.kelas?.namaKelas || "N/A",
+  //                   },
+  //                   attendance: {
+  //                     statusKehadiran: mapel.statusKehadiran
+  //                       ? mapel.statusKehadiran.charAt(0).toUpperCase() +
+  //                         mapel.statusKehadiran.slice(1).toLowerCase()
+  //                       : "Tidak Hadir",
+  //                     namaMataPelajaran:
+  //                       attendance.mataPelajaran?.namaMataPelajaran || "N/A",
+  //                     tanggal: formatTime(mapel.tanggal),
+  //                     jamMasuk: formatTime(student.absensis?.[0]?.jamMasuk),
+  //                     jamPulang: formatTime(student.absensis?.[0]?.jamPulang),
+  //                   },
+  //                 })),
+  //             ),
+  //         ),
+  //       )
+  //       ?.filter((entry) => {
+  //         const date = dayjs(
+  //           entry.attendance.tanggal,
+  //           "DD MMM YYYY, HH:mm:ss",
+  //         ).tz("Asia/Jakarta");
+  //         if (selectedDateRange === "today") {
+  //           return date.format("YYYY-MM-DD") === today;
+  //         } else if (selectedDateRange === "month") {
+  //           return date.format("YYYY-MM") === currentMonth;
+  //         } else {
+  //           return date.format("YYYY") === currentYear;
+  //         }
+  //       })
+  //       ?.filter(
+  //         (entry) =>
+  //           selectedClasses === "all" ||
+  //           entry.kelas.namaKelas === selectedClasses,
+  //       )
+  //       ?.filter((entry) =>
+  //         selectedCourse !== "all"
+  //           ? entry.attendance.namaMataPelajaran === selectedCourse
+  //           : true,
+  //       )
+  //       ?.filter((entry) =>
+  //         searchStudentName
+  //           ? entry.user.name
+  //               .toLowerCase()
+  //               .includes(searchStudentName.toLowerCase())
+  //           : true,
+  //       )
+  //       ?.filter((entry) =>
+  //         selectedStatus !== "all"
+  //           ? entry.attendance.statusKehadiran.toLowerCase() ===
+  //             selectedStatus.toLowerCase()
+  //           : true,
+  //       ) || [];
 
-    return data.sort((a, b) =>
-      dayjs(b.attendance.tanggal, "DD MMM YYYY, HH:mm:ss").diff(
-        dayjs(a.attendance.tanggal, "DD MMM YYYY, HH:mm:ss"),
-      ),
-    );
-  }, [
-    biodata.data,
-    selectedClasses,
-    selectedCourse,
-    searchStudentName,
-    selectedDateRange,
-    selectedStatus,
-  ]);
+  //   return data.sort((a, b) =>
+  //     dayjs(b.attendance.tanggal, "DD MMM YYYY, HH:mm:ss").diff(
+  //       dayjs(a.attendance.tanggal, "DD MMM YYYY, HH:mm:ss"),
+  //     ),
+  //   );
+  // }, [
+  //   biodata.data,
+  //   selectedClasses,
+  //   selectedCourse,
+  //   searchStudentName,
+  //   selectedDateRange,
+  //   selectedStatus,
+  // ]);
+
+  const {
+    data: mapelData,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useMapelAttedance({
+    filter: filters,
+    page: 1,
+    limit: 100,
+  });
+
+  const filteredData = mapelData?.data || [];
 
   const handleExport = async (format: "csv" | "excel" | "pdf") => {
     if (filteredData.length === 0) {
@@ -400,29 +421,31 @@ export const MatkulAttendance = () => {
     }
 
     // Data untuk CSV dan Excel (semua kolom)
-    const fullExportData = filteredData.map((data, index) => ({
+    const fullExportData = filteredData.map((data: any, index: any) => ({
       No: index + 1,
-      Nama: data.user.name || "",
-      NISN: data.user.nisn || "",
-      Kelas: data.kelas.namaKelas || "N/A",
-      Sekolah:
-        biodata.data?.find((s) => s.user?.nisn === data.user.nisn)?.user
-          ?.sekolah?.namaSekolah || "N/A",
-      MataPelajaran: data.attendance.namaMataPelajaran || "N/A",
-      StatusKehadiran: data.attendance.statusKehadiran || "N/A",
-      Tanggal: data.attendance.tanggal,
-      JamMasuk: data.attendance.jamMasuk,
+      Nama: data.namaSiswa || "",
+      // NISN: data.user.nisn || "",
+      NIS: data.nis || "",
+      Kelas: data.namaKelas || "N/A",
+      // Sekolah:
+      //   biodata.data?.find((s) => s.user?.nisn === data.user.nisn)?.user
+      //     ?.sekolah?.namaSekolah || "N/A",
+      MataPelajaran: data.namaMataPelajaran || "N/A",
+      StatusKehadiran: data.statusKehadiran || "N/A",
+      Tanggal: data.tanggal,
+      JamMasuk: data.jamMasuk,
     }));
 
     // Data untuk PDF (termasuk Mata Pelajaran)
-    const pdfExportData = filteredData.map((data, index) => ({
+    const pdfExportData = filteredData.map((data: any, index: any) => ({
       No: index + 1,
-      Nama: data.user.name || "",
-      NISN: data.user.nisn || "",
-      Kelas: data.kelas.namaKelas || "N/A",
-      MataPelajaran: data.attendance.namaMataPelajaran || "N/A",
-      StatusKehadiran: data.attendance.statusKehadiran || "N/A",
-      JamMasuk: data.attendance.jamMasuk,
+      Nama: data.namaSiswa || "",
+      // NISN: data.user.nisn || "",
+      NIS: data.nis || "",
+      Kelas: data.namaKelas || "N/A",
+      MataPelajaran: data.namaMataPelajaran || "N/A",
+      StatusKehadiran: data.statusKehadiran || "N/A",
+      JamMasuk: data.jamMasuk,
     }));
 
     if (format === "csv") {
@@ -462,10 +485,10 @@ export const MatkulAttendance = () => {
           <AttendanceReportPDF
             data={pdfExportData}
             schoolData={{
-              kopSurat: school.data?.kopSurat,
+              kopSurat: school.data?.kopSurat || "",
               namaSekolah: school.data?.namaSekolah,
-              namaKepalaSekolah: school.data?.namaKepalaSekolah,
-              ttdKepalaSekolah: school.data?.ttdKepalaSekolah,
+              namaKepalaSekolah: school.data?.namaKepalaSekolah || "",
+              ttdKepalaSekolah: school.data?.ttdKepalaSekolah || "",
             }}
             dateRange={selectedDateRange}
           />
@@ -665,7 +688,7 @@ export const MatkulAttendance = () => {
               </Button>
             </div>
           </div>
-          <MatpelAttendanceTable data={filteredData || []} />
+          <MatpelAttendanceTable data={filteredData} />
         </div>
 
         {/* Export Modal */}

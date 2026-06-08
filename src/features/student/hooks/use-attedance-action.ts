@@ -18,8 +18,13 @@ export const useAttendanceActions = () => {
         });
       }
 
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["students"] }),
+        queryClient.invalidateQueries({ queryKey: ["attedances-new"] }),
+      ]);
+
       alert.success(
-        lang.text("successCreate", { context: lang.text("attendance") })
+        lang.text("successCreate", { context: lang.text("attendance") }),
       );
 
       if (userId) {
@@ -28,25 +33,25 @@ export const useAttendanceActions = () => {
         navigate("/students", { replace: true });
       }
     } catch (err: any) {
-        // Jika error berisi 'prisma.devices.findUnique', anggap sukses
-        if (err.message?.includes("prisma.devices.findUnique")) {
-            console.warn("Prisma device query failed, but treating as success");
-            await Promise.all([
-                queryClient.invalidateQueries({ queryKey: ["students"] }),
-                queryClient.invalidateQueries({ queryKey: ["attedances-new"] }),
-            ]);
-            alert.success(
-            lang.text("successCreate", { context: lang.text("attendance") })
-            );
-        } else {
-            // Tampilkan alert error untuk error lainnya
-            const errorMessage =
-            err.message ||
-            (userId
-                ? lang.text("failUpdate", { context: lang.text("attendance") })
-                : lang.text("failCreate", { context: lang.text("attendance") }));
-            alert.error(errorMessage);
-        }
+      // Jika error berisi 'prisma.devices.findUnique', anggap sukses
+      if (err.message?.includes("prisma.devices.findUnique")) {
+        console.warn("Prisma device query failed, but treating as success");
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["students"] }),
+          queryClient.invalidateQueries({ queryKey: ["attedances-new"] }),
+        ]);
+        alert.success(
+          lang.text("successCreate", { context: lang.text("attendance") }),
+        );
+      } else {
+        // Tampilkan alert error untuk error lainnya
+        const errorMessage =
+          err.message ||
+          (userId
+            ? lang.text("failUpdate", { context: lang.text("attendance") })
+            : lang.text("failCreate", { context: lang.text("attendance") }));
+        alert.error(errorMessage);
+      }
     }
   };
 

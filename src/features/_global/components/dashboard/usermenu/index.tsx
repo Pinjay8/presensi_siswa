@@ -30,8 +30,9 @@ import QRCode from "react-qr-code";
 import { Link, To } from "react-router-dom";
 import { QrAttendanceDialog } from "./components/QrAttendanceDialog";
 import { useAlert } from "@/features/_global/hooks";
-import { useStudents } from "@/features/parents/hooks/useStudent";
 import { studentService } from "@/core/services/pagination";
+import { useStudents } from "./components/useStudents";
+
 
 export interface UserMenuItem {
   title?: string;
@@ -121,34 +122,38 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
       formData.append("fotoTampakDepan", fotoTampakDepan);
       formData.append("userId", String(userIdToSend));
 
-      await userService.registerFace(formData);
+      if (!isRoleTeacher) {
+        await userService.registerFace(formData);
+      } else {
+        await userService.registerFaceTeacher(formData);
+      }
 
       alert.success("Register face berhasil");
 
       setOpenDialogRegister(false);
       setFotoTampakDepan(null);
       setPreviewImage("");
-    } catch (error) {
-      console.error(error);
-      alert.error("Register face gagal");
+    } catch (error: any) {
+      alert.error(error?.message);
     } finally {
       setLoadingRegisterFace(false);
     }
   };
 
   const fileRef = React.useRef<HTMLInputElement>(null);
-
-  const [students, setStudents] = useState<any[]>([]);
+  // const [students, setStudents] = useState<any[]>([]);
   const [selectedStudent, setSelectedStudent] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await studentService.getAll();
-      setStudents(res);
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const res = await studentService.getAll();
+  //     setStudents(res);
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
+
+  const { data: students } = useStudents();
 
   return (
     <>
@@ -196,9 +201,15 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
               <>
                 <DropdownMenuLabel
                   style={{ fontWeight: "normal", cursor: "pointer" }}
+                  onClick={() => setOpenDialogRegister(true)}
+                >
+                  {lang.text("RegisterFace")}
+                </DropdownMenuLabel>
+                <DropdownMenuLabel
+                  style={{ fontWeight: "normal", cursor: "pointer" }}
                   onClick={generateQrCode}
                 >
-                  Generate QR
+                  {lang.text("generateQr")}
                 </DropdownMenuLabel>
               </>
             )}
@@ -208,7 +219,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                   style={{ fontWeight: "normal", cursor: "pointer" }}
                   onClick={generateQrCode}
                 >
-                  Generate QR
+                  {lang.text("generateQr")}
                 </DropdownMenuLabel>
                 <DropdownMenuLabel
                   style={{ fontWeight: "normal", cursor: "pointer" }}
@@ -272,8 +283,8 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
         </DialogTitle>
         <DialogContent dividers>
           <Box>
-            <Box sx={{ mb: 2 }}>
-              {isAdmin && (
+            {isAdmin && (
+              <Box sx={{ mb: 2 }}>
                 <>
                   <label className="text-black text-md font-semibold mb-2 flex items-center gap-2 mb-2">
                     Siswa
@@ -291,8 +302,8 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                     ))}
                   </Select>
                 </>
-              )}
-            </Box>
+              </Box>
+            )}
             <div className="flex flex-col">
               <label className="text-black text-md font-semibold mb-2 flex items-center gap-2 mb-2">
                 {lang.text("UploadPicture")}

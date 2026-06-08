@@ -59,7 +59,7 @@ export const ParentCreationForm = () => {
       password: detail.data?.password || "",
       usernameInstagram: detail.data?.usernameInstagram || "",
       noTelegram: detail.data?.noTelegram || "",
-      noWhatsapp: detail.data?.noWhatsapp || "",
+      noWhatsApp: detail.data?.noWhatsApp || "",
       // nrk: detail.data?.nrk || "",
       // hobi: detail.data?.hobi || "",
       // role: detail.data?.role || "",
@@ -89,7 +89,7 @@ export const ParentCreationForm = () => {
         password: data.password || undefined,
         usernameInstagram: data.usernameInstagram || undefined,
         noTelegram: data.noTelegram || undefined,
-        noWhatsapp: data.noWhatsapp || undefined,
+        noWhatsApp: data.noWhatsApp || undefined,
       };
       // console.log("payload", payload);
 
@@ -296,7 +296,7 @@ export const ParentCreationForm = () => {
           />
           <FormField
             control={form.control}
-            name="noWhatsapp"
+            name="noWhatsApp"
             render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>No WhatsApp</FormLabel>

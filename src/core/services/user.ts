@@ -106,4 +106,16 @@ export const userService = {
       },
     ).then((res) => res.json());
   },
+  registerFaceTeacher: async (payload: FormData) => {
+    return await fetch(
+      API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.registerFaceTeacher,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: payload,
+      },
+    ).then((res) => res.json());
+  },
 };

@@ -90,6 +90,11 @@ export const MENU_STAFF: VokadashProps["menus"] = [
         url: "/parents",
         icon: "Users",
       },
+      {
+        title: lang.text("cards"),
+        url: "/cards",
+        icon: "CreditCard",
+      },
 
       {
         title: lang.text("graduation"),

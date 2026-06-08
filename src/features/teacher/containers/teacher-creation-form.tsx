@@ -61,7 +61,8 @@ export const TeacherCreationForm = ({ id }: any) => {
       tanggalLahir: detail.data?.tanggalLahir || "",
       // role: detail.data?.role || "",
       noTelegram: detail.data?.noTelegram || "",
-      rfid: detail.data?.rfid || "",
+      // noWhatsapp: detail.data?.noWhatsapp || "",
+      // rfid: detail.data?.rfid || "",
       nisn: detail.data?.nisn || "",
       nrk: detail.data?.nrk || "",
       nikki: detail.data?.nikki || "",
@@ -74,7 +75,6 @@ export const TeacherCreationForm = ({ id }: any) => {
       isActive: detail.data?.isActive || 0,
       sekolahId: detail.data?.sekolahId || 0,
       usernameInstagram: detail.data?.usernameInstagram || "",
-      noWhatsapp: detail.data?.noWhatsapp || "",
     },
   });
 
@@ -82,7 +82,7 @@ export const TeacherCreationForm = ({ id }: any) => {
     const payload = {
       ...(data.name ? { name: data.name } : {}),
       ...(data.email ? { email: data.email } : {}),
-      ...(data.rfid ? { rfid: data.rfid } : {}),
+      // ...(data.rfid ? { rfid: data.rfid } : {}),
       ...(data.nisn ? { nisn: data.nisn } : {}),
       ...(data.nrk ? { nrk: data.nrk } : {}),
       ...(data.nikki ? { nikki: data.nikki } : {}),
@@ -95,12 +95,10 @@ export const TeacherCreationForm = ({ id }: any) => {
       ...(data.tanggalLahir ? { tanggalLahir: data.tanggalLahir } : {}),
       ...(data.jenisKelamin ? { jenisKelamin: data.jenisKelamin } : {}),
       ...(data.sekolahId ? { sekolahId: data.sekolahId } : {}),
-      ...(data.noWhatsapp ? { noWhatsapp: data.noWhatsapp } : {}),
+      // ...(data.noWhatsapp ? { noWhatsapp: data.noWhatsapp } : {}),
       ...(data.usernameInstagram
         ? { usernameInstagram: data.usernameInstagram }
         : {}),
-      // noWhatsapp
-      // usernameInstagram
     };
 
     try {
@@ -218,7 +216,7 @@ export const TeacherCreationForm = ({ id }: any) => {
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder={lang.text("inputEmail")}
+                    placeholder={lang.text("email")}
                     {...field}
                   />
                 </FormControl>
@@ -297,7 +295,7 @@ export const TeacherCreationForm = ({ id }: any) => {
               </FormItem>
             )}
           />
-          <FormField
+          {/* <FormField
             control={form.control}
             name="rfid"
             render={({ field, fieldState }) => (
@@ -313,7 +311,7 @@ export const TeacherCreationForm = ({ id }: any) => {
                 <FormMessage>{fieldState.error?.message}</FormMessage>
               </FormItem>
             )}
-          />
+          /> */}
           <FormField
             control={form.control}
             name="usernameInstagram"
@@ -327,9 +325,9 @@ export const TeacherCreationForm = ({ id }: any) => {
               </FormItem>
             )}
           />
-          <FormField
+          {/* <FormField
             control={form.control}
-            name="noWhatsApp"
+            name="noWhatsapp"
             render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>No WhatsApp</FormLabel>
@@ -339,7 +337,7 @@ export const TeacherCreationForm = ({ id }: any) => {
                 <FormMessage>{fieldState.error?.message}</FormMessage>
               </FormItem>
             )}
-          />
+          /> */}
 
           <FormField
             control={form.control}

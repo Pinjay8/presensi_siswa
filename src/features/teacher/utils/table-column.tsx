@@ -22,7 +22,6 @@ import {
   EvidenceItem,
   EvidencePreview,
 } from "@/features/attendance/components";
-import { useState } from "react";
 
 export const tableColumnGuru: ColumnDef<BiodataGuru>[] = [
   {

@@ -24,6 +24,8 @@ export interface SchoolDataModel {
   visiMisi?: string | null;
   urlYutubeSecond?: string | null;
   urlYutubeThird?: string | null;
+  namaKepalaSekolah?: string | null;
+  kopSurat?: string | null;
 }
 
 export interface SchoolCreationModel {

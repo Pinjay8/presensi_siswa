@@ -61,7 +61,7 @@ export const useGraduationPagination = (params: GetPaginatedStudentParams) => {
 
     queryKey: ["graduations", params],
     queryFn: () => studentService.getPaginated( params ),
-    keepPreviousData: true,
+    // keepPreviousData: true,
     enabled: !!params.page && !!params.size && params.keyword !== undefined
 
   });

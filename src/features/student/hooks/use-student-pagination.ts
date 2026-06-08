@@ -28,7 +28,7 @@
 //         if (keyword) {
 //           params.append("search", keyword);
 //         }
-  
+
 //         const token = localStorage.getItem("token");
 //         const response = await fetch(
 //           `https://dev.kiraproject.id/api/user-siswa?${params.toString()}`,
@@ -39,7 +39,7 @@
 //             },
 //           }
 //         );
-  
+
 //         const result = await response.json();
 //         return {
 //           students: result.data,
@@ -50,19 +50,21 @@
 //       enabled: !!page && !!size, // ✅ optional: jaga-jaga page/size belum siap
 //     });
 //   };
-  
-import { StudentPaginationResponse } from "@/core/models/pagination";
-import { GetPaginatedStudentParams, studentService } from "@/core/services/pagination";
-import { useQuery } from "@tanstack/react-query";
 
+import { StudentPaginationResponse } from "@/core/models/pagination";
+import {
+  GetPaginatedStudentParams,
+  studentService,
+} from "@/core/services/pagination";
+import { useQuery } from "@tanstack/react-query";
 
 export const useStudentPagination = (params: GetPaginatedStudentParams) => {
   return useQuery<StudentPaginationResponse, Error>({
-
     queryKey: ["students", params],
-    queryFn: () => studentService.getPaginated( params ),
+    queryFn: () => studentService.getPaginated(params),
     // keepPreviousData: true,
-    enabled: !!params.page && !!params.size && params.keyword !== undefined
 
+    enabled: !!params.page && !!params.size && params.keyword !== undefined,
+    // staleTime: 1000,
   });
 };

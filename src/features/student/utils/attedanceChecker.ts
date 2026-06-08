@@ -1,5 +1,4 @@
 export const checkAttendance = (dataA: any, dataB: any) => {
-  // Helper function to format date
   const formatDateTime = (isoString: string | undefined) => {
     if (!isoString) return "N/A";
     const date = new Date(isoString);
@@ -18,11 +17,19 @@ export const checkAttendance = (dataA: any, dataB: any) => {
     dataA.data.map((item: any) => [item.userId, item.createdAt]),
   );
 
+  const attendanceStatusMap = new Map(
+    dataA.data.map((item: any) => [
+      item.userId,
+      item.absensis?.[0]?.statusKehadiran,
+    ]),
+  );
+
   // Proses setiap objek di dataB
   const result = dataB.map((item: any) => {
     const biodata = item.biodataSiswa?.[0]; // Simpan referensi untuk efisiensi
     const kelas = biodata?.kelas;
     const isPresent = userIds.has(item.id);
+
     return {
       id: item.id,
       name: item.name,
@@ -31,12 +38,14 @@ export const checkAttendance = (dataA: any, dataB: any) => {
       email: item.email,
       image: item.image,
       surveiApps: item.surveiApps,
-      jamMasuk: isPresent ? formatDateTime(attendanceMap.get(item.id )) : "N/A",
+      jamMasuk: isPresent
+        ? formatDateTime(attendanceMap?.get(item.id as string) as string)
+        : "N/A",
       idBiodataSiswa: biodata?.id || null,
       idKelas: kelas?.id || null,
       sekolahId: kelas?.sekolahId || null,
       namaKelas: kelas?.namaKelas || null,
-      status: isPresent ? "Hadir" : "Belum hadir",
+      status: attendanceStatusMap.get(item.id) || "Belum Hadir",
     };
   });
 

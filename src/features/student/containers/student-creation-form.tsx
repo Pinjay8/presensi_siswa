@@ -60,7 +60,6 @@ export const StudentCreationForm = () => {
     biodata.data = JSON.parse(biodata.data);
   }
 
-
   const form = useForm<z.infer<typeof studentEditSchema>>({
     resolver: zodResolver(studentEditSchema),
     mode: "all",
@@ -73,6 +72,7 @@ export const StudentCreationForm = () => {
       jenisKelamin: "",
       tanggalLahir: "",
       rfid: "",
+      noTlpOrtu: "",
       nisn: "",
       nrk: "",
       nikki: "",
@@ -88,13 +88,13 @@ export const StudentCreationForm = () => {
 
   useEffect(() => {
     if (detail.data && detailKelas.data && resource.data) {
-      console.log("Detail Data Siswa:", detail.data);
-      console.log("Detail Kelas:", detailKelas.data);
-      console.log("Resource Kelas:", resource.data);
-
-      const validKelasId = detailKelas.data?.idKelas && resource.data.some(kelas => kelas.id === detailKelas.data.idKelas)
-        ? String(detailKelas.data.idKelas)
-        : resource.data.length > 0 ? String(resource.data[0].id) : "";
+      const validKelasId =
+        detailKelas.data?.idKelas &&
+        resource.data.some((kelas) => kelas.id === detailKelas?.data?.idKelas)
+          ? String(detailKelas.data.idKelas)
+          : resource.data.length > 0
+            ? String(resource.data[0].id)
+            : "";
 
       // Gunakan detailKelas.data?.user?.name untuk field name
       const nameValue = detailKelas.data?.user?.name || detail.data?.name || "";
@@ -113,6 +113,7 @@ export const StudentCreationForm = () => {
         nisn: detail.data?.nisn || "",
         nrk: detail.data?.nrk || "",
         nikki: detail.data?.nikki || "",
+        noTlpOrtu: detail.data?.noTlpOrtu || "",
         nis: detail.data?.nis || "",
         nip: detail.data?.nip || "",
         nik: detail.data?.nik || "",
@@ -121,9 +122,6 @@ export const StudentCreationForm = () => {
         isActive: detail.data?.isActive || 0,
         sekolahId: detail.data?.sekolahId || 0,
       });
-
-      // Verifikasi nilai form setelah reset
-      console.log("Nilai form setelah reset:", form.getValues());
     }
   }, [detail.data, detailKelas.data, resource.data, form]);
 
@@ -133,7 +131,10 @@ export const StudentCreationForm = () => {
       console.log("User ID yang akan diupdate:", decodeParams.id);
       // console.log("Data yang dikirim sebelum mapping:", data);
 
-      if (!data.kelasId || !resource.data?.some(kelas => String(kelas.id) === data.kelasId)) {
+      if (
+        !data.kelasId ||
+        !resource.data?.some((kelas) => String(kelas.id) === data.kelasId)
+      ) {
         alert.error("Kelas yang dipilih tidak valid");
         return;
       }
@@ -141,24 +142,49 @@ export const StudentCreationForm = () => {
       const updatedData: any = {};
       if (data.image) updatedData.image = data.image;
       // Gunakan detailKelas.data?.user?.name untuk perbandingan
-      if (data.name && data.name !== (detailKelas.data?.user?.name || detail.data?.name)) {
+      if (
+        data.name &&
+        data.name !== (detailKelas.data?.user?.name || detail.data?.name)
+      ) {
         updatedData.name = data.name;
       }
-      if (data.email && data.email !== detail.data?.email) updatedData.email = data.email;
-      if (data.tanggalLahir && data.tanggalLahir !== detail.data?.tanggalLahir) updatedData.tanggalLahir = data.tanggalLahir;
-      if (data.rfid && data.rfid !== detail.data?.rfid) updatedData.rfid = data.rfid;
-      if (data.nisn && data.nisn !== detail.data?.nisn) updatedData.nisn = data.nisn;
+      if (data.email && data.email !== detail.data?.email)
+        updatedData.email = data.email;
+      if (data.tanggalLahir && data.tanggalLahir !== detail.data?.tanggalLahir)
+        updatedData.tanggalLahir = data.tanggalLahir;
+      if (data.rfid && data.rfid !== detail.data?.rfid)
+        updatedData.rfid = data.rfid;
+      if (data.nisn && data.nisn !== detail.data?.nisn)
+        updatedData.nisn = data.nisn;
       if (data.nrk && data.nrk !== detail.data?.nrk) updatedData.nrk = data.nrk;
-      if (data.nikki && data.nikki !== detail.data?.nikki) updatedData.nikki = data.nikki;
+      if (data.nikki && data.nikki !== detail.data?.nikki)
+        updatedData.nikki = data.nikki;
       if (data.nis && data.nis !== detail.data?.nis) updatedData.nis = data.nis;
       if (data.nip && data.nip !== detail.data?.nip) updatedData.nip = data.nip;
       if (data.nik && data.nik !== detail.data?.nik) updatedData.nik = data.nik;
-      if (data.noTlp && data.noTlp !== detail.data?.noTlp) updatedData.noTlp = data.noTlp;
-      if (data.alamat && data.alamat !== detail.data?.alamat) updatedData.alamat = data.alamat;
-      if (data.isActive !== undefined && data.isActive !== detail.data?.isActive) updatedData.isActive = data.isActive;
-      if (data.sekolahId !== undefined && data.sekolahId !== detail.data?.sekolahId) updatedData.sekolahId = data.sekolahId;
-      if (data.jenisKelamin && data.jenisKelamin !== detail.data?.jenisKelamin) updatedData.jenisKelamin = data.jenisKelamin === "Male" ? "Male" : "Female";
-      if (data.isVerified !== undefined && data.isVerified !== detail.data?.isVerified) updatedData.isVerified = data.isVerified ? 1 : 0;
+      if (data.noTlpOrtu && data.noTlpOrtu !== detail.data?.noTlpOrtu)
+        if (data.noTlp && data.noTlp !== detail.data?.noTlp)
+          updatedData.noTlp = data.noTlp;
+      if (data.alamat && data.alamat !== detail.data?.alamat)
+        updatedData.alamat = data.alamat;
+      if (
+        data.isActive !== undefined &&
+        data.isActive !== detail.data?.isActive
+      )
+        updatedData.isActive = data.isActive;
+      if (
+        data.sekolahId !== undefined &&
+        data.sekolahId !== detail.data?.sekolahId
+      )
+        updatedData.sekolahId = data.sekolahId;
+      if (data.jenisKelamin && data.jenisKelamin !== detail.data?.jenisKelamin)
+        updatedData.jenisKelamin =
+          data.jenisKelamin === "Male" ? "Male" : "Female";
+      if (
+        data.isVerified !== undefined &&
+        data.isVerified !== detail.data?.isVerified
+      )
+        updatedData.isVerified = data.isVerified ? 1 : 0;
       updatedData.kelasId = Number(data.kelasId);
 
       // console.log("Data yang dikirim ke backend:", updatedData);
@@ -166,7 +192,9 @@ export const StudentCreationForm = () => {
 
       await creation.update(Number(decodeParams.biodataId), updatedData);
 
-      alert.success(lang.text("successUpdate", { context: lang.text("student") }));
+      alert.success(
+        lang.text("successUpdate", { context: lang.text("student") }),
+      );
 
       navigate("/students");
 
@@ -182,16 +210,17 @@ export const StudentCreationForm = () => {
     } catch (err: any) {
       console.error("Error saat update:", err);
       alert.error(
-        err?.message || lang.text("failUpdate", { context: lang.text("student") })
+        err?.message ||
+          lang.text("failUpdate", { context: lang.text("student") }),
       );
     }
   }
 
-  if (detailKelas.isError || resource.isError) {
-    alert.error("Gagal memuat data");
-    navigate("/students");
-    return null;
-  }
+  // if (detailKelas.isError || resource.isError) {
+  //   alert.error("Gagal memuat data");
+  //   navigate("/students");
+  //   return null;
+  // }
 
   if (detailKelas.isLoading || resource.isLoading) {
     return <div>Memuat...</div>;
@@ -232,7 +261,9 @@ export const StudentCreationForm = () => {
                   </SelectContent>
                 </Select>
                 <FormMessage>
-                  {resource.data?.length === 0 ? "Tidak ada kelas tersedia untuk dipilih" : fieldState.error?.message}
+                  {resource.data?.length === 0
+                    ? "Tidak ada kelas tersedia untuk dipilih"
+                    : fieldState.error?.message}
                 </FormMessage>
               </FormItem>
             )}
@@ -423,7 +454,7 @@ export const StudentCreationForm = () => {
                         value={field.value ? dayjs(field.value) : null}
                         onChange={(newValue) =>
                           field.onChange(
-                            newValue ? newValue.format("YYYY-MM-DD") : ""
+                            newValue ? newValue.format("YYYY-MM-DD") : "",
                           )
                         }
                         sx={{

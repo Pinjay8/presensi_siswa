@@ -77,6 +77,7 @@ export const SERVICE_ENDPOINTS = {
     absenQr: "/api/masuk-mata-pelajaran",
     generateQr: "/api/generate-dynamic-qr",
     registerFace: "/api/register-face",
+    registerFaceTeacher: "/api/register-face-guru",
   },
   otp: {
     verify: "/verify-otp",
@@ -96,5 +97,18 @@ export const SERVICE_ENDPOINTS = {
   },
   library: {
     vistor: "/index.php?p=api/visitor/today",
+  },
+  cards: {
+    all: "/api/cards/unassigned",
+    get: "/api/cards",
+    create: "/api/cards",
+    update: "/api/cards",
+    delete: "/api/cards",
+    assignCardToUser: "/api/cards/{card_id}/assign",
+    unAsssignCardToUser: "/api/cards/{card_id}/unassign",
+  },
+  attendances: {
+    list: "/api/riwayat-absensi",
+    listMataPelajaran: "/api/riwayat-absensi-mapel",
   },
 };

@@ -28,5 +28,5 @@ export const parentEditSchema = z.object({
   isActive: z.number().optional(),
   sekolahId: z.number().optional(),
   usernameInstagram: z.string().optional(),
-  noWhatsapp: z.string().optional(),
+  noWhatsApp: z.string().optional(),
 });

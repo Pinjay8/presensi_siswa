@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
   Textarea,
+  toast,
 } from "@/core/libs";
 import { getStaticFile } from "@/core/utils";
 import { useAlert, useDataTableController } from "@/features/_global";
@@ -33,15 +34,7 @@ import {
   StudentTable,
   useAttedances,
 } from "@/features/student";
-import {
-  Document,
-  Image,
-  Page,
-  pdf,
-  StyleSheet,
-  Text,
-  View,
-} from "@react-pdf/renderer";
+
 import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -49,11 +42,12 @@ import {
   CalendarIcon,
   ChevronDown,
   ChevronUp,
+  Import,
   UploadIcon,
   XIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { FaFilePdf } from "react-icons/fa";
+import { FaFileExcel, FaFilePdf } from "react-icons/fa";
 import { useStudentPagination } from "../hooks/use-student-pagination";
 import { ImportStudentDialog } from "../components/ImportStudentDialog";
 import { pdfStyles } from "../components/pdfStylles";
@@ -65,6 +59,9 @@ import { CreateSiswaFormValues, createSiswaSchema } from "@/core/models";
 import { userService } from "@/core/services";
 import { useForm } from "react-hook-form";
 import { useSchools } from "@/features/classroom/hooks/useSchool";
+import { io } from "socket.io-client";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import StudentFormDialog from "../components/StudentFormDialog";
 
 export const StudentLandingTables = () => {
   const [openImport, setOpenImport] = useState(false);
@@ -83,7 +80,7 @@ export const StudentLandingTables = () => {
     pagination,
     onSortingChange,
     onPaginationChange,
-  } = useDataTableController({ defaultPageSize: 50 });
+  } = useDataTableController({ defaultPageSize: 10 });
 
   const profile = useProfile();
   const classRoom = useClassroom();
@@ -118,6 +115,7 @@ export const StudentLandingTables = () => {
   );
 
   const { data, isLoading, refetch } = useStudentPagination(studentParams);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (
@@ -128,13 +126,18 @@ export const StudentLandingTables = () => {
     ) {
       return;
     }
-
     const result = checkAttendance(attedances.data, data.students);
     setAttendanceResult(result);
-  }, [attedances.isLoading, attedances.data, isLoading, data?.students]);
+  }, [
+    attedances.isLoading,
+    attedances.data,
+    isLoading,
+    data?.students,
+    reloadKey,
+  ]);
 
   const presentCount = useMemo(() => {
-    return attendanceResult.filter((item) => item.status === "Hadir").length;
+    return attendanceResult.filter((item) => item.status === "hadir").length;
   }, [attendanceResult]);
 
   const handleDownload = (type: string) => {
@@ -231,7 +234,6 @@ export const StudentLandingTables = () => {
           );
         }
 
-        console.log("response:", response);
         setOpenImport(false);
       } catch (error: any) {
         console.error("Error saat mengunggah file:", error);
@@ -288,10 +290,11 @@ export const StudentLandingTables = () => {
     nis: "",
     nisn: "",
     noTlp: "",
+    noTlpOrtu: "",
     alamat: "",
     password: "",
     sekolahId: "",
-    jenisKelamin: "",
+    jenisKelamin: "Male",
     tanggalLahir: "",
     // rfid: "",
   };
@@ -301,6 +304,9 @@ export const StudentLandingTables = () => {
     defaultValues,
   });
 
+  // const { students, loading, refetch: refetchStudents } = useStudents();
+  const queryCLient = useQueryClient();
+
   const onSubmit = async (values: CreateSiswaFormValues) => {
     try {
       const payload = {
@@ -309,34 +315,91 @@ export const StudentLandingTables = () => {
       };
 
       const result = await userService.createSiswa(payload);
-
-      // toast.success(result.message || "Siswa berhasil dibuat");
-      alert.success(result.message || "Siswa berhasil dibuat");
+      await refetch();
+      await queryCLient.invalidateQueries({
+        queryKey: ["students"],
+      });
+      setReloadKey((prev) => prev + 1);
+      setOpenFormSiswa(false);
+      await alert.success(result.message || "Siswa berhasil dibuat");
       form.reset();
     } catch (error: any) {
-      // toast.error(error?.message || "Gagal membuat siswa");
       alert.error(error?.message || "Gagal membuat siswa");
     }
   };
 
   const { schools } = useSchools();
 
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const socket = io("http://192.168.1.116:15219", {
+      transports: ["websocket"],
+    });
+
+    socket.on("connect", () => {
+      console.log("Connected", socket.id);
+    });
+
+    socket.on("absen", async (data) => {
+      console.log("[ABSEN]", data);
+      await refetch();
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["studentsPaginated"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["attedances-new"],
+        }),
+      ]);
+      setReloadKey((prev) => prev + 1);
+    });
+
+    socket.on("absen-barcode", async (data) => {
+      console.log("[BARCODE]", data);
+
+      await refetch();
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected");
+    });
+
+    socket.on("error", (err) => {
+      console.error("[ERROR]", err);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [refetch]);
+
+  const handleCloseFormSiswa = () => {
+    form.reset(defaultValues);
+    setOpenFormSiswa(false);
+  };
+
   return (
     <>
       <div className="flex justify-between items-center pb-4">
-        <div className="w-full flex justify-between">
-          <div className="flex w-max gap-2">
+        <div className="w-full flex justify-between lg:flex-nowrap flex-wrap gap-2">
+          <div className="flex w-max gap-2 items-center">
             <Button
               className="hidden"
               variant="outline"
               onClick={() => handleDownloadExcel("csv")}
+              // icon
+              iconPosition="left"
+              icon={<FaFileExcel />}
             >
               {lang.text("download")} Template CSV
             </Button>
             <Button
-              className="mr-4"
+              className=""
               variant="outline"
               onClick={() => handleDownloadExcel("excel")}
+              iconPosition="left"
+              icon={<FaFileExcel />}
             >
               {lang.text("download")} Template Excel
             </Button>
@@ -345,15 +408,21 @@ export const StudentLandingTables = () => {
               onClick={() =>
                 classRoom?.data.length > 0 ? setOpenImport(true) : handleAlert()
               }
+              iconPosition="left"
+              icon={<Import />}
             >
               {lang.text("import")} Data
             </Button>
-            <Button variant="default" onClick={() => setOpenFormSiswa(true)}>
+            <Button
+              variant="default"
+              onClick={() => setOpenFormSiswa(true)}
+              style={{ padding: "2px 4px" }}
+            >
               Create Siswa
             </Button>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="flex justify-between items-center pb-4 gap-4">
+            <div className="flex justify-between items-center pb-0 gap-4">
               <Button
                 variant="outline"
                 aria-label="presentCount"
@@ -416,9 +485,9 @@ export const StudentLandingTables = () => {
         onSortingChange={onSortingChange}
       />
 
-      <Dialog
+      {/* <Dialog
         open={openFormSiswa}
-        onClose={() => setOpenFormSiswa(false)}
+        onClose={handleCloseFormSiswa}
         maxWidth="md"
         fullWidth
       >
@@ -429,8 +498,8 @@ export const StudentLandingTables = () => {
             justifyContent: "space-between",
           }}
         >
-          Form Siswa
-          <IconButton onClick={() => setOpenFormSiswa(false)}>
+          {lang.text("formStudents")}
+          <IconButton onClick={handleCloseFormSiswa}>
             <XIcon />
           </IconButton>
         </DialogTitle>
@@ -497,6 +566,20 @@ export const StudentLandingTables = () => {
 
                   <FormField
                     control={form.control}
+                    name="noTlpOrtu"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nomor Telepon Ortu</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
                     name="noTlp"
                     render={({ field }) => (
                       <FormItem>
@@ -537,7 +620,7 @@ export const StudentLandingTables = () => {
                     )}
                   />
 
-                  {/* <FormField
+                   <FormField
                     control={form.control}
                     name="rfid"
                     render={({ field }) => (
@@ -549,7 +632,7 @@ export const StudentLandingTables = () => {
                         <FormMessage />
                       </FormItem>
                     )}
-                  /> */}
+                  /> 
 
                   <FormField
                     control={form.control}
@@ -664,7 +747,15 @@ export const StudentLandingTables = () => {
             </Form>
           </Box>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
+
+      <StudentFormDialog
+        open={openFormSiswa}
+        onClose={handleCloseFormSiswa}
+        form={form}
+        onSubmit={onSubmit}
+        schools={schools ?? []}
+      />
 
       <ImportStudentDialog
         open={openImport}

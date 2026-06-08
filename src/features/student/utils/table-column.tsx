@@ -50,14 +50,20 @@ interface FlatStudentModel {
   }[];
 }
 
+
+
 export const studentColumnWithFilter = ({
   noStatus = false,
   schoolOptions = [],
   classroomOptions = [],
   handleAttend,
+  onRegisterFace,
 }: {
   schoolOptions?: { label: string; value: string | number }[];
   classroomOptions?: { label: string; value: string | number }[];
+  noStatus?: boolean;
+  handleAttend?: (row: FlatStudentModel) => void;
+  onRegisterFace?: any;
 }): ColumnDef<FlatStudentModel>[] => {
   // const MemoizedFormRfid = React.memo(FormRfid);
   // const queryClient = useQueryClient();
@@ -67,12 +73,6 @@ export const studentColumnWithFilter = ({
     lang.text("classroom"),
     classroomOptions,
   );
-
-  // const schoolFilterMeta = buildSelectFilter(
-  //   "biodataSiswa[0].kelas.sekolah.namaSekolah",
-  //   lang.text("school"),
-  //   schoolOptions
-  // )
 
   return [
     {
@@ -203,9 +203,12 @@ export const studentColumnWithFilter = ({
             header: () => <BaseTableHeader>Status</BaseTableHeader>,
             cell: ({ row }) => (
               <div
-                className={`w-[100px] text-center px-3 py-1 rounded-sm ${(row.original.user?.status || row.original.status) === "Hadir" ? "bg-[#0f4d3f] text-[#3ee07a]" : "bg-red-700 text-red-300"}`}
+                className={`text-capitalize! text-white w-[100px] text-center px-3 py-1 rounded-sm ${row.original.status === "hadir" ? "bg-[#0f4d3f] text-[#3ee07a]" : "bg-red-700 text-red-300"}`}
               >
-                {row.original.user?.status || row.original.status || "-"}
+                {row.original.status
+                  ? row.original.status.charAt(0).toUpperCase() +
+                    row.original.status.slice(1)
+                  : "-"}
               </div>
             ),
           },
@@ -216,7 +219,7 @@ export const studentColumnWithFilter = ({
               <Button
                 onClick={() => handleAttend(row.original?.id)}
                 disabled={
-                  (row.original.user?.status || row.original.status) === "Hadir"
+                  (row.original.user?.status || row.original.status) === "hadir"
                 }
               >
                 {lang.text("attend")}
@@ -268,7 +271,7 @@ export const studentColumnWithFilter = ({
         return (
           <BaseActionTable
             detailPath={`/students/${encryptPayload}`}
-            // editPath={`/students/edit/${encryptPayload}`}
+            onRegisterFace={() => onRegisterFace?.(row.original)}
           />
         );
       },

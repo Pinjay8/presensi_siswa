@@ -20,25 +20,32 @@ export interface Attendance {
   };
 }
 
-export const columns: ColumnDef<Attendance>[] = [
+export const columns: ColumnDef<any>[] = [
   {
-    accessorKey: "user.name",
-    header: "Nama",
-    cell: ({ row }) => row.original.user.name || "N/A",
+    accessorKey: "namaSiswa",
+    header: "Nama Siswa",
+    cell: ({ row }) => row.original.namaSiswa || "N/A",
     enableSorting: true,
     meta: { width: "25%" },
   },
   {
-    accessorKey: "kelas.namaKelas",
+    accessorKey: "guru",
+    header: " Guru",
+    cell: ({ row }) => row.original.namaGuru || "-",
+    enableSorting: true,
+    meta: { width: "25%" },
+  },
+  {
+    accessorKey: "namaKelas",
     header: "Kelas",
-    cell: ({ row }) => row.original.kelas.namaKelas || "N/A",
+    cell: ({ row }) => row.original.namaKelas || "N/A",
     enableSorting: true,
     meta: { width: "15%" },
   },
   {
-    accessorKey: "attendance.namaMataPelajaran",
+    accessorKey: "namaMataPelajaran",
     header: "Mata Pelajaran",
-    cell: ({ row }) => row.original.attendance.namaMataPelajaran || "N/A",
+    cell: ({ row }) => row.original.namaMataPelajaran || "N/A",
     enableSorting: true,
     meta: { width: "20%" },
   },
@@ -46,18 +53,20 @@ export const columns: ColumnDef<Attendance>[] = [
     accessorKey: "attendance.statusKehadiran",
     header: "Status",
     cell: ({ row }) => {
-      const status = row.original.attendance?.statusKehadiran || "N/A";
+      const status = row.original.statusKehadiran || "N/A";
       let variant;
 
-      if (status === "Hadir") {
+      if (status === "Hadir" || status === "hadir") {
         variant = "bg-green-600 text-white"; // Hijau untuk hadir
-      } else if (status === "Alfa") {
+      } else if (status === "Alfa" || status === "alfa") {
         variant = "bg-red-600 text-white"; // Merah untuk alfa
       } else if (status === "izin") {
         variant = "bg-yellow-600 text-white"; // Kuning untuk izin
       }
 
-      return <Badge className={`px-6 py-2 ${variant}`}>{status}</Badge>;
+      return (
+        <Badge className={`px-6 py-2 ${variant} capitalize`}>{status}</Badge>
+      );
     },
     enableSorting: true,
     meta: { width: "15%" },
@@ -66,7 +75,7 @@ export const columns: ColumnDef<Attendance>[] = [
     accessorKey: "attendance.tanggal",
     header: "Tanggal",
     cell: ({ row }) =>
-      dayjs(row.original.attendance.tanggal, "DD MMM YYYY, HH:mm:ss")
+      dayjs(row.original.tanggal, "DD MMM YYYY, HH:mm:ss")
         .tz("Asia/Jakarta")
         .format("DD MMM YYYY") || "N/A",
     enableSorting: true,

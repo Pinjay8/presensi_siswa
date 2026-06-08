@@ -841,6 +841,7 @@ export const BaseDataTable = ({
     initialState,
   });
 
+
   const handleNextPage = useCallback(() => {
     if (searchParamPagination && table.getCanNextPage()) {
       setSearchParams({
@@ -948,7 +949,7 @@ export const BaseDataTable = ({
     }
 
     return (
-      <>
+      <TableBody>
         {table.getRowModel().rows.map((row) => (
           <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
             {row.getVisibleCells().map((cell) => {
@@ -966,7 +967,7 @@ export const BaseDataTable = ({
             })}
           </TableRow>
         ))}
-      </>
+      </TableBody>
     );
   };
 

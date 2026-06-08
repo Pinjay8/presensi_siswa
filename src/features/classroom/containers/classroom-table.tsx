@@ -37,14 +37,12 @@ export const ClassroomTable = () => {
           onClose={() => setCreateClassRoom(!classRoom)}
         />
       )}
-
       <BaseDataTable
         columns={columns}
         data={resource.data}
         dataFallback={classroomDataFallback}
         globalSearch
         showFilterButton
-        // pageSize={5}
         actions={[
           ...(!isRole
             ? [

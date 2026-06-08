@@ -110,7 +110,12 @@ export function QrAttendanceDialog({
                   <QRCode value={qrCode} size={300} />
                 </div>
 
-                <Button sx={{ mt: 2 }} onClick={handleDownloadQr}>
+                <Button
+                  sx={{ mt: 2 }}
+                  onClick={handleDownloadQr}
+                  // variant="default"
+                  variant="contained"
+                >
                   Download QR
                 </Button>
               </>

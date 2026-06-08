@@ -134,7 +134,6 @@ export function HistoryAttendance() {
     fetchBiodata();
   }, [fetchClasses, fetchBiodata]);
 
-  // ✅ Fungsi Generate QR Code
   const generateQrCode = async () => {
     setLoading(true);
     setIsQrDisabled(true);

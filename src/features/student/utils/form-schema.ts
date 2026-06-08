@@ -27,6 +27,7 @@ export const studentEditSchema = z.object({
   nrk: z.string().optional(),
   nikki: z.string().optional(),
   image: z.string().optional(),
+  noTlpOrtu: z.string().optional(),
   nis: z.string().optional(),
   nip: z.string().optional(),
   nik: z.string().optional(),

@@ -22,12 +22,13 @@ export interface UserDataModel {
   nisn: string;
   nrk: string;
   noTelegram: string;
+  noTlpOrtu: string;
   nikki: string;
   image: string;
   nis: string;
   nip: string;
   usernameInstagram: string;
-  noWhatsapp: string;
+  noWhatsApp: string;
   nik: string;
   kelas?: Kelas;
   noTlp: string;
@@ -85,6 +86,7 @@ export const createSiswaSchema = z.object({
   nis: z.string().min(1, "NIS wajib diisi"),
   nisn: z.string().min(1, "NISN wajib diisi"),
   noTlp: z.string().min(1, "No Telepon wajib diisi"),
+  noTlpOrtu: z.string().optional(),
   alamat: z.string().min(1, "Alamat wajib diisi"),
   password: z.string().optional(),
   sekolahId: z.number(),

@@ -1,17 +1,20 @@
-import { distinctObjectsByProperty, lang } from '@/core/libs';
-import { BiodataSiswa } from '@/core/models/biodata';
-import { BaseDataTable } from '@/features/_global';
-import { useClassroom } from '@/features/classroom';
-import { useSchool } from '@/features/schools';
-import { useMemo } from 'react';
-import { studentAttendanceColumn } from '../utils';
+import { distinctObjectsByProperty, lang } from "@/core/libs";
+import { BiodataSiswa } from "@/core/models/biodata";
+import { BaseDataTable } from "@/features/_global";
+import { useClassroom } from "@/features/classroom";
+import { useSchool } from "@/features/schools";
+import { useMemo } from "react";
+import { studentAttendanceColumn } from "../utils";
 
 interface StudentAttendanceTableProps {
   data: BiodataSiswa[]; // Terima data yang difilter
   totalAttedance?: boolean;
 }
 
-export function StudentAttendanceTable({ data, totalAttedance }: StudentAttendanceTableProps) {
+export function StudentAttendanceTable({
+  data,
+  totalAttedance,
+}: StudentAttendanceTableProps) {
   const school = useSchool();
   const classroom = useClassroom();
 
@@ -23,14 +26,14 @@ export function StudentAttendanceTable({ data, totalAttedance }: StudentAttendan
             label: d.namaKelas,
             value: d.namaKelas,
           })) || [],
-          'value',
+          "value",
         ),
         schoolOptions: distinctObjectsByProperty(
           school.data?.map((d) => ({
             label: d.namaSekolah,
             value: d.namaSekolah,
           })) || [],
-          'value',  
+          "value",
         ),
       }),
     [school.data, classroom.data],
@@ -40,8 +43,7 @@ export function StudentAttendanceTable({ data, totalAttedance }: StudentAttendan
     <div>
       <BaseDataTable
         columns={columns}
-        // totalAttedance={totalAttedance}
-        data={data} 
+        data={data}
         dataFallback={[]}
         globalSearch
         searchParamPagination
@@ -54,19 +56,13 @@ export function StudentAttendanceTable({ data, totalAttedance }: StudentAttendan
           },
           sorting: [
             {
-              id: 'attendance_createdAt',
+              id: "createdAt",
               desc: true,
             },
           ],
         }}
-        // actions={[
-        //   {
-        //     title: lang.text("addAttendance"),
-        //     url: "/attendance/create",
-        //   },
-        // ]}
-        searchPlaceholder={lang.text('search')}
-        isLoading={data.length > 0 ? false : true} // Tidak perlu lagi query biodata di sini
+        searchPlaceholder={lang.text("search")}
+        isLoading={data.length > 0 ? false : true}
       />
     </div>
   );
