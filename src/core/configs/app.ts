@@ -89,7 +89,7 @@ export const SERVICE_ENDPOINTS = {
   teacher: {
     detail: "/api/get-guru",
     waliKelas: "/api/wali-kelas",
-    generateQrCode: "/api/generate-qrcode-mapel",
+    generateQrCode: "/api/qr-mapel/generate",
   },
   libraries: {
     all: "/api/get-history-perpus",

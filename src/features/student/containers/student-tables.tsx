@@ -333,7 +333,7 @@ export const StudentLandingTables = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const socket = io("http://192.168.1.116:15219", {
+    const socket = io("https://presensi-api.app.bio-experience.com", {
       transports: ["websocket"],
     });
 

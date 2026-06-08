@@ -1,0 +1,20 @@
+
+ARG NODE_VERSION=22.14.0
+
+FROM node:${NODE_VERSION} AS build
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
+
+COPY . .
+RUN npm run build
+
+FROM node:${NODE_VERSION}-alpine
+WORKDIR /app
+
+RUN npm install -g serve
+COPY --from=build /app/dist ./dist
+
+EXPOSE 3002
+CMD ["serve", "-s", "dist", "-l", "3002"]

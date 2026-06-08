@@ -1,0 +1,11 @@
+services:
+  dev:
+    build:
+      context: .
+    environment:
+      NODE_ENV: production
+      dockerfile: Dockerfile
+    volumes:
+      - .env:/app/.env
+    ports:
+      - 3002:3002

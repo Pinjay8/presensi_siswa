@@ -138,14 +138,14 @@ export function ScheduleLandingContent() {
 
   const handleShowQr = async (item: any) => {
     try {
-      console.log("QR ITEM", item);
+      // console.log("QR ITEM", item);
 
       const payload = {
         kelasId: item.kelasId,
         mataPelajaranId: item.mataPelajaranId,
       };
 
-      console.log("QR PAYLOAD", payload);
+      // console.log("QR PAYLOAD", payload);
 
       setSelectedQr({
         kelasId: item.kelasId,
@@ -158,7 +158,7 @@ export function ScheduleLandingContent() {
 
       const result = await teacherService.qrCodeGenerate(payload);
 
-      console.log("QR RESULT", result);
+      // console.log("QR RESULT", result);
 
       setQrCode(result?.data?.qrCodeData ?? result?.collection?.qrCode ?? "");
     } catch (err: any) {

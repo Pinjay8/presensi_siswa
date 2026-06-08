@@ -206,7 +206,7 @@ const Chatbot = ({
               (c) => c.level && c.level === newContext.school,
             )
           : classroomData;
-        console.log("classroomData filterrr", filteredClasses);
+        // console.log("classroomData filterrr", filteredClasses);
         const reply = filteredClasses?.length
           ? `Ada ${filteredClasses.length} kelas.`
           : `Tidak ada data kelas.`;

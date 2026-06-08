@@ -85,8 +85,8 @@ export const studentAttendanceColumn = ({
       },
     },
     {
-      accessorKey: "user.name",
-      accessorFn: (row) => row.siswa?.name,
+      accessorKey: "siswa.nama",
+      accessorFn: (row) => row.siswa?.nama,
 
       header: ({ column }) => {
         return (
@@ -154,50 +154,76 @@ export const studentAttendanceColumn = ({
     },
     {
       accessorKey: "user.sekolah.namaSekolah",
-      accessorFn: (row) => row.siswa.sekolah,
-      ...(schoolOptions &&
-        schoolOptions.length > 0 && {
-          meta: {
-            filterLabel: lang.text("school"),
-            filterPlaceholder: lang.text("selectSchool"),
-            filterVariant: "select",
-            filterOptions: schoolOptions,
-            filterColumnVisible: false,
-          },
-        }),
-      header: ({ column }) => {
-        return (
-          <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {lang.text("schoolName")}
-          </BaseTableHeader>
-        );
-      },
+
+      accessorFn: (row) => row.siswa?.sekolah ?? "-",
+
+      ...(schoolOptions?.length > 0 && {
+        meta: {
+          filterLabel: lang.text("school"),
+          filterPlaceholder: lang.text("selectSchool"),
+          filterVariant: "select",
+          filterOptions: schoolOptions,
+          filterColumnVisible: false,
+        },
+      }),
+
+      header: ({ column }) => (
+        <BaseTableHeader
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {lang.text("schoolName")}
+        </BaseTableHeader>
+      ),
+
+      cell: ({ row }) => <span>{row.original.siswa?.sekolah ?? "-"}</span>,
     },
+    // {
+    //   accessorKey: "siswa.kelas",
+    //   accessorFn: (row) => row.siswa.kelas,
+    //   header: ({ column }) => {
+    //     return (
+    //       <BaseTableHeader
+    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //       >
+    //         {lang.text("classroom")}
+    //       </BaseTableHeader>
+    //     );
+    //   },
+    //   ...(classroomOptions &&
+    //     classroomOptions.length > 0 && {
+    //       meta: {
+    //         filterLabel: lang.text("classroom"),
+    //         filterPlaceholder: lang.text("selectClassroom"),
+    //         filterVariant: "select",
+    //         filterOptions: classroomOptions,
+    //         filterColumnVisible: false,
+    //       },
+    //     }),
+    //   cell: ({ row }) => <span>{row.original.siswa.kelas || "-"}</span>,
+    // },
     {
-      accessorKey: "kelas.namaKelas",
-      accessorFn: (row) => row.siswa.kelas,
-      header: ({ column }) => {
-        return (
-          <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {lang.text("classroom")}
-          </BaseTableHeader>
-        );
-      },
-      ...(classroomOptions &&
-        classroomOptions.length > 0 && {
-          meta: {
-            filterLabel: lang.text("classroom"),
-            filterPlaceholder: lang.text("selectClassroom"),
-            filterVariant: "select",
-            filterOptions: classroomOptions,
-            filterColumnVisible: false,
-          },
-        }),
-      cell: ({ row }) => <span>{row.original.siswa.kelas || "-"}</span>,
+      accessorKey: "siswa.kelas",
+      accessorFn: (row) => row.siswa?.kelas ?? "-",
+
+      header: ({ column }) => (
+        <BaseTableHeader
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {lang.text("classroom")}
+        </BaseTableHeader>
+      ),
+
+      ...(classroomOptions?.length > 0 && {
+        meta: {
+          filterLabel: lang.text("classroom"),
+          filterPlaceholder: lang.text("selectClassroom"),
+          filterVariant: "select",
+          filterOptions: classroomOptions,
+          filterColumnVisible: false,
+        },
+      }),
+
+      cell: ({ row }) => <span>{row.original.siswa?.kelas ?? "-"}</span>,
     },
     {
       accessorKey: "statusKehadiran",

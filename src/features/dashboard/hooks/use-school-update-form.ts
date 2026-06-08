@@ -46,7 +46,7 @@ export const useSchoolUpdateForm = ({ onClose }: UseSchoolUpdateFormProps) => {
 
   useEffect(() => {
     if (!school.isLoading && school.data) {
-      console.log("📌 Data sekolah dari API:", school.data);
+      // console.log("📌 Data sekolah dari API:", school.data);
       form.reset({
         provinceId: String(school.data?.provinceId) || "",
         schoolName: school.data?.namaSekolah || "",

@@ -11,10 +11,10 @@ export const useSchoolUpdateDialog = () => {
 
   useEffect(() => {
     if (!school.isLoading && !hasInitialized) {
-      console.log("📌 [useSchoolUpdateDialog] Evaluating dialog open condition", {
-        schoolData: school.data,
-        isLoading: school.isLoading,
-      });
+      // console.log("📌 [useSchoolUpdateDialog] Evaluating dialog open condition", {
+      //   schoolData: school.data,
+      //   isLoading: school.isLoading,
+      // });
 
       const hasShownDialog = localStorage.getItem("hasShownSchoolDialog") === "true";
 

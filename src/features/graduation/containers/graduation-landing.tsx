@@ -417,26 +417,26 @@ export const GraduationLandingTables = () => {
   }, []);
 
   // Log letterText for debugging
-  console.log('letter buka', letterText.pembukaan);
-  console.log('letter isi', letterText.pernyataanLulus);
-  console.log('letter tutup', letterText.penutupan);
+  // console.log('letter buka', letterText.pembukaan);
+  // console.log('letter isi', letterText.pernyataanLulus);
+  // console.log('letter tutup', letterText.penutupan);
 
-  useEffect(() => {
-    loadingStatusRef.current = {
-      graduations: graduations.isLoading,
-      school: school.isLoading,
-    };
-    console.log('graduations:', {
-      isLoading: graduations.isLoading,
-      data: graduations.data,
-      error: graduations.error,
-    });
-    console.log('school:', {
-      isLoading: school.isLoading,
-      data: school.data,
-      error: school.error,
-    });
-  }, [graduations, school]);
+  // useEffect(() => {
+  //   loadingStatusRef.current = {
+  //     graduations: graduations.isLoading,
+  //     school: school.isLoading,
+  //   };
+  //   console.log('graduations:', {
+  //     isLoading: graduations.isLoading,
+  //     data: graduations.data,
+  //     error: graduations.error,
+  //   });
+  //   console.log('school:', {
+  //     isLoading: school.isLoading,
+  //     data: school.data,
+  //     error: school.error,
+  //   });
+  // }, [graduations, school]);
 
   useEffect(() => {
     setProfileSchoolId(profile.user?.sekolahId || null);

@@ -40,6 +40,7 @@ import { useStudentAttendance } from "../hooks/useStudentAttedance";
 import { useQueryClient } from "@tanstack/react-query";
 import { io } from "socket.io-client";
 import { useSearchParams } from "react-router-dom";
+import ExportFilterModal from "../components/ExpertFilterModal";
 
 // Konfigurasi dayjs untuk timezone
 dayjs.extend(utc);
@@ -415,9 +416,10 @@ export const StudentAttendance = () => {
   });
 
   const filteredData = attendanceData?.data || [];
+  // console.log("filteredData", filteredData);
 
   useEffect(() => {
-    const socket = io("http://192.168.1.116:15219", {
+    const socket = io("https://presensi-api.app.bio-experience.com", {
       transports: ["websocket"],
     });
 
@@ -609,78 +611,19 @@ export const StudentAttendance = () => {
 
       <StudentAttendanceTable totalAttedance={true} data={filteredData} />
       <div className="pb-16 sm:pb-0" />
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
-          onClick={() => setIsModalOpen(false)}
-        >
-          <div
-            className="bg-gray-900 text-white rounded-lg p-6 w-full max-w-lg shadow-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="text-lg font-semibold mb-4">Export & Filter</h2>
-            {dataMode === "mingguan" && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">
-                  Pilih Rentang Bulan
-                </label>
-                <div className="flex space-x-4">
-                  <input
-                    type="month"
-                    value={selectedStartMonth}
-                    onChange={(e) => setSelectedStartMonth(e.target.value)}
-                    className="bg-gray-800 text-white p-2 rounded-lg w-full border border-gray-700"
-                  />
-                  <span className="text-white mt-2">-</span>
-                  <input
-                    type="month"
-                    value={selectedEndMonth}
-                    onChange={(e) => setSelectedEndMonth(e.target.value)}
-                    className="bg-gray-800 text-white p-2 rounded-lg w-full border border-gray-700"
-                  />
-                </div>
-              </div>
-            )}
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">
-                Pilih Kelas
-              </label>
-              <select
-                value={selectedClass}
-                onChange={(e) => setSelectedClass(e.target.value)}
-                className="bg-gray-800 text-white p-2 rounded-lg w-full border border-gray-700"
-              >
-                <option value="">Semua Kelas</option>
-                {classOptions.map((kelas: any) => (
-                  <option key={kelas} value={kelas}>
-                    {kelas}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex space-x-4">
-              <button
-                onClick={() => handleExport("csv")}
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300 w-full"
-              >
-                Export CSV
-              </button>
-              <button
-                onClick={() => handleExport("excel")}
-                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300 w-full"
-              >
-                Export Excel
-              </button>
-              <button
-                onClick={() => handleExport("pdf")}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 w-full"
-              >
-                Export PDF
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ExportFilterModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        dataMode={dataMode}
+        selectedStartMonth={selectedStartMonth}
+        selectedEndMonth={selectedEndMonth}
+        selectedClass={selectedClass}
+        classOptions={classOptions as string[]}
+        setSelectedStartMonth={setSelectedStartMonth}
+        setSelectedEndMonth={setSelectedEndMonth}
+        setSelectedClass={setSelectedClass}
+        handleExport={handleExport}
+      />
     </DashboardPageLayout>
   );
 };
