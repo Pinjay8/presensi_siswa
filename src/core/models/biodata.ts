@@ -21,6 +21,7 @@ export interface BiodataSiswa {
   idKelas?: number;
   userId: number;
   createdAt: string;
+  kartus: any[];
   updatedAt?: string;
   locationId?: number;
   absensis: Absensi[];
@@ -79,7 +80,6 @@ export interface Location {
   createdAt: string;
   updatedAt: string;
 }
-
 
 export interface KehadiranBulanan {
   id: number;

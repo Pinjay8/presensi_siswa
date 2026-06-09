@@ -11,6 +11,7 @@ import { ModalAssignWaliKelas } from "../components/ModalAssignWaliKelas";
 import { useClassroom } from "@/features/classroom";
 import { teacherService } from "@/core/services/teacher";
 import { useMutation } from "@tanstack/react-query";
+import { FaPlus } from "react-icons/fa";
 
 export function TeacherTable() {
   const biodata = useBiodataGuru();
@@ -41,7 +42,8 @@ export function TeacherTable() {
   );
 
   const profile = useProfile();
-  const isRole = profile?.user?.role === "guru" || profile?.user?.role === "siswa";
+  const isRole =
+    profile?.user?.role === "guru" || profile?.user?.role === "siswa";
   const assignWaliKelasMutation = useMutation({
     mutationFn: (payload: { guruId: number; kelasId: number }) => {
       return teacherService.create(payload);
@@ -102,6 +104,7 @@ export function TeacherTable() {
             ? [
                 {
                   title: lang.text("addTeacher"),
+                  icon: <FaPlus />,
                   onClick: () => navigate("/teachers/create"),
                 },
               ]

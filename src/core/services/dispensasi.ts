@@ -1,0 +1,26 @@
+import { http } from "@itokun99/http";
+import { API_CONFIG, SERVICE_ENDPOINTS } from "../configs/app";
+import { BaseResponse } from "../models/http";
+import { getInitialOptions } from "../utils/http";
+import { getToken } from "@/features/auth";
+
+export const dispensasiService = {
+  createDispensasi: http.post<BaseResponse<any>>(
+    API_CONFIG.baseUrl + SERVICE_ENDPOINTS.dispensasi.create,
+    getInitialOptions,
+  ),
+  create: async (formData: FormData) => {
+    const response = await fetch(
+      API_CONFIG.baseUrl + SERVICE_ENDPOINTS.dispensasi.create,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: formData,
+      },
+    );
+
+    return await response.json();
+  },
+};

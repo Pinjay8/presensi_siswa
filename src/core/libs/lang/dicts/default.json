@@ -31,6 +31,10 @@
     "en": "Third YouTube URL",
     "id": "URL Youtube 3"
   },
+  "imageMessage": {
+    "en": "Only PNG, JPG and JPEG are supported",
+    "id": "Hanya PNG, JPG dan JPEG yang didukung"
+  },
   "inputURLYoutube1": {
     "en": "First YouTube URL",
     "id": "URL Youtube 1"
@@ -47,9 +51,37 @@
     "en": "Active Status",
     "id": "Status Keaktifan"
   },
+  "assignCard": {
+    "en": "Assign Card",
+    "id": "Kasih Kartu"
+  },
+  "unassignCard": {
+    "en": "Unassign Card",
+    "id": "Kembalikan Kartu"
+  },
+  "successAssignCard": {
+    "en": "Success assign card",
+    "id": "Berhasil memberikan kartu"
+  },
+  "successUnassignCard": {
+    "en": "Success unassign card",
+    "id": "Berhasil mengembalikan kartu"
+  },
+  "pictureValidation": {
+    "en": "Picture cannot be empty",
+    "id": "Foto tidak boleh kosong"
+  },
   "schoolStatus": {
     "en": "School Status",
     "id": "Status Sekolah"
+  },
+  "searchCards": {
+    "en": "Search Cards",
+    "id": "Cari Kartu"
+  },
+  "unAssignCard": {
+    "en": "Unassign Card",
+    "id": "Kembalikan Kartu"
   },
   "userNotAuthenticated": {
     "en": "User Not Authenticated",
@@ -791,14 +823,24 @@
     "id": "Kirim surat sekarang",
     "en": "Send letter for dispensation"
   },
+
   "startDispen": {
-    "id": "Kirim surat sekarang",
-    "en": "Send letter for dispensation"
+    "id": "Dari Tanggal",
+    "en": "From Date"
   },
   "endDispen": {
-    "id": "Kirim surat sekarang",
-    "en": "Send letter for dispensation"
+    "id": "Sampai Tanggal",
+    "en": "To Date"
   },
+  "startTime": {
+    "id": "Jam Mulai",
+    "en": "Start Time"
+  },
+  "endTime": {
+    "id": "Jam Selesai",
+    "en": "End Time"
+  },
+
   "createDispen": {
     "id": "Surat dispensasi siswa",
     "en": "Making a dispensation"
@@ -1043,6 +1085,10 @@
   "course": {
     "id": "Mata Pelajaran",
     "en": "Courses"
+  },
+  "createStudents": {
+    "id": "Tambah Siswa",
+    "en": "Add Students"
   },
   "moodle": {
     "id": "Moodle",
@@ -1355,6 +1401,14 @@
   "deleteConfirmationDesc": {
     "id": "Apakah anda yakin ingin menghapus data [context]?",
     "en": "Are you sure you want to delete the [context] data?"
+  },
+  "addSchedule": {
+    "id": "Tambah Jadwal",
+    "en": "Add Schedule"
+  },
+  "chooseCards": {
+    "id": "Pilih Kartu",
+    "en": "Choose Cards"
   },
   "deleteClassroom": {
     "id": "Hapus Kelas",
@@ -1883,6 +1937,10 @@
   "totalStudents": {
     "id": "Jumlah Siswa",
     "en": "Total Students"
+  },
+  "totalteachers": {
+    "id": "Jumlah Guru",
+    "en": "Total Teachers"
   },
   "totalData": {
     "id": "Total Data",

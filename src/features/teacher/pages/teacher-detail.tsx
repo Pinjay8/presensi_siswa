@@ -24,10 +24,6 @@ export const TeacherDetail = () => {
         },
         {
           label: decodeParams?.text,
-          url: `/teachers/create`,
-        },
-        {
-          label: decodeParams?.text,
           url: `/teachers/${params.id}`,
         },
       ]}

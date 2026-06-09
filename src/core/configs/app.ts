@@ -76,12 +76,17 @@ export const SERVICE_ENDPOINTS = {
     createSiswa: "/signup/siswa",
     absenQr: "/api/masuk-mata-pelajaran",
     generateQr: "/api/generate-dynamic-qr",
+    generateQrRfid: "/api/generate-qr-rfid",
     registerFace: "/api/register-face",
     registerFaceTeacher: "/api/register-face-guru",
   },
   otp: {
     verify: "/verify-otp",
     resend: "/resend-otp",
+  },
+  dispensasi: {
+    all: "/api/get-dispensasi",
+    create: "/api/dispensasi",
   },
   classroom: {
     classroom: "/api/kelas",
@@ -110,5 +115,13 @@ export const SERVICE_ENDPOINTS = {
   attendances: {
     list: "/api/riwayat-absensi",
     listMataPelajaran: "/api/riwayat-absensi-mapel",
+  },
+  dashboard: {
+    absensiList: "/api/dashboard/absensi-count",
+    classChart: "/api/dashboard/class-chart",
+    genderChart: "/api/dashboard/gender-chart",
+    attendanceDetail: "/api/dashboard/attendance-detail",
+    schoolDetail: "/api/dashboard/schools-detail",
+    listCount: "/api/dashboard",
   },
 };

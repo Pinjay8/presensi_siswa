@@ -7,6 +7,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  Input,
   lang,
   Popover,
   PopoverContent,
@@ -17,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/core/libs";
+import { dispensasiService } from "@/core/services/dispensasi";
 import { FileUploader3 } from "@/features/_global";
 import { useAlert } from "@/features/_global/hooks";
 import { useProfile } from "@/features/profile";
@@ -36,9 +38,13 @@ import { z } from "zod";
 // Zod schema for the updated form
 const letterUpdateFormSchema = z.object({
   buktiSurat: z.any().nullable(),
-  alasan: z.enum(["sakit", "izin"], { required_error: "Alasan izin wajib diisi" }),
+  alasan: z.enum(["sakit", "izin"], {
+    required_error: "Alasan izin wajib diisi",
+  }),
   dari: z.string().min(1, "Tanggal izin wajib diisi"),
   sampai: z.string().min(1, "Tanggal selesai izin wajib diisi"),
+  jamMulai: z.string().min(1, "Jam mulai wajib diisi"),
+  jamSelesai: z.string().min(1, "Jam selesai wajib diisi"),
 });
 
 export const LincensingCreationForm = () => {
@@ -56,6 +62,8 @@ export const LincensingCreationForm = () => {
       alasan: undefined,
       dari: "",
       sampai: "",
+      jamMulai: "",
+      jamSelesai: "",
     },
   });
 
@@ -66,6 +74,8 @@ export const LincensingCreationForm = () => {
         alasan: undefined, // Explicitly reset alasan to undefined
         dari: "",
         sampai: "",
+        jamMulai: "",
+        jamSelesai: "",
       });
     }
   }, [school.data, form]);
@@ -76,45 +86,37 @@ export const LincensingCreationForm = () => {
       const formData = new FormData();
       const token = localStorage.getItem("token");
 
-      // console.log("data", data);
-
       formData.append("alasan", data.alasan);
       formData.append("dari", data.dari);
       formData.append("sampai", data.sampai);
       formData.append("buktiSurat", data.buktiSurat);
+      const jamMulai = data.jamMulai.replace(":", ".");
+      const jamSelesai = data.jamSelesai.replace(":", ".");
 
-      console.log("📦 FormData yang akan dikirim:");
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
+      formData.append("jamMulai", jamMulai);
+      formData.append("jamSelesai", jamSelesai);
 
-      const headers = {
-        "Content-Type": "multipart/form-data",
-        Authorization: token ? `Bearer ${token}` : "",
-      };
-
-      await axios.post(
-        `https://dev.kiraproject.id/api/dispensasi`,
-        formData,
-        { headers }
-      );
+      await dispensasiService.create(formData);
 
       alert.success(lang.text("licensingSuccessCreate"));
       school.query.refetch();
-      
-      // Reset form to initial values after successful submission
+
       form.reset({
         buktiSurat: null,
-        alasan: undefined, // Explicitly reset to undefined to show placeholder
+        alasan: undefined,
         dari: "",
         sampai: "",
+        jamMulai: "",
+        jamSelesai: "",
       });
       navigate("/licensing", { replace: true });
     } catch (err: any) {
       console.error("Error saat submit:", err);
       if (err.response) {
         console.log("error", err.response.data?.message);
-        alert.error(err.response.data?.message || lang.text("licensingFailCreate"));
+        alert.error(
+          err.response.data?.message || lang.text("licensingFailCreate"),
+        );
       } else if (err.request) {
         alert.error(lang.text("licensingFailCreate"));
       } else {
@@ -127,19 +129,22 @@ export const LincensingCreationForm = () => {
   }
 
   return (
-    <div className="py-6">
+    <div className="">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mb-8">
           <div className="flex flex-col gap-6">
             <div>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
                 <FormField
                   control={form.control}
                   name="alasan"
                   render={({ field, fieldState }) => (
                     <FormItem>
                       <FormLabel>Alasan Izin</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value ?? ""}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value ?? ""}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Pilih alasan izin" />
@@ -178,13 +183,20 @@ export const LincensingCreationForm = () => {
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
+                            <PopoverContent
+                              className="w-auto p-0"
+                              align="start"
+                            >
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DateCalendar
-                                  value={field.value ? dayjs(field.value) : null}
+                                  value={
+                                    field.value ? dayjs(field.value) : null
+                                  }
                                   onChange={(newValue) =>
                                     field.onChange(
-                                      newValue ? newValue.format("YYYY-MM-DD") : ""
+                                      newValue
+                                        ? newValue.format("YYYY-MM-DD")
+                                        : "",
                                     )
                                   }
                                   sx={{
@@ -242,13 +254,20 @@ export const LincensingCreationForm = () => {
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
+                            <PopoverContent
+                              className="w-auto p-0"
+                              align="start"
+                            >
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DateCalendar
-                                  value={field.value ? dayjs(field.value) : null}
+                                  value={
+                                    field.value ? dayjs(field.value) : null
+                                  }
                                   onChange={(newValue) =>
                                     field.onChange(
-                                      newValue ? newValue.format("YYYY-MM-DD") : ""
+                                      newValue
+                                        ? newValue.format("YYYY-MM-DD")
+                                        : "",
                                     )
                                   }
                                   sx={{
@@ -284,18 +303,55 @@ export const LincensingCreationForm = () => {
                     />
                   </div>
                 </div>
+                <div className="flex flex-col sm:flex-row gap-4 mt-0">
+                  <div className="basis-1 sm:basis-1/2">
+                    <FormField
+                      control={form.control}
+                      name="jamMulai"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormLabel>{lang.text("startTime")}</FormLabel>
+                          <FormControl>
+                            <Input type="time" {...field} />
+                          </FormControl>
+                          <FormMessage>{fieldState.error?.message}</FormMessage>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="basis-1 sm:basis-1/2">
+                    <FormField
+                      control={form.control}
+                      name="jamSelesai"
+                      render={({ field, fieldState }) => (
+                        <FormItem>
+                          <FormLabel>{lang.text("endTime")}</FormLabel>
+                          <FormControl>
+                            <Input type="time" {...field} />
+                          </FormControl>
+                          <FormMessage>{fieldState.error?.message}</FormMessage>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
                 <FormField
                   control={form.control}
                   name="buktiSurat"
                   render={({ field, fieldState }) => (
                     <FormItem>
-                      <FormLabel className="bg-black text-white">Bukti Surat</FormLabel>
+                      <FormLabel className="bg-black text-white">
+                        Bukti Surat
+                      </FormLabel>
                       <FormControl>
                         <FileUploader3
                           value={field.value}
                           onChange={(v) => field.onChange(v)}
                           buttonPlaceholder="Unggah bukti surat"
-                          onError={(e) => form.setError("buktiSurat", { message: e })}
+                          onError={(e) =>
+                            form.setError("buktiSurat", { message: e })
+                          }
                           showButton={false}
                           error={fieldState.error?.message}
                         />
@@ -312,7 +368,11 @@ export const LincensingCreationForm = () => {
                   disabled={isLoading}
                   className="w-full py-6 active:scale-[0.97]"
                 >
-                  {isLoading ? <FaSpinner className="animate animate-spin duration-600" /> : lang.text("upload")}
+                  {isLoading ? (
+                    <FaSpinner className="animate animate-spin duration-600" />
+                  ) : (
+                    lang.text("upload")
+                  )}
                   <SaveIcon />
                 </Button>
               </div>

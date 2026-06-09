@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/core/libs";
-import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -20,15 +20,11 @@ interface ChartInterface {
 export const ChartSemiCircle = ({ stats, isLoading }: ChartInterface) => {
   // Data untuk chart
   const data = {
-    labels: ['Hadir', 'Alpa', 'Sakit'],
+    labels: ["Hadir", "Alpa", "Sakit"],
     datasets: [
       {
-        data: [
-          stats.totalHadir,
-          stats.totalAlpa,
-          stats.totalSakit,
-        ],
-        backgroundColor: ['#CC39FC', '#0039F7', '#00C3FC'],
+        data: [stats.totalHadir, stats.totalAlpa, stats.totalSakit],
+        backgroundColor: ["#CC39FC", "#0039F7", "#00C3FC"],
         borderWidth: 0,
       },
     ],
@@ -38,7 +34,7 @@ export const ChartSemiCircle = ({ stats, isLoading }: ChartInterface) => {
   const options = {
     rotation: -90,
     circumference: 180,
-    cutout: '80%',
+    cutout: "80%",
     plugins: {
       legend: {
         display: false,

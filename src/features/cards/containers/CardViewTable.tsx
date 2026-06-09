@@ -9,6 +9,7 @@ import { ModalCreateCards } from "../components/modalCreateClass";
 import { CardsForm } from "./CardsForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/core/libs";
 import { Divider } from "@mui/material";
+import { FaPlus } from "react-icons/fa";
 
 export const CardViewTable = () => {
   //   const resource = useClassroom();
@@ -47,6 +48,7 @@ export const CardViewTable = () => {
             ? [
                 {
                   title: lang.text("addCards"),
+                  icon: <FaPlus />,
                   onClick: () => setCards(!cards),
                 },
               ]

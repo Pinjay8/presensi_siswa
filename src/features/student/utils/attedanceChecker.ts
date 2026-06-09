@@ -38,6 +38,7 @@ export const checkAttendance = (dataA: any, dataB: any) => {
       email: item.email,
       image: item.image,
       surveiApps: item.surveiApps,
+      kartus: item.kartus,
       jamMasuk: isPresent
         ? formatDateTime(attendanceMap?.get(item.id as string) as string)
         : "N/A",

@@ -15,6 +15,7 @@ import {
 } from "@/core/libs";
 import { ModalCreateParents } from "../components/ModalCreateParents";
 import { useProfile } from "@/features/profile";
+import { FaPlus } from "react-icons/fa";
 export function ParentTable() {
   const parent = useParent();
   const student = useBiodata();
@@ -59,7 +60,8 @@ export function ParentTable() {
   const [parents, setParents] = useState(false);
 
   const profile = useProfile();
-  const isRole = profile?.user?.role === "guru" || profile?.user?.role === "siswa";
+  const isRole =
+    profile?.user?.role === "guru" || profile?.user?.role === "siswa";
   return (
     <>
       {
@@ -81,6 +83,7 @@ export function ParentTable() {
             ? [
                 {
                   title: lang.text("createParent"),
+                  icon: <FaPlus />,
                   onClick: () => navigate("/parents/create"),
                 },
               ]

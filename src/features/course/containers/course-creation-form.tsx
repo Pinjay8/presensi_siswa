@@ -259,7 +259,7 @@ export const CourseCreationForm = ({
             </Button>
             <Button onClick={() => setIsExcelModalOpen(true)}>{lang.text("uploadExcelCourse")}</Button>
           </div>
-          <fieldset className="mt-9 border-t border-white/10 pt-6">
+          <fieldset className="mt-4 border-t border-white/10 pt-3">
             <legend className="px-2 text-sm text-black bg-white mx-auto">
               atau
             </legend>

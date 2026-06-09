@@ -89,6 +89,10 @@ export const userService = {
     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.generateQr,
     getInitialOptions,
   ),
+  generateQrRfid: http.get<any>(
+    API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.generateQrRfid,
+    getInitialOptions,
+  ),
   // registerFace: (payload: FormData) =>
   //   http.post(
   //     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.registerFace,

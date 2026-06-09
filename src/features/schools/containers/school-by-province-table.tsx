@@ -1,27 +1,27 @@
-import { Button, lang } from '@/core/libs';
-import { BaseDataTable, useDataTableController } from '@/features/_global';
-import { useStudentPagination } from '@/features/student';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import { useMemo } from 'react';
-import { FaArrowDown } from 'react-icons/fa';
-import { useSchool } from '../hooks';
-import { schoolColumnsByProvince, schoolDataFallback } from '../utils';
-import { useProfile } from '@/features/profile';
+import { Button, lang } from "@/core/libs";
+import { BaseDataTable, useDataTableController } from "@/features/_global";
+import { useStudentPagination } from "@/features/student";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { useMemo } from "react";
+import { FaArrowDown } from "react-icons/fa";
+import { useSchool } from "../hooks";
+import { schoolColumnsByProvince, schoolDataFallback } from "../utils";
+import { useProfile } from "@/features/profile";
+import { useDashboardSchool } from "../hooks/useDashboardSchool";
 
 interface SchoolByProvinceTableProps {
   onExport?: (data: any[]) => void;
   status?: string;
 }
 
-export const SchoolByProvinceTable = ({ onExport, status }: SchoolByProvinceTableProps) => {
-  const school = useSchool();
-  const profile = useProfile();
-
-  console.log('school.data', school.data)
-
-  // console.log('school data this:', school)
-  const { global, pagination } = useDataTableController({ defaultPageSize: 9999 });
+export const SchoolByProvinceTable = ({
+  onExport,
+  status,
+}: SchoolByProvinceTableProps) => {
+  const { global, pagination } = useDataTableController({
+    defaultPageSize: 9999,
+  });
 
   const studentParams = useMemo(
     () => ({
@@ -29,68 +29,76 @@ export const SchoolByProvinceTable = ({ onExport, status }: SchoolByProvinceTabl
       size: pagination.pageSize,
       keyword: global,
     }),
-    [pagination.pageIndex, pagination.pageSize, global]
+    [pagination.pageIndex, pagination.pageSize, global],
   );
 
-  const studentsPagination = useStudentPagination(studentParams);
+  const { data: dashboardSchool, isLoading } = useDashboardSchool();
 
-  // Pastikan students adalah array, gunakan array kosong jika data belum ada
-  const students = studentsPagination.data && Array.isArray(studentsPagination.data.students)
-    ? studentsPagination.data.students
-    : [];
+  const tableData: any = useMemo(() => {
+    return dashboardSchool ?? [];
+  }, [dashboardSchool]);
 
-  // Filter data berdasarkan status
-  const filteredData = useMemo(() => {
-    if (!school.data) return [];
-    // Jika tidak ada status, tampilkan semua data
-    const filtered = !status ? 
-      school.data 
-      : school.data.filter((item: any) => {
-        return status === 'Aktif' ? item.active === 1 : item.active === 0;
-    });
+  // const studentsPagination = useStudentPagination(studentParams);
 
-    return filtered.map((item) => {
-      const jumlahSiswa = profile.user?.sekolahId ? 
-        students?.length
-        : students.filter((stud: any) => stud.sekolahId === item.id)?.length
+  // // Pastikan students adalah array, gunakan array kosong jika data belum ada
+  // const students = studentsPagination.data && Array.isArray(studentsPagination.data.students)
+  //   ? studentsPagination.data.students
+  //   : [];
 
-      return {
-        ...item,
-        jumlahSiswa: jumlahSiswa
-      }
-    })
-  }, [school.data, status]);
+  // // Filter data berdasarkan status
+  // const filteredData = useMemo(() => {
+  //   if (!school.data) return [];
+  //   // Jika tidak ada status, tampilkan semua data
+  //   const filtered = !status ?
+  //     school.data
+  //     : school.data.filter((item: any) => {
+  //       return status === 'Aktif' ? item.active === 1 : item.active === 0;
+  //   });
 
-  // Data tabel yang akan diekspor
-  const tableData = filteredData;
+  //   return filtered.map((item) => {
+  //     const jumlahSiswa = profile.user?.sekolahId ?
+  //       students?.length
+  //       : students.filter((stud: any) => stud.sekolahId === item.id)?.length
+
+  //     return {
+  //       ...item,
+  //       jumlahSiswa: jumlahSiswa
+  //     }
+  //   })
+  // }, [school.data, status]);
+
+  // // Data tabel yang akan diekspor
+  // const tableData = filteredData;
 
   // Fungsi untuk ekspor ke PDF
   const exportToPDF = () => {
-    if (school.query.isLoading || studentsPagination.isLoading) {
-      alert('Data is still loading. Please wait.');
-      return;
-    }
-    if (!tableData || tableData.length === 0) {
-      alert('No data available to export.');
-      return;
-    }
+    // if (school.query.isLoading || studentsPagination.isLoading) {
+    //   alert('Data is still loading. Please wait.');
+    //   return;
+    // }
+    // if (!tableData || tableData.length === 0) {
+    //   alert('No data available to export.');
+    //   return;
+    // }
 
     const doc = new jsPDF();
-    doc.text('Laporan Data Sekolah', 14, 20);
+    doc.text("Laporan Data Sekolah", 14, 20);
 
     // Definisikan kolom berdasarkan struktur data
     const columns = [
-      { header: 'No', dataKey: 'no' },
-      { header: 'Nama Sekolah', dataKey: 'name' },
-      { header: 'Provinsi', dataKey: 'province' },
+      { header: "No", dataKey: "no" },
+      { header: "Nama Sekolah", dataKey: "name" },
+      { header: "Provinsi", dataKey: "province" },
     ];
 
     // Format data untuk tabel
     const data = tableData.map((item: any, index: number) => {
       const row = {
         no: index + 1,
-        name: item.namaSekolah || '-',
-        province: item.province?.name || '-',
+        name: item.namaSekolah || "-",
+        province: item.namaProvinsi || "-",
+        jumlahSiswa: item.totalSiswa || 0,
+        jumlahGuru: item.totalGuru || 0,
       };
       return row;
     });
@@ -100,36 +108,34 @@ export const SchoolByProvinceTable = ({ onExport, status }: SchoolByProvinceTabl
       columns,
       body: data,
       startY: 30,
-      theme: 'grid',
+      theme: "grid",
       headStyles: { fillColor: [0, 51, 102], textColor: [255, 255, 255] },
       styles: { fontSize: 10, cellPadding: 2 },
     });
 
-    doc.save('data-sekolah.pdf');
+    doc.save("data-sekolah.pdf");
   };
 
   return (
     <>
       <BaseDataTable
-        students={students}
         columns={schoolColumnsByProvince}
-        data={filteredData} // Gunakan filteredData, bukan school.data
+        data={tableData}
         dataFallback={schoolDataFallback}
-        globalSearch
-        pageSize={8}
-        searchPlaceholder={lang.text('searchSchool')}
-        isLoading={school.query.isLoading || studentsPagination.isLoading}
-        searchParamPagination
+        globalSearch={false}
+        pageSize={5}
+        searchPlaceholder={lang.text("searchSchool")}
+        isLoading={isLoading}
+        searchParamPagination={false}
       />
-      {/* Tombol ekspor tersembunyi yang dipicu oleh tombol di ReportOverview */}
       <Button
-        id='export-table'
-        variant='ghost'
+        id="export-table"
+        variant="ghost"
         onClick={() => {
           exportToPDF();
           if (onExport) onExport(tableData);
         }}
-        className='hidden'
+        className="hidden"
       >
         Export <FaArrowDown />
       </Button>

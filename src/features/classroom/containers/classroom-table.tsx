@@ -6,6 +6,7 @@ import { ModalCreateClass } from "../components";
 import { useClassroom } from "../hooks";
 import { classroomColumns, classroomDataFallback } from "../utils";
 import { useProfile } from "@/features/profile";
+import { FaPlus } from "react-icons/fa";
 
 export const ClassroomTable = () => {
   const resource = useClassroom();
@@ -27,7 +28,10 @@ export const ClassroomTable = () => {
   );
 
   const profile = useProfile();
-  const isRole = profile?.user?.role === "guru" || profile?.user?.role === "siswa" || profile?.user?.role === "orangTua";
+  const isRole =
+    profile?.user?.role === "guru" ||
+    profile?.user?.role === "siswa" ||
+    profile?.user?.role === "orangTua";
 
   return (
     <>
@@ -48,6 +52,7 @@ export const ClassroomTable = () => {
             ? [
                 {
                   title: lang.text("addClassroom"),
+                  icon: <FaPlus />,
                   onClick: () => setCreateClassRoom(!classRoom),
                 },
               ]

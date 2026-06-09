@@ -1,4 +1,11 @@
-import { Avatar, AvatarFallback, AvatarImage, Badge, lang, simpleEncode } from "@/core/libs";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Badge,
+  lang,
+  simpleEncode,
+} from "@/core/libs";
 import { SchoolDataModel } from "@/core/models/schools";
 import { getStaticFile } from "@/core/utils";
 import { BaseActionTable, BaseTableHeader } from "@/features/_global";
@@ -84,7 +91,7 @@ export const schoolColumns: ColumnDef<SchoolDataModel>[] = [
     },
     cell: ({ row }) => {
       const encryptPayload = simpleEncode(
-        JSON.stringify({ id: row.original.id, text: row.original.namaSekolah })
+        JSON.stringify({ id: row.original.id, text: row.original.namaSekolah }),
       );
       return (
         <BaseActionTable
@@ -96,7 +103,7 @@ export const schoolColumns: ColumnDef<SchoolDataModel>[] = [
   },
 ];
 
-export const schoolColumnsByProvince: ColumnDef<SchoolDataModel>[] = [
+export const schoolColumnsByProvince: ColumnDef<any>[] = [
   {
     accessorKey: "namaSekolah",
     accessorFn: (row) => row.namaSekolah,
@@ -111,62 +118,75 @@ export const schoolColumnsByProvince: ColumnDef<SchoolDataModel>[] = [
     },
   },
   {
-    accessorKey: "province",
-    accessorFn: (row) => row.province,
+    accessorKey: "namaProvinsi",
+    accessorFn: (row) => row.namaProvinsi,
     header: ({ column }) => {
       return (
         <BaseTableHeader
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          {lang.text('province')}
+          {lang.text("province")}
         </BaseTableHeader>
       );
     },
     cell: ({ row }) => {
       if (
-        row.original.province !== null &&
-        row.original.province !== undefined
+        row.original.namaProvinsi !== null &&
+        row.original.namaProvinsi !== undefined
       ) {
-        return <p>{row.original.province.name}</p>;
+        return <p>{row.original.namaProvinsi}</p>;
       } else {
         return <p>-</p>;
       }
     },
   },
+  // {
+  //   accessorKey: "active",
+  //   accessorFn: (row) => row.active,
+  //   header: ({ column }) => {
+  //     return (
+  //       <BaseTableHeader
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >
+  //         {lang.text("status")}
+  //       </BaseTableHeader>
+  //     );
+  //   },
+  //   cell: ({ row }) => {
+  //     return (
+  //       <div
+  //         className={`${row.original.active === 1 ? "bg-[#0f4d3f] text-[#3ee07a]" : "bg-[#6f1e2a] text-[#e04a6a]"} w-max flex items-center text-xs font-sans rounded px-2 py-1`}
+  //       >
+  //         {row.original.active === 1 ? "Aktif" : "Tidak Aktif"}
+  //       </div>
+  //     );
+  //   },
+  // },
   {
-    accessorKey: "active",
-    accessorFn: (row) => row.active,
+    accessorKey: "totalSiswa", // Kolom baru untuk jumlah siswa
     header: ({ column }) => {
       return (
         <BaseTableHeader
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          {lang.text('status')}
+          {lang.text("totalStudents")}
         </BaseTableHeader>
       );
     },
-    cell: ({row}) => {
-      return (
-         <div
-            className={`${row.original.active === 1 ? 'bg-[#0f4d3f] text-[#3ee07a]' : 'bg-[#6f1e2a] text-[#e04a6a]'} w-max flex items-center text-xs font-sans rounded px-2 py-1`}
-          >
-          {row.original.active === 1 ? 'Aktif' : 'Tidak Aktif'}
-        </div>
-      )
-    }
+    cell: ({ row }) => <p>{row.original.totalSiswa}</p>,
   },
   {
-    accessorKey: "jumlahSiswa", // Kolom baru untuk jumlah siswa
+    accessorKey: "totalGuru", // Kolom baru untuk jumlah siswa
     header: ({ column }) => {
       return (
         <BaseTableHeader
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          {lang.text('totalStudents')}
+          {lang.text("totalteachers")}
         </BaseTableHeader>
       );
     },
-    cell: ({ row }) => <p>{row.original.jumlahSiswa}</p>,
+    cell: ({ row }) => <p>{row.original.totalGuru}</p>,
   },
   // {
   //   header: () => {

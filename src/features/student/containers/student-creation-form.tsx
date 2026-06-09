@@ -127,8 +127,8 @@ export const StudentCreationForm = () => {
 
   async function onSubmit(data: z.infer<typeof studentEditSchema>) {
     try {
-      console.log("kelas ID TERPILIH:", data.kelasId);
-      console.log("User ID yang akan diupdate:", decodeParams.id);
+      // console.log("kelas ID TERPILIH:", data.kelasId);
+      // console.log("User ID yang akan diupdate:", decodeParams.id);
       // console.log("Data yang dikirim sebelum mapping:", data);
 
       if (

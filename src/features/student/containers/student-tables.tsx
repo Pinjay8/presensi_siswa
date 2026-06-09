@@ -37,7 +37,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { FaFileExcel, FaFilePdf } from "react-icons/fa";
+import { FaFileExcel, FaFilePdf, FaPlus } from "react-icons/fa";
 import { useStudentPagination } from "../hooks/use-student-pagination";
 import { ImportStudentDialog } from "../components/ImportStudentDialog";
 import { pdfStyles } from "../components/pdfStylles";
@@ -106,6 +106,7 @@ export const StudentLandingTables = () => {
 
   const { data, isLoading, refetch } = useStudentPagination(studentParams);
   const [reloadKey, setReloadKey] = useState(0);
+  
 
   useEffect(() => {
     if (
@@ -407,8 +408,9 @@ export const StudentLandingTables = () => {
               variant="default"
               onClick={() => setOpenFormSiswa(true)}
               style={{ padding: "2px 4px" }}
+              icon={<FaPlus />}
             >
-              Create Siswa
+              {lang.text("createStudents")}
             </Button>
           </div>
           <div className="flex items-center space-x-2">
@@ -462,6 +464,7 @@ export const StudentLandingTables = () => {
       <StudentTable
         data={attendanceResult}
         isLoading={isLoading || attedances.isLoading}
+        refetch={refetch}
         pagination={{
           pageIndex: pagination.pageIndex,
           pageSize: pagination.pageSize,
