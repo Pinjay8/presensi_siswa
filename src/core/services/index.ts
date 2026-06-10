@@ -7,3 +7,4 @@ export * from "./course";
 export * from "./slims";
 export * from "./schedules";
 export * from "./library";
+export * from "./settings";

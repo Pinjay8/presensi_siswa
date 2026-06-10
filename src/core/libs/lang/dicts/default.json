@@ -235,6 +235,14 @@
     "en": "Daily Attendance Notification",
     "id": "Notifikasi Absensi Harian"
   },
+  "updateSettingSuccess": {
+    "en": "Settings updated successfully",
+    "id": "Pengaturan berhasil diperbarui"
+  },
+  "failUpdateSetting": {
+    "en": "Failed to update settings",
+    "id": "Gagal memperbarui pengaturan"
+  },
   
   "logout": {
     "en": "Logout",

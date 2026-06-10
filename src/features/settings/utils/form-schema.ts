@@ -16,12 +16,8 @@ export const settingsSchema = z.object({
 });
 
 export const settingsSchemaNew = z.object({
-    attendance: z.object({
-        siswa: z.coerce.boolean(),
-        orangTua: z.coerce.boolean(),
-    }),
-    attendanceMapel: z.object({
-        siswa: z.coerce.boolean(),
-        orangTua: z.coerce.boolean(),
-    })
+    attendanceSiswa: z.coerce.boolean(),
+    attendanceOrangTua: z.coerce.boolean(),
+    attendanceMapelSiswa: z.coerce.boolean(),
+    attendanceMapelOrangTua: z.coerce.boolean(),
 });

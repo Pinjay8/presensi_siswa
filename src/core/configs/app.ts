@@ -111,4 +111,8 @@ export const SERVICE_ENDPOINTS = {
     list: "/api/riwayat-absensi",
     listMataPelajaran: "/api/riwayat-absensi-mapel",
   },
+  settings:{
+    getSetting: "/api/app-setting",
+    updateSetting: "/api/app-setting",
+  }
 };

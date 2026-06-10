@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { settingsSchema, settingsSchemaNew } from "../utils/form-schema";
 import CustomSwitch from "@/core/libs/shadcn/components/ui/customSwitch";
+import { useSettings } from "../hooks/use-settings-creation";
 
 export const SettingsNotificationForm = () => {
   const { decodeParams } = useParamDecode();
@@ -153,24 +154,37 @@ export const SettingsNotificationForm = () => {
   )
   */
 
+  const { data: settingsData, isLoading, update } = useSettings();
+
   const form = useForm<z.infer<typeof settingsSchemaNew>>({
     resolver: zodResolver(settingsSchemaNew),
     mode: "all",
     values: {
-        attendance: {
-            siswa: false,
-            orangTua: false,
-        },
-        attendanceMapel: {
-            siswa: false,
-            orangTua: false,
-        }
+        attendanceSiswa: settingsData?.attendanceSiswa ?? false,
+        attendanceOrangTua: settingsData?.attendanceOrangTua ?? false,
+        attendanceMapelSiswa: settingsData?.attendanceMapelSiswa ?? false,
+        attendanceMapelOrangTua: settingsData?.attendanceMapelOrangTua ?? false,
     }
   });
 
+  const onSubmit = async (values: z.infer<typeof settingsSchemaNew>) => {
+    try {
+      await update(values);
+      alert.success(
+        lang.text("updateSettingSuccess") || "Pengaturan berhasil diperbarui"
+      );
+    } catch (err: any) {
+      alert.error(
+        err?.message ||
+          lang.text("failUpdateSetting") ||
+          "Gagal memperbarui pengaturan"
+      );
+    }
+  };
+
   return (
     <Form {...form}>
-        <form onSubmit={form.handleSubmit((data) => console.log("Form data: ", data))} className="mb-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="mb-8">
             <div className="bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl shadow-sm p-6 max-w-lg">
                 <div className="grid gap-6">
                     {/* Section 1: Notifikasi Absensi Harian */}
@@ -179,7 +193,7 @@ export const SettingsNotificationForm = () => {
                         <div className="grid gap-4">
                             <FormField
                                 control={form.control}
-                                name="attendance.siswa"
+                                name="attendanceSiswa"
                                 render={({field, fieldState}) => (
                                     <FormItem className="w-full">
                                         <div className="flex flex-row items-center justify-between w-full">
@@ -197,7 +211,7 @@ export const SettingsNotificationForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="attendance.orangTua"
+                                name="attendanceOrangTua"
                                 render={({field, fieldState}) => (
                                     <FormItem className="w-full">
                                         <div className="flex flex-row items-center justify-between w-full">
@@ -226,7 +240,7 @@ export const SettingsNotificationForm = () => {
                         <div className="grid gap-4">
                             <FormField
                                 control={form.control}
-                                name="attendanceMapel.siswa"
+                                name="attendanceMapelSiswa"
                                 render={({field, fieldState}) => (
                                     <FormItem className="w-full">
                                         <div className="flex flex-row items-center justify-between w-full">
@@ -244,7 +258,7 @@ export const SettingsNotificationForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="attendanceMapel.orangTua"
+                                name="attendanceMapelOrangTua"
                                 render={({field, fieldState}) => (
                                     <FormItem className="w-full">
                                         <div className="flex flex-row items-center justify-between w-full">
@@ -265,7 +279,9 @@ export const SettingsNotificationForm = () => {
                 </div>
 
                 <div className="flex justify-start mt-6 pt-6 border-t border-slate-100 dark:border-zinc-800">
-                    <Button type="submit">{lang.text("save")}</Button>
+                    <Button disabled={isLoading} type="submit">
+                        {isLoading ? lang.text("saving") : lang.text("save")}
+                    </Button>
                 </div>
             </div>
         </form>
