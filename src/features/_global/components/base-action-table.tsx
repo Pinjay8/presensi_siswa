@@ -36,6 +36,8 @@ export interface BaseActionTableProps {
   onRegisterFace?: () => void;
   onAssignCard?: any;
   unAssignCard?: any;
+  onApprove?: any;
+  onReject?: any;
 }
 
 export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
@@ -114,6 +116,19 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
           {props.deletePath && (
             <DropdownMenuItem asChild>
               <Link to={props.deletePath}>{lang.text("delete")}</Link>
+            </DropdownMenuItem>
+          )}
+
+          {props.onApprove && (
+            <DropdownMenuItem onClick={props.onApprove}>
+              {/* {lang.text("approve")} */}
+              Approve
+            </DropdownMenuItem>
+          )}
+          {props.onReject && (
+            <DropdownMenuItem onClick={props.onReject}>
+              {/* {lang.text("reject")} */}
+              Reject
             </DropdownMenuItem>
           )}
 

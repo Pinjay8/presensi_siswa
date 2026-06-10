@@ -1,1 +1,2 @@
-export * from './letter-creation-form'
+export * from "./letter-creation-form";
+export * from "./LicensingTable";

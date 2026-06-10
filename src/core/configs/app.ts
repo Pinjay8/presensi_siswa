@@ -87,6 +87,10 @@ export const SERVICE_ENDPOINTS = {
   dispensasi: {
     all: "/api/get-dispensasi",
     create: "/api/dispensasi",
+    get: "/api/dispensasi",
+    getPending: "/api/dispensasi/pending",
+    approve: "/api/dispensasi/{dispensasi_id}/approve",
+    reject: "/api/dispensasi/{dispensasi_id}/reject",
   },
   classroom: {
     classroom: "/api/kelas",

@@ -85,8 +85,17 @@ export const router = createBrowserRouter(
         {
           path: "licensing",
           lazy: () =>
-            import("../licensing/pages/licensing").then((m) => ({
-              Component: m.LicensingPage,
+            import("@/features/licensing").then((m) => ({
+              Component: m.LicensingLanding,
+            })),
+        },
+
+        // create licensing
+        {
+          path: "licensing/create",
+          lazy: () =>
+            import("@/features/licensing").then((m) => ({
+              Component: m.LicensingCreate,
             })),
         },
 

@@ -20,7 +20,25 @@ export const dispensasiService = {
         body: formData,
       },
     );
-
     return await response.json();
   },
+  get: http.get<BaseResponse<any[]>>(
+    API_CONFIG.baseUrl + SERVICE_ENDPOINTS.dispensasi.get,
+    getInitialOptions,
+  ),
+  getPending: http.get<BaseResponse<any[]>>(
+    API_CONFIG.baseUrl + SERVICE_ENDPOINTS.dispensasi.getPending,
+    getInitialOptions,
+  ),
+  approve: (id: number) =>
+    http.put<BaseResponse<any>>(
+      `${API_CONFIG.baseUrl}/api/dispensasi/${id}/approve`,
+      getInitialOptions,
+    )(),
+
+  reject: (id: number, payload: { catatanPenolakan: string }) =>
+    http.put<BaseResponse>(
+      `${API_CONFIG.baseUrl}/api/dispensasi/${id}/reject`,
+      getInitialOptions,
+    )(payload),
 };

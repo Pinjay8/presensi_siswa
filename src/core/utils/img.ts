@@ -1,5 +1,5 @@
-import logo from "../assets/images/bio_presensi.jpg";
-import logoPt from "../assets/images/logo-pt.png";
+import logo from "../assets/images/bio_presensi_web.png";
+import logoPt from "../assets/images/bio_presensi_web.png";
 
 export const Images = {
   logo,

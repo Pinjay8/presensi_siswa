@@ -12,6 +12,8 @@ import {
   jsonHelper,
   Label,
   lang,
+  ScrollArea,
+  ScrollBar,
   Select,
   SelectContent,
   SelectItem,
@@ -475,12 +477,14 @@ export const BaseDataTable = ({
           </>
         )}
 
-        <div className="rounded-md border">
-          <Table>
+        <ScrollArea className="w-full rounded-md border">
+          <Table className="min-w-[1200px]">
             {renderTableHeader()}
             {renderTableBody()}
           </Table>
-        </div>
+
+          <ScrollBar orientation="horizontal" className="mt-2 h-2" />
+        </ScrollArea>
         <div className="flex items-center justify-end space-x-2 py-4">
           <div className="flex-1 text-sm text-muted-foreground">
             {`${table.getFilteredRowModel().rows.length} / ${

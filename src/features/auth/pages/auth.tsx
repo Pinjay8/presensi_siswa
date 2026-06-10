@@ -5,7 +5,7 @@ import { AuthLayout } from "../components/auth-layout";
 import { APP_CONFIG } from "@/core/configs";
 import { lang } from "@/core/libs";
 // import LogoPt from "public/public/Group.png";
-import LogoPt from "@/core/assets/images/background_img.webp";
+import LogoPt from "@/core/assets/images/sekolah.jpg";
 
 export const AuthPage = () => {
   const auth = useAuth();

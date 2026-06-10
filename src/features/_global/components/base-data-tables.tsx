@@ -766,12 +766,12 @@ export const BaseDataTables = ({
 
       {/* <div className="rounded-md border overflow-x-auto"> */}
       <ScrollArea className="w-full rounded-md border">
-        <Table className="min-w-[1200px]">
+        <Table className="min-w-[1000px]">
           {renderTableHeader()}
           {renderTableBody()}
         </Table>
 
-        <ScrollBar orientation="horizontal" />
+        <ScrollBar orientation="horizontal" className="mt-2 h-2" />
       </ScrollArea>
       {/* </div> */}
 

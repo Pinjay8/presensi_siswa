@@ -6,6 +6,7 @@ import { InputSecure, useAlert } from "@/features/_global";
 import { lang } from "@/core/libs";
 import { APP_CONFIG } from "@/core/configs";
 import { Lock, Mail } from "lucide-react";
+import { Typography } from "@mui/material";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -28,7 +29,6 @@ export const LoginPage = () => {
       const token = res?.data?.token; // Pastikan token ada di response
       if (token) {
         localStorage.setItem("token", token); // Simpan token ke localStorage
-        console.log("Token berhasil disimpan di localStorage:", token); // Log untuk verifikasi
       } else {
         console.log("Token tidak ditemukan dalam response");
       }
@@ -94,7 +94,10 @@ export const LoginPage = () => {
           </div>
 
           <div className="text-right">
-            <Link to="/auth/forget-password" className="text-sm underline">
+            <Link
+              to="/auth/forget-password"
+              className="text-sm underline text-primary"
+            >
               {lang.text("forgetPassword") + "?"}
             </Link>
           </div>
@@ -106,18 +109,15 @@ export const LoginPage = () => {
         >
           {auth.isLoading ? lang.text("pleaseWait") : lang.text("login")}
         </Button>
-        <div>
+        <div className="flex gap-1">
           <p className="text-sm ">
             <span className=" font-medium opacity-50">
-              {lang.text("schoolNotRegistered")}
+              {lang.text("doesntHaveAccount")}
             </span>{" "}
-            <Link
-              to="/schools/register"
-              className="underline text-secondary-10"
-            >
-              {lang.text("registerHere")}
-            </Link>
           </p>
+          <span className="underline text-primary text-sm">
+            {lang.text("callAdmin")}
+          </span>
         </div>
       </div>
     </form>

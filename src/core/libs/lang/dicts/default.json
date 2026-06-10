@@ -849,9 +849,47 @@
     "id": "Data perizinan",
     "en": "Licensing data"
   },
+  "addLicensing": {
+    "id": "Tambah perizinan",
+    "en": "Add Licensing"
+  },
+  "rejectTitle": {
+    "id": "Tolak perizinan",
+    "en": "Reject Licensing"
+  },
+  "rejectNote": {
+    "id": "Catatan",
+    "en": "Note"
+  },
+  "reason": {
+    "id": "Alasan",
+    "en": "Reason"
+  },
+  "name": {
+    "id": "Nama",
+    "en": "Name"
+  },
+
+  "statusLicensing": {
+    "id": "Status",
+    "en": "Status"
+  },
+
+  "reject": {
+    "id": "Tolak",
+    "en": "Reject"
+  },
   "licensingSuccessCreate": {
     "id": "Data perizinan berhasil dibuat",
     "en": "Licensing data created successfully"
+  },
+  "licensingApproveSuccess": {
+    "id": "Data perizinan berhasil disetujui",
+    "en": "Licensing data approved successfully"
+  },
+  "licensingRejectSuccess": {
+    "id": "Data perizinan berhasil ditolak",
+    "en": "Licensing data rejected successfully"
   },
   "licensingFailCreate": {
     "id": "Data perizinan gagal dibuat",
@@ -1522,6 +1560,10 @@
     "id": "Lengkapi data kelas",
     "en": "Complete the class data"
   },
+  "completeDataLicensing": {
+    "id": "Lengkapi data perizinan",
+    "en": "Complete the license data"
+  },
   "completeDataSchool": {
     "id": "Lengkapi data sekolah",
     "en": "Complete the school data"
@@ -2071,8 +2113,24 @@
     "en": "Password reset successfully, please login again"
   },
   "loginDesc": {
-    "id": "Manajemen presensi untuk sekolah",
-    "en": "Xpresence Management for School"
+    "id": "Sistem Absensi Digital Sekolah",
+    "en": "Digital School Attendance System"
+  },
+  "callAdmin": {
+    "id": "Hubungi Admin",
+    "en": "Call Admin"
+  },
+  "doesntHaveAccount": {
+    "id": "Belum punya akun?",
+    "en": "Don't have an account?"
+  },
+  "descriptionLogin": {
+    "id": "Mendukung kemajuan siswa melalui inovasi, data, dan integritas.",
+    "en": " Empowering students through innovation, data, and trust."
+  },
+  "welcomeToSchool": {
+    "id": "Selamat datang di Sekolah Bio",
+    "en": "Welcome to Bio School"
   },
   "lastestAbsence": {
     "id": "Absensi Terakhir",
