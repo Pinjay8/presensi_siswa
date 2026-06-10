@@ -217,17 +217,45 @@ export const studentColumnWithFilter = ({
       ? [
           {
             accessorKey: "status",
-            header: () => <BaseTableHeader>Status</BaseTableHeader>,
-            cell: ({ row }: any) => (
-              <div
-                className={`text-capitalize! text-white w-[100px] text-center px-3 py-1 rounded-sm ${row.original.status === "hadir" ? "bg-[#0f4d3f] text-[#3ee07a]" : "bg-red-700 text-red-300"}`}
-              >
-                {row.original.status
-                  ? row.original.status.charAt(0).toUpperCase() +
-                    row.original.status.slice(1)
-                  : "-"}
-              </div>
-            ),
+            header: () => "Status",
+            cell: ({ row }: any) => {
+              const status = row.original.status?.toLowerCase();
+
+              const statusConfig = {
+                hadir: {
+                  label: "Hadir",
+                  className:
+                    "bg-green-100 text-green-700 border border-green-200",
+                },
+                izin: {
+                  label: "Izin",
+                  className:
+                    "bg-yellow-100 text-yellow-700 border border-yellow-200",
+                },
+                alpa: {
+                  label: "Alpa",
+                  className: "bg-red-100 text-red-700 border border-red-200",
+                },
+                "belum hadir": {
+                  label: "Belum Hadir",
+                  className:
+                    "bg-slate-100 text-slate-700 border border-slate-200",
+                },
+              };
+
+              const config = statusConfig[status as keyof typeof statusConfig];
+
+              return (
+                <div
+                  className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${
+                    config?.className ??
+                    "bg-gray-100 text-gray-700 border border-gray-200"
+                  }`}
+                >
+                  {config?.label ?? "-"}
+                </div>
+              );
+            },
           },
           {
             accessorKey: "absen",
@@ -236,7 +264,8 @@ export const studentColumnWithFilter = ({
               <Button
                 onClick={() => handleAttend(row.original?.id)}
                 disabled={
-                  (row.original.user?.status || row.original.status) === "hadir"
+                  (row.original.user?.status || row.original.status) === "hadir" ||
+                  (row.original.user?.status || row.original.status) === "izin"
                 }
               >
                 {lang.text("attend")}

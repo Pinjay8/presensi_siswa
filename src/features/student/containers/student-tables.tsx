@@ -167,7 +167,7 @@ export const StudentLandingTables = () => {
         alert.error("Harap unggah file dengan format .xlsx atau .csv");
         return;
       }
-      console.log("fileeees", selectedFile);
+      // console.log("fileeees", selectedFile);
 
       setIsUploading(true);
 

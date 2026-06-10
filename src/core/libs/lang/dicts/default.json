@@ -874,6 +874,18 @@
     "id": "Status",
     "en": "Status"
   },
+  "pending": {
+    "id": "Menunggu",
+    "en": "Pending"
+  },
+  "approved": {
+    "id": "Disetujui",
+    "en": "Approved"
+  },
+  "rejected": {
+    "id": "Ditolak",
+    "en": "Rejected"
+  },
 
   "reject": {
     "id": "Tolak",
@@ -962,6 +974,10 @@
   "selectDate": {
     "id": "Pilih Tanggal",
     "en": "Pick a Date"
+  },
+  "startDate": {
+    "id": "Tanggal Mulai",
+    "en": "Start Date"
   },
   "endDate": {
     "id": "Tanggal Selesai",

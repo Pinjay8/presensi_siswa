@@ -25,8 +25,8 @@ export const licensingColumns = ({
   return [
     {
       accessorKey: "alasan",
-      accessorFn: (row) => row.alasan,
-      header: ({ column }) => {
+      accessorFn: (row: any) => row.alasan,
+      header: ({ column }: any) => {
         return (
           <BaseTableHeader
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -35,15 +35,15 @@ export const licensingColumns = ({
           </BaseTableHeader>
         );
       },
-      cell: ({ row }) => {
+      cell: ({ row }: any) => {
         return <span>{row.original.alasan}</span>;
       },
     },
     {
       accessorKey: "user.name",
-      accessorFn: (row) => row.user.name,
+      accessorFn: (row: any) => row.user.name,
 
-      header: ({ column }) => {
+      header: ({ column }: any) => {
         return (
           <BaseTableHeader
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -52,34 +52,33 @@ export const licensingColumns = ({
           </BaseTableHeader>
         );
       },
-      cell: ({ row }) => {
+      cell: ({ row }: any) => {
         return <span>{row.original.user?.name}</span>;
       },
     },
     {
       accessorKey: "statusPengajuan",
-      accessorFn: (row) => row.statusPengajuan,
-      header: ({ column }) => (
+      accessorFn: (row: any) => row.statusPengajuan,
+      header: ({ column }: any) => (
         <BaseTableHeader
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           {lang.text("statusLicensing")}
         </BaseTableHeader>
       ),
-      cell: ({ row }) => {
+      cell: ({ row }: any) => {
         const status = row.original.statusPengajuan;
-
         const statusMap = {
           pending: {
-            label: "Pending",
+            label: lang.text("pending"),
             className: "bg-amber-100 text-amber-700 border border-amber-200",
           },
           disetujui: {
-            label: "Approved",
+            label: lang.text("approved"),
             className: "bg-green-100 text-green-700 border border-green-200",
           },
           ditolak: {
-            label: "Rejected",
+            label: lang.text("rejected"),
             className: "bg-red-100 text-red-700 border border-red-200",
           },
         };
@@ -101,35 +100,33 @@ export const licensingColumns = ({
     },
     {
       accessorKey: "tanggalMulai",
-      accessorFn: (row) => row.tanggalMulai,
-      header: ({ column }) => {
+      accessorFn: (row: any) => row.tanggalMulai,
+      header: ({ column }: any) => {
         return (
           <BaseTableHeader
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            {/* {lang.text("numberNfc")} */}
-            Tanggal Mulai
+            {lang.text("startDate")}
           </BaseTableHeader>
         );
       },
-      cell: ({ row }) => {
+      cell: ({ row }: any) => {
         return <span>{row.original.tanggalMulai}</span>;
       },
     },
     {
       accessorKey: "tanggalSelesai",
-      accessorFn: (row) => row.tanggalSelesai,
-      header: ({ column }) => {
+      accessorFn: (row: any) => row.tanggalSelesai,
+      header: ({ column }: any) => {
         return (
           <BaseTableHeader
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            {/* {lang.text("numberNfc")} */}
-            Tanggal Selesai
+            {lang.text("endDate")}
           </BaseTableHeader>
         );
       },
-      cell: ({ row }) => {
+      cell: ({ row }: any) => {
         return <span>{row.original.tanggalSelesai}</span>;
       },
     },
