@@ -106,7 +106,6 @@ export const StudentLandingTables = () => {
 
   const { data, isLoading, refetch } = useStudentPagination(studentParams);
   const [reloadKey, setReloadKey] = useState(0);
-  
 
   useEffect(() => {
     if (
@@ -324,7 +323,7 @@ export const StudentLandingTables = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const socket = io("https://presensi-api.app.bio-experience.com", {
+    const socket = io("http://192.168.1.116:15219", {
       transports: ["websocket"],
     });
 

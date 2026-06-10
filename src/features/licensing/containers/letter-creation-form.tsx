@@ -34,6 +34,7 @@ import { useForm } from "react-hook-form";
 import { FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import { useDispenStudent } from "../hooks/useDispenStudent";
 
 // Zod schema for the updated form
 const letterUpdateFormSchema = z.object({
@@ -43,8 +44,9 @@ const letterUpdateFormSchema = z.object({
   }),
   dari: z.string().min(1, "Tanggal izin wajib diisi"),
   sampai: z.string().min(1, "Tanggal selesai izin wajib diisi"),
-  jamMulai: z.string().min(1, "Jam mulai wajib diisi"),
-  jamSelesai: z.string().min(1, "Jam selesai wajib diisi"),
+  jamMulai: z.string().optional(),
+  jamSelesai: z.string().optional(),
+  siswaId: z.number(),
 });
 
 export const LincensingCreationForm = () => {
@@ -53,6 +55,9 @@ export const LincensingCreationForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const alert = useAlert();
+
+  const dispenStudent = useDispenStudent();
+  const students = dispenStudent.data || [];
 
   const form = useForm<z.infer<typeof letterUpdateFormSchema>>({
     resolver: zodResolver(letterUpdateFormSchema),
@@ -64,6 +69,7 @@ export const LincensingCreationForm = () => {
       sampai: "",
       jamMulai: "",
       jamSelesai: "",
+      siswaId: 0,
     },
   });
 
@@ -76,6 +82,7 @@ export const LincensingCreationForm = () => {
         sampai: "",
         jamMulai: "",
         jamSelesai: "",
+        siswaId: 0,
       });
     }
   }, [school.data, form]);
@@ -90,8 +97,8 @@ export const LincensingCreationForm = () => {
       formData.append("dari", data.dari);
       formData.append("sampai", data.sampai);
       formData.append("buktiSurat", data.buktiSurat);
-      const jamMulai = data.jamMulai.replace(":", ".");
-      const jamSelesai = data.jamSelesai.replace(":", ".");
+      const jamMulai = data?.jamMulai?.replace(":", ".") || "";
+      const jamSelesai = data?.jamSelesai?.replace(":", ".") || "";
 
       formData.append("jamMulai", jamMulai);
       formData.append("jamSelesai", jamSelesai);
@@ -108,6 +115,7 @@ export const LincensingCreationForm = () => {
         sampai: "",
         jamMulai: "",
         jamSelesai: "",
+        siswaId: 0,
       });
       navigate("/licensing", { replace: true });
     } catch (err: any) {
@@ -134,6 +142,41 @@ export const LincensingCreationForm = () => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="mb-8">
           <div className="flex flex-col gap-6">
             <div>
+              <div className="mb-2">
+                <FormField
+                  control={form.control}
+                  name="siswaId"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Siswa</FormLabel>
+
+                      <FormControl>
+                        <Select
+                          value={field.value ? String(field.value) : ""}
+                          onValueChange={(val) => field.onChange(Number(val))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Pilih siswa" />
+                          </SelectTrigger>
+
+                          <SelectContent>
+                            {students.map((siswa: any) => (
+                              <SelectItem
+                                key={siswa.id}
+                                value={String(siswa.id)}
+                              >
+                                {siswa.nama}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+
+                      <FormMessage>{fieldState.error?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+              </div>
               <div className="flex flex-col gap-2">
                 <FormField
                   control={form.control}

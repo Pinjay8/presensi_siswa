@@ -11,12 +11,18 @@ import {
   BaseActionTable,
   BaseTableFilter,
   BaseTableHeader,
+  useAlert,
 } from "@/features/_global";
 import { getStaticFile } from "@/core/utils";
+import { Switch } from "@mui/material";
+import { useState } from "react";
+import { userService } from "@/core/services";
 
 export const parentColumnWithFilter = (
   columnFilter?: BaseTableFilter,
-): ColumnDef<UserDataModel>[] => {
+  onToggleNotif?: (id: number, checked: boolean) => void,
+  loadingId?: number | null,
+): ColumnDef<any>[] => {
   return [
     {
       accessorKey: "name",
@@ -140,6 +146,52 @@ export const parentColumnWithFilter = (
               <AvatarFallback>{initialName}</AvatarFallback>
             </Avatar>
             <p>{row.original.student?.user?.name}</p>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "notifOrtuEnabled",
+      accessorFn: (row) => row.notifOrtuEnabled,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("notify")}
+          </BaseTableHeader>
+        );
+      },
+
+      cell: ({ row }) => {
+        const [loading, setLoading] = useState(false);
+        const value = row.original.notifOrtuEnabled;
+
+        const handleToggle = async (checked: boolean) => {
+          setLoading(true);
+          try {
+            await userService.updateNotifParents(row.original.id, {
+              notifOrtuEnabled: checked,
+            });
+
+            row.original.notifOrtuEnabled = checked;
+          } catch (err) {
+            console.error(err);
+          } finally {
+            setLoading(false);
+          }
+        };
+
+        return (
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={value}
+              disabled={loading}
+              onChange={(e) => handleToggle(e.target.checked)}
+            />
+            {loading && (
+              <span className="text-xs text-gray-400">Saving...</span>
+            )}
           </div>
         );
       },

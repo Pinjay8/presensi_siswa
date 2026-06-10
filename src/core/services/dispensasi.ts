@@ -26,6 +26,10 @@ export const dispensasiService = {
     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.dispensasi.get,
     getInitialOptions,
   ),
+  getDispensiStudent: http.get<BaseResponse<any[]>>(
+    API_CONFIG.baseUrl + SERVICE_ENDPOINTS.dispensasi.getDispensiStudent,
+    getInitialOptions,
+  ),
   getPending: http.get<BaseResponse<any[]>>(
     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.dispensasi.getPending,
     getInitialOptions,

@@ -232,12 +232,22 @@ export const studentColumnWithFilter = ({
                   className:
                     "bg-yellow-100 text-yellow-700 border border-yellow-200",
                 },
-                alpa: {
-                  label: "Alpa",
+                alfa: {
+                  label: "Alfa",
                   className: "bg-red-100 text-red-700 border border-red-200",
                 },
                 "belum hadir": {
                   label: "Belum Hadir",
+                  className:
+                    "bg-slate-100 text-slate-700 border border-slate-200",
+                },
+                terlambat: {
+                  label: "Terlambat",
+                  className:
+                    "bg-slate-100 text-slate-700 border border-slate-200",
+                },
+                sakit: {
+                  label: "Sakit",
                   className:
                     "bg-slate-100 text-slate-700 border border-slate-200",
                 },

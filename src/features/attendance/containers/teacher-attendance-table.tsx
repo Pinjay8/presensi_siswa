@@ -176,7 +176,7 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
   });
 
   useEffect(() => {
-    const socket = io("https://presensi-api.app.bio-experience.com", {
+    const socket = io("http://192.168.1.116:15219", {
       transports: ["websocket"],
     });
 

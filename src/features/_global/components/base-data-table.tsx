@@ -314,7 +314,7 @@ export const BaseDataTable = ({
 
   const renderContentFilterDialog = useCallback(() => {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4">
+      <div className="grid grid-cols-1 gap-2 md:gap-4">
         {table.getHeaderGroups().map((headerGroup) => (
           <React.Fragment key={headerGroup.id}>
             {headerGroup.headers.map((header) => {
@@ -467,13 +467,13 @@ export const BaseDataTable = ({
                   })}
               </div>
             </div>
-            {columnFilters?.length > 0 ? (
+            {/* {columnFilters?.length > 0 ? (
               <div className="flex flex-row gap-2 mb-2">
                 {columnFilters.map((c, i) => {
                   return <Badge key={i}>{`${c.label}: ${c.value}`}</Badge>;
                 })}
               </div>
-            ) : null}
+            ) : null} */}
           </>
         )}
 

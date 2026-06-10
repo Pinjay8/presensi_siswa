@@ -1,13 +1,5 @@
 import { APP_CONFIG } from "@/core/configs";
-import {
-  Button,
-  lang,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/core/libs";
+import { Button, lang } from "@/core/libs";
 import { getStaticFile } from "@/core/utils";
 import {
   useAlert,
@@ -417,10 +409,9 @@ export const StudentAttendance = () => {
   });
 
   const filteredData = attendanceData?.data || [];
-  // console.log("filteredData", filteredData);
 
   useEffect(() => {
-    const socket = io("https://presensi-api.app.bio-experience.com", {
+    const socket = io("http://192.168.1.116:15219", {
       transports: ["websocket"],
     });
 

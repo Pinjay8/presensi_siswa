@@ -34,9 +34,9 @@ export const Vokadialog = React.memo((props: VokadialogProps) => {
       <Credenza open={props.visible} onOpenChange={props.onOpenChange}>
         <CredenzaContent>
           {props.header ? (
-            <CredenzaHeader>{props.header}</CredenzaHeader>
+            <CredenzaHeader className="mt-4">{props.header}</CredenzaHeader>
           ) : (
-            <CredenzaHeader>
+            <CredenzaHeader className="mt-4">
               {props.title && <CredenzaTitle>{props.title}</CredenzaTitle>}
               {props.description && (
                 <CredenzaDescription>{props.description}</CredenzaDescription>

@@ -121,14 +121,12 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
 
           {props.onApprove && (
             <DropdownMenuItem onClick={props.onApprove}>
-              {/* {lang.text("approve")} */}
-              Approve
+              {lang.text("approve")}
             </DropdownMenuItem>
           )}
           {props.onReject && (
             <DropdownMenuItem onClick={props.onReject}>
-              {/* {lang.text("reject")} */}
-              Reject
+              {lang.text("reject")}
             </DropdownMenuItem>
           )}
 

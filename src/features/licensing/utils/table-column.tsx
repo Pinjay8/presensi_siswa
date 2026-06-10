@@ -36,12 +36,12 @@ export const licensingColumns = ({
         );
       },
       cell: ({ row }: any) => {
-        return <span>{row.original.alasan}</span>;
+        return <span className="capitalize">{row.original.alasan}</span>;
       },
     },
     {
-      accessorKey: "user.name",
-      accessorFn: (row: any) => row.user.name,
+      accessorKey: "BiodataSiswa.user.name",
+      accessorFn: (row: any) => row.BiodataSiswa.user.name,
 
       header: ({ column }: any) => {
         return (
@@ -53,12 +53,31 @@ export const licensingColumns = ({
         );
       },
       cell: ({ row }: any) => {
-        return <span>{row.original.user?.name}</span>;
+        return <span>{row.original.BiodataSiswa.user?.name || "-"}</span>;
       },
     },
     {
       accessorKey: "statusPengajuan",
       accessorFn: (row: any) => row.statusPengajuan,
+      meta: {
+        filterVariant: "select",
+        filterLabel: lang.text("statusLicensing"),
+        filterPlaceholder: "Pilih Status",
+        filterOptions: [
+          {
+            label: lang.text("pending"),
+            value: "pending",
+          },
+          {
+            label: lang.text("approved"),
+            value: "disetujui",
+          },
+          {
+            label: lang.text("rejected"),
+            value: "ditolak",
+          },
+        ],
+      },
       header: ({ column }: any) => (
         <BaseTableHeader
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}

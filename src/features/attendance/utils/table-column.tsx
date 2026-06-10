@@ -237,16 +237,60 @@ export const studentAttendanceColumn = ({
           </BaseTableHeader>
         );
       },
-      cell: ({ row }) => (
-        <>
-          {row.original.statusKehadiran ? (
-            <Badge className="capitalize">{row.original.statusKehadiran}</Badge>
-          ) : (
-            "-"
-          )}
-        </>
-      ),
+      // cell: ({ row }) => (
+      //   <>
+      //     {row.original.statusKehadiran ? (
+      //       <Badge className="capitalize">{row.original.statusKehadiran}</Badge>
+      //     ) : (
+      //       "-"
+      //     )}
+      //   </>
+      // ),
+      cell: ({ row }: any) => {
+        const status = row.original.statusKehadiran?.toLowerCase();
+
+        const statusConfig = {
+          hadir: {
+            label: "Hadir",
+            className: "bg-green-100 text-green-700 border border-green-200",
+          },
+          izin: {
+            label: "Izin",
+            className: "bg-yellow-100 text-yellow-700 border border-yellow-200",
+          },
+          alfa: {
+            label: "Alfa",
+            className: "bg-red-100 text-red-700 border border-red-200",
+          },
+          "belum hadir": {
+            label: "Belum Hadir",
+            className: "bg-slate-100 text-slate-700 border border-slate-200",
+          },
+          terlambat: {
+            label: "Terlambat",
+            className: "bg-slate-100 text-slate-700 border border-slate-200",
+          },
+          sakit: {
+            label: "Sakit",
+            className: "bg-slate-100 text-slate-700 border border-slate-200",
+          },
+        };
+
+        const config = statusConfig[status as keyof typeof statusConfig];
+
+        return (
+          <div
+            className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${
+              config?.className ??
+              "bg-gray-100 text-gray-700 border border-gray-200"
+            }`}
+          >
+            {config?.label ?? "-"}
+          </div>
+        );
+      },
     },
+
     {
       accessorKey: "user.id",
       accessorFn: (row) => row.user?.id,

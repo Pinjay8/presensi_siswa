@@ -16,12 +16,19 @@ import { getStaticFile } from "@/core/utils";
 import { useProfile } from "@/features/profile";
 import {
   Box,
+  Card,
+  CardContent,
+  CircularProgress,
   Dialog,
   DialogContent,
   DialogTitle,
+  Divider,
   IconButton,
   MenuItem,
   Select,
+  Stack,
+  Switch,
+  Typography,
 } from "@mui/material";
 import { XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -30,6 +37,7 @@ import { QrAttendanceDialog } from "./components/QrAttendanceDialog";
 import { useAlert } from "@/features/_global/hooks";
 import { useStudents } from "./components/useStudents";
 import { FaceRegisterUploader } from "./components/FaceRegisterUploader";
+import { useProfileUser } from "@/features/parents/hooks/useProfileParent";
 
 export interface UserMenuItem {
   title?: string;
@@ -44,16 +52,20 @@ export interface UserMenuProps {
 
 export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
   const profile = useProfile();
+  const { query } = profile;
   const isRoleSiswa = profile?.user?.role === "siswa";
   const isRoleTeacher = profile?.user?.role === "guru";
+  const user = profile?.user;
   const isAdmin =
     profile?.user?.role === "admin" || profile?.user?.role === "superAdmin";
+  const isRoleOrangTua = profile?.user?.role === "orangTua";
   const [open, setOpen] = useState(false);
   const alert = useAlert();
   const [openDialogRegister, setOpenDialogRegister] = useState(false);
   const [fotoTampakDepan, setFotoTampakDepan] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState("");
   const [loadingRegisterFace, setLoadingRegisterFace] = useState(false);
+  const [openProfile, setOpenProfile] = useState(false);
 
   const [qrValue, setQrValue] = useState("");
   const [expiry, setExpiry] = useState(0);
@@ -146,11 +158,27 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
     }
   };
 
-  const fileRef = React.useRef<HTMLInputElement>(null);
-  // const [students, setStudents] = useState<any[]>([]);
   const [selectedStudent, setSelectedStudent] = useState("");
 
   const { data: students } = useStudents();
+
+  const [loading, setLoading] = useState(false);
+
+  const handleToggle = async (checked: boolean) => {
+    setLoading(true);
+    try {
+      await userService.updateNotifParents(user?.id || 0, {
+        notifOrtuEnabled: checked,
+      });
+      await query.refetch();
+      alert.success(lang.text("notifySuccess"));
+    } catch (err) {
+      alert.error(lang.text("notifyErorr"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <DropdownMenu>
@@ -222,6 +250,17 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                   onClick={generateQrCode}
                 >
                   {lang.text("generateQr")}
+                </DropdownMenuLabel>
+              </>
+            )}
+
+            {isRoleOrangTua && (
+              <>
+                <DropdownMenuLabel
+                  style={{ fontWeight: "normal", cursor: "pointer" }}
+                  onClick={() => setOpenProfile(true)}
+                >
+                  Profile
                 </DropdownMenuLabel>
               </>
             )}
@@ -316,6 +355,137 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
               onRegister={handleRegisterFace}
               loading={loadingRegisterFace}
             />
+          </Box>
+        </DialogContent>
+      </Dialog>
+
+      {/* profile */}
+      <Dialog
+        open={openProfile}
+        onClose={() => setOpenProfile(false)}
+        fullWidth
+        maxWidth="sm"
+        disableAutoFocus
+        disableEnforceFocus
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Profile
+          <IconButton onClick={() => setOpenProfile(false)}>
+            <XIcon />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent dividers>
+          {/* {user ? ( */}
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {/* Header Profile */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                p: 2,
+                borderRadius: 2,
+                bgcolor: "background.default",
+              }}
+            >
+              <Avatar
+                style={{
+                  width: 56,
+                  height: 56,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 18,
+                  fontWeight: 600,
+                  border: "1px solid #000",
+                }}
+              >
+                {user?.name?.charAt(0)?.toUpperCase() || ""}
+              </Avatar>
+
+              <Box>
+                <Typography variant="h6">{user?.name}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {user?.role}
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* Detail Info */}
+            <Card variant="outlined">
+              <CardContent>
+                <Stack spacing={1.5}>
+                  <Box>
+                    <Typography variant="caption" color="text.secondary">
+                      Email
+                    </Typography>
+                    <Typography>{user?.email}</Typography>
+                  </Box>
+
+                  <Divider />
+
+                  <Box>
+                    <Typography variant="caption" color="text.secondary">
+                      No Telepon
+                    </Typography>
+                    <Typography>{user?.noTlp || "-"}</Typography>
+                  </Box>
+
+                  <Divider />
+                  <div className="flex items-center gap-2 ">
+                    <Typography variant="caption" color="text.secondary">
+                      {lang.text("notify")}
+                    </Typography>
+                    <Switch
+                      checked={user?.notifOrtuEnabled ?? false}
+                      disabled={loading}
+                      onChange={(e) => handleToggle(e.target.checked)}
+                    />
+                    {loading && (
+                      <span className="text-xs text-gray-400">Saving...</span>
+                    )}
+                  </div>
+                </Stack>
+              </CardContent>
+            </Card>
+
+            {/* Relasi Orang Tua */}
+            {/* <Card variant="outlined">
+              <CardContent>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                  Data Relasi (Orang Tua)
+                </Typography>
+
+                {user?.orangTua?.length > 0 ? (
+                  user?.orangTua.map((item: any) => (
+                    <Box
+                      key={item.id}
+                      sx={{
+                        p: 1,
+                        borderRadius: 1,
+                        bgcolor: "background.default",
+                        mb: 1,
+                      }}
+                    >
+                      <Typography variant="body2">
+                        Biodata Siswa ID: {item.biodataSiswaId}
+                      </Typography>
+                    </Box>
+                  ))
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    Tidak ada relasi orang tua
+                  </Typography>
+                )}
+              </CardContent>
+            </Card> */}
           </Box>
         </DialogContent>
       </Dialog>

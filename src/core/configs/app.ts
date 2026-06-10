@@ -1,3 +1,5 @@
+import { get } from "lodash";
+
 export const APP_CONFIG = {
   appName: import.meta.env.VITE_APP_NAME,
   appDesc: import.meta.env.VITE_APP_DESCRIPTION,
@@ -62,6 +64,7 @@ export const SERVICE_ENDPOINTS = {
     parents: "/api/all-orang-tua",
     teachers: "/api/get-all-guru",
     students: "/api/get-biodata-siswa",
+    notifParents: "/api/user/notif-ortu/{user_id}",
   },
   user: {
     user: "/api/user",
@@ -89,6 +92,7 @@ export const SERVICE_ENDPOINTS = {
     create: "/api/dispensasi",
     get: "/api/dispensasi",
     getPending: "/api/dispensasi/pending",
+    getDispensiStudent: "/api/dispensasi/daftar-anak",
     approve: "/api/dispensasi/{dispensasi_id}/approve",
     reject: "/api/dispensasi/{dispensasi_id}/reject",
   },

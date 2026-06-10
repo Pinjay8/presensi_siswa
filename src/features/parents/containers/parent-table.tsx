@@ -6,18 +6,14 @@ import { useSchool } from "@/features/schools";
 import { useMemo, useState } from "react";
 import { useParent } from "../hooks";
 import { useNavigate } from "react-router-dom";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  lang,
-} from "@/core/libs";
+import { lang } from "@/core/libs";
 import { ModalCreateParents } from "../components/ModalCreateParents";
 import { useProfile } from "@/features/profile";
 import { FaPlus } from "react-icons/fa";
+
 export function ParentTable() {
   const parent = useParent();
+
   const student = useBiodata();
   const navigate = useNavigate();
   const school = useSchool();
@@ -61,7 +57,10 @@ export function ParentTable() {
 
   const profile = useProfile();
   const isRole =
-    profile?.user?.role === "guru" || profile?.user?.role === "siswa";
+    profile?.user?.role === "guru" ||
+    profile?.user?.role === "siswa" ||
+    profile?.user?.role === "orangTua";
+
   return (
     <>
       {

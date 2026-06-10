@@ -679,6 +679,8 @@ export const DashboardLayout = React.memo(
               "Manajemen Data",
               "Manajemen Kehadiran",
               "Data Management",
+              "Data perizinan",
+              "Licensing data",
 
               "Attendance Management",
             ].includes(data.title ?? "")
@@ -741,7 +743,6 @@ export const DashboardLayout = React.memo(
                 role === "guru" &&
                 [
                   "Sekolah",
-
                   "Acara",
                   "School",
                   "Events",

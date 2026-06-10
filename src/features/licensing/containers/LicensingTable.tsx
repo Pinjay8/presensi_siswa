@@ -32,8 +32,7 @@ export function LicensingTable() {
   const resource = useLicensing();
   const alert = useAlert();
   const profile = useProfile();
-  const isRole =
-    profile?.user?.role === "orangTua" || profile?.user?.role === "siswa";
+  const isRole = profile?.user?.role === "orangTua";
   const isRoleTeacher = profile?.user?.role === "guru";
 
   const [rejectDialog, setRejectDialog] = useState(false);
@@ -84,14 +83,6 @@ export function LicensingTable() {
       }),
     [isRoleTeacher],
   );
-
-  // const columns = useMemo(
-  //   () =>
-  //     licensingColumns({
-  //       isRoleTeacher,
-  //     }),
-  //   [isRoleTeacher],
-  // );
 
   const [teacher, setTeacher] = useState(false);
 
@@ -155,7 +146,7 @@ export function LicensingTable() {
             fullWidth
             multiline
             rows={4}
-            label="Catatan Penolakan"
+            label={lang.text("rejectNote")}
             value={note}
             onChange={(e) => setNote(e.target.value)}
           />

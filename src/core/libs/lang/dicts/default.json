@@ -878,6 +878,16 @@
     "id": "Menunggu",
     "en": "Pending"
   },
+  "approve": {
+    "id": "Setujui",
+    "en": "Approve"
+  },
+
+  "notify": {
+    "id": "Notifikasi",
+    "en": "Notification"
+  },
+
   "approved": {
     "id": "Disetujui",
     "en": "Approved"
@@ -885,6 +895,14 @@
   "rejected": {
     "id": "Ditolak",
     "en": "Rejected"
+  },
+  "notifySuccess": {
+    "id": "Notifikasi berhasil dihidupkan",
+    "en": "Notification turned on successfully"
+  },
+  "notifyErorr": {
+    "id": "Notifikasi gagal dihidupkan",
+    "en": "Notification turned on fail"
   },
 
   "reject": {
@@ -975,10 +993,7 @@
     "id": "Pilih Tanggal",
     "en": "Pick a Date"
   },
-  "startDate": {
-    "id": "Tanggal Mulai",
-    "en": "Start Date"
-  },
+
   "endDate": {
     "id": "Tanggal Selesai",
     "en": "End Date"
