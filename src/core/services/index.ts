@@ -8,3 +8,4 @@ export * from "./slims";
 export * from "./schedules";
 export * from "./library";
 export * from "./settings";
+export * from "./scheduler";

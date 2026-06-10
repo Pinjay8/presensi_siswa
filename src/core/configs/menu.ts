@@ -162,13 +162,11 @@ export const MENU_STAFF: VokadashProps["menus"] = [
     title: lang.text("setting"),
     url: "/setting",
     icon: "Settings",
-    // items: [
-    //   {
-    //     title: lang.text("formatPDF"),
-    //     url: "/format/pdf",
-    //     icon: "UserCog",
-    //   },
-    // ],
+  },
+  {
+    title: lang.text("scheduler"),
+    url: "/scheduler",
+    icon: "Calendar",
   },
   {
     title: lang.text("formatManagement"),

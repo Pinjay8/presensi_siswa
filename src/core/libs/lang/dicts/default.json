@@ -243,6 +243,14 @@
     "en": "Failed to update settings",
     "id": "Gagal memperbarui pengaturan"
   },
+  "scheduler": {
+    "en": "Scheduler",
+    "id": "Penjadwalan"
+  },
+  "clear": {
+    "en": "Clear",
+    "id": "Bersihkan"
+  },
   
   "logout": {
     "en": "Logout",
@@ -2197,5 +2205,21 @@
   "present": {
     "id": "Hadir",
     "en": "Present"
+  },
+  "scheduleName": {
+    "id": "Nama Jadwal",
+    "en": "Schedule Name"
+  },
+  "scheduleType": {
+    "id": "Tipe Jadwal",
+    "en": "Schedule Type"
+  },
+  "createScheduleSuccess": {
+    "id": "Jadwal berhasil ditambahkan",
+    "en": "Schedule created successfully"
+  },
+  "createScheduleFailed": {
+    "id": "Gagal menambahkan jadwal",
+    "en": "Failed to create schedule"
   }
 }

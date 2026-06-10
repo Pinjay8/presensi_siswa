@@ -82,6 +82,7 @@ import { CardEdit } from "../cards/pages/CardEdit";
 import { CardsDelete } from "../cards/pages/CardsDelete";
 import { CardView } from "../cards";
 import { SettingsNotification } from "../settings/pages/settings-notification";
+import { SchedulerView } from "../scheduler/pages/scheduler-view";
 const router = createBrowserRouter(
   [
     {
@@ -347,6 +348,10 @@ const router = createBrowserRouter(
         {
           path: "setting/",
           element: <SettingsNotification />,
+        },
+        {
+          path: "/scheduler",
+          element: <SchedulerView />,
         },
         {
           path: "logout",
