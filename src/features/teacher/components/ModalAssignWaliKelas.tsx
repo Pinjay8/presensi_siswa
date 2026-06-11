@@ -63,7 +63,9 @@ export function ModalAssignWaliKelas({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Assign Wali Kelas</DialogTitle>
+          <DialogTitle style={{ marginTop: "16px" }}>
+            Assign Wali Kelas
+          </DialogTitle>
         </DialogHeader>
 
         <Divider />

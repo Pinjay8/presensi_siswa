@@ -171,7 +171,7 @@ export const AttedancesReport = ({ selectedSchool, selectDate }: AttedancesRepor
 
   return (
     <>
-      <div className="mt-4 mb-12">
+      <div className="mt-4 mb-8">
         {/* {renderLoading()} */}
         <AttendanceDashboard
           stats={specificDayStats}

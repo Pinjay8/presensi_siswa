@@ -111,10 +111,10 @@ export const CardCounter = React.memo((props: CardCounterProps) => {
       </CardHeader>
       <CardContent className="bg-theme-color-primary/5">
         <div className="text-2xl font-bold mb-4">{props.value}</div>
-        <div style={{ height: "100px" }}>
+        {/* <div style={{ height: "100px" }}>
           <Line data={data} options={options} />
-        </div>
-        <p className="text-xs text-muted-foreground mt-2">{props.infoText}</p>
+        </div> */}
+        {/* <p className="text-xs text-muted-foreground mt-2">{props.infoText}</p> */}
       </CardContent>
     </Card>
   );

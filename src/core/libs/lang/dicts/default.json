@@ -1127,6 +1127,22 @@
     "id": "Laporan Keseluruhan",
     "en": "Overall report"
   },
+  "activeAssignment": {
+    "id": "Tugas Aktif",
+    "en": "Active Assignment"
+  },
+  "deadline": {
+    "id": "Jatuh Tempo",
+    "en": "Deadline"
+  },
+  "notActiveAssignment": {
+    "id": "Tidak ada data",
+    "en": "No data"
+  },
+  "subjectAttendanceToday": {
+    "id": "Kehadiran Mata Pelajaran Hari ini",
+    "en": "Subject Attendance Today"
+  },
   "classRoom": {
     "id": "Kelas",
     "en": "Classrooms"
@@ -1135,6 +1151,29 @@
     "id": "Pilih Kelas",
     "en": "Select Classroom"
   },
+
+  "jadwalKelasHariIni": {
+    "id": "Jadwal Kelas Hari Ini",
+    "en": "Today's Class Schedule"
+  },
+  "jadwalMengajarHariIni": {
+    "id": "Jadwal Mengajar Hari Ini",
+    "en": "Teaching Schedule Today"
+  },
+  "pendingDispensasi": {
+    "id": "Pending Dispensasi",
+    "en": "Pending Exemption Requests"
+  },
+  "topSiswaBermasalah": {
+    "id": "Top Siswa Bermasalah",
+    "en": "Students with Most Issues"
+  },
+
+  "topSiswaTerbaik": {
+    "id": "Top Siswa Terbaik",
+    "en": "Top Students"
+  },
+
   "parent": {
     "id": "Orang Tua",
     "en": "Parents"
@@ -1206,6 +1245,22 @@
   "minimumPassword": {
     "id": "Kata sandi minimal 6 karakter",
     "en": "Password must be at least 6 characters"
+  },
+  "late": {
+    "id": "Terlambat",
+    "en": "Late"
+  },
+  "sick": {
+    "id": "Sakit",
+    "en": "Sick"
+  },
+  "permit": {
+    "id": "Izin",
+    "en": "Permit"
+  },
+  "alfa": {
+    "id": "Alfa",
+    "en": "Alfa"
   },
   "nipValidation": {
     "id": "NIP harus 18 karakter",
@@ -2102,6 +2157,10 @@
   "attendanceDescription": {
     "id": "Kelola dan pantau kehadiran siswa, guru, dan staf dengan mudah dan efisien.",
     "en": "Easily and efficiently manage and monitor attendance for students, teachers, and staff."
+  },
+  "attendanceSummary": {
+    "id": "Ringkasan Kehadiran",
+    "en": "Attendance Summary"
   },
   "attendanceAction": {
     "id": "Lihat Data Kehadiran",

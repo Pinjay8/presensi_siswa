@@ -411,10 +411,12 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
               </Avatar>
 
               <Box>
-                <Typography variant="h6">{user?.name}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {user?.role}
+                <Typography variant="h6" className="capitalize">
+                  {user?.name}
                 </Typography>
+                {/* <Typography variant="body2" color="text.secondary" >
+                  {user?.role}
+                </Typography> */}
               </Box>
             </Box>
 
@@ -455,37 +457,6 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                 </Stack>
               </CardContent>
             </Card>
-
-            {/* Relasi Orang Tua */}
-            {/* <Card variant="outlined">
-              <CardContent>
-                <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                  Data Relasi (Orang Tua)
-                </Typography>
-
-                {user?.orangTua?.length > 0 ? (
-                  user?.orangTua.map((item: any) => (
-                    <Box
-                      key={item.id}
-                      sx={{
-                        p: 1,
-                        borderRadius: 1,
-                        bgcolor: "background.default",
-                        mb: 1,
-                      }}
-                    >
-                      <Typography variant="body2">
-                        Biodata Siswa ID: {item.biodataSiswaId}
-                      </Typography>
-                    </Box>
-                  ))
-                ) : (
-                  <Typography variant="body2" color="text.secondary">
-                    Tidak ada relasi orang tua
-                  </Typography>
-                )}
-              </CardContent>
-            </Card> */}
           </Box>
         </DialogContent>
       </Dialog>

@@ -32,7 +32,7 @@ export const ReportOverview = ({
   return (
     <DashboardPageLayout
       siteTitle={`${lang.text("schoolDistribution")} | ${APP_CONFIG.appName}`}
-      title={lang.text("ReportOverview") + "📋"}
+      title={lang.text("ReportOverview")}
     >
       {/* <div className="w-full flex items-center justify-between flex-wrap">
         <div className="flex items-center gap-4">

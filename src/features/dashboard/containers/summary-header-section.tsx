@@ -5,12 +5,12 @@ import { CircleAlert } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDashboard } from "../hooks/use-dashboard";
 import { dashboardService } from "@/core/services/dashboard";
+import { useProfile } from "@/features/profile";
 
 export const SummaryHeaderSection = React.memo(() => {
-  // const dashboard = useDashboard();
-
   const [dashboard, setDashboard] = useState<any>();
-
+  const profile = useProfile();
+  const ROLE = profile.user?.role;
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -83,18 +83,52 @@ export const SummaryHeaderSection = React.memo(() => {
       />
     ));
   };
+
+  const renderContentTeacher = () => {
+    if (!dashboard) return null;
+
+    const cards = [
+      {
+        label: "Total Jadwal Mapel Hari Ini",
+        value: dashboard.totalJadwalMapelHariIni,
+        infoText: "Total Jadwal Mapel Hari Ini",
+      },
+      {
+        label: "Total Jadwal Semua Mapel",
+        value: dashboard.totalJadwalSemuaMapel,
+        infoText: "Total Jadwal Semua Mapel",
+      },
+    ];
+
+    return cards.map((item, index) => (
+      <CardCounter
+        key={index}
+        label={item.label}
+        value={item.value}
+        infoText={item.infoText}
+      />
+    ));
+  };
   return (
     <DashboardPageLayout
-      siteTitle={`${lang.text("schoolDistribution")} | ${APP_CONFIG.appName}`}
+      siteTitle={`${lang.text("dashboard")} | ${APP_CONFIG.appName}`}
       title={lang.text("OverallReport")}
     >
-      <>
+      <div>
         {/* {renderLoading()} */}
         {/* {renderError()} */}
-        <div className="mt-3 grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-          {renderContent()}
-        </div>
-      </>
+        {ROLE === "superAdmin" ||
+          (ROLE === "admin" && (
+            <div className="mt-3 grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+              {renderContent()}
+            </div>
+          ))}
+        {ROLE === "guru" && (
+          <div className="mt-3 grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+            {renderContentTeacher()}
+          </div>
+        )}
+      </div>
     </DashboardPageLayout>
   );
 });

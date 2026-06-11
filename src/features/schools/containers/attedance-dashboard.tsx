@@ -295,7 +295,7 @@ export const AttedancesReport = ({ selectedSchool, changes, stats }: AttedancesR
 
   return (
     <>
-      <div className="mt-4 mb-12">
+      <div className="mt-4 mb-8">
         {profile?.user?.role === "admin" && (
           <div className="absolute top-3 right-[10%] w-full flex justify-between items-center">
             <Button

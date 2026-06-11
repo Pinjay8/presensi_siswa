@@ -649,9 +649,8 @@ export const DashboardLayout = React.memo(
               "Scan Kehadiran Mapel",
               "Manajemen Data",
               "Data Management",
-              "Data perizinan",
-              "Data perizinan",
-              "Licensing Data",
+              // "Data perizinan",
+              // "Licensing Data",
             ].includes(data.title ?? "")
           ) {
             return null;
@@ -681,7 +680,6 @@ export const DashboardLayout = React.memo(
               "Data Management",
               "Data perizinan",
               "Licensing data",
-
               "Attendance Management",
             ].includes(data.title ?? "")
           ) {
@@ -706,7 +704,9 @@ export const DashboardLayout = React.memo(
                   "Events",
                   "Siswa",
                   "Guru",
-                  "teachers",
+                  "Orang Tua",
+                  "Teachers",
+                  "Parents",
                   "Students",
                 ].includes(item.title ?? "")
               ) {

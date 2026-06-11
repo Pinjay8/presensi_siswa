@@ -177,7 +177,7 @@ export const SchoolMap = () => {
   };
 
   return (
-    <Card className="z-[1] w-full my-12 mb-12 bg-theme-color-primary/5">
+    <Card className="z-[1] w-full my-6 mb-0 bg-theme-color-primary/5">
       <CardContent className="pt-6">
         <div className="w-full flex gap-4   lg:h-[500px] flex-wrap lg:flex-nowrap">
           {/* Left - Stats and Progress */}

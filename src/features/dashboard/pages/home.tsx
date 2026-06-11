@@ -8,6 +8,8 @@ import { SchoolUpdateDialog, SummaryHeaderSection } from "../containers";
 export const HomePage = () => {
   const profile = useProfile();
   const isAdmin = profile?.user?.role === "admin";
+  const isRole =
+    profile?.user?.role === "siswa" || profile?.user?.role === "orangTua";
 
   return (
     <DashboardPageLayout
@@ -20,8 +22,10 @@ export const HomePage = () => {
       ]}
     >
       <SchoolDistribution />
-      <SummaryHeaderSection />
-      <div className="pb-16 sm:pb-0" />
+      <div className="pb-8" />
+
+      {!isRole && <SummaryHeaderSection />}
+
       {/* {isAdmin && <SchoolUpdateDialog />} */}
     </DashboardPageLayout>
   );
