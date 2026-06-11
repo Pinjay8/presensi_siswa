@@ -12,6 +12,11 @@ export interface ClassroomDataModel {
   deleteAt: string;
   MataPelajaran: CourseDataModel[];
   biodataSiswa: BiodataSiswa[];
+  attendanceScheduleId?: number;
+  Schedule?: {
+    id: number;
+    name: string;
+  };
   Sekolah: {
     id: number;
     namaSekolah: string;

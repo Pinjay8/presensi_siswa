@@ -33,6 +33,7 @@ export interface BaseActionTableProps {
   onEdit?: () => void; // Add onEdit callback
   onWaliKelas?: () => void;
   onRegisterFace?: () => void;
+  onAssignSchedule?: () => void;
 }
 
 export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
@@ -129,6 +130,11 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
           {props.onRegisterFace && (
             <DropdownMenuItem onClick={props.onRegisterFace}>
               {lang.text("RegisterFace")}
+            </DropdownMenuItem>
+          )}
+          {props.onAssignSchedule && (
+            <DropdownMenuItem onClick={props.onAssignSchedule}>
+              {lang.text("assignSchedule")}
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>

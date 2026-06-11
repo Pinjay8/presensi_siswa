@@ -5,9 +5,19 @@ import {
   BaseTableFilter,
   BaseTableHeader,
 } from "@/features/_global";
+import { Button } from "@mui/material";
 import { ColumnDef } from "@tanstack/react-table";
+import { Pencil } from "lucide-react";
 
-export const classroomColumns = (columFilter?: BaseTableFilter): ColumnDef<ClassroomDataModel>[] => {
+export interface classroomColumnsProps {
+  columnFilter?: BaseTableFilter;
+  onAssignSchedule?: (row: ClassroomDataModel) => void;
+}
+
+export const classroomColumns = ({
+  columnFilter,
+  onAssignSchedule,
+}: classroomColumnsProps): ColumnDef<ClassroomDataModel>[] => {
   return [
     {
       accessorKey: "namaKelas",
@@ -54,7 +64,27 @@ export const classroomColumns = (columFilter?: BaseTableFilter): ColumnDef<Class
         filterLabel: lang.text("school"),
         filterPlaceholder: lang.text("selectSchool"),
         filterVariant: "select",
-        filterOptions: columFilter?.schoolOptions || [],
+        filterOptions: columnFilter?.schoolOptions || [],
+      },
+    },
+    {
+      accessorKey: "Schedule",
+      accessorFn: (row) => row.attendanceScheduleId,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {"Schedule"}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-2">
+            <div className="text-sm font-medium">{row.original.attendanceScheduleId || "- - -"}</div>
+          </div>
+        );
       },
     },
     {
@@ -76,6 +106,7 @@ export const classroomColumns = (columFilter?: BaseTableFilter): ColumnDef<Class
             detailPath={`/classrooms/${encryptPayload}`}
             editPath={`/classrooms/edit/${encryptPayload}`}
             deletePath={`/classrooms/delete/${encryptPayload}`}
+            onAssignSchedule={() => onAssignSchedule?.(row.original)}
           />
         );
       },
