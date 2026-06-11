@@ -23,6 +23,7 @@ export type WeeklySchedule = {
 interface SchedulerWeeklyCalendarProps {
   schedule: WeeklySchedule;
   onChange: (newSchedule: WeeklySchedule) => void;
+  readOnly?: boolean;
 }
 
 const DAY_NAMES = ["MIN", "SEN", "SEL", "RAB", "KAM", "JUM", "SAB"];
@@ -50,6 +51,7 @@ const formatHourString = (h: number | null): string | null => {
 export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = ({
   schedule,
   onChange,
+  readOnly = false,
 }) => {
   const [currentDate, setCurrentDate] = useState(() => new Date());
   const [currentTime, setCurrentTime] = useState(() => new Date());
@@ -309,12 +311,14 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
         </div>
         
         <div className="flex items-center gap-2">
-            <button
-            onClick={handleClearSchedule}
-            className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-100 active:scale-95 transition-all"
-          >
-            {lang.text('clear')}
-          </button>
+            {!readOnly && (
+              <button
+                onClick={handleClearSchedule}
+                className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-100 active:scale-95 transition-all"
+              >
+                {lang.text('clear')}
+              </button>
+            )}
           <button
             onClick={handleToday}
             className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-100 active:scale-95 transition-all"
@@ -432,16 +436,20 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
                         {/* Cell click overlay (unassigned slot) */}
                         {role === null && (
                           <div
-                            onClick={(e) => handleCellClick(e, dayIdx, h, null)}
-                            className="w-full h-full cursor-pointer hover:bg-blue-50/30 active:bg-blue-50/60 transition-colors"
+                            onClick={readOnly ? undefined : (e) => handleCellClick(e, dayIdx, h, null)}
+                            className={`w-full h-full transition-colors ${
+                              readOnly ? "" : "cursor-pointer hover:bg-blue-50/30 active:bg-blue-50/60"
+                            }`}
                           />
                         )}
                         
                         {/* Combined Start/End (Both) hour card for 1-hour slots */}
                         {role === "both" && start !== null && end !== null && (
                           <div
-                            onClick={(e) => handleCellClick(e, dayIdx, h, "middle")}
-                            className="absolute inset-x-1 inset-y-0.5 rounded-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 hover:from-blue-100 hover:to-indigo-100 shadow-sm p-1.5 cursor-pointer transition-all flex flex-col justify-center overflow-hidden z-10 hover:shadow select-none border-t border-b border-r border-blue-200/50"
+                            onClick={readOnly ? undefined : (e) => handleCellClick(e, dayIdx, h, "middle")}
+                            className={`absolute inset-x-1 inset-y-0.5 rounded-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-b border-r border-blue-200/50 ${
+                              readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 hover:shadow"
+                            }`}
                           >
                             <div className="flex flex-col gap-0.5">
                               <span className="text-[7px] font-bold text-emerald-600 tracking-wide uppercase leading-none">
@@ -460,10 +468,16 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
                           const endSlot = end !== null ? end - 1 : null;
                           const isTop = !isSingle && endSlot !== null && start < endSlot;
                           const cardClass = isSingle
-                            ? "absolute inset-x-1 inset-y-0.5 rounded-xl border-l-[4px] border-emerald-500 bg-gradient-to-r from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 shadow-sm p-1.5 cursor-pointer transition-all flex flex-col justify-center overflow-hidden z-10 hover:shadow select-none border-t border-b border-r border-emerald-200/50"
+                            ? `absolute inset-x-1 inset-y-0.5 rounded-xl border-l-[4px] border-emerald-500 bg-gradient-to-r from-emerald-50 to-teal-50 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-b border-r border-emerald-200/50 ${
+                                readOnly ? "cursor-default" : "cursor-pointer hover:from-emerald-100 hover:to-teal-100 hover:shadow"
+                              }`
                             : isTop
-                              ? "absolute inset-x-1 bottom-0 top-0 rounded-t-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 hover:from-blue-100 hover:to-indigo-100 shadow-sm p-1.5 cursor-pointer transition-all flex flex-col justify-center overflow-hidden z-10 hover:shadow select-none border-t border-r border-blue-200/40"
-                              : "absolute inset-x-1 bottom-0 top-0 rounded-b-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 hover:from-blue-100 hover:to-indigo-100 shadow-sm p-1.5 cursor-pointer transition-all flex flex-col justify-center overflow-hidden z-10 hover:shadow select-none border-b border-r border-blue-200/40";
+                              ? `absolute inset-x-1 bottom-0 top-0 rounded-t-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-r border-blue-200/40 ${
+                                  readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 hover:shadow"
+                                }`
+                              : `absolute inset-x-1 bottom-0 top-0 rounded-b-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-b border-r border-blue-200/40 ${
+                                  readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 hover:shadow"
+                                }`;
                           const labelClass = isSingle
                             ? "text-[8px] font-bold text-emerald-800 tracking-wide uppercase"
                             : "text-[8px] font-bold text-emerald-600 tracking-wide uppercase";
@@ -473,7 +487,7 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
 
                           return (
                             <div
-                              onClick={(e) => handleCellClick(e, dayIdx, h, "start")}
+                              onClick={readOnly ? undefined : (e) => handleCellClick(e, dayIdx, h, "start")}
                               className={cardClass}
                             >
                               <span className={labelClass}>
@@ -492,10 +506,16 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
                           const endSlot = end - 1;
                           const isTop = !isSingle && endSlot < start;
                           const cardClass = isSingle
-                            ? "absolute inset-x-1 inset-y-0.5 rounded-xl border-l-[4px] border-amber-500 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 shadow-sm p-1.5 cursor-pointer transition-all flex flex-col justify-center overflow-hidden z-10 hover:shadow select-none border-t border-b border-r border-amber-200/50"
+                            ? `absolute inset-x-1 inset-y-0.5 rounded-xl border-l-[4px] border-amber-500 bg-gradient-to-r from-amber-50 to-orange-50 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-b border-r border-amber-200/50 ${
+                                readOnly ? "cursor-default" : "cursor-pointer hover:from-amber-100 hover:to-orange-100 hover:shadow"
+                              }`
                             : isTop
-                              ? "absolute inset-x-1 bottom-0 top-0 rounded-t-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 hover:from-blue-100 hover:to-indigo-100 shadow-sm p-1.5 cursor-pointer transition-all flex flex-col justify-center overflow-hidden z-10 hover:shadow select-none border-t border-r border-blue-200/40"
-                              : "absolute inset-x-1 bottom-0 top-0 rounded-b-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 hover:from-blue-100 hover:to-indigo-100 shadow-sm p-1.5 cursor-pointer transition-all flex flex-col justify-center overflow-hidden z-10 hover:shadow select-none border-b border-r border-blue-200/40";
+                              ? `absolute inset-x-1 bottom-0 top-0 rounded-t-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-r border-blue-200/40 ${
+                                  readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 hover:shadow"
+                                }`
+                              : `absolute inset-x-1 bottom-0 top-0 rounded-b-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-b border-r border-blue-200/40 ${
+                                  readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 hover:shadow"
+                                }`;
                           const labelClass = isSingle
                             ? "text-[8px] font-bold text-amber-800 tracking-wide uppercase"
                             : "text-[8px] font-bold text-amber-600 tracking-wide uppercase";
@@ -505,7 +525,7 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
 
                           return (
                             <div
-                              onClick={(e) => handleCellClick(e, dayIdx, h, "end")}
+                              onClick={readOnly ? undefined : (e) => handleCellClick(e, dayIdx, h, "end")}
                               className={cardClass}
                             >
                               <span className={labelClass}>
@@ -521,8 +541,10 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
                         {/* Middle hour cell */}
                         {role === "middle" && (
                           <div
-                            onClick={(e) => handleCellClick(e, dayIdx, h, "middle")}
-                            className="absolute inset-x-1 bottom-0 top-0 border-l-[4px] border-blue-500 border-r border-blue-200/30 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 hover:from-blue-100 hover:to-indigo-100 p-1.5 cursor-pointer transition-all flex flex-col justify-center items-center select-none z-10"
+                            onClick={readOnly ? undefined : (e) => handleCellClick(e, dayIdx, h, "middle")}
+                            className={`absolute inset-x-1 bottom-0 top-0 border-l-[4px] border-blue-500 border-r border-blue-200/30 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 p-1.5 flex flex-col justify-center items-center select-none z-10 ${
+                              readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100"
+                            }`}
                           >
                           </div>
                         )}

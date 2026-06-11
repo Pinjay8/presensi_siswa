@@ -82,7 +82,10 @@ import { CardEdit } from "../cards/pages/CardEdit";
 import { CardsDelete } from "../cards/pages/CardsDelete";
 import { CardView } from "../cards";
 import { SettingsNotification } from "../settings/pages/settings-notification";
-import { SchedulerView } from "../scheduler/pages/scheduler-view";
+import { SchedulerLanding } from "../scheduler/pages/scheduler-landing";
+import { SchedulerDetail } from "../scheduler/pages/scheduler-detail";
+import { SchedulerEdit } from "../scheduler/pages/scheduler-edit";
+import { SchedulerCreate } from "../scheduler/pages/scheduler-create";
 const router = createBrowserRouter(
   [
     {
@@ -351,7 +354,19 @@ const router = createBrowserRouter(
         },
         {
           path: "/scheduler",
-          element: <SchedulerView />,
+          element: <SchedulerLanding />,
+        },
+        {
+          path: "/scheduler/:id",
+          element: <SchedulerDetail />,
+        },
+        {
+          path: "/scheduler/edit/:id",
+          element: <SchedulerEdit />,
+        },
+        {
+          path: "/scheduler/create",
+          element: <SchedulerCreate />,
         },
         {
           path: "logout",

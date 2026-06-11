@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { lang } from "@/core/libs";
+import { lang, simpleDecode } from "@/core/libs";
 import { APP_CONFIG } from "@/core/configs";
 import { DashboardPageLayout } from "@/features/_global";
 import { useAlert } from "@/features/_global/hooks";
@@ -10,6 +10,7 @@ import {
 import { Calendar, Clock, Info, CheckCircle2, AlertCircle } from "lucide-react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { SchedulerEditView } from "../containers/scheduler-edit-view";
+import { useParams, Navigate } from "react-router-dom";
 
 
 
@@ -23,29 +24,8 @@ const DAY_LONG_NAMES = [
   "Sabtu"
 ];
 
-export const SchedulerView = () => {
-  const alert = useAlert();
-  
-  // Local state for the weekly schedule
-  const [schedule, setSchedule] = useState<WeeklySchedule>({
-    days: [
-      { dayOfWeek: 1, jamMasuk: "08:00", jamPulang: "14:00" },
-      { dayOfWeek: 2, jamMasuk: "08:00", jamPulang: "14:00" },
-      { dayOfWeek: 3, jamMasuk: "08:00", jamPulang: "14:00" },
-      { dayOfWeek: 4, jamMasuk: "08:00", jamPulang: "14:00" },
-      { dayOfWeek: 5, jamMasuk: "08:00", jamPulang: "14:00" },
-      { dayOfWeek: 6, jamMasuk: null, jamPulang: null },
-      { dayOfWeek: 0, jamMasuk: null, jamPulang: null }
-    ]
-  });
-const [showGuide, setShowGuide] = useState(true);
-const [showSummary, setShowSummary] = useState(true);
-  const handleScheduleChange = (newSchedule: WeeklySchedule) => {
-    setSchedule(newSchedule);
-    
-    // Find the changes to trigger a toast update
-    alert.success("Jadwal mingguan berhasil diperbarui");
-  };
+export const SchedulerCreate = () => {
+
 
   return (
     <DashboardPageLayout
@@ -54,6 +34,10 @@ const [showSummary, setShowSummary] = useState(true);
         {
           label: lang.text("scheduler"),
           url: "/scheduler",
+        },
+        {
+          label: lang.text("schedulerCreate"),
+          url: `/scheduler`,
         }
       ]}
       title={lang.text("scheduler")}

@@ -5,6 +5,7 @@ import { useAuth } from "@/features/auth";
 import { useProfile } from "@/features/profile";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useMemo } from "react";
 
 export const useSchedulerCreation = () => {
     const auth = useAuth();
@@ -47,8 +48,9 @@ export const useSchedulerCreation = () => {
             }
         });
 
-        const update = (id: number, payload: SchedulerCreationModel) =>
+        const update = (id: number, payload: SchedulerCreationModel) =>{
             updateMutation.mutateAsync({ id, payload });
+        }
 
         const deleteMutation = useMutation({
             mutationFn: (vars: { id: number }) =>
@@ -65,7 +67,7 @@ export const useSchedulerCreation = () => {
         const destroy = (id: number) =>
             deleteMutation.mutateAsync({ id });
 
-        const data = query.data?.data;
+        const data = useMemo(() => query.data?.data || [], [query.data?.data]);
         const isLoading = query.isLoading || createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
         
         return {

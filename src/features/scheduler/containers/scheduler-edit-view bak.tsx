@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { lang } from "@/core/libs";
 import { useAlert } from "@/features/_global/hooks";
 import { 
   SchedulerWeeklyCalendar, 
   WeeklySchedule 
 } from "../containers/scheduler-weekly-calendar";
-import { Calendar, Clock, Info, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { Calendar, Clock, Info, CheckCircle2, AlertCircle } from "lucide-react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSchedulerCreation } from "../hooks/use-scheduler-creation";
 import { useSchedulerDetail } from "../hooks/use-scheduler-detail";
-import {  useNavigate } from "react-router-dom";
 
 
 const DAY_LONG_NAMES = [
@@ -25,26 +24,22 @@ const DAY_LONG_NAMES = [
 
 export interface SchedulerEditViewProps {
   id?: number;
-  editable?: boolean;
+  editable: boolean;
 }
 
-export const SchedulerEditView = ({ id, editable = true }: SchedulerEditViewProps) => {
+export const SchedulerEditView = (props: SchedulerEditViewProps) => {
   const alert = useAlert();
-  const detail = useSchedulerDetail({ id: Number(id) });
-  const navigate = useNavigate()
+    const detail = useSchedulerDetail({ id: Number(props.id)})
+    
   
-  const isEdit = Boolean(id) && editable;
-  const isDetail = Boolean(id) && !editable;
-  const isCreate = !id && editable;
-
   // Local state for the weekly schedule
   const [schedule, setSchedule] = useState<WeeklySchedule>({
     days: [
-      { dayOfWeek: 1, jamMasuk: null, jamPulang: null },
-      { dayOfWeek: 2, jamMasuk: null, jamPulang: null },
-      { dayOfWeek: 3, jamMasuk: null, jamPulang: null },
-      { dayOfWeek: 4, jamMasuk: null, jamPulang: null },
-      { dayOfWeek: 5, jamMasuk: null, jamPulang: null },
+      { dayOfWeek: 1, jamMasuk: "08:00", jamPulang: "14:00" },
+      { dayOfWeek: 2, jamMasuk: "08:00", jamPulang: "14:00" },
+      { dayOfWeek: 3, jamMasuk: "08:00", jamPulang: "14:00" },
+      { dayOfWeek: 4, jamMasuk: "08:00", jamPulang: "14:00" },
+      { dayOfWeek: 5, jamMasuk: "08:00", jamPulang: "14:00" },
       { dayOfWeek: 6, jamMasuk: null, jamPulang: null },
       { dayOfWeek: 0, jamMasuk: null, jamPulang: null }
     ]
@@ -58,40 +53,7 @@ export const SchedulerEditView = ({ id, editable = true }: SchedulerEditViewProp
   const [showGuide, setShowGuide] = useState(true);
   const [showSummary, setShowSummary] = useState(true);
 
-  const { create, update, isLoading } = useSchedulerCreation();
-
-  useEffect(() => {
-    if (id && detail.data) {
-      setScheduleName(detail.data.name || "");
-      setScheduleDescription(detail.data.description || "");
-      setScheduleType(detail.data.type || "SISWA");
-      setIsDefault(detail.data.isDefault || false);
-      if (detail.data.days) {
-        const initialDaysOrder = [1, 2, 3, 4, 5, 6, 0];
-        const mappedDays = initialDaysOrder.map((dayOfWeek) => {
-          const found = detail.data?.days?.find((d) => d.dayOfWeek === dayOfWeek);
-          return {
-            dayOfWeek,
-            jamMasuk: found ? found.jamMasuk : null,
-            jamPulang: found ? found.jamPulang : null,
-          };
-        });
-        setSchedule({ days: mappedDays });
-      }
-    }
-  }, [detail.data, id]);
-
-  if (id && detail.isLoading) {
-    return (
-      <div className="flex h-[400px] w-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-      </div>
-    );
-  }
-
-  const isAllDaysNull = (schedule.days || []).every(
-    (day) => day.jamMasuk === null && day.jamPulang === null
-  );
+  const { create, isLoading } = useSchedulerCreation();
 
   const handleSubmit = async () => {
     if (!scheduleName.trim()) {
@@ -111,32 +73,19 @@ export const SchedulerEditView = ({ id, editable = true }: SchedulerEditViewProp
         isDefault,
         days: filteredDays,
       };
-
-      if (isEdit && id) {
-        await update(Number(id), payload);
-      } else {
-        await create(payload);
-      }
-            alert.success(
-              isEdit
-                ? lang.text("successUpdate", { context: lang.text("scheduler") })
-                : lang.text("successCreate", { context: lang.text("scheduler") }),
-            );
-
-            navigate("/scheduler");
-            
-    } catch (err: any) {
-            alert.error(
-              err?.message ||
-                (isEdit
-                  ? lang.text("failUpdate", { context: lang.text("scheduler") })
-                  : lang.text("failCreate", { context: lang.text("scheduler") })),
-            );
+      await create(payload);
+      alert.success(
+        lang.text("createScheduleSuccess")
+      );
+    } catch (err) {
+      alert.error(lang.text("createScheduleFailed"));
     }
   };
-
   const handleScheduleChange = (newSchedule: WeeklySchedule) => {
     setSchedule(newSchedule);
+    
+    // Find the changes to trigger a toast update
+    alert.success("Jadwal mingguan berhasil diperbarui");
   };
 
 return (
@@ -147,11 +96,13 @@ return (
       className="
         flex
         flex-col
+        gap-6
         h-[calc(100vh-220px)]
+        overflow-y-auto
+        pr-1
       "
     >
-      <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-6">
-      {editable && 
+      {props.editable && 
             <AccordionCard
         title="Panduan Pengaturan"
         open={showGuide}
@@ -238,17 +189,17 @@ return (
       <input
         value={scheduleName}
         onChange={(e) => setScheduleName(e.target.value)}
-        readOnly={isDetail}
         placeholder="Contoh: Jadwal Reguler"
-        className={`
+        className="
           w-full
           px-3 py-2
           rounded-xl
           border border-slate-200
           text-sm
           focus:outline-none
-          ${isDetail ? "bg-slate-50 cursor-not-allowed" : "focus:ring-2 focus:ring-blue-500"}
-        `}
+          focus:ring-2
+          focus:ring-blue-500
+        "
       />
     </div>
 
@@ -262,9 +213,8 @@ return (
         rows={3}
         value={scheduleDescription}
         onChange={(e) => setScheduleDescription(e.target.value)}
-        readOnly={isDetail}
         placeholder="Opsional"
-        className={`
+        className="
           w-full
           px-3 py-2
           rounded-xl
@@ -272,8 +222,9 @@ return (
           text-sm
           resize-none
           focus:outline-none
-          ${isDetail ? "bg-slate-50 cursor-not-allowed" : "focus:ring-2 focus:ring-blue-500"}
-        `}
+          focus:ring-2
+          focus:ring-blue-500
+        "
       />
     </div>
 
@@ -284,24 +235,20 @@ return (
       </label>
 
       <div className="flex gap-4">
-        <label className={`flex items-center gap-2 text-sm ${isDetail ? "cursor-not-allowed" : "cursor-pointer"}`}>
+        <label className="flex items-center gap-2 text-sm cursor-pointer">
           <input
             type="radio"
             checked={scheduleType === "SISWA"}
             onChange={() => setScheduleType("SISWA")}
-            disabled={isDetail}
-            className={isDetail ? "cursor-not-allowed" : ""}
           />
           Siswa
         </label>
 
-        <label className={`flex items-center gap-2 text-sm ${isDetail ? "cursor-not-allowed" : "cursor-pointer"}`}>
+        <label className="flex items-center gap-2 text-sm cursor-pointer">
           <input
             type="radio"
             checked={scheduleType === "GURU"}
             onChange={() => setScheduleType("GURU")}
-            disabled={isDetail}
-            className={isDetail ? "cursor-not-allowed" : ""}
           />
           Guru
         </label>
@@ -309,13 +256,11 @@ return (
     </div>
 
     {/* Default */}
-    <label className={`flex items-center gap-3 ${isDetail ? "cursor-not-allowed" : "cursor-pointer"}`}>
+    <label className="flex items-center gap-3 cursor-pointer">
       <input
         type="checkbox"
         checked={isDefault}
         onChange={(e) => setIsDefault(e.target.checked)}
-        disabled={isDetail}
-        className={isDetail ? "cursor-not-allowed" : ""}
       />
 
       <div>
@@ -386,24 +331,15 @@ return (
           })}
         </div>
       </AccordionCard>
-      </div>
 
       {/* Submit Button */}
-      {editable && (
-        <div className="mt-4 pt-2 border-t border-slate-100 bg-white">
-          <button
-            disabled={isLoading || isAllDaysNull}
-            onClick={handleSubmit}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-xl shadow-sm transition-all text-sm flex items-center justify-center gap-2"
-          >
-            {isLoading
-              ? lang.text("saving")
-              : isEdit
-                ? (lang.text("saveChanges") || "Simpan Perubahan")
-                : (lang.text("createSchedule") || "Buat Jadwal")}
-          </button>
-        </div>
-      )}
+      <button
+        disabled={isLoading}
+        onClick={handleSubmit}
+        className="w-full mt-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-xl shadow-sm transition-all text-sm flex items-center justify-center gap-2"
+      >
+        {isLoading ? lang.text("saving") : (lang.text("saveChanges") || "Simpan Perubahan")}
+      </button>
 
     </div>
 
@@ -412,7 +348,6 @@ return (
       <SchedulerWeeklyCalendar
         schedule={schedule}
         onChange={handleScheduleChange}
-        readOnly={isDetail}
       />
     </div>
   </div>

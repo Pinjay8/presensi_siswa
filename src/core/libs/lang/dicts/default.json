@@ -2210,9 +2210,13 @@
     "id": "Nama Jadwal",
     "en": "Schedule Name"
   },
-  "scheduleType": {
+  "schedulerType": {
     "id": "Tipe Jadwal",
     "en": "Schedule Type"
+  },
+    "schedulerDescription": {
+    "id": "Deskripsi Jadwal",
+    "en": "Schedule Description"
   },
   "createScheduleSuccess": {
     "id": "Jadwal berhasil ditambahkan",
@@ -2221,5 +2225,9 @@
   "createScheduleFailed": {
     "id": "Gagal menambahkan jadwal",
     "en": "Failed to create schedule"
+  },
+  "schedulerCreate": {
+    "id": "Pembuatan jadwal",
+    "en": "Create Schedule"
   }
 }
