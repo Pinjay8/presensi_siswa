@@ -13,9 +13,10 @@ export interface ClassroomDataModel {
   MataPelajaran: CourseDataModel[];
   biodataSiswa: BiodataSiswa[];
   attendanceScheduleId?: number;
-  Schedule?: {
+  attendanceSchedule?: {
     id: number;
     name: string;
+    description: string;
   };
   Sekolah: {
     id: number;

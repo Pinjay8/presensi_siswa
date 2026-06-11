@@ -21,6 +21,11 @@ export interface BiodataGuru {
   mataPelajaran?: MataPelajaran;
   user?: UserDataModel;
   attendance?: Absensi;
+  attendanceSchedule?: {
+    id: number;
+    name: string;
+    description: string;
+  };
 }
 
 export interface Absensi {

@@ -70,8 +70,8 @@ export const classroomColumns = ({
       },
     },
     {
-      accessorKey: "Schedule",
-      accessorFn: (row) => row.attendanceScheduleId,
+      accessorKey: "Schedule.name",
+      accessorFn: (row) => row.attendanceSchedule?.name,
       header: ({ column }) => {
         return (
           <BaseTableHeader
@@ -84,7 +84,7 @@ export const classroomColumns = ({
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-2">
-            <div className="text-sm font-medium">{row.original.attendanceScheduleId || "- - -"}</div>
+            <div className="text-sm font-medium">{row.original.attendanceSchedule?.name || "- - -"}</div>
           </div>
         );
       },
