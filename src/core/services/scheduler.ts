@@ -32,9 +32,15 @@ export const schedulerService={
             getInitialOptions,
         )(data, { path: String(id) });
     },
-    assign: (id: number, kelas_id: number) => {
+    assignKelas: (id: number, kelas_id: number) => {
         return http.post<BaseResponse, any>(
             `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.scheduler.main}/${id}/assign/kelas/${kelas_id}`,
+            getInitialOptions,
+        )();
+    },
+    assignGuru: (id: number, guru_id: number) => {
+        return http.post<BaseResponse, any>(
+            `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.scheduler.main}/${id}/assign/guru/${guru_id}`,
             getInitialOptions,
         )();
     }

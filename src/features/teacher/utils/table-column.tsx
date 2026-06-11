@@ -114,9 +114,13 @@ export const tableColumnGuru: ColumnDef<BiodataGuru>[] = [
 export const teacherColumnWithFilter = ({
   schoolOptions = [],
   onWaliKelas,
+  onAssignSchedule,
+  onDelete,
 }: {
   schoolOptions: BaseDataTableFilterValueItem[];
   onWaliKelas?: (teacher: any) => void;
+  onAssignSchedule?: (teacher: any) => void;
+  onDelete?: (teacher: any) => void;
 }): ColumnDef<BiodataGuru>[] => {
   return [
     {
@@ -243,6 +247,8 @@ export const teacherColumnWithFilter = ({
             detailPath={`/teachers/${encryptPayload}`}
             editPath={`/teachers/edit/${encryptPayload}`}
             onWaliKelas={() => onWaliKelas?.(row.original)}
+            onAssignSchedule={() => onAssignSchedule?.(row.original)}
+            onDelete={() => onDelete?.(row.original)}
           />
         );
       },

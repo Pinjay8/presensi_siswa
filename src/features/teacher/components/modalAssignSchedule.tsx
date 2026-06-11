@@ -15,14 +15,14 @@ import { useAlert } from "@/features/_global";
 interface modalAssignScheduleProps {
   open: boolean;
   onClose: () => void;
-  selectedClass: any;
+  selectedTeacher: any;
 }
 
 
 export default function ModalAssignSchedule({
   open,
   onClose,
-  selectedClass,
+  selectedTeacher,
 }: modalAssignScheduleProps) {
   const alert = useAlert();
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,7 @@ export default function ModalAssignSchedule({
 
   const data = scheduler.data || [];
 
-  const options = data.filter((s)=> s.type === "SISWA").map((option) => ({
+  const options = data.filter((s) => s.type === "GURU").map((option) => ({
     label: option.name,
     value: option.id,
   }));
@@ -42,7 +42,7 @@ export default function ModalAssignSchedule({
     setLoading(true);
     try {
       await scheduler.assign({
-        kelas_id: Number(selectedClass.id),
+        guru_id: Number(selectedTeacher.id),
         id: Number(selectedSchedule.value),
       });
       alert.success("Assign schedule berhasil");
@@ -68,9 +68,9 @@ export default function ModalAssignSchedule({
 
         <div className="flex flex-col gap-4 py-4">
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-500">{lang.text("classroom")}</label>
+            <label className="text-xs font-semibold text-slate-500">{lang.text("teacher")}</label>
             <div className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700">
-              {selectedClass?.namaKelas || "-"}
+              {selectedTeacher?.user?.name || "-"}
             </div>
           </div>
 

@@ -23,10 +23,10 @@ export const useScheduler = () => {
     
 
     const assignMutation = useMutation({
-        mutationFn: (vars: { id: number; kelas_id: number }) => schedulerService.assignKelas(vars.id, vars.kelas_id),
+        mutationFn: (vars: { id: number; guru_id: number }) => schedulerService.assignGuru(vars.id, vars.guru_id),
     });
     
-    const assign = (form: { id: number; kelas_id: number }) =>
+    const assign = (form: { id: number; guru_id: number }) =>
         assignMutation.mutateAsync(form);
         
     return {
