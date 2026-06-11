@@ -2233,5 +2233,17 @@
   "assignSchedule": {
     "id": "Tetapkan jadwal",
     "en": "Assign Schedule"
+  },
+  "deleteMessage": {
+    "id": "Yaking Bang??",
+    "en": "Are you sure??"
+  },
+  "successDelete": {
+    "id": "Data berhasil dihapus",
+    "en": "Data deleted successfully"
+  },
+  "failedDelete": {
+    "id": "Gagal menghapus data",
+    "en": "Failed to delete data"
   }
 }

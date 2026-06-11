@@ -64,17 +64,18 @@ export const useSchedulerCreation = () => {
             }
         });
 
-        const destroy = (id: number) =>
+        const deleteScheduler = (id: number) =>
             deleteMutation.mutateAsync({ id });
 
         const data = useMemo(() => query.data?.data || [], [query.data?.data]);
         const isLoading = query.isLoading || createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
         
         return {
+            query,
             data,
             isLoading,
             create,
             update,
-            destroy,
+            deleteScheduler,
         }
 }

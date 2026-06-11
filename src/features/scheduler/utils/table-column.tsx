@@ -7,7 +7,7 @@ import {
 } from "@/features/_global";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const schedulerColumns = (columnFilter?: BaseTableFilter): ColumnDef<SchedulerDataModel>[] => {
+export const schedulerColumns = ({columnFilter, onDelete}: {columnFilter?: BaseTableFilter, onDelete?: (scheduler: any)=> void}): ColumnDef<SchedulerDataModel>[] => {
     return [
         {
             accessorKey: "namaSchedule",
@@ -74,6 +74,7 @@ export const schedulerColumns = (columnFilter?: BaseTableFilter): ColumnDef<Sche
             detailPath={`/scheduler/${encryptPayload}`}
             editPath={`/scheduler/edit/${encryptPayload}`}
             // deletePath={`/scheduler/delete/${encryptPayload}`}
+            onDelete={() => onDelete?.(row.original)}
           />
         );
       },

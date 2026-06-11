@@ -81,6 +81,13 @@ export const userService = {
     getInitialOptions,
   ),
 
+  deleteUser: (id: number) => {
+    return http.delete<BaseResponse<UserDataModel>>(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.user.user}`,
+      getInitialOptions,
+    )({ path: String(id) });
+  },
+
   absenQr: http.post<BaseResponse<UserDataModel[]>>(
     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.absenQr,
     getInitialOptions,

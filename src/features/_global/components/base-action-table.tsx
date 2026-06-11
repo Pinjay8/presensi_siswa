@@ -34,6 +34,7 @@ export interface BaseActionTableProps {
   onWaliKelas?: () => void;
   onRegisterFace?: () => void;
   onAssignSchedule?: () => void;
+  onDelete?: () => void;
 }
 
 export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
@@ -135,6 +136,11 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
           {props.onAssignSchedule && (
             <DropdownMenuItem onClick={props.onAssignSchedule}>
               {lang.text("assignSchedule")}
+            </DropdownMenuItem>
+          )}
+          {props.onDelete && (
+            <DropdownMenuItem onClick={props.onDelete}>
+              {lang.text("delete")}
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>

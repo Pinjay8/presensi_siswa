@@ -12,11 +12,13 @@ import { Pencil } from "lucide-react";
 export interface classroomColumnsProps {
   columnFilter?: BaseTableFilter;
   onAssignSchedule?: (row: ClassroomDataModel) => void;
+  onDelete?: (row: ClassroomDataModel) => void;
 }
 
 export const classroomColumns = ({
   columnFilter,
   onAssignSchedule,
+  onDelete,
 }: classroomColumnsProps): ColumnDef<ClassroomDataModel>[] => {
   return [
     {
@@ -105,8 +107,9 @@ export const classroomColumns = ({
           <BaseActionTable
             detailPath={`/classrooms/${encryptPayload}`}
             editPath={`/classrooms/edit/${encryptPayload}`}
-            deletePath={`/classrooms/delete/${encryptPayload}`}
+            // deletePath={`/classrooms/delete/${encryptPayload}`}
             onAssignSchedule={() => onAssignSchedule?.(row.original)}
+            onDelete={() => onDelete?.(row.original)}
           />
         );
       },

@@ -1,4 +1,4 @@
-import { useBiodataGuru } from "@/features/user/hooks";
+import { useBiodataGuru, useUserCreation } from "@/features/user/hooks";
 import { BaseDataTable, useAlert } from "@/features/_global";
 import { distinctObjectsByProperty, lang } from "@/core/libs";
 import { useSchool } from "@/features/schools";
@@ -12,6 +12,7 @@ import { useClassroom } from "@/features/classroom";
 import { teacherService } from "@/core/services/teacher";
 import { useMutation } from "@tanstack/react-query";
 import ModalAssignSchedule from "../components/modalAssignSchedule";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 
 export function TeacherTable() {
   const biodata = useBiodataGuru();
@@ -64,6 +65,7 @@ export function TeacherTable() {
       );
       setOpenWaliKelas(false);
       setSelectedTeacher(null);
+      biodata.query.refetch();
     },
 
     onError: (error: any) => {
@@ -71,20 +73,37 @@ export function TeacherTable() {
     },
   });
 
+  const userDelete = useUserCreation();
+
+  async function handleDelete() {
+    try {
+      await userDelete.deleteUser(Number(selectedTeacher?.userId));
+      alert.success(lang.text("successDelete"));
+      biodata.query.refetch();
+      setOpenDelete(false);
+      setSelectedTeacher(null);
+    } catch (error: any) {
+      alert.error(lang.text("failedDelete"));
+    }
+  }
+
   return (
     <>
-      {
+      {!isRole && (
         <ModalCreateTeacher
           show={teacher}
           onClose={() => setTeacher(!teacher)}
         />
-      }
-      <ModalAssignSchedule
+      )}
+      {!isRole && (
+        <ModalAssignSchedule
         open={openAssignSchedule}
         selectedTeacher={selectedTeacher}
         onClose={() => setOpenAssignSchedule(false)}
       />
-      <ModalAssignWaliKelas
+      )}
+      {!isRole && (
+        <ModalAssignWaliKelas
         open={openWaliKelas}
         teacher={selectedTeacher}
         kelasOptions={
@@ -98,6 +117,7 @@ export function TeacherTable() {
           assignWaliKelasMutation.mutate(payload);
         }}
       />
+      )}
       <BaseDataTable
         columns={columns}
         data={biodata.data}
@@ -126,6 +146,20 @@ export function TeacherTable() {
         searchPlaceholder={lang.text("search")}
         isLoading={biodata.query.isLoading}
       />
+
+      {/* Delete Dialog */}
+      <Dialog open={openDelete} onClose={() => setOpenDelete(false)}>
+        <DialogTitle>{lang.text("delete")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {lang.text("deleteMessage", { context: selectedTeacher?.user_name })}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDelete(false)}>{lang.text("cancel")}</Button>
+          <Button onClick={handleDelete} disabled={userDelete.isLoading}>{lang.text("delete")}</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
