@@ -1,8 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Badge, lang, simpleEncode } from "@/core/libs"; // Impor dari Shadcn UI
+import { Badge, simpleEncode } from "@/core/libs"; // Impor dari Shadcn UI
 import dayjs from "dayjs";
 import { BaseActionTable } from "@/features/_global";
-import { Button } from "@mui/material";
 
 export interface Attendance {
   user: {
@@ -22,12 +21,7 @@ export interface Attendance {
   };
 }
 
-export const matpelColumns = (
-  onSubmitAttendance: (
-    row: any,
-    status: "hadir" | "sakit" | "alfa" | "terlambat",
-  ) => void,
-): ColumnDef<any>[] => [
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "namaSiswa",
     header: "Nama Siswa",
@@ -118,63 +112,37 @@ export const matpelColumns = (
   },
   {
     accessorKey: "attendance.tanggal",
-    header: lang.text("date"),
+    header: "Tanggal",
     cell: ({ row }) =>
       dayjs(row.original.tanggal, "DD MMM YYYY, HH:mm:ss")
         .tz("Asia/Jakarta")
         .format("DD MMM YYYY") || "N/A",
     enableSorting: true,
   },
-  {
-    accessorKey: "id",
-    header: lang.text("action"),
-    enableSorting: false,
-    cell: ({ row }) => {
-      const status = row.original.statusKehadiran?.toLowerCase() || "belum hadir";
-      if (status !== "belum hadir") {
-        return null;
-      }
-      return (
-        <div className="flex gap-2 flex-wrap">
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => onSubmitAttendance(row.original, "hadir")}
-            sx={{ textTransform: "capitalize" }}
-          >
-            Hadir
-          </Button>
+//   {
+//     accessorKey: "id",
+//     accessorFn: (row) => row.id,
+//     size: 50,
+//     enableSorting: false,
+//     header: () => {
+//       return null;
+//     },
+//     cell: ({ row }) => {
+//       const encryptPayload = simpleEncode(
+//         JSON.stringify({ id: row.original.id, text: row.original.namaKelas }),
+//       );
+//       // // console.log(encryptPayload)
+//       // const encryptPayload = JSON.stringify({ id: row.original.id, text: row.original.namaKelas })
+//       return (
+//         <BaseActionTable
+//           detailPath={`/classrooms/${encryptPayload}`}
+//           editPath={`/classrooms/edit/${encryptPayload}`}
+//           deletePath={`/classrooms/delete/${encryptPayload}`}
+//         />
+//       );
+//     },
+//   },
 
-          <Button
-            variant="contained"
-            color="warning"
-            onClick={() => onSubmitAttendance(row.original, "sakit")}
-            sx={{ textTransform: "capitalize" }}
-          >
-            Sakit
-          </Button>
-
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => onSubmitAttendance(row.original, "alfa")}
-            sx={{ textTransform: "capitalize" }}
-          >
-            Alfa
-          </Button>
-
-          <Button
-            variant="contained"
-            color="info"
-            onClick={() => onSubmitAttendance(row.original, "terlambat")}
-            sx={{ textTransform: "capitalize" }}
-          >
-            Terlambat
-          </Button>
-        </div>
-      );
-    },
-  },
   // {
   //   accessorKey: "attendance.jamMasuk",
   //   header: "Jam Masuk",

@@ -97,14 +97,10 @@ export const studentColumnWithFilter = ({
           <div className="flex flex-row items-center gap-2">
             <Avatar>
               <AvatarImage
-                src={getStaticFile(
-                  String(
-                    row.original.image ||
-                      row.original.name ||
-                      row.original.user.image ||
-                      row.original.user?.name,
-                  ),
-                )}
+                src={
+                  `&${row.original.fotoTampakDepan || row.original?.user?.image}` ||
+                  ""
+                }
                 alt={
                   row.original.name ||
                   row.original.user.image ||
@@ -113,7 +109,7 @@ export const studentColumnWithFilter = ({
               />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
-            <p>{row.original.user?.name || row.original.name || "-"}</p>
+            <p>{row.original.name || row.original?.user?.name || "-"}</p>
           </div>
         );
       },
@@ -272,10 +268,15 @@ export const studentColumnWithFilter = ({
             header: () => <BaseTableHeader>Absen</BaseTableHeader>,
             cell: ({ row }: any) => (
               <Button
-                onClick={() => handleAttend(row.original?.id)}
+                onClick={() => {
+                  if (handleAttend) {
+                    handleAttend(row.original?.id);
+                  }
+                }}
                 disabled={
-                  (row.original.user?.status || row.original.status) === "hadir" ||
-                  (row.original.user?.status || row.original.status) === "izin"
+                  // (row.original.user?.status || row.original.status) ===
+                  //   "hadir"
+                  row.original.status !== "belum hadir"
                 }
               >
                 {lang.text("attend")}
@@ -328,7 +329,6 @@ export const studentColumnWithFilter = ({
           <BaseActionTable
             detailPath={`/students/${encryptPayload}`}
             onRegisterFace={() => onRegisterFace?.(row.original)}
-            // onAssignCard={(row: any) => onAssignCard?.(row.original)}
             onAssignCard={() => onAssignCard?.(row.original.id)}
             unAssignCard={() => unAssignCard?.(row.original)}
           />

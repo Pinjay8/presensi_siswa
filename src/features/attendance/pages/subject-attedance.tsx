@@ -8,25 +8,32 @@ import {
 } from "@/features/_global";
 import { useProfile } from "@/features/profile";
 import { useBiodataNew } from "@/features/user/hooks/use-biodata-new";
+import { useSchoolDetail } from "@/features/schools";
 import dayjs, { Dayjs } from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+
+import Papa from "papaparse";
 import { useEffect, useMemo, useState } from "react";
+import * as XLSX from "xlsx";
 import { StudentAttendanceTable } from "../containers";
 import { useBiodata } from "@/features/user";
+import { FaFilePdf } from "react-icons/fa";
 import { useStudentAttendance } from "../hooks/useStudentAttedance";
+import { useQueryClient } from "@tanstack/react-query";
 import { io } from "socket.io-client";
-import ExportFilterModal from "../components/ExpertFilterModal";
-import { AttendanceFilter } from "../components/AttendanceFilter";
+
 import { attendanceService } from "@/core/services/pagination";
+import { SubjectAttendanceTable } from "../containers/subject-attendance-table";
+import { useMapelDaily } from "../hooks/useMapelDaily";
 
 // Konfigurasi dayjs untuk timezone
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(isBetween);
 
-export const StudentAttendance = () => {
+export const SubjectAttendance = () => {
   const [selectedClass, setSelectedClass] = useState<{
     id: number;
     name: string;
@@ -57,20 +64,20 @@ export const StudentAttendance = () => {
     "harian" | "mingguan" | "bulanan" | "tahunan"
   >("harian");
 
-  const {
-    global,
-    sorting,
-    filter,
-    pagination,
-    onSortingChange,
-    onPaginationChange,
-  } = useDataTableController({ defaultPageSize: 10 });
+  // const {
+  //   global,
+  //   sorting,
+  //   filter,
+  //   pagination,
+  //   onSortingChange,
+  //   onPaginationChange,
+  // } = useDataTableController({ defaultPageSize: 10 });
 
   const attendanceParams = {
-    filter: filters,
-    page: pagination.pageIndex + 1,
-    limit: pagination.pageSize,
-    type: "siswa",
+    // filter: filters,
+    page: 1,
+    limit: 100,
+    // type: "siswa",
   };
 
   const {
@@ -78,7 +85,7 @@ export const StudentAttendance = () => {
     isLoading,
     isFetching,
     refetch,
-  } = useStudentAttendance(attendanceParams);
+  } = useMapelDaily(attendanceParams);
 
   const filteredData = attendanceData?.data || [];
 
@@ -113,6 +120,96 @@ export const StudentAttendance = () => {
       socket.disconnect();
     };
   }, [refetch]);
+
+  // const handleExport = async (format: "csv" | "excel" | "pdf") => {
+  //   if (!filteredData.length) {
+  //     alert.error("Tidak ada data untuk diekspor.");
+  //     return;
+  //   }
+
+  //   const exportData = filteredData.map((item: any, index: number) => ({
+  //     No: index + 1,
+  //     Nama: item.siswa?.nama ?? "",
+  //     NISN: item.siswa?.nisn ?? "",
+  //     Kelas: item.siswa?.kelas ?? "N/A",
+  //     Sekolah: item.siswa?.sekolah ?? "N/A",
+  //     StatusKehadiran: item.statusKehadiran ?? "N/A",
+  //     JamMasuk: formatDateTime(item.jamMasuk),
+  //     JamPulang: formatDateTime(item.jamPulang),
+  //   }));
+
+  //   const fileName = `attendance_data_${dataMode}_${dayjs().format("YYYYMMDD")}`;
+
+  //   switch (format) {
+  //     case "csv": {
+  //       const csv = Papa.unparse(exportData, {
+  //         delimiter: ";",
+  //       });
+
+  //       const blob = new Blob([csv], {
+  //         type: "text/csv;charset=utf-8;",
+  //       });
+
+  //       const link = document.createElement("a");
+  //       link.href = URL.createObjectURL(blob);
+  //       link.download = `${fileName}.csv`;
+  //       link.click();
+  //       break;
+  //     }
+
+  //     case "excel": {
+  //       const wb = XLSX.utils.book_new();
+  //       const ws = XLSX.utils.json_to_sheet(exportData);
+
+  //       XLSX.utils.book_append_sheet(wb, ws, `Attendance-${dataMode}`);
+
+  //       XLSX.writeFile(wb, `${fileName}.xlsx`);
+  //       break;
+  //     }
+
+  //     case "pdf": {
+  //       let period: string | undefined;
+
+  //       switch (dataMode) {
+  //         case "mingguan":
+  //           period = `${dayjs()
+  //             .startOf("week")
+  //             .format("DD MMM YYYY")} - ${dayjs()
+  //             .endOf("week")
+  //             .format("DD MMM YYYY")}`;
+  //           break;
+
+  //         case "bulanan":
+  //           period = dayjs(selectedStartMonth).format("MMMM YYYY");
+  //           break;
+
+  //         case "tahunan":
+  //           period = dayjs().format("YYYY");
+  //           break;
+
+  //         default:
+  //           period = undefined;
+  //       }
+
+  //       await generateStudentAttendancePDF({
+  //         attendanceData: exportData,
+  //         alert,
+  //         schoolData: schoolData || {},
+  //         schoolIsLoading,
+  //         mode: dataMode,
+  //         date:
+  //           dataMode === "harian"
+  //             ? dayjs().tz("Asia/Jakarta").format("DD MMMM YYYY")
+  //             : undefined,
+  //         period,
+  //       });
+
+  //       break;
+  //     }
+  //   }
+
+  //   setIsModalOpen(false);
+  // };
 
   const studentList = Array.isArray(
     dataMode === "harian" ? biodata.data : biodataAll.data,
@@ -197,13 +294,13 @@ export const StudentAttendance = () => {
 
   return (
     <DashboardPageLayout
-      siteTitle={`${lang.text("studentAttendance")} | ${APP_CONFIG.appName}`}
+      siteTitle={`${lang.text("SubjectAttendance")} | ${APP_CONFIG.appName}`}
       breadcrumbs={[
-        { label: lang.text("studentAttendance"), url: "/students" },
+        { label: lang.text("SubjectAttendance"), url: "/subject-attendance" },
       ]}
-      title={lang.text("studentAttendance")}
+      title={lang.text("SubjectAttendance")}
     >
-      <AttendanceFilter
+      {/* <AttendanceFilter
         period={dataMode}
         attendanceCount={attendanceCount}
         setIsModalOpen={setIsModalOpen}
@@ -213,24 +310,10 @@ export const StudentAttendance = () => {
           setDataMode(value);
           setFilter(value);
         }}
-      />
+      /> */}
 
-      <StudentAttendanceTable
-        totalAttedance={true}
-        data={filteredData}
-        pagination={{
-          pageIndex: pagination.pageIndex,
-          pageSize: pagination.pageSize,
-          totalItems: filteredData?.pagination?.totalItems || 0,
-          onPageChange: (page) =>
-            onPaginationChange({ ...pagination, pageIndex: page }),
-          onSizeChange: (size) =>
-            onPaginationChange({ ...pagination, pageSize: size, pageIndex: 0 }),
-        }}
-        sorting={sorting}
-        onSortingChange={onSortingChange}
-      />
-      <ExportFilterModal
+      <SubjectAttendanceTable totalAttedance={true} data={filteredData} />
+      {/* <ExportFilterModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         dataMode={dataMode}
@@ -242,7 +325,7 @@ export const StudentAttendance = () => {
         setSelectedStartMonth={setSelectedStartMonth}
         setSelectedEndMonth={setSelectedEndMonth}
         handleExport={handleExport}
-      />
+      /> */}
     </DashboardPageLayout>
   );
 };

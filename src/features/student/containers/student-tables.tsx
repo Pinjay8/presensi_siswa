@@ -70,7 +70,7 @@ export const StudentLandingTables = () => {
     pagination,
     onSortingChange,
     onPaginationChange,
-  } = useDataTableController({ defaultPageSize: 10 });
+  } = useDataTableController({ defaultPageSize: 100 });
 
   const profile = useProfile();
   const classRoom = useClassroom();
@@ -323,16 +323,15 @@ export const StudentLandingTables = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const socket = io("http://192.168.1.116:15219", {
+    const socket = io("", {
       transports: ["websocket"],
     });
 
     socket.on("connect", () => {
-      console.log("Connected", socket.id);
+      console.log("Connected");
     });
 
     socket.on("absen", async (data) => {
-      console.log("[ABSEN]", data);
       await refetch();
       await Promise.all([
         queryClient.invalidateQueries({

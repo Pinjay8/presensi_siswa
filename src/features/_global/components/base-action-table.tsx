@@ -38,6 +38,7 @@ export interface BaseActionTableProps {
   unAssignCard?: any;
   onApprove?: any;
   onReject?: any;
+  onAbsenManual?: any;
 }
 
 export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
@@ -150,6 +151,30 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
               {lang.text("unAssignCard")}
             </DropdownMenuItem>
           )}
+          {props.onAbsenManual && (
+            <DropdownMenuItem onClick={props.onAbsenManual}>
+              {/* {lang.text("absenManual")} */}
+              Absen Hadir
+            </DropdownMenuItem>
+          )}
+          {props.onAbsenManual && (
+            <DropdownMenuItem onClick={props.onAbsenManual}>
+              {/* {lang.text("absenManual")} */}
+              Sakit
+            </DropdownMenuItem>
+          )}
+          {props.onAbsenManual && (
+            <DropdownMenuItem onClick={props.onAbsenManual}>
+              {/* {lang.text("absenManual")} */}
+              Terlambat
+            </DropdownMenuItem>
+          )}
+          {props.onAbsenManual && (
+            <DropdownMenuItem onClick={props.onAbsenManual}>
+              {/* {lang.text("absenManual")} */}
+              Alfa
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -191,7 +216,7 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
                     value={selectedStudent}
                     onChange={(e) => setSelectedStudent(e.target.value)}
                   >
-                    {students.map((student: any) => (
+                    {students?.map((student: any) => (
                       <MenuItem key={student.id} value={student.id}>
                         {student.name}
                       </MenuItem>

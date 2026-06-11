@@ -131,6 +131,176 @@ export const attendanceService = {
 
     return json;
   },
+
+  exportExcel: async (params: GetAttendanceParams): Promise<Blob> => {
+    const query = {
+      filter: params.filter,
+      page: params.page,
+      limit: params.limit,
+      type: params.type,
+      ...(params.kelasId !== undefined && { kelasId: params.kelasId }),
+      ...(params.sekolahId !== undefined && { sekolahId: params.sekolahId }),
+      ...(params.startDate && { startDate: params.startDate }),
+      ...(params.endDate && { endDate: params.endDate }),
+      ...(params.tanggal && { tanggal: params.tanggal }),
+      ...(params.sortBy && { sortBy: params.sortBy }),
+      ...(params.sortDir && { sortDir: params.sortDir }),
+      ...(params.search && { search: params.search }),
+    };
+
+    const url = withQuery(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.attendances.exportExcel}`,
+      query,
+    );
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+
+    return response.blob();
+  },
+
+  exportPdf: async (params: GetAttendanceParams): Promise<any> => {
+    const query = {
+      filter: params.filter,
+      page: params.page,
+      limit: params.limit,
+      type: params.type,
+      ...(params.kelasId !== undefined && { kelasId: params.kelasId }),
+      ...(params.sekolahId !== undefined && { sekolahId: params.sekolahId }),
+      ...(params.startDate && { startDate: params.startDate }),
+      ...(params.endDate && { endDate: params.endDate }),
+      ...(params.tanggal && { tanggal: params.tanggal }),
+      ...(params.sortBy && { sortBy: params.sortBy }),
+      ...(params.sortDir && { sortDir: params.sortDir }),
+      ...(params.search && { search: params.search }),
+    };
+
+    const url = withQuery(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.attendances.exportPdf}`,
+      query,
+    );
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+
+    return response.blob();
+  },
+  exportExcelMapel: async (params: GetAttendanceParams): Promise<any> => {
+    const query = {
+      filter: params.filter,
+      page: params.page,
+      limit: params.limit,
+      // type: params.type,
+
+      ...(params.kelasId !== undefined && {
+        kelasId: params.kelasId,
+      }),
+
+      ...(params.sekolahId !== undefined && {
+        sekolahId: params.sekolahId,
+      }),
+
+      ...(params.startDate && {
+        startDate: params.startDate,
+      }),
+
+      ...(params.endDate && {
+        endDate: params.endDate,
+      }),
+
+      ...(params.tanggal && {
+        tanggal: params.tanggal,
+      }),
+
+      ...(params.sortBy && {
+        sortBy: params.sortBy,
+      }),
+
+      ...(params.sortDir && {
+        sortDir: params.sortDir,
+      }),
+
+      ...(params.search && {
+        search: params.search,
+      }),
+    };
+
+    // const url = withQuery(
+    //   `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.attendances.exportMapelExcel}`,
+    //   query,
+    // );
+    const url = withQuery(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.attendances.exportMapelExcel}`,
+      query,
+    );
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+
+    return response.blob();
+  },
+  exportPdfMapel: async (params: GetAttendanceParams): Promise<any> => {
+    const query = {
+      filter: params.filter,
+      page: params.page,
+      limit: params.limit,
+      // type: params.type,
+
+      ...(params.kelasId !== undefined && {
+        kelasId: params.kelasId,
+      }),
+
+      ...(params.sekolahId !== undefined && {
+        sekolahId: params.sekolahId,
+      }),
+
+      ...(params.startDate && {
+        startDate: params.startDate,
+      }),
+
+      ...(params.endDate && {
+        endDate: params.endDate,
+      }),
+
+      ...(params.tanggal && {
+        tanggal: params.tanggal,
+      }),
+
+      ...(params.sortBy && {
+        sortBy: params.sortBy,
+      }),
+
+      ...(params.sortDir && {
+        sortDir: params.sortDir,
+      }),
+
+      ...(params.search && {
+        search: params.search,
+      }),
+    };
+
+    const url = withQuery(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.attendances.exportMapelPdf}`,
+      query,
+    );
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+
+    return response.blob();
+  },
 };
 
 export const attendanceServiceMataPelajaran = {

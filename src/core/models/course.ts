@@ -8,6 +8,7 @@ export interface CourseDataModel {
   createdAt: string;
   updatedAt: string;
   sekolahId: number;
+  tipe: string;
   guru: BiodataGuru[];
   kelas?: ClassroomDataModel;
   sekolah: {

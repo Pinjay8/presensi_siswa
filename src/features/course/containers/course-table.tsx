@@ -72,8 +72,8 @@ export const CourseTable = () => {
               initialData={{
                 id: editCourse.id,
                 namaMataPelajaran: editCourse.namaMataPelajaran,
-                sekolahId: editCourse.sekolah?.id,
                 kelasId: editCourse.kelas?.id,
+                tipe: editCourse.tipe,
               }}
             />
           )}

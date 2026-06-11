@@ -88,6 +88,9 @@ export interface BaseDataTableProps {
   className?: string; // Styling tambahan untuk tabel
   rowClassName?: string; // Styling tambahan untuk setiap row
   cellClassName?: string;
+  pagination?: PaginationState;
+  onPaginationChange?: any;
+  rowCount?: number;
 
   actions?: {
     title?: React.ReactNode;
@@ -106,6 +109,7 @@ export const BaseDataTable = ({
   dataFallback,
   globalSearch = true,
   initialState,
+  rowCount,
   isLoading = false,
   renderAction,
   searchParamPagination,
@@ -161,8 +165,10 @@ export const BaseDataTable = ({
     onSortingChange: setSorting,
     globalFilterFn: "auto",
     filterFns: {},
+    manualPagination: true,
+    rowCount: rowCount,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    // getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
@@ -180,6 +186,7 @@ export const BaseDataTable = ({
       pagination: searchParamPagination ? paginationSearchParams : pagination,
       ...(globalSearch && { globalFilter }),
     },
+
     initialState,
   });
 

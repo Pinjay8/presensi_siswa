@@ -399,6 +399,13 @@ export const router = createBrowserRouter(
             })),
         },
         {
+          path: "attendance/subject-attendance",
+          lazy: () =>
+            import("@/features/attendance").then((m) => ({
+              Component: m.SubjectAttendance,
+            })),
+        },
+        {
           path: "attendance/students",
           lazy: () =>
             import("@/features/attendance").then((m) => ({

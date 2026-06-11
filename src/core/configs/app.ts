@@ -123,6 +123,12 @@ export const SERVICE_ENDPOINTS = {
   attendances: {
     list: "/api/riwayat-absensi",
     listMataPelajaran: "/api/riwayat-absensi-mapel",
+    exportExcel: "/api/riwayat-absensi/export/excel",
+    exportPdf: "/api/riwayat-absensi/export/pdf",
+    exportMapelExcel: "/api/riwayat-absensi-mapel/export/excel",
+    exportMapelPdf: "/api/riwayat-absensi-mapel/export/pdf",
+    absentMapel: "/api/absen-mapel/harian",
+    absentManual: "/api/absen-manual-mapel",
   },
   dashboard: {
     absensiList: "/api/dashboard/absensi-count",

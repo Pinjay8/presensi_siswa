@@ -12,7 +12,10 @@ import {
   SelectValue,
 } from "@/core/libs";
 import { getStaticFile } from "@/core/utils";
-import { DashboardPageLayout } from "@/features/_global";
+import {
+  DashboardPageLayout,
+  useDataTableController,
+} from "@/features/_global";
 import { useClassroom } from "@/features/classroom";
 import { useCourse } from "@/features/course";
 import { useProfile } from "@/features/profile";
@@ -37,247 +40,22 @@ import { FaFile } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import { MatpelAttendanceTable } from "../containers/matpelAttedance";
 import { useMapelAttedance } from "../hooks/useMapelAttedance";
+import { attendanceService } from "@/core/services/pagination";
+import { Divider, IconButton } from "@mui/material";
+import { XIcon } from "lucide-react";
+import { useDebounce } from "../hooks/useDebounce";
+import AttendanceMapelFilter from "../components/AttendanceMapelFilter";
 
 // Konfigurasi dayjs untuk timezone
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
-// Gaya PDF
-const pdfStyles = StyleSheet.create({
-  page: {
-    fontSize: 12,
-    fontFamily: "Times-Roman",
-  },
-  header: {
-    position: "relative",
-    top: 0,
-    left: 0,
-    right: 0,
-    marginBottom: 20,
-  },
-  headerImage: {
-    width: 595,
-    maxHeight: 150,
-    objectFit: "contain",
-  },
-  contentWrapper: {
-    paddingLeft: 32,
-    paddingRight: 32,
-    marginTop: 10,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-    textTransform: "uppercase",
-  },
-  table: {
-    display: "flex",
-    width: "auto",
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderColor: "#bfbfbf",
-  },
-  tableRow: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    borderBottomColor: "#bfbfbf",
-  },
-  tableHeader: {
-    fontWeight: "bold",
-    padding: 5,
-    textAlign: "center",
-    borderRightWidth: 1,
-    borderRightColor: "#bfbfbf",
-  },
-  tableCell: {
-    padding: 5,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center",
-    borderRightWidth: 1,
-    borderRightColor: "#bfbfbf",
-    fontSize: 10,
-  },
-  signature: {
-    marginTop: 50,
-    alignItems: "flex-end",
-  },
-  signatureImage: {
-    width: 120,
-    height: "auto",
-    maxHeight: 50,
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  signatureText: {
-    textAlign: "center",
-  },
-});
-
-// Komponen PDF untuk laporan kehadiran
-const AttendanceReportPDF: React.FC<{
-  data: any[];
-  schoolData: {
-    kopSurat?: string;
-    namaSekolah?: string;
-    namaKepalaSekolah?: string;
-    ttdKepalaSekolah?: string;
-  };
-  dateRange: string;
-}> = ({ data, schoolData, dateRange }) => {
-  const kopSuratUrl = schoolData.kopSurat
-    ? schoolData.kopSurat.startsWith("data:image")
-      ? schoolData.kopSurat
-      : `data:image/png;base64,${schoolData.kopSurat}`
-    : undefined;
-
-  const signatureUrl = schoolData.ttdKepalaSekolah
-    ? schoolData.ttdKepalaSekolah.startsWith("data:image")
-      ? schoolData.ttdKepalaSekolah
-      : `data:image/png;base64,${schoolData.ttdKepalaSekolah}`
-    : undefined;
-
-  const title =
-    dateRange === "today"
-      ? "Laporan Kehadiran MatPel Hari Ini"
-      : dateRange === "month"
-        ? "Laporan Kehadiran MatPel Bulan Ini"
-        : "Laporan Kehadiran MatPel 2025";
-
-  // Bagi data menjadi kelompok untuk setiap halaman
-  const rowsPerPage = 25; // Disesuaikan untuk tinggi halaman
-  const dataChunks = [];
-  for (let i = 0; i < data.length; i += rowsPerPage) {
-    const chunk = data.slice(i, i + rowsPerPage);
-    if (chunk.length > 0) {
-      dataChunks.push(chunk);
-    }
-  }
-  // console.log("Data Chunks:", dataChunks); // Debugging
-
-  return (
-    <Document>
-      {dataChunks.map((chunk, pageIndex) => (
-        <Page
-          key={pageIndex}
-          size="A4"
-          style={pdfStyles.page}
-          break={pageIndex > 0} // Page break untuk halaman setelah pertama
-        >
-          {/* Header Kop Surat */}
-          {kopSuratUrl && (
-            <View style={pdfStyles.header} fixed>
-              <Image
-                src={getStaticFile(kopSuratUrl)}
-                style={pdfStyles.headerImage}
-              />
-            </View>
-          )}
-
-          <View style={pdfStyles.contentWrapper}>
-            {/* Judul */}
-            <Text style={pdfStyles.title}>{title}</Text>
-
-            {/* Tabel */}
-            <View style={pdfStyles.table}>
-              {/* Table Header */}
-              <View style={pdfStyles.tableRow} fixed>
-                {[
-                  "No",
-                  "Nama",
-                  "NIS",
-                  "Kelas",
-                  "Mata Pelajaran",
-                  "Status",
-                  // "Jam Masuk",
-                ].map((header, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      pdfStyles.tableHeader,
-                      {
-                        width:
-                          index === 0
-                            ? "5%"
-                            : index === 1
-                              ? "20%"
-                              : index === 2
-                                ? "15%"
-                                : index === 3
-                                  ? "10%"
-                                  : index === 4
-                                    ? "20%"
-                                    : index === 5
-                                      ? "15%"
-                                      : "15%",
-                      },
-                    ]}
-                  >
-                    <Text>{header}</Text>
-                  </View>
-                ))}
-              </View>
-
-              {/* Table Body */}
-              {chunk.map((item, index) => (
-                <View style={pdfStyles.tableRow} key={index} wrap={false}>
-                  <View style={[pdfStyles.tableCell, { width: "5%" }]}>
-                    <Text>{item.No}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "20%" }]}>
-                    <Text>{item.Nama}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "15%" }]}>
-                    <Text>{item.NIS}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "10%" }]}>
-                    <Text>{item.Kelas}</Text>
-                  </View>
-                  <View style={[pdfStyles.tableCell, { width: "20%" }]}>
-                    <Text>{item.MataPelajaran}</Text>
-                  </View>
-                  <View
-                    style={[
-                      pdfStyles.tableCell,
-                      { width: "15%", textTransform: "capitalize" },
-                    ]}
-                  >
-                    <Text>{item.StatusKehadiran}</Text>
-                  </View>
-                  {/* <View style={[pdfStyles.tableCell, { width: "15%" }]}>
-                    <Text>{item.JamMasuk}</Text>
-                  </View> */}
-                </View>
-              ))}
-            </View>
-
-            {/* Tanda Tangan (hanya di halaman terakhir) */}
-            {pageIndex === dataChunks.length - 1 && (
-              <View style={pdfStyles.signature}>
-                <Text style={pdfStyles.signatureText}>Kepala Sekolah,</Text>
-                {signatureUrl && (
-                  <Image src={signatureUrl} style={pdfStyles.signatureImage} />
-                )}
-                <Text style={pdfStyles.signatureText}>
-                  {schoolData.namaKepalaSekolah || "Nama Kepala Sekolah"}
-                </Text>
-              </View>
-            )}
-          </View>
-        </Page>
-      ))}
-    </Document>
-  );
-};
 
 export const MatkulAttendance = () => {
   const [selectedClasses, setSelectedClasses] = useState<string>("all");
   const [searchStudentName, setSearchStudentName] = useState<string>("");
   const [selectedCourse, setSelectedCourse] = useState<string>("all");
   const [selectedDateRange, setSelectedDateRange] = useState<string>("year");
+  const [selectedPeriod, setSelectedPeriod] = useState("daily");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [listClassRoom, setListClassRoom] = useState<any[]>([]);
@@ -296,12 +74,6 @@ export const MatkulAttendance = () => {
     localStorage.setItem("attendanceTarget", "students");
   }, []);
 
-  const formatTime = (time?: string) => {
-    return time
-      ? dayjs(time).tz("Asia/Jakarta").format("DD MMM YYYY, HH:mm:ss")
-      : "N/A";
-  };
-
   useMemo(() => {
     setListClassRoom(classRoom?.data || []);
   }, [classRoom.data]);
@@ -315,206 +87,94 @@ export const MatkulAttendance = () => {
     "harian" | "mingguan" | "bulanan" | "tahunan"
   >("harian");
 
-  // const filteredData = useMemo(() => {
-  //   const today = dayjs().tz("Asia/Jakarta").format("YYYY-MM-DD");
-  //   const currentMonth = dayjs().tz("Asia/Jakarta").format("YYYY-MM");
-  //   const currentYear = dayjs().tz("Asia/Jakarta").format("YYYY");
-  //   let data =
-  //     biodata.data
-  //       ?.flatMap((student) =>
-  //         student.kehadiranBulananMataPelajaran?.flatMap(
-  //           (monthlyAttendance: any) =>
-  //             monthlyAttendance.absensisMataPelajaran?.flatMap(
-  //               (attendance: any) =>
-  //                 attendance.kehadiranMapel?.map((mapel: any) => ({
-  //                   user: {
-  //                     image: student.user?.image || "",
-  //                     name: student.user?.name || "N/A",
-  //                     nisn: student.user?.nisn || "N/A",
-  //                   },
-  //                   kelas: {
-  //                     namaKelas: student.kelas?.namaKelas || "N/A",
-  //                   },
-  //                   attendance: {
-  //                     statusKehadiran: mapel.statusKehadiran
-  //                       ? mapel.statusKehadiran.charAt(0).toUpperCase() +
-  //                         mapel.statusKehadiran.slice(1).toLowerCase()
-  //                       : "Tidak Hadir",
-  //                     namaMataPelajaran:
-  //                       attendance.mataPelajaran?.namaMataPelajaran || "N/A",
-  //                     tanggal: formatTime(mapel.tanggal),
-  //                     jamMasuk: formatTime(student.absensis?.[0]?.jamMasuk),
-  //                     jamPulang: formatTime(student.absensis?.[0]?.jamPulang),
-  //                   },
-  //                 })),
-  //             ),
-  //         ),
-  //       )
-  //       ?.filter((entry) => {
-  //         const date = dayjs(
-  //           entry.attendance.tanggal,
-  //           "DD MMM YYYY, HH:mm:ss",
-  //         ).tz("Asia/Jakarta");
-  //         if (selectedDateRange === "today") {
-  //           return date.format("YYYY-MM-DD") === today;
-  //         } else if (selectedDateRange === "month") {
-  //           return date.format("YYYY-MM") === currentMonth;
-  //         } else {
-  //           return date.format("YYYY") === currentYear;
-  //         }
-  //       })
-  //       ?.filter(
-  //         (entry) =>
-  //           selectedClasses === "all" ||
-  //           entry.kelas.namaKelas === selectedClasses,
-  //       )
-  //       ?.filter((entry) =>
-  //         selectedCourse !== "all"
-  //           ? entry.attendance.namaMataPelajaran === selectedCourse
-  //           : true,
-  //       )
-  //       ?.filter((entry) =>
-  //         searchStudentName
-  //           ? entry.user.name
-  //               .toLowerCase()
-  //               .includes(searchStudentName.toLowerCase())
-  //           : true,
-  //       )
-  //       ?.filter((entry) =>
-  //         selectedStatus !== "all"
-  //           ? entry.attendance.statusKehadiran.toLowerCase() ===
-  //             selectedStatus.toLowerCase()
-  //           : true,
-  //       ) || [];
+  const {
+    global,
+    sorting,
+    filter,
+    pagination,
+    onSortingChange,
+    onPaginationChange,
+  } = useDataTableController({ defaultPageSize: 10 });
 
-  //   return data.sort((a, b) =>
-  //     dayjs(b.attendance.tanggal, "DD MMM YYYY, HH:mm:ss").diff(
-  //       dayjs(a.attendance.tanggal, "DD MMM YYYY, HH:mm:ss"),
-  //     ),
-  //   );
-  // }, [
-  //   biodata.data,
-  //   selectedClasses,
-  //   selectedCourse,
-  //   searchStudentName,
-  //   selectedDateRange,
-  //   selectedStatus,
-  // ]);
+  const debouncedSearchStudentName = useDebounce(searchStudentName, 500);
+
+  const attendanceParams = {
+    filter: filters,
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+    kelasId: selectedClasses !== "all" ? selectedClasses : undefined,
+    search: debouncedSearchStudentName || undefined,
+  };
 
   const {
     data: mapelData,
     isLoading,
     isFetching,
     refetch,
-  } = useMapelAttedance({
-    filter: filters,
-    page: 1,
-    limit: 100,
-  });
+  } = useMapelAttedance(attendanceParams);
 
   const filteredData = mapelData?.data || [];
 
-  const handleExport = async (format: "csv" | "excel" | "pdf") => {
-    if (filteredData.length === 0) {
-      alert("Tidak ada data untuk diekspor.");
+  const handleExportExcel = async (params: any) => {
+    const blob = await attendanceService.exportExcelMapel(params);
+
+    const fileUrl = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.download = "attendance.xlsx";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(fileUrl);
+  };
+  const handleExportPdf = async (params: any) => {
+    const blob = await attendanceService.exportPdfMapel(params);
+
+    const fileUrl = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.download = "attendance.pdf";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(fileUrl);
+  };
+
+  const handleExport = async (type: "csv" | "excel" | "pdf") => {
+    const params = {
+      ...attendanceParams,
+
+      ...(selectedClasses !== "all" && {
+        kelasId: Number(selectedClasses),
+      }),
+
+      // ...(selectedStartMonth && {
+      //   startMonth: selectedStartMonth,
+      // }),
+
+      // ...(selectedEndMonth && {
+      //   endMonth: selectedEndMonth,
+      // }),
+    };
+
+    console.log("selected classes", selectedClasses);
+
+    if (type === "excel") {
+      handleExportExcel(params);
       return;
     }
 
-    // Data untuk CSV dan Excel (semua kolom)
-    const fullExportData = filteredData.map((data: any, index: any) => ({
-      No: index + 1,
-      Nama: data.namaSiswa || "",
-      // NISN: data.user.nisn || "",
-      NIS: data.nis || "",
-      Kelas: data.namaKelas || "N/A",
-      // Sekolah:
-      //   biodata.data?.find((s) => s.user?.nisn === data.user.nisn)?.user
-      //     ?.sekolah?.namaSekolah || "N/A",
-      MataPelajaran: data.namaMataPelajaran || "N/A",
-      StatusKehadiran: data.statusKehadiran || "N/A",
-      Tanggal: data.tanggal,
-      JamMasuk: data.jamMasuk,
-    }));
-
-    // Data untuk PDF (termasuk Mata Pelajaran)
-    const pdfExportData = filteredData.map((data: any, index: any) => ({
-      No: index + 1,
-      Nama: data.namaSiswa || "",
-      // NISN: data.user.nisn || "",
-      NIS: data.nis || "",
-      Kelas: data.namaKelas || "N/A",
-      MataPelajaran: data.namaMataPelajaran || "N/A",
-      StatusKehadiran: data.statusKehadiran || "N/A",
-      JamMasuk: data.jamMasuk,
-    }));
-
-    if (format === "csv") {
-      const csv = Papa.unparse(fullExportData, { delimiter: ";" });
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = `attendance_data_${
-        selectedDateRange === "today"
-          ? "hari-ini"
-          : selectedDateRange === "month"
-            ? "mei-2025"
-            : "2025"
-      }.csv`;
-      link.click();
-    } else if (format === "excel") {
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(fullExportData);
-      XLSX.utils.book_append_sheet(wb, ws, "Attendance");
-      XLSX.writeFile(
-        wb,
-        `attendance_data_${
-          selectedDateRange === "today"
-            ? "hari-ini"
-            : selectedDateRange === "month"
-              ? "mei-2025"
-              : "2025"
-        }.xlsx`,
-      );
-    } else if (format === "pdf") {
-      if (school.isLoading) {
-        alert("Data sekolah masih dimuat. Coba lagi nanti.");
-        return;
-      }
-      try {
-        const doc = (
-          <AttendanceReportPDF
-            data={pdfExportData}
-            schoolData={{
-              kopSurat: school.data?.kopSurat || "",
-              namaSekolah: school.data?.namaSekolah,
-              namaKepalaSekolah: school.data?.namaKepalaSekolah || "",
-              ttdKepalaSekolah: school.data?.ttdKepalaSekolah || "",
-            }}
-            dateRange={selectedDateRange}
-          />
-        );
-
-        const pdfInstance = pdf(doc);
-        const pdfBlob = await pdfInstance.toBlob();
-        const url = window.URL.createObjectURL(pdfBlob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download =
-          selectedDateRange === "today"
-            ? "Laporan-kehadiran-hari-ini.pdf"
-            : selectedDateRange === "month"
-              ? "Laporan-kehadiran-mei-2025.pdf"
-              : "Laporan-kehadiran-2025.pdf";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      } catch (error) {
-        console.error("Error generating PDF:", error);
-        alert("Gagal menghasilkan PDF.");
-      }
+    if (type === "pdf") {
+      // await attendanceService.exportPdf(params);
+      handleExportPdf(params);
+      return;
     }
-    setIsModalOpen(false);
   };
 
   const resetFilters = () => {
@@ -537,136 +197,21 @@ export const MatkulAttendance = () => {
         transition={{ duration: 0.3 }}
       >
         {/* Filters */}
-        <div className="mb-6 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
-            <div>
-              <Label
-                htmlFor="student-filter"
-                className="block text-sm font-medium mb-2"
-              >
-                Nama Siswa
-              </Label>
-              <Input
-                id="student-filter"
-                type="text"
-                value={searchStudentName}
-                onChange={(e) => setSearchStudentName(e.target.value)}
-                placeholder="Cari nama siswa..."
-                className="w-full py-2"
-              />
-            </div>
-            <div>
-              <Label
-                htmlFor="class-filter"
-                className="block text-sm font-medium mb-2"
-              >
-                Kelas
-              </Label>
-              <Select
-                value={selectedClasses}
-                onValueChange={setSelectedClasses}
-              >
-                <SelectTrigger id="class-filter" className="w-full">
-                  <SelectValue placeholder="Pilih Kelas" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Semua Kelas</SelectItem>
-                  {listClassRoom.map((kelas) => (
-                    <SelectItem key={kelas?.id} value={kelas?.namaKelas}>
-                      {kelas?.namaKelas}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label
-                htmlFor="course-filter"
-                className="block text-sm font-medium mb-2"
-              >
-                Mata Pelajaran
-              </Label>
-              <Select value={selectedCourse} onValueChange={setSelectedCourse}>
-                <SelectTrigger id="course-filter" className="w-full">
-                  <SelectValue placeholder="Pilih Mata Pelajaran" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Semua Mata Pelajaran</SelectItem>
-                  {courseOptions.map((course) => (
-                    <SelectItem key={course} value={course}>
-                      {course}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label
-                htmlFor="date-filter"
-                className="block text-sm font-medium mb-2"
-              >
-                Tanggal
-              </Label>
-              <Select
-                value={selectedDateRange}
-                onValueChange={setSelectedDateRange}
-              >
-                <SelectTrigger id="date-filter" className="w-full">
-                  <SelectValue placeholder="Pilih Tanggal" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="year">Tahun Ini</SelectItem>
-                  <SelectItem value="month">Bulan Ini (Mei 2026)</SelectItem>
-                  <SelectItem value="today">Hari Ini (18 Mei 2026)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label
-                htmlFor="status-filter"
-                className="block text-sm font-medium mb-2"
-              >
-                Status Kehadiran
-              </Label>
-              <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                <SelectTrigger id="status-filter" className="w-full">
-                  <SelectValue placeholder="Pilih Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Semua Status</SelectItem>
-                  <SelectItem value="hadir">Hadir</SelectItem>
-                  <SelectItem value="alfa">Alfa</SelectItem>
-                  <SelectItem value="izin">Izin</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <div className="flex items-center gap-4 flex-wrap">
-            <Button
-              variant="outline"
-              onClick={resetFilters}
-              className="w-full sm:w-auto"
-            >
-              Reset Filter
-            </Button>
-            {selectedClasses !== "all" && (
-              <Badge className="py-2 bg-white text-black" variant={"outline"}>
-                {selectedClasses}
-              </Badge>
-            )}
-            {selectedCourse !== "all" && (
-              <Badge className="py-2 bg-white text-black" variant={"outline"}>
-                {selectedCourse}
-              </Badge>
-            )}
-            {selectedStatus !== "all" && (
-              <Badge className="py-2 bg-white text-black" variant={"outline"}>
-                {selectedStatus.charAt(0).toUpperCase() +
-                  selectedStatus.slice(1)}
-              </Badge>
-            )}
-          </div>
-        </div>
+        <AttendanceMapelFilter
+          searchStudentName={searchStudentName}
+          setSearchStudentName={setSearchStudentName}
+          selectedClasses={selectedClasses}
+          setSelectedClasses={setSelectedClasses}
+          selectedCourse={selectedCourse}
+          setSelectedCourse={setSelectedCourse}
+          selectedStatus={selectedStatus}
+          setSelectedStatus={setSelectedStatus}
+          filters={filters}
+          setFilter={setFilter}
+          listClassRoom={listClassRoom}
+          courseOptions={courseOptions}
+          resetFilters={resetFilters}
+        />
 
         {/* Table */}
         <div className="mb-6">
@@ -680,7 +225,8 @@ export const MatkulAttendance = () => {
             </h3>
             <div className="flex gap-4">
               <Button
-                variant="outline"
+                variant="destructive"
+                color="destructive"
                 onClick={() => setIsModalOpen(true)}
                 className="px-4 py-2 rounded-lg transition duration-300"
               >
@@ -688,7 +234,12 @@ export const MatkulAttendance = () => {
               </Button>
             </div>
           </div>
-          <MatpelAttendanceTable data={filteredData} />
+          <MatpelAttendanceTable
+            data={filteredData}
+            pagination={pagination}
+            onPaginationChange={onPaginationChange}
+            rowCount={mapelData?.pagination?.total ?? 0}
+          />
         </div>
 
         {/* Export Modal */}
@@ -701,10 +252,16 @@ export const MatkulAttendance = () => {
               className="bg-background text-foreground rounded-lg p-6 w-full max-w-md shadow-lg"
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-lg font-semibold mb-4">
-                Export & Filter Kelas
-              </h2>
-              <div className="mb-4">
+              <div className="flex justify-between items-center mb-1 ">
+                <h2 className="text-lg font-semibold mb-0">
+                  Export & Filter Kelas
+                </h2>
+                <IconButton onClick={() => setIsModalOpen(false)}>
+                  <XIcon />
+                </IconButton>
+              </div>
+              <Divider />
+              <div className="mb-4 mt-2">
                 <Label
                   htmlFor="class-filter"
                   className="block text-sm font-medium mb-2"
@@ -721,7 +278,7 @@ export const MatkulAttendance = () => {
                   <SelectContent>
                     <SelectItem value="all">Semua Kelas</SelectItem>
                     {listClassRoom.map((kelas) => (
-                      <SelectItem key={kelas?.id} value={kelas?.namaKelas}>
+                      <SelectItem key={kelas?.id} value={kelas?.id}>
                         {kelas?.namaKelas}
                       </SelectItem>
                     ))}
@@ -729,13 +286,13 @@ export const MatkulAttendance = () => {
                 </Select>
               </div>
               <div className="flex space-x-4">
-                <Button onClick={() => handleExport("csv")} className="w-full">
+                {/* <Button onClick={() => handleExport("csv")} className="w-full">
                   Export CSV
-                </Button>
+                </Button> */}
                 <Button
                   onClick={() => handleExport("excel")}
-                  className="w-full"
-                  variant="secondary"
+                  className="w-full rounded-lg bg-green-500 px-4 py-2 text-white transition hover:bg-green-600"
+                  // variant="secondary"
                 >
                   Export Excel
                 </Button>

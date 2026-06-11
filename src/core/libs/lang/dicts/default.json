@@ -547,6 +547,10 @@
     "id": "Tanggal",
     "en": "Date"
   },
+  "action": {
+    "id": "Aksi",
+    "en": "Action"
+  },
   "outOfTownServices": {
     "id": "Dinas Keluar Kota",
     "en": "Out of Town Services"
@@ -1069,6 +1073,10 @@
   "locationDistribution": {
     "id": "Sebaran lokasi",
     "en": "Location distribution"
+  },
+  "absensiMapel": {
+    "id": "Absensi Mata Pelajaran",
+    "en": "Subject Attendance"
   },
   "school": {
     "id": "Sekolah",
@@ -1638,6 +1646,10 @@
     "id": "Masukan nama mata pelajaran",
     "en": "Insert course name"
   },
+  "inputType": {
+    "id": "Masukan tipe",
+    "en": "Insert course type"
+  },
   "completeDataCourse": {
     "id": "Lengkapi data mata pelajaran",
     "en": "Complete the subject data"
@@ -2170,6 +2182,10 @@
     "id": "Kehadiran Siswa",
     "en": "Student Attendance"
   },
+  "SubjectAttendance": {
+    "id": "Absensi Mata Pelajaran",
+    "en": "Subject Attendance"
+  },
   "teacherAttendance": {
     "id": "Kehadiran Guru",
     "en": "Teacher Attendance"
@@ -2222,6 +2238,7 @@
     "id": "Selamat datang di Sekolah Bio",
     "en": "Welcome to Bio School"
   },
+
   "lastestAbsence": {
     "id": "Absensi Terakhir",
     "en": "Last Absence"

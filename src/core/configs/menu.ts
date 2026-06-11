@@ -33,6 +33,11 @@ export const MENU_STAFF: VokadashProps["menus"] = [
         icon: "Book",
       },
       {
+        title: lang.text("absensiMapel"),
+        url: "/attendance/subject-attendance",
+        icon: "Book",
+      },
+      {
         title: lang.text("history"),
         url: "/attendance/history",
         icon: "History",
