@@ -14,9 +14,7 @@ import {
 } from "@/features/_global";
 import { getStaticFile } from "@/core/utils";
 
-export const parentColumnWithFilter = (
-  columnFilter?: BaseTableFilter,
-): ColumnDef<UserDataModel>[] => {
+export const parentColumnWithFilter = ({columnFilter, onDelete}: {columnFilter?: BaseTableFilter, onDelete?: ((row: any)=> void)}): ColumnDef<UserDataModel>[] => {
   return [
     {
       accessorKey: "name",
@@ -163,7 +161,7 @@ export const parentColumnWithFilter = (
           <BaseActionTable
             detailPath={`/parents/${encryptPayload}`}
             editPath={`/parents/edit/${encryptPayload}`}
-            // deletePath={`/students/delete/${encryptPayload}`}
+            onDelete={() => onDelete?.(row.original)}
           />
         );
       },
