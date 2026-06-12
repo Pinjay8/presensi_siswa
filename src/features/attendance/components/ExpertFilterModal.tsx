@@ -8,11 +8,11 @@ interface ExportFilterModalProps {
   dataMode: string;
   selectedStartMonth: string;
   selectedEndMonth: string;
-  selectedClass?: string | null;
-  classOptions?: string[] | null;
+  selectedClass?: any;
+  classOptions?: any;
   setSelectedStartMonth: (value: string) => void;
   setSelectedEndMonth: (value: string) => void;
-  setSelectedClass: (value: string) => void;
+  setSelectedClass: any;
   handleExport: (type: "csv" | "excel" | "pdf") => void;
 }
 
@@ -53,7 +53,7 @@ const ExportFilterModal = ({
         </Box>
         <Divider sx={{ mb: 2 }} />
 
-        {dataMode === "mingguan" && (
+        {/* {dataMode === "tahunan" && (
           <div className="mb-4">
             <label className="mb-2 block text-sm font-medium text-black">
               {lang.text("rangeMonth")}
@@ -77,7 +77,7 @@ const ExportFilterModal = ({
               />
             </div>
           </div>
-        )}
+        )} */}
 
         <div className="mb-4">
           <label className="mb-2 block text-sm font-medium text-black">
@@ -85,27 +85,33 @@ const ExportFilterModal = ({
           </label>
 
           <select
-            value={selectedClass || ""}
-            onChange={(e) => setSelectedClass(e.target.value)}
-            className="w-full rounded-lg border border-gray-700  p-2 text-black"
+            value={selectedClass?.id ?? ""}
+            onChange={(e) => {
+              const selected = classOptions?.find(
+                (kelas: any) => kelas.id === Number(e.target.value),
+              );
+
+              setSelectedClass(selected ?? null);
+            }}
+            className="w-full rounded-lg border border-gray-700 p-2 text-black"
           >
             <option value="">{lang.text("allClassRoom")}</option>
 
-            {classOptions?.map((kelas) => (
-              <option key={kelas} value={kelas}>
-                {kelas}
+            {classOptions?.map((kelas: any) => (
+              <option key={kelas.id} value={kelas.id}>
+                {kelas.name}
               </option>
             ))}
           </select>
         </div>
 
         <div className="flex gap-4">
-          <button
+          {/* <button
             onClick={() => handleExport("csv")}
             className="w-full rounded-lg bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-600"
           >
             Export CSV
-          </button>
+          </button> */}
 
           <button
             onClick={() => handleExport("excel")}

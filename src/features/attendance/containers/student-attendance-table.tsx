@@ -9,11 +9,23 @@ import { studentAttendanceColumn } from "../utils";
 interface StudentAttendanceTableProps {
   data: BiodataSiswa[]; // Terima data yang difilter
   totalAttedance?: boolean;
+  pagination: {
+    pageIndex: number;
+    pageSize: number;
+    totalItems: number;
+    onPageChange: (newPage: number) => void;
+    onSizeChange: (newSize: number) => void;
+  };
+  sorting: any[];
+  onSortingChange: (sort: any[]) => void;
 }
 
 export function StudentAttendanceTable({
   data,
   totalAttedance,
+  pagination,
+  sorting,
+  onSortingChange,
 }: StudentAttendanceTableProps) {
   const school = useSchool();
   const classroom = useClassroom();
@@ -47,20 +59,27 @@ export function StudentAttendanceTable({
         dataFallback={[]}
         globalSearch
         searchParamPagination
+        initialState={{ sorting }}
+        onSortingChange={onSortingChange}
+        pageIndex={pagination.pageIndex}
+        pageSize={pagination.pageSize}
+        totalItems={pagination.totalItems}
+        onPageChange={pagination.onPageChange}
+        onSizeChange={pagination.onSizeChange}
         showFilterButton
-        initialState={{
-          columnVisibility: {
-            user_email: false,
-            user_nis: false,
-            user_nisn: false,
-          },
-          sorting: [
-            {
-              id: "createdAt",
-              desc: true,
-            },
-          ],
-        }}
+        // initialState={{
+        //   columnVisibility: {
+        //     user_email: false,
+        //     user_nis: false,
+        //     user_nisn: false,
+        //   },
+        //   sorting: [
+        //     {
+        //       id: "createdAt",
+        //       desc: true,
+        //     },
+        //   ],
+        // }}
         searchPlaceholder={lang.text("search")}
         isLoading={data.length > 0 ? false : true}
       />

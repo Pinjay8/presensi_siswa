@@ -1,6 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/core/libs"; // Impor dari Shadcn UI
+import { Badge, lang, simpleEncode } from "@/core/libs"; // Impor dari Shadcn UI
 import dayjs from "dayjs";
+import { BaseActionTable } from "@/features/_global";
+import { Button } from "@mui/material";
 
 export interface Attendance {
   user: {
@@ -20,66 +22,158 @@ export interface Attendance {
   };
 }
 
-export const columns: ColumnDef<any>[] = [
+export const matpelColumns = (
+  onSubmitAttendance: (
+    row: any,
+    status: "hadir" | "sakit" | "alfa" | "terlambat",
+  ) => void,
+): ColumnDef<any>[] => [
   {
     accessorKey: "namaSiswa",
     header: "Nama Siswa",
     cell: ({ row }) => row.original.namaSiswa || "N/A",
     enableSorting: true,
-    meta: { width: "25%" },
   },
   {
     accessorKey: "guru",
     header: " Guru",
     cell: ({ row }) => row.original.namaGuru || "-",
     enableSorting: true,
-    meta: { width: "25%" },
   },
   {
     accessorKey: "namaKelas",
     header: "Kelas",
     cell: ({ row }) => row.original.namaKelas || "N/A",
     enableSorting: true,
-    meta: { width: "15%" },
   },
   {
     accessorKey: "namaMataPelajaran",
     header: "Mata Pelajaran",
     cell: ({ row }) => row.original.namaMataPelajaran || "N/A",
     enableSorting: true,
-    meta: { width: "20%" },
   },
   {
     accessorKey: "attendance.statusKehadiran",
     header: "Status",
-    cell: ({ row }) => {
-      const status = row.original.statusKehadiran || "N/A";
-      let variant;
+    // cell: ({ row }) => {
+    //   const status = row.original.statusKehadiran || "N/A";
+    //   let variant;
 
-      if (status === "Hadir" || status === "hadir") {
-        variant = "bg-green-600 text-white"; // Hijau untuk hadir
-      } else if (status === "Alfa" || status === "alfa") {
-        variant = "bg-red-600 text-white"; // Merah untuk alfa
-      } else if (status === "izin") {
-        variant = "bg-yellow-600 text-white"; // Kuning untuk izin
-      }
+    //   if (status === "Hadir" || status === "hadir") {
+    //     variant = "bg-green-600 text-white"; // Hijau untuk hadir
+    //   } else if (status === "Alfa" || status === "alfa") {
+    //     variant = "bg-red-600 text-white"; // Merah untuk alfa
+    //   } else if (status === "izin") {
+    //     variant = "bg-yellow-600 text-white"; // Kuning untuk izin
+    //   }
+
+    //   return (
+    //     <Badge className={`px-6 py-2 ${variant} capitalize`}>{status}</Badge>
+    //   );
+    // },
+    cell: ({ row }: any) => {
+      const status = row.original.statusKehadiran?.toLowerCase();
+
+      const statusConfig = {
+        hadir: {
+          label: "Hadir",
+          className: "bg-green-100 text-green-700 border border-green-200",
+        },
+        izin: {
+          label: "Izin",
+          className: "bg-yellow-100 text-yellow-700 border border-yellow-200",
+        },
+        alfa: {
+          label: "Alfa",
+          className: "bg-red-100 text-red-700 border border-red-200",
+        },
+        "belum hadir": {
+          label: "Belum Hadir",
+          className: "bg-slate-100 text-slate-700 border border-slate-200",
+        },
+        terlambat: {
+          label: "Terlambat",
+          className: "bg-slate-100 text-slate-700 border border-slate-200",
+        },
+        sakit: {
+          label: "Sakit",
+          className: "bg-slate-100 text-slate-700 border border-slate-200",
+        },
+      };
+
+      const config = statusConfig[status as keyof typeof statusConfig];
 
       return (
-        <Badge className={`px-6 py-2 ${variant} capitalize`}>{status}</Badge>
+        <div
+          className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${
+            config?.className ??
+            "bg-gray-100 text-gray-700 border border-gray-200"
+          }`}
+        >
+          {config?.label ?? "-"}
+        </div>
       );
     },
     enableSorting: true,
-    meta: { width: "15%" },
   },
   {
     accessorKey: "attendance.tanggal",
-    header: "Tanggal",
+    header: lang.text("date"),
     cell: ({ row }) =>
       dayjs(row.original.tanggal, "DD MMM YYYY, HH:mm:ss")
         .tz("Asia/Jakarta")
         .format("DD MMM YYYY") || "N/A",
     enableSorting: true,
-    meta: { width: "15%" },
+  },
+  {
+    accessorKey: "id",
+    header: lang.text("action"),
+    enableSorting: false,
+    cell: ({ row }) => {
+      const status = row.original.statusKehadiran?.toLowerCase() || "belum hadir";
+      if (status !== "belum hadir") {
+        return null;
+      }
+      return (
+        <div className="flex gap-2 flex-wrap">
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => onSubmitAttendance(row.original, "hadir")}
+            sx={{ textTransform: "capitalize" }}
+          >
+            Hadir
+          </Button>
+
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={() => onSubmitAttendance(row.original, "sakit")}
+            sx={{ textTransform: "capitalize" }}
+          >
+            Sakit
+          </Button>
+
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => onSubmitAttendance(row.original, "alfa")}
+            sx={{ textTransform: "capitalize" }}
+          >
+            Alfa
+          </Button>
+
+          <Button
+            variant="contained"
+            color="info"
+            onClick={() => onSubmitAttendance(row.original, "terlambat")}
+            sx={{ textTransform: "capitalize" }}
+          >
+            Terlambat
+          </Button>
+        </div>
+      );
+    },
   },
   // {
   //   accessorKey: "attendance.jamMasuk",

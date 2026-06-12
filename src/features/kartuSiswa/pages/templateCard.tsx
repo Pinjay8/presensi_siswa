@@ -64,10 +64,10 @@ export const StudentCardPage = () => {
   >("horizontal");
 
   const [selectedBackgroundFront, setSelectedBackgroundFront] = useState(
-    backgrounds.template1
+    backgrounds.template1,
   );
   const [selectedBackgroundBack, setSelectedBackgroundBack] = useState(
-    backgrounds.template1
+    backgrounds.template1,
   );
 
   const handleSchoolChange = (value: string) => {
@@ -84,7 +84,8 @@ export const StudentCardPage = () => {
   });
 
   // Ambil daftar kelas berdasarkan schoolId
-  const { data: classroomList, isLoading: isLoadingClassrooms } = useClassroom();
+  const { data: classroomList, isLoading: isLoadingClassrooms } =
+    useClassroom();
 
   useEffect(() => {
     if (user?.sekolah && userRole !== "superAdmin") {
@@ -103,13 +104,6 @@ export const StudentCardPage = () => {
       setSchoolId(Number(selectedSchool));
     }
   }, [selectedSchool]);
-
-  const resource = useClassroom();
-  const school = useSchool();
-
-  // console.log("resource:", resource);
-  // console.log("school:", school);
-  // console.log("classroomList:", classroomList);
 
   return (
     <DashboardPageLayout
@@ -204,7 +198,9 @@ export const StudentCardPage = () => {
               <label htmlFor="schoolFilter">Pilih Sekolah:</label>
               {isLoadingSchools ? (
                 <p>Loading...</p>
-              ) : schoolList && Array.isArray(schoolList) && schoolList.length > 0 ? (
+              ) : schoolList &&
+                Array.isArray(schoolList) &&
+                schoolList.length > 0 ? (
                 <Select
                   value={selectedSchool || ""}
                   onValueChange={handleSchoolChange}
@@ -239,7 +235,9 @@ export const StudentCardPage = () => {
             </label>
             {isLoadingClassrooms ? (
               <p>Loading...</p>
-            ) : classroomList && Array.isArray(classroomList) && classroomList.length > 0 ? (
+            ) : classroomList &&
+              Array.isArray(classroomList) &&
+              classroomList.length > 0 ? (
               <Select
                 value={searchKelas}
                 onValueChange={(value) => setSearchKelas(value)}

@@ -1,5 +1,7 @@
-import { Button, Card, CardContent, Input, Label } from "@/core/libs";
+import { Button, Card, CardContent, Input, Label, lang } from "@/core/libs";
 import { Upload, File } from "lucide-react";
+import { useRef } from "react";
+import { useAlert } from "../hooks";
 
 interface FileUploaderProps {
   value?: File;
@@ -16,24 +18,31 @@ export function FileUploader({
   value,
   onError,
   error,
-  maxSize = 10 * 1024 * 1024,
+  maxSize = 1 * 1024 * 1024,
   buttonPlaceholder,
   showButton = true,
 }: FileUploaderProps) {
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const alert = useAlert();
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
-    if (selectedFile) {
-      if (selectedFile.size > maxSize) {
-        onChange?.(null);
-        onError?.(`File size exceeds ${maxSize / 1024 / 1024}MB limit.`);
-        return;
-      }
 
-      onChange?.(selectedFile);
-      onError?.("");
+    if (!selectedFile) return;
+
+    if (!selectedFile.type.startsWith("image/")) {
+      onChange?.(null);
+      onError?.("Only image files are allowed.");
+      alert.error(lang.text("imageMessage"));
+      return;
     }
+
+    if (selectedFile.size > maxSize) {
+      onChange?.(null);
+      onError?.(`File size exceeds ${maxSize / 1024 / 1024}MB limit.`);
+      return;
+    }
+
+    onChange?.(selectedFile);
+    onError?.("");
   };
 
   const getFileIcon = (fileName?: string) => {
@@ -56,6 +65,8 @@ export function FileUploader({
     }
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
   return (
     <Card className="w-full mx-auto mt-0">
       <CardContent className="pt-6">
@@ -72,7 +83,7 @@ export function FileUploader({
                   and drop
                 </p>
                 <p className="text-xs text-gray-500">
-                  Any file (MAX. {maxSize / 1024 / 1024}MB)
+                  PNG, JPG, JPEG (MAX. {maxSize / 1024 / 1024}MB)
                 </p>
               </div>
               <Input
@@ -101,7 +112,7 @@ export function FileUploader({
           )}
           {showButton && (
             <Button
-              onClick={() => document.getElementById("dropzone-file")?.click()}
+              onClick={() => inputRef.current?.click()}
               className="w-full"
             >
               {buttonPlaceholder || "Choose File"}

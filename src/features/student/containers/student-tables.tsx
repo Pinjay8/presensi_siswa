@@ -37,7 +37,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { FaFileExcel, FaFilePdf } from "react-icons/fa";
+import { FaFileExcel, FaFilePdf, FaPlus } from "react-icons/fa";
 import { useStudentPagination } from "../hooks/use-student-pagination";
 import { ImportStudentDialog } from "../components/ImportStudentDialog";
 import { pdfStyles } from "../components/pdfStylles";
@@ -70,7 +70,7 @@ export const StudentLandingTables = () => {
     pagination,
     onSortingChange,
     onPaginationChange,
-  } = useDataTableController({ defaultPageSize: 10 });
+  } = useDataTableController({ defaultPageSize: 100 });
 
   const profile = useProfile();
   const classRoom = useClassroom();
@@ -166,7 +166,7 @@ export const StudentLandingTables = () => {
         alert.error("Harap unggah file dengan format .xlsx atau .csv");
         return;
       }
-      console.log("fileeees", selectedFile);
+      // console.log("fileeees", selectedFile);
 
       setIsUploading(true);
 
@@ -323,16 +323,15 @@ export const StudentLandingTables = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const socket = io("https://presensi-api.app.bio-experience.com", {
+    const socket = io("", {
       transports: ["websocket"],
     });
 
     socket.on("connect", () => {
-      console.log("Connected", socket.id);
+      console.log("Connected");
     });
 
     socket.on("absen", async (data) => {
-      console.log("[ABSEN]", data);
       await refetch();
       await Promise.all([
         queryClient.invalidateQueries({
@@ -407,8 +406,9 @@ export const StudentLandingTables = () => {
               variant="default"
               onClick={() => setOpenFormSiswa(true)}
               style={{ padding: "2px 4px" }}
+              icon={<FaPlus />}
             >
-              Create Siswa
+              {lang.text("createStudents")}
             </Button>
           </div>
           <div className="flex items-center space-x-2">
@@ -462,6 +462,7 @@ export const StudentLandingTables = () => {
       <StudentTable
         data={attendanceResult}
         isLoading={isLoading || attedances.isLoading}
+        refetch={refetch}
         pagination={{
           pageIndex: pagination.pageIndex,
           pageSize: pagination.pageSize,

@@ -88,10 +88,6 @@ const Chatbot = ({
     const lowerMessage = message.toLowerCase();
     let newContext = { ...context };
 
-    // console.log("Processing query:", lowerMessage);
-    // console.log("schoolData:", schoolData);
-    // console.log("studentData:", studentData);
-
     // Deteksi konteks sekolah dengan pengecekan lebih aman
     let schoolMatch = null;
     if (Array.isArray(schoolData) && schoolData[0]?.namaSekolah) {
@@ -653,6 +649,8 @@ export const DashboardLayout = React.memo(
               "Scan Kehadiran Mapel",
               "Manajemen Data",
               "Data Management",
+              // "Data perizinan",
+              // "Licensing Data",
             ].includes(data.title ?? "")
           ) {
             return null;
@@ -665,7 +663,8 @@ export const DashboardLayout = React.memo(
               "Manajemen Data",
               "Manajemen Kehadiran",
               "Data Management",
-
+              "Data perizinan",
+              "Licensing Data",
               "Attendance Management",
             ].includes(data.title ?? "")
           ) {
@@ -679,7 +678,8 @@ export const DashboardLayout = React.memo(
               "Manajemen Data",
               "Manajemen Kehadiran",
               "Data Management",
-
+              "Data perizinan",
+              "Licensing data",
               "Attendance Management",
             ].includes(data.title ?? "")
           ) {
@@ -704,7 +704,9 @@ export const DashboardLayout = React.memo(
                   "Events",
                   "Siswa",
                   "Guru",
-                  "teachers",
+                  "Orang Tua",
+                  "Teachers",
+                  "Parents",
                   "Students",
                 ].includes(item.title ?? "")
               ) {
@@ -741,7 +743,6 @@ export const DashboardLayout = React.memo(
                 role === "guru" &&
                 [
                   "Sekolah",
-
                   "Acara",
                   "School",
                   "Events",

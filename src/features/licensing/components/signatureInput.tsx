@@ -33,7 +33,7 @@ export const SignatureInput = ({
       if (!canvas) return;
 
       const handleDraw = () => {
-        onSignatureChange(true); // ✅ Aktifkan tombol Save saat ada gambar
+        onSignatureChange(true);
       };
 
       canvas.addEventListener("pointerdown", handleDraw);

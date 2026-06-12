@@ -8,4 +8,5 @@ export const courseCreateSchema = z.object({
   // classroom?: z.number(),
   school: z.number(),
   classroom: z.number(),
+  tipe: z.string(),
 });

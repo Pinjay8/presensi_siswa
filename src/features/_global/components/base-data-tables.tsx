@@ -380,6 +380,8 @@ import {
   Badge,
   Button,
   Input,
+  ScrollArea,
+  ScrollBar,
   Select,
   SelectContent,
   SelectItem,
@@ -395,7 +397,10 @@ import {
   lang,
 } from "@/core/libs";
 import { useClassroom } from "@/features/classroom";
-import { GraduationDialog, GraduationFilterDialog } from "@/features/graduation/components";
+import {
+  GraduationDialog,
+  GraduationFilterDialog,
+} from "@/features/graduation/components";
 import { searchParamsToObject } from "@itokun99/http";
 import {
   ColumnDef,
@@ -487,7 +492,11 @@ export const BaseDataTables = ({
 
   // Map selectClass to class name
   const className = useMemo(() => {
-    if (selectClass !== "" && selectClass !== undefined && selectClass !== null) {
+    if (
+      selectClass !== "" &&
+      selectClass !== undefined &&
+      selectClass !== null
+    ) {
       // Try classroomOptions first
       const option = classroomOptions.find((opt) => opt.value === selectClass);
       if (option) {
@@ -553,8 +562,8 @@ export const BaseDataTables = ({
 
     if (nisFilter && isNumericString(nisFilter)) {
       result = result.filter((item: any) => {
-        const nis = (item.nis?.toString() || item.user?.nis?.toString()) || "";
-        const nisn = (item.nisn?.toString() || item.user?.nisn?.toString()) || "";
+        const nis = item.nis?.toString() || item.user?.nis?.toString() || "";
+        const nisn = item.nisn?.toString() || item.user?.nisn?.toString() || "";
         return nis.includes(nisFilter) || nisn.includes(nisFilter);
       });
     }
@@ -566,14 +575,22 @@ export const BaseDataTables = ({
       });
     }
 
-    if (selectSchool !== "" && selectSchool !== undefined && selectSchool !== null) {
+    if (
+      selectSchool !== "" &&
+      selectSchool !== undefined &&
+      selectSchool !== null
+    ) {
       result = result.filter((item: any) => {
         const schoolId = item.sekolahId || item.user?.sekolahId || 0;
         return schoolId === selectSchool;
       });
     }
 
-    if (selectClass !== "" && selectClass !== undefined && selectClass !== null) {
+    if (
+      selectClass !== "" &&
+      selectClass !== undefined &&
+      selectClass !== null
+    ) {
       result = result.filter((item: any) => {
         const classId = item.kelas?.id || item.idKelas || 0;
         return classId === selectClass;
@@ -595,7 +612,15 @@ export const BaseDataTables = ({
     }
 
     return result;
-  }, [data, dataFallback, nisFilter, debouncedNameFilter, ratingFilter, selectSchool, selectClass]);
+  }, [
+    data,
+    dataFallback,
+    nisFilter,
+    debouncedNameFilter,
+    ratingFilter,
+    selectSchool,
+    selectClass,
+  ]);
 
   const _data = useMemo(() => filteredData, [filteredData]);
   const pagination = { pageIndex, pageSize };
@@ -633,7 +658,10 @@ export const BaseDataTables = ({
             <TableHead key={header.id}>
               {header.isPlaceholder
                 ? null
-                : flexRender(header.column.columnDef.header, header.getContext())}
+                : flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  )}
             </TableHead>
           ))}
         </TableRow>
@@ -687,8 +715,12 @@ export const BaseDataTables = ({
                   <Filter size={16} />
                 </Button>
               </div>
-              {selectClass !== null && selectClass !== "" && selectClass !== undefined ? (
-                <Badge variant="default" className="w-max mt-4 px-4">{className}</Badge>
+              {selectClass !== null &&
+              selectClass !== "" &&
+              selectClass !== undefined ? (
+                <Badge variant="default" className="w-max mt-4 px-4">
+                  {className}
+                </Badge>
               ) : (
                 <></>
               )}
@@ -717,19 +749,11 @@ export const BaseDataTables = ({
                 type="text"
                 value={nisFilter}
                 onChange={(e) => setNisFilter(e.target.value)}
-                placeholder={lang.text("filterNISorNISN") || "Filter by NIS or NISN..."}
+                placeholder={
+                  lang.text("filterNISorNISN") || "Filter by NIS or NISN..."
+                }
                 className="w-[300px]"
               />
-              {/* <Select value={ratingFilter} onValueChange={setRatingFilter}>
-                <SelectTrigger className="w-[190px]">
-                  <SelectValue placeholder="Select rating" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Ratings</SelectItem>
-                  <SelectItem value="highest">Highest Rating (5 to 1)</SelectItem>
-                  <SelectItem value="lowest">Lowest Rating (1 to 5)</SelectItem>
-                </SelectContent>
-              </Select> */}
             </div>
           </div>
         </div>
@@ -740,12 +764,16 @@ export const BaseDataTables = ({
         classroomOptions={classroomOptions}
       />
 
-      <div className="rounded-md border">
-        <Table>
+      {/* <div className="rounded-md border overflow-x-auto"> */}
+      <ScrollArea className="w-full rounded-md border">
+        <Table className="min-w-[1000px]">
           {renderTableHeader()}
           {renderTableBody()}
         </Table>
-      </div>
+
+        <ScrollBar orientation="horizontal" className="mt-2 h-2" />
+      </ScrollArea>
+      {/* </div> */}
 
       <BaseTablePagination
         table={table as any}
@@ -771,7 +799,10 @@ export const BaseDataTables = ({
         }
       />
 
-      <GraduationDialog open={openGraduation} onClose={handleOpenGraduationDialog} />
+      <GraduationDialog
+        open={openGraduation}
+        onClose={handleOpenGraduationDialog}
+      />
       <GraduationFilterDialog
         open={showFilter}
         onClose={handleCloseFilter}

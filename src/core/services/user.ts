@@ -80,6 +80,16 @@ export const userService = {
     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.users.parents,
     getInitialOptions,
   ),
+  
+  updateNotifParents: (userId: number, data: { notifOrtuEnabled: boolean }) =>
+    http.put<BaseResponse<any>>(
+      API_CONFIG.baseUrl +
+        SERVICE_ENDPOINTS.users.notifParents.replace(
+          "{user_id}",
+          String(userId),
+        ),
+      getInitialOptions,
+    )(data),
 
   deleteUser: (id: number) => {
     return http.delete<BaseResponse<UserDataModel>>(
@@ -94,6 +104,10 @@ export const userService = {
   ),
   generateQr: http.get<BaseResponseQr>(
     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.generateQr,
+    getInitialOptions,
+  ),
+  generateQrRfid: http.get<any>(
+    API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.generateQrRfid,
     getInitialOptions,
   ),
   // registerFace: (payload: FormData) =>

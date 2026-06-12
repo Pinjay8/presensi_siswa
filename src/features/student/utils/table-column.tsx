@@ -50,21 +50,23 @@ interface FlatStudentModel {
   }[];
 }
 
-
-
 export const studentColumnWithFilter = ({
   noStatus = false,
   schoolOptions = [],
   classroomOptions = [],
   handleAttend,
   onRegisterFace,
+  onAssignCard,
+  unAssignCard,
 }: {
   schoolOptions?: { label: string; value: string | number }[];
   classroomOptions?: { label: string; value: string | number }[];
   noStatus?: boolean;
-  handleAttend?: (row: FlatStudentModel) => void;
+  handleAttend?: (row: any) => void;
   onRegisterFace?: any;
-}): ColumnDef<FlatStudentModel>[] => {
+  onAssignCard?: any;
+  unAssignCard?: any;
+}): ColumnDef<any>[] => {
   // const MemoizedFormRfid = React.memo(FormRfid);
   // const queryClient = useQueryClient();
 
@@ -87,7 +89,7 @@ export const studentColumnWithFilter = ({
       enableGlobalFilter: true,
       cell: ({ row }) => {
         const nameArr =
-          (row.original.name || row.original.user?.name)?.split(" ") || [];
+          (row.original.name || row.original?.user?.name)?.split(" ") || [];
         const initials =
           nameArr?.[0]?.[0]?.toUpperCase() +
           (nameArr?.[1]?.[0]?.toUpperCase() || "");
@@ -95,14 +97,10 @@ export const studentColumnWithFilter = ({
           <div className="flex flex-row items-center gap-2">
             <Avatar>
               <AvatarImage
-                src={getStaticFile(
-                  String(
-                    row.original.image ||
-                      row.original.name ||
-                      row.original.user.image ||
-                      row.original.user?.name,
-                  ),
-                )}
+                src={
+                  `&${row.original.fotoTampakDepan || row.original?.user?.image}` ||
+                  ""
+                }
                 alt={
                   row.original.name ||
                   row.original.user.image ||
@@ -111,7 +109,7 @@ export const studentColumnWithFilter = ({
               />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
-            <p>{row.original.user?.name || row.original.name || "-"}</p>
+            <p>{row.original.name || row.original?.user?.name || "-"}</p>
           </div>
         );
       },
@@ -137,6 +135,21 @@ export const studentColumnWithFilter = ({
       cell: ({ row }) => {
         const nisn = row.original.user?.nisn || row.original.nisn;
         return <span>{nisn ? String(nisn) : "-"}</span>; // Ubah nisn menjadi string
+      },
+    },
+    {
+      accessorKey: "kartus",
+      header: () => <BaseTableHeader>Kartu</BaseTableHeader>,
+      cell: ({ row }) => {
+        const kartus = row.original.kartus;
+
+        return (
+          <span>
+            {kartus?.length
+              ? kartus.map((k: any) => k.nomorKartu).join(", ")
+              : "-"}
+          </span>
+        );
       },
     },
     // {
@@ -179,7 +192,7 @@ export const studentColumnWithFilter = ({
         filterLabel: lang.text("classroom"),
         filterPlaceholder: lang.text("selectClassroom"),
         filterVariant: "select",
-        filterOptions: classroomOptions, // ✅ DI SINI UBAHNYA
+        filterOptions: classroomOptions,
       },
       id: "idKelas",
     },
@@ -200,26 +213,70 @@ export const studentColumnWithFilter = ({
       ? [
           {
             accessorKey: "status",
-            header: () => <BaseTableHeader>Status</BaseTableHeader>,
-            cell: ({ row }) => (
-              <div
-                className={`text-capitalize! text-white w-[100px] text-center px-3 py-1 rounded-sm ${row.original.status === "hadir" ? "bg-[#0f4d3f] text-[#3ee07a]" : "bg-red-700 text-red-300"}`}
-              >
-                {row.original.status
-                  ? row.original.status.charAt(0).toUpperCase() +
-                    row.original.status.slice(1)
-                  : "-"}
-              </div>
-            ),
+            header: () => "Status",
+            cell: ({ row }: any) => {
+              const status = row.original.status?.toLowerCase();
+
+              const statusConfig = {
+                hadir: {
+                  label: "Hadir",
+                  className:
+                    "bg-green-100 text-green-700 border border-green-200",
+                },
+                izin: {
+                  label: "Izin",
+                  className:
+                    "bg-yellow-100 text-yellow-700 border border-yellow-200",
+                },
+                alfa: {
+                  label: "Alfa",
+                  className: "bg-red-100 text-red-700 border border-red-200",
+                },
+                "belum hadir": {
+                  label: "Belum Hadir",
+                  className:
+                    "bg-slate-100 text-slate-700 border border-slate-200",
+                },
+                terlambat: {
+                  label: "Terlambat",
+                  className:
+                    "bg-slate-100 text-slate-700 border border-slate-200",
+                },
+                sakit: {
+                  label: "Sakit",
+                  className:
+                    "bg-slate-100 text-slate-700 border border-slate-200",
+                },
+              };
+
+              const config = statusConfig[status as keyof typeof statusConfig];
+
+              return (
+                <div
+                  className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${
+                    config?.className ??
+                    "bg-gray-100 text-gray-700 border border-gray-200"
+                  }`}
+                >
+                  {config?.label ?? "-"}
+                </div>
+              );
+            },
           },
           {
             accessorKey: "absen",
             header: () => <BaseTableHeader>Absen</BaseTableHeader>,
-            cell: ({ row }) => (
+            cell: ({ row }: any) => (
               <Button
-                onClick={() => handleAttend(row.original?.id)}
+                onClick={() => {
+                  if (handleAttend) {
+                    handleAttend(row.original?.id);
+                  }
+                }}
                 disabled={
-                  (row.original.user?.status || row.original.status) === "hadir"
+                  // (row.original.user?.status || row.original.status) ===
+                  //   "hadir"
+                  row.original.status !== "belum hadir"
                 }
               >
                 {lang.text("attend")}
@@ -272,6 +329,8 @@ export const studentColumnWithFilter = ({
           <BaseActionTable
             detailPath={`/students/${encryptPayload}`}
             onRegisterFace={() => onRegisterFace?.(row.original)}
+            onAssignCard={() => onAssignCard?.(row.original.id)}
+            unAssignCard={() => unAssignCard?.(row.original)}
           />
         );
       },

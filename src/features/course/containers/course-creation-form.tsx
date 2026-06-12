@@ -38,6 +38,7 @@ interface CourseInitialData {
   namaMataPelajaran?: string;
   sekolahId?: number;
   kelasId?: number;
+  tipe?: string;
 }
 
 // Fungsi untuk menghasilkan template Excel dari file di public folder
@@ -61,7 +62,6 @@ export const CourseCreationForm = ({
   onClose?: () => void;
   initialData?: CourseInitialData;
 }) => {
-  const school = useSchool();
   const classroom = useClassroom();
   const creation = useCourseCreation();
   const alert = useAlert();
@@ -78,20 +78,23 @@ export const CourseCreationForm = ({
       courseName: initialData?.namaMataPelajaran || "",
       school: initialData?.sekolahId || profile?.user?.sekolahId || 0,
       classroom: initialData?.kelasId || 0,
+      tipe: initialData?.tipe || "",
     },
   });
 
   async function onSubmit(data: z.infer<typeof courseCreateSchema>) {
     try {
-      // Check for duplicate namaMataPelajaran in resource.data (only for create, not edit)
       if (!isEdit) {
         const isDuplicate = resource.data?.some(
           (course) =>
-            course.namaMataPelajaran.toLowerCase() === data.courseName.toLowerCase()
+            course.namaMataPelajaran.toLowerCase() ===
+            data.courseName.toLowerCase(),
         );
 
         if (isDuplicate) {
-          alert.error(lang.text("errorDuplicateCourse", { context: data.courseName }));
+          alert.error(
+            lang.text("errorDuplicateCourse", { context: data.courseName }),
+          );
           return;
         }
       }
@@ -99,21 +102,22 @@ export const CourseCreationForm = ({
       if (isEdit) {
         await creation.update(Number(initialData?.id), {
           namaMataPelajaran: data.courseName,
-          sekolahId: data.school,
           kelasId: Number(data.classroom), // Include kelasId in update
+          tipe: data.tipe,
         });
       } else {
         await creation.create({
           namaMataPelajaran: data.courseName,
-          sekolahId: data.school,
+          // sekolahId: data.school,
           kelasId: Number(data.classroom),
+          tipe: data.tipe,
         });
       }
 
       alert.success(
         isEdit
           ? lang.text("successUpdate", { context: lang.text("course") })
-          : lang.text("successCreate", { context: lang.text("course") })
+          : lang.text("successCreate", { context: lang.text("course") }),
       );
 
       resource.query.refetch();
@@ -123,7 +127,7 @@ export const CourseCreationForm = ({
         err?.message ||
           (isEdit
             ? lang.text("failUpdate", { context: lang.text("course") })
-            : lang.text("failCreate", { context: lang.text("course") }))
+            : lang.text("failCreate", { context: lang.text("course") })),
       );
     }
   }
@@ -139,7 +143,7 @@ export const CourseCreationForm = ({
     try {
       setUploadStatus(lang.text("loading"));
       const reader = new FileReader();
-      reader.onload = async (e) => {
+      reader.onload = async (e: any) => {
         const data = new Uint8Array(e.target.result as ArrayBuffer);
         const workbook = XLSX.read(data, { type: "array" });
         const sheetName = workbook.SheetNames[0];
@@ -153,12 +157,13 @@ export const CourseCreationForm = ({
         }));
 
         // Validasi data
-        const validClasses = classroom.data?.map((cls) => cls.namaKelas.toLowerCase()) || [];
+        const validClasses =
+          classroom.data?.map((cls) => cls.namaKelas.toLowerCase()) || [];
         const validData = formattedData.filter(
           (item) =>
             item.namaMataPelajaran &&
             item.namaKelas &&
-            validClasses.includes(item.namaKelas.toLowerCase())
+            validClasses.includes(item.namaKelas.toLowerCase()),
         );
 
         if (validData.length === 0) {
@@ -168,13 +173,17 @@ export const CourseCreationForm = ({
 
         // Cek kelas yang tidak valid
         const invalidClasses = formattedData
-          .filter((item) => item.namaKelas && !validClasses.includes(item.namaKelas.toLowerCase()))
+          .filter(
+            (item) =>
+              item.namaKelas &&
+              !validClasses.includes(item.namaKelas.toLowerCase()),
+          )
           .map((item) => item.namaKelas);
         if (invalidClasses.length > 0) {
           setUploadStatus(
             lang.text("errSystem", {
               context: invalidClasses.join(", "),
-            })
+            }),
           );
           return;
         }
@@ -184,15 +193,15 @@ export const CourseCreationForm = ({
           resource.data?.some(
             (course) =>
               course.namaMataPelajaran.toLowerCase() ===
-              item.namaMataPelajaran.toLowerCase()
-          )
+              item.namaMataPelajaran.toLowerCase(),
+          ),
         );
 
         if (duplicates.length > 0) {
           setUploadStatus(
             lang.text("errorDuplicateCourse", {
               context: duplicates.map((d) => d.namaMataPelajaran).join(", "),
-            })
+            }),
           );
           return;
         }
@@ -205,12 +214,15 @@ export const CourseCreationForm = ({
           try {
             // Cari kelasId berdasarkan namaKelas
             const kelas = classroom.data?.find(
-              (cls) => cls.namaKelas.toLowerCase() === item.namaKelas.toLowerCase()
+              (cls) =>
+                cls.namaKelas.toLowerCase() === item.namaKelas.toLowerCase(),
             );
             const kelasId = kelas?.id;
 
             if (!kelasId) {
-              throw new Error(`Kelas ID tidak ditemukan untuk ${item.namaKelas}`);
+              throw new Error(
+                `Kelas ID tidak ditemukan untuk ${item.namaKelas}`,
+              );
             }
 
             await creation.create({
@@ -229,12 +241,14 @@ export const CourseCreationForm = ({
           lang.text("success", {
             success: successCount,
             failed: errorCount,
-          })
+          }),
         );
 
         if (successCount > 0) {
           resource.query.refetch();
-          alert.success(lang.text("successCreate", { context: lang.text("course") }));
+          alert.success(
+            lang.text("successCreate", { context: lang.text("course") }),
+          );
         }
 
         if (errorCount === 0) {
@@ -254,12 +268,15 @@ export const CourseCreationForm = ({
       {!isEdit && (
         <>
           <div className="grid grid-cols-1 gap-4 mb-4">
-            <Button variant={'outline'} onClick={generateCourseTemplateExcel}>
-              {`${lang.text('downloadTemplateCourse')}`} <FaFileExcel className="text-green-500" />
+            <Button variant={"outline"} onClick={generateCourseTemplateExcel}>
+              {`${lang.text("downloadTemplateCourse")}`}{" "}
+              <FaFileExcel className="text-green-500" />
             </Button>
-            <Button onClick={() => setIsExcelModalOpen(true)}>{lang.text("uploadExcelCourse")}</Button>
+            <Button onClick={() => setIsExcelModalOpen(true)}>
+              {lang.text("uploadExcelCourse")}
+            </Button>
           </div>
-          <fieldset className="mt-9 border-t border-white/10 pt-6">
+          <fieldset className="mt-4 border-t border-white/10 pt-3">
             <legend className="px-2 text-sm text-black bg-white mx-auto">
               atau
             </legend>
@@ -270,7 +287,7 @@ export const CourseCreationForm = ({
         <form onSubmit={form.handleSubmit(onSubmit)} className="mb-8">
           <div className="max-w-lg gap-6">
             <div className="basis-1">
-              <div className="flex flex-col gap-4 mb-4">
+              {/* <div className="flex flex-col gap-4 mb-4">
                 <div className="basis-1">
                   <FormField
                     control={form.control}
@@ -300,7 +317,7 @@ export const CourseCreationForm = ({
                     )}
                   />
                 </div>
-              </div>
+              </div> */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="w-full">
                   <FormField
@@ -316,13 +333,50 @@ export const CourseCreationForm = ({
                             {...field}
                           />
                         </FormControl>
+                        <FormMessage style={{ marginBottom: "5px" }}>
+                          {fieldState.error?.message}
+                        </FormMessage>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="w-full">
+                  <FormField
+                    control={form.control}
+                    name="tipe"
+                    render={({ field, fieldState }) => (
+                      <FormItem>
+                        <FormLabel>{lang.text("type")}</FormLabel>
+
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Pilih tipe" />
+                            </SelectTrigger>
+                          </FormControl>
+
+                          <SelectContent>
+                            <SelectItem value="mata_pelajaran">
+                              Mata Pelajaran
+                            </SelectItem>
+                            <SelectItem value="ekstrakulikuler">
+                              Ekstrakurikuler
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+
                         <FormMessage>{fieldState.error?.message}</FormMessage>
                       </FormItem>
                     )}
                   />
                 </div>
               </div>
-              <div className="flex flex-col gap-4 mt-6">
+              <div className="flex flex-col gap-4 mt-2">
                 <div className="basis-1">
                   <FormField
                     control={form.control}
@@ -336,7 +390,9 @@ export const CourseCreationForm = ({
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder={lang.text('selectClassroom')} />
+                              <SelectValue
+                                placeholder={lang.text("selectClassroom")}
+                              />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -362,7 +418,9 @@ export const CourseCreationForm = ({
                   // }
                   type="submit"
                 >
-                  {creation.isLoading ? lang.text("saving") : lang.text("saveChanges")}
+                  {creation.isLoading
+                    ? lang.text("saving")
+                    : lang.text("saveChanges")}
                 </Button>
               </div>
             </div>
@@ -376,7 +434,11 @@ export const CourseCreationForm = ({
               <DialogTitle>{lang.text("upload")}</DialogTitle>
             </DialogHeader>
             <div className="flex flex-col gap-4">
-              <Input type="file" accept=".xlsx, .xls" onChange={handleExcelUpload} />
+              <Input
+                type="file"
+                accept=".xlsx, .xls"
+                onChange={handleExcelUpload}
+              />
               {uploadStatus && <p>{uploadStatus}</p>}
             </div>
           </DialogContent>

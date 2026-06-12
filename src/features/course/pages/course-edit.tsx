@@ -23,10 +23,6 @@ export const CourseEdit = () => {
           url: "/courses",
         },
         {
-          label: lang.text("editCourse"),
-          url: `/courses/edit/${params.id}`,
-        },
-        {
           label: String(decodeParams?.text),
           url: `/courses/edit/${params.id}`,
         },

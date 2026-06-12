@@ -25,8 +25,6 @@ export default function RegisterFaceDialog({
   const [previewImage, setPreviewImage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const fileRef = useRef<HTMLInputElement>(null);
-
   const handleSubmit = async () => {
     if (!fotoTampakDepan) return;
 
@@ -70,22 +68,6 @@ export default function RegisterFaceDialog({
             {lang.text("UploadPicture")}
           </label>
 
-          {/* <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0] || null;
-
-              setFotoTampakDepan(file);
-
-              if (file) {
-                setPreviewImage(URL.createObjectURL(file));
-              }
-            }}
-          /> */}
-
           <FileUploader
             value={fotoTampakDepan || undefined}
             buttonPlaceholder={lang.text("ChoosePicture")}
@@ -98,39 +80,10 @@ export default function RegisterFaceDialog({
                 setPreviewImage("");
               }
             }}
-            // onError={(message) => {
-            //   // showSwal("error", message);
-            //   alert.error(message);
-            // }}
             maxSize={1 * 1024 * 1024}
           />
 
           <Box mt={2}>
-            {/* <Button
-              onClick={() => fileRef.current?.click()}
-              style={{
-                width: "100%",
-                marginBottom: "10px",
-              }}
-            >
-              {lang.text("ChoosePicture")}
-            </Button>
-
-            {previewImage && (
-              <Box mb={2}>
-                <img
-                  src={previewImage}
-                  alt="Preview"
-                  style={{
-                    width: "100%",
-                    maxHeight: 300,
-                    objectFit: "contain",
-                    borderRadius: 8,
-                  }}
-                />
-              </Box>
-            )} */}
-
             <Button
               onClick={handleSubmit}
               disabled={!fotoTampakDepan || loading}

@@ -6,19 +6,15 @@ import { useSchool } from "@/features/schools";
 import { useEffect, useMemo, useState } from "react";
 import { useParent } from "../hooks";
 import { useNavigate } from "react-router-dom";
-import {
-  // Dialog,
-  // DialogContent,
-  // DialogHeader,
-  // DialogTitle,
-  lang,
-} from "@/core/libs";
+import { lang } from "@/core/libs";
 import { ModalCreateParents } from "../components/ModalCreateParents";
 import { useProfile } from "@/features/profile";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { FaPlus } from "react-icons/fa";
 export function ParentTable() {
   const alert = useAlert();
   const parent = useParent();
+
   const student = useBiodata();
   const navigate = useNavigate();
   const school = useSchool();
@@ -73,9 +69,12 @@ export function ParentTable() {
   const [parents, setParents] = useState(false);
 
   const profile = useProfile();
-  const isRole = profile?.user?.role === "guru" || profile?.user?.role === "siswa";
+  const isRole =
+    profile?.user?.role === "guru" ||
+    profile?.user?.role === "siswa" ||
+    profile?.user?.role === "orangTua";
 
-    async function handleDelete() {
+  async function handleDelete() {
     try {
       await userDelete.deleteUser(Number(selectedParent?.id));
       alert.success(lang.text("successDelete"));
@@ -108,6 +107,7 @@ export function ParentTable() {
             ? [
                 {
                   title: lang.text("createParent"),
+                  icon: <FaPlus />,
                   onClick: () => navigate("/parents/create"),
                 },
               ]

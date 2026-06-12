@@ -835,9 +835,12 @@ export function ScheduleLandingContent() {
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Tambah Jadwal</DialogTitle>
+            <DialogTitle style={{ marginTop: "20px" }}>
+              {lang.text("addSchedule")}
+            </DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
+          <Divider />
+          <div className="grid gap-3 py-4 pt-0">
             <div className="grid gap-2">
               <label htmlFor="kelasId">Kelas</label>
               <Select

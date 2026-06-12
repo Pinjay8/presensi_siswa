@@ -1,3 +1,5 @@
+import { get } from "lodash";
+
 export const APP_CONFIG = {
   appName: import.meta.env.VITE_APP_NAME,
   appDesc: import.meta.env.VITE_APP_DESCRIPTION,
@@ -62,6 +64,7 @@ export const SERVICE_ENDPOINTS = {
     parents: "/api/all-orang-tua",
     teachers: "/api/get-all-guru",
     students: "/api/get-biodata-siswa",
+    notifParents: "/api/user/notif-ortu/{user_id}",
   },
   user: {
     user: "/api/user",
@@ -76,12 +79,22 @@ export const SERVICE_ENDPOINTS = {
     createSiswa: "/signup/siswa",
     absenQr: "/api/masuk-mata-pelajaran",
     generateQr: "/api/generate-dynamic-qr",
+    generateQrRfid: "/api/generate-qr-rfid",
     registerFace: "/api/register-face",
     registerFaceTeacher: "/api/register-face-guru",
   },
   otp: {
     verify: "/verify-otp",
     resend: "/resend-otp",
+  },
+  dispensasi: {
+    all: "/api/get-dispensasi",
+    create: "/api/dispensasi",
+    get: "/api/dispensasi",
+    getPending: "/api/dispensasi/pending",
+    getDispensiStudent: "/api/dispensasi/daftar-anak",
+    approve: "/api/dispensasi/{dispensasi_id}/approve",
+    reject: "/api/dispensasi/{dispensasi_id}/reject",
   },
   classroom: {
     classroom: "/api/kelas",
@@ -110,6 +123,20 @@ export const SERVICE_ENDPOINTS = {
   attendances: {
     list: "/api/riwayat-absensi",
     listMataPelajaran: "/api/riwayat-absensi-mapel",
+    exportExcel: "/api/riwayat-absensi/export/excel",
+    exportPdf: "/api/riwayat-absensi/export/pdf",
+    exportMapelExcel: "/api/riwayat-absensi-mapel/export/excel",
+    exportMapelPdf: "/api/riwayat-absensi-mapel/export/pdf",
+    absentMapel: "/api/absen-mapel/harian",
+    absentManual: "/api/absen-manual-mapel",
+  },
+  dashboard: {
+    absensiList: "/api/dashboard/absensi-count",
+    classChart: "/api/dashboard/class-chart",
+    genderChart: "/api/dashboard/gender-chart",
+    attendanceDetail: "/api/dashboard/attendance-detail",
+    schoolDetail: "/api/dashboard/schools-detail",
+    listCount: "/api/dashboard",
   },
   settings:{
     getSetting: "/api/app-setting",

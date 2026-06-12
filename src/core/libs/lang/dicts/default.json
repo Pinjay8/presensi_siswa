@@ -31,6 +31,10 @@
     "en": "Third YouTube URL",
     "id": "URL Youtube 3"
   },
+  "imageMessage": {
+    "en": "Only PNG, JPG and JPEG are supported",
+    "id": "Hanya PNG, JPG dan JPEG yang didukung"
+  },
   "inputURLYoutube1": {
     "en": "First YouTube URL",
     "id": "URL Youtube 1"
@@ -47,9 +51,37 @@
     "en": "Active Status",
     "id": "Status Keaktifan"
   },
+  "assignCard": {
+    "en": "Assign Card",
+    "id": "Kasih Kartu"
+  },
+  "unassignCard": {
+    "en": "Unassign Card",
+    "id": "Kembalikan Kartu"
+  },
+  "successAssignCard": {
+    "en": "Success assign card",
+    "id": "Berhasil memberikan kartu"
+  },
+  "successUnassignCard": {
+    "en": "Success unassign card",
+    "id": "Berhasil mengembalikan kartu"
+  },
+  "pictureValidation": {
+    "en": "Picture cannot be empty",
+    "id": "Foto tidak boleh kosong"
+  },
   "schoolStatus": {
     "en": "School Status",
     "id": "Status Sekolah"
+  },
+  "searchCards": {
+    "en": "Search Cards",
+    "id": "Cari Kartu"
+  },
+  "unAssignCard": {
+    "en": "Unassign Card",
+    "id": "Kembalikan Kartu"
   },
   "userNotAuthenticated": {
     "en": "User Not Authenticated",
@@ -560,6 +592,10 @@
     "id": "Tanggal",
     "en": "Date"
   },
+  "action": {
+    "id": "Aksi",
+    "en": "Action"
+  },
   "outOfTownServices": {
     "id": "Dinas Keluar Kota",
     "en": "Out of Town Services"
@@ -836,14 +872,24 @@
     "id": "Kirim surat sekarang",
     "en": "Send letter for dispensation"
   },
+
   "startDispen": {
-    "id": "Kirim surat sekarang",
-    "en": "Send letter for dispensation"
+    "id": "Dari Tanggal",
+    "en": "From Date"
   },
   "endDispen": {
-    "id": "Kirim surat sekarang",
-    "en": "Send letter for dispensation"
+    "id": "Sampai Tanggal",
+    "en": "To Date"
   },
+  "startTime": {
+    "id": "Jam Mulai",
+    "en": "Start Time"
+  },
+  "endTime": {
+    "id": "Jam Selesai",
+    "en": "End Time"
+  },
+
   "createDispen": {
     "id": "Surat dispensasi siswa",
     "en": "Making a dispensation"
@@ -852,9 +898,77 @@
     "id": "Data perizinan",
     "en": "Licensing data"
   },
+  "addLicensing": {
+    "id": "Tambah perizinan",
+    "en": "Add Licensing"
+  },
+  "rejectTitle": {
+    "id": "Tolak perizinan",
+    "en": "Reject Licensing"
+  },
+  "rejectNote": {
+    "id": "Catatan",
+    "en": "Note"
+  },
+  "reason": {
+    "id": "Alasan",
+    "en": "Reason"
+  },
+  "name": {
+    "id": "Nama",
+    "en": "Name"
+  },
+
+  "statusLicensing": {
+    "id": "Status",
+    "en": "Status"
+  },
+  "pending": {
+    "id": "Menunggu",
+    "en": "Pending"
+  },
+  "approve": {
+    "id": "Setujui",
+    "en": "Approve"
+  },
+
+  "notify": {
+    "id": "Notifikasi",
+    "en": "Notification"
+  },
+
+  "approved": {
+    "id": "Disetujui",
+    "en": "Approved"
+  },
+  "rejected": {
+    "id": "Ditolak",
+    "en": "Rejected"
+  },
+  "notifySuccess": {
+    "id": "Notifikasi berhasil dihidupkan",
+    "en": "Notification turned on successfully"
+  },
+  "notifyErorr": {
+    "id": "Notifikasi gagal dihidupkan",
+    "en": "Notification turned on fail"
+  },
+
+  "reject": {
+    "id": "Tolak",
+    "en": "Reject"
+  },
   "licensingSuccessCreate": {
     "id": "Data perizinan berhasil dibuat",
     "en": "Licensing data created successfully"
+  },
+  "licensingApproveSuccess": {
+    "id": "Data perizinan berhasil disetujui",
+    "en": "Licensing data approved successfully"
+  },
+  "licensingRejectSuccess": {
+    "id": "Data perizinan berhasil ditolak",
+    "en": "Licensing data rejected successfully"
   },
   "licensingFailCreate": {
     "id": "Data perizinan gagal dibuat",
@@ -928,6 +1042,7 @@
     "id": "Pilih Tanggal",
     "en": "Pick a Date"
   },
+
   "endDate": {
     "id": "Tanggal Selesai",
     "en": "End Date"
@@ -1004,6 +1119,10 @@
     "id": "Sebaran lokasi",
     "en": "Location distribution"
   },
+  "absensiMapel": {
+    "id": "Absensi Mata Pelajaran",
+    "en": "Subject Attendance"
+  },
   "school": {
     "id": "Sekolah",
     "en": "School"
@@ -1061,6 +1180,22 @@
     "id": "Laporan Keseluruhan",
     "en": "Overall report"
   },
+  "activeAssignment": {
+    "id": "Tugas Aktif",
+    "en": "Active Assignment"
+  },
+  "deadline": {
+    "id": "Jatuh Tempo",
+    "en": "Deadline"
+  },
+  "notActiveAssignment": {
+    "id": "Tidak ada data",
+    "en": "No data"
+  },
+  "subjectAttendanceToday": {
+    "id": "Kehadiran Mata Pelajaran Hari ini",
+    "en": "Subject Attendance Today"
+  },
   "classRoom": {
     "id": "Kelas",
     "en": "Classrooms"
@@ -1069,6 +1204,29 @@
     "id": "Pilih Kelas",
     "en": "Select Classroom"
   },
+
+  "jadwalKelasHariIni": {
+    "id": "Jadwal Kelas Hari Ini",
+    "en": "Today's Class Schedule"
+  },
+  "jadwalMengajarHariIni": {
+    "id": "Jadwal Mengajar Hari Ini",
+    "en": "Teaching Schedule Today"
+  },
+  "pendingDispensasi": {
+    "id": "Pending Dispensasi",
+    "en": "Pending Exemption Requests"
+  },
+  "topSiswaBermasalah": {
+    "id": "Top Siswa Bermasalah",
+    "en": "Students with Most Issues"
+  },
+
+  "topSiswaTerbaik": {
+    "id": "Top Siswa Terbaik",
+    "en": "Top Students"
+  },
+
   "parent": {
     "id": "Orang Tua",
     "en": "Parents"
@@ -1088,6 +1246,10 @@
   "course": {
     "id": "Mata Pelajaran",
     "en": "Courses"
+  },
+  "createStudents": {
+    "id": "Tambah Siswa",
+    "en": "Add Students"
   },
   "moodle": {
     "id": "Moodle",
@@ -1136,6 +1298,22 @@
   "minimumPassword": {
     "id": "Kata sandi minimal 6 karakter",
     "en": "Password must be at least 6 characters"
+  },
+  "late": {
+    "id": "Terlambat",
+    "en": "Late"
+  },
+  "sick": {
+    "id": "Sakit",
+    "en": "Sick"
+  },
+  "permit": {
+    "id": "Izin",
+    "en": "Permit"
+  },
+  "alfa": {
+    "id": "Alfa",
+    "en": "Alfa"
   },
   "nipValidation": {
     "id": "NIP harus 18 karakter",
@@ -1401,6 +1579,14 @@
     "id": "Apakah anda yakin ingin menghapus data [context]?",
     "en": "Are you sure you want to delete the [context] data?"
   },
+  "addSchedule": {
+    "id": "Tambah Jadwal",
+    "en": "Add Schedule"
+  },
+  "chooseCards": {
+    "id": "Pilih Kartu",
+    "en": "Choose Cards"
+  },
   "deleteClassroom": {
     "id": "Hapus Kelas",
     "en": "Delete Classroom"
@@ -1505,6 +1691,10 @@
     "id": "Masukan nama mata pelajaran",
     "en": "Insert course name"
   },
+  "inputType": {
+    "id": "Masukan tipe",
+    "en": "Insert course type"
+  },
   "completeDataCourse": {
     "id": "Lengkapi data mata pelajaran",
     "en": "Complete the subject data"
@@ -1512,6 +1702,10 @@
   "completeDataClassroom": {
     "id": "Lengkapi data kelas",
     "en": "Complete the class data"
+  },
+  "completeDataLicensing": {
+    "id": "Lengkapi data perizinan",
+    "en": "Complete the license data"
   },
   "completeDataSchool": {
     "id": "Lengkapi data sekolah",
@@ -1929,6 +2123,10 @@
     "id": "Jumlah Siswa",
     "en": "Total Students"
   },
+  "totalteachers": {
+    "id": "Jumlah Guru",
+    "en": "Total Teachers"
+  },
   "totalData": {
     "id": "Total Data",
     "en": "Total Data"
@@ -2017,6 +2215,10 @@
     "id": "Kelola dan pantau kehadiran siswa, guru, dan staf dengan mudah dan efisien.",
     "en": "Easily and efficiently manage and monitor attendance for students, teachers, and staff."
   },
+  "attendanceSummary": {
+    "id": "Ringkasan Kehadiran",
+    "en": "Attendance Summary"
+  },
   "attendanceAction": {
     "id": "Lihat Data Kehadiran",
     "en": "View Attendance Data"
@@ -2024,6 +2226,10 @@
   "studentAttendance": {
     "id": "Kehadiran Siswa",
     "en": "Student Attendance"
+  },
+  "SubjectAttendance": {
+    "id": "Absensi Mata Pelajaran",
+    "en": "Subject Attendance"
   },
   "teacherAttendance": {
     "id": "Kehadiran Guru",
@@ -2058,9 +2264,26 @@
     "en": "Password reset successfully, please login again"
   },
   "loginDesc": {
-    "id": "Manajemen presensi untuk sekolah",
-    "en": "Xpresence Management for School"
+    "id": "Sistem Absensi Digital Sekolah",
+    "en": "Digital School Attendance System"
   },
+  "callAdmin": {
+    "id": "Hubungi Admin",
+    "en": "Call Admin"
+  },
+  "doesntHaveAccount": {
+    "id": "Belum punya akun?",
+    "en": "Don't have an account?"
+  },
+  "descriptionLogin": {
+    "id": "Mendukung kemajuan siswa melalui inovasi, data, dan integritas.",
+    "en": " Empowering students through innovation, data, and trust."
+  },
+  "welcomeToSchool": {
+    "id": "Selamat datang di Sekolah Bio",
+    "en": "Welcome to Bio School"
+  },
+
   "lastestAbsence": {
     "id": "Absensi Terakhir",
     "en": "Last Absence"

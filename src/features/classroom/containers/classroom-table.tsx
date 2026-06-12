@@ -8,6 +8,7 @@ import { classroomColumns, classroomDataFallback } from "../utils";
 import { useProfile } from "@/features/profile";
 import ModalAssignSchedule from "../components/modalAssignSchedule";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { FaPlus } from "react-icons/fa";
 
 export const ClassroomTable = () => {
   const resource = useClassroom();
@@ -47,7 +48,10 @@ export const ClassroomTable = () => {
   );
 
   const profile = useProfile();
-  const isRole = profile?.user?.role === "guru" || profile?.user?.role === "siswa" || profile?.user?.role === "orangTua";
+  const isRole =
+    profile?.user?.role === "guru" ||
+    profile?.user?.role === "siswa" ||
+    profile?.user?.role === "orangTua";
 
   const classDelete = useClassroomCreation();
 
@@ -88,6 +92,7 @@ export const ClassroomTable = () => {
             ? [
                 {
                   title: lang.text("addClassroom"),
+                  icon: <FaPlus />,
                   onClick: () => setCreateClassRoom(!classRoom),
                 },
               ]

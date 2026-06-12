@@ -13,6 +13,7 @@ import { ModalCreateCourse } from "../components";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/core/libs";
 import { CourseDataModel } from "@/core/models/course";
 import { useProfile } from "@/features/profile";
+import { FaPlus } from "react-icons/fa";
 
 export const CourseTable = () => {
   const resource = useCourse();
@@ -49,7 +50,10 @@ export const CourseTable = () => {
   );
 
   const profile = useProfile();
-  const isRole = profile?.user?.role === "guru" || profile?.user?.role === "siswa" || profile?.user?.role === "orangTua";
+  const isRole =
+    profile?.user?.role === "guru" ||
+    profile?.user?.role === "siswa" ||
+    profile?.user?.role === "orangTua";
 
   return (
     <>
@@ -68,8 +72,8 @@ export const CourseTable = () => {
               initialData={{
                 id: editCourse.id,
                 namaMataPelajaran: editCourse.namaMataPelajaran,
-                sekolahId: editCourse.sekolah?.id,
                 kelasId: editCourse.kelas?.id,
+                tipe: editCourse.tipe,
               }}
             />
           )}
@@ -88,6 +92,7 @@ export const CourseTable = () => {
                   title: lang.text("addWithContext", {
                     context: lang.text("course"),
                   }),
+                  icon: <FaPlus />,
                   onClick: () => setCreateCourse(true),
                 },
               ]

@@ -1,4 +1,5 @@
-import { VokadashHead } from "@/core/libs";
+import { lang, VokadashHead } from "@/core/libs";
+import { CheckCircle2 } from "lucide-react";
 import { PropsWithChildren } from "react";
 
 export interface AuthLayoutProps extends PropsWithChildren {
@@ -32,8 +33,8 @@ export const AuthLayout = ({
                 <img
                   src={logo}
                   style={{
-                    height: "140px",
-                    width: "240px",
+                    height: "170px",
+                    width: "250px",
                     borderRadius: "5%",
                     objectFit: "contain",
                   }}
@@ -62,18 +63,34 @@ export const AuthLayout = ({
           />
 
           {/* Overlay */}
-          <div className="absolute inset-0 bg-black/5" />
+          {/* <div className="absolute inset-0 bg-black/5" /> */}
 
           {/* Text Content */}
-          <div className="absolute bottom-10 left-10 z-10 max-w-lg text-white">
-            <h1 className="text-4xl font-bold leading-tight">
-              Welcome to Bio School
-            </h1>
+          <div className="absolute bottom-0 left-0 right-0 h-[200px] bg-gradient-to-t from-[#0B2A5B]/90 via-[#0B2A5B]/60 to-transparent">
+            <div className="absolute bottom-8 left-8">
+              <h1 className="text-4xl font-bold text-white">
+                {lang.text("welcomeToSchool")}
+              </h1>
 
-            <p className="mt-4 text-base text-white/80">
-              Empowering students through innovation, education, and community
-              excellence.
-            </p>
+              <p className="mt-2 text-base text-white/80">
+                {lang.text("descriptionLogin")}
+              </p>
+
+              <ul className="mt-3 flex flex-wrap gap-4 text-sm text-white/80">
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-400" />
+                  Presensi
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-400" />
+                  Terpercaya
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-400" />
+                  Integritas
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

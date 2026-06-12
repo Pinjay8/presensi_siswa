@@ -16,23 +16,28 @@ import { getStaticFile } from "@/core/utils";
 import { useProfile } from "@/features/profile";
 import {
   Box,
+  Card,
+  CardContent,
+  CircularProgress,
   Dialog,
   DialogContent,
   DialogTitle,
+  Divider,
   IconButton,
   MenuItem,
   Select,
+  Stack,
+  Switch,
   Typography,
 } from "@mui/material";
 import { XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import QRCode from "react-qr-code";
 import { Link, To } from "react-router-dom";
 import { QrAttendanceDialog } from "./components/QrAttendanceDialog";
 import { useAlert } from "@/features/_global/hooks";
-import { studentService } from "@/core/services/pagination";
 import { useStudents } from "./components/useStudents";
-import { FileUploader } from "../../file-uploader";
+import { FaceRegisterUploader } from "./components/FaceRegisterUploader";
+import { useProfileUser } from "@/features/parents/hooks/useProfileParent";
 
 export interface UserMenuItem {
   title?: string;
@@ -47,65 +52,78 @@ export interface UserMenuProps {
 
 export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
   const profile = useProfile();
+  const { query } = profile;
   const isRoleSiswa = profile?.user?.role === "siswa";
   const isRoleTeacher = profile?.user?.role === "guru";
+  const user = profile?.user;
   const isAdmin =
     profile?.user?.role === "admin" || profile?.user?.role === "superAdmin";
+  const isRoleOrangTua = profile?.user?.role === "orangTua";
   const [open, setOpen] = useState(false);
   const alert = useAlert();
+  const [openDialogRegister, setOpenDialogRegister] = useState(false);
+  const [fotoTampakDepan, setFotoTampakDepan] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState("");
+  const [loadingRegisterFace, setLoadingRegisterFace] = useState(false);
+  const [openProfile, setOpenProfile] = useState(false);
 
   const [qrValue, setQrValue] = useState("");
   const [expiry, setExpiry] = useState(0);
 
   const generateQrCode = async () => {
     try {
-      const res = await userService.generateQr();
+      const res = await userService.generateQrRfid();
 
-      const qrCode = res?.token;
-      const expiry = res?.expiresIn;
+      const qrCode = res?.data.qrCode;
+      const expiry = res?.data.expiresIn;
 
       setQrValue(qrCode || "");
       setExpiry(expiry || 0);
       setOpen(true);
-    } catch (error) {
-      console.error("Failed generate QR", error);
+    } catch (err: any) {
+      console.error("Failed generate QR", err);
+
+      const message = "Kartu RFID tidak ditemukan";
+
+      alert.error(message);
     }
   };
 
   const downloadQrCode = () => {
-    const svg = document.getElementById("attendance-qr");
+    const base64 = qrValue;
 
-    if (!svg) return;
-
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
+    if (!base64) return;
 
     const img = new Image();
 
     img.onload = () => {
-      canvas.width = 500;
-      canvas.height = 500;
+      const scale = 5; // 🔥 makin besar makin HD
 
-      ctx?.drawImage(img, 0, 0, 500, 500);
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) return;
+
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+
+      // biar tetap tajam
+      ctx.imageSmoothingEnabled = false;
+
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       const pngFile = canvas.toDataURL("image/png");
 
-      const downloadLink = document.createElement("a");
-      downloadLink.download = "attendance-qr.png";
-      downloadLink.href = pngFile;
-      downloadLink.click();
+      const link = document.createElement("a");
+      link.href = pngFile;
+      link.download = "attendance-qr.png";
+      link.click();
     };
 
-    img.src =
-      "data:image/svg+xml;base64," +
-      btoa(unescape(encodeURIComponent(svgData)));
+    img.src = base64.startsWith("data:")
+      ? base64
+      : `data:image/png;base64,${base64}`;
   };
-
-  const [openDialogRegister, setOpenDialogRegister] = useState(false);
-  const [fotoTampakDepan, setFotoTampakDepan] = useState<File | null>(null);
-  const [previewImage, setPreviewImage] = useState("");
-  const [loadingRegisterFace, setLoadingRegisterFace] = useState(false);
 
   const handleRegisterFace = async () => {
     try {
@@ -140,11 +158,26 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
     }
   };
 
-  const fileRef = React.useRef<HTMLInputElement>(null);
-  // const [students, setStudents] = useState<any[]>([]);
   const [selectedStudent, setSelectedStudent] = useState("");
 
   const { data: students } = useStudents();
+
+  const [loading, setLoading] = useState(false);
+
+  const handleToggle = async (checked: boolean) => {
+    setLoading(true);
+    try {
+      await userService.updateNotifParents(user?.id || 0, {
+        notifOrtuEnabled: checked,
+      });
+      await query.refetch();
+      alert.success(lang.text("notifySuccess"));
+    } catch (err) {
+      alert.error(lang.text("notifyErorr"));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -208,15 +241,26 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
               <>
                 <DropdownMenuLabel
                   style={{ fontWeight: "normal", cursor: "pointer" }}
+                  onClick={() => setOpenDialogRegister(true)}
+                >
+                  {lang.text("RegisterFace")}
+                </DropdownMenuLabel>
+                <DropdownMenuLabel
+                  style={{ fontWeight: "normal", cursor: "pointer" }}
                   onClick={generateQrCode}
                 >
                   {lang.text("generateQr")}
                 </DropdownMenuLabel>
+              </>
+            )}
+
+            {isRoleOrangTua && (
+              <>
                 <DropdownMenuLabel
                   style={{ fontWeight: "normal", cursor: "pointer" }}
-                  onClick={() => setOpenDialogRegister(true)}
+                  onClick={() => setOpenProfile(true)}
                 >
-                  {lang.text("RegisterFace")}
+                  Profile
                 </DropdownMenuLabel>
               </>
             )}
@@ -250,9 +294,11 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
       />
       <Dialog
         open={openDialogRegister}
-        onClose={setOpenDialogRegister}
+        onClose={() => setOpenDialogRegister(false)}
         fullWidth
         maxWidth="sm"
+        disableAutoFocus
+        disableEnforceFocus
       >
         <DialogTitle
           sx={{
@@ -286,7 +332,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                     value={selectedStudent}
                     onChange={(e) => setSelectedStudent(e.target.value)}
                   >
-                    {students.map((student: any) => (
+                    {students?.map((student: any) => (
                       <MenuItem key={student.id} value={student.id}>
                         {student.name}
                       </MenuItem>
@@ -295,75 +341,122 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                 </>
               </Box>
             )}
-            <div className="flex flex-col">
-              <label className="text-black text-md font-semibold mb-0 flex items-center gap-2 mb-2">
-                {lang.text("UploadPicture")}
-              </label>
-              <div className="relative">
-                {/* <input
-                  ref={fileRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0] || null;
-                    setFotoTampakDepan(file);
+            <FaceRegisterUploader
+              file={fotoTampakDepan}
+              onFileChange={(file) => {
+                setFotoTampakDepan(file);
 
-                    if (file) setPreviewImage(URL.createObjectURL(file));
-                  }}
-                /> */}
-                <FileUploader
-                  value={fotoTampakDepan || undefined}
-                  buttonPlaceholder={lang.text("ChoosePicture")}
-                  onChange={(file) => {
-                    setFotoTampakDepan(file);
+                if (file) {
+                  setPreviewImage(URL.createObjectURL(file));
+                } else {
+                  setPreviewImage("");
+                }
+              }}
+              onRegister={handleRegisterFace}
+              loading={loadingRegisterFace}
+            />
+          </Box>
+        </DialogContent>
+      </Dialog>
 
-                    if (file) {
-                      setPreviewImage(URL.createObjectURL(file));
-                    } else {
-                      setPreviewImage("");
-                    }
-                  }}
-                  // onError={(message) => {
-                  //   // showSwal("error", message);
-                  //   alert.error(message);
-                  // }}
-                  maxSize={1 * 1024 * 1024}
-                />
+      {/* profile */}
+      <Dialog
+        open={openProfile}
+        onClose={() => setOpenProfile(false)}
+        fullWidth
+        maxWidth="sm"
+        disableAutoFocus
+        disableEnforceFocus
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Profile
+          <IconButton onClick={() => setOpenProfile(false)}>
+            <XIcon />
+          </IconButton>
+        </DialogTitle>
 
-                <Box mt={2}>
-                  {/* <Button
-                    onClick={() => fileRef.current?.click()}
-                    style={{ width: "100%", marginBottom: "10px" }}
-                  >
-                    {lang.text("ChoosePicture")}
-                  </Button> */}
-                  {/* {previewImage && (
-                    <Box mb={2}>
-                      <img
-                        src={previewImage}
-                        alt="Preview"
-                        style={{
-                          width: "100%",
-                          maxHeight: 300,
-                          objectFit: "contain",
-                          borderRadius: 8,
-                        }}
-                      />
-                    </Box>
-                  )} */}
+        <DialogContent dividers>
+          {/* {user ? ( */}
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {/* Header Profile */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                p: 2,
+                borderRadius: 2,
+                bgcolor: "background.default",
+              }}
+            >
+              <Avatar
+                style={{
+                  width: 56,
+                  height: 56,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 18,
+                  fontWeight: 600,
+                  border: "1px solid #000",
+                }}
+              >
+                {user?.name?.charAt(0)?.toUpperCase() || ""}
+              </Avatar>
 
-                  <Button
-                    onClick={handleRegisterFace}
-                    // disabled={loadingRegisterFace}
-                    style={{ width: "100%" }}
-                    disabled={!fotoTampakDepan}
-                  >
-                    {lang.text("RegisterFace")}
-                  </Button>
-                </Box>
-              </div>
-            </div>
+              <Box>
+                <Typography variant="h6" className="capitalize">
+                  {user?.name}
+                </Typography>
+                {/* <Typography variant="body2" color="text.secondary" >
+                  {user?.role}
+                </Typography> */}
+              </Box>
+            </Box>
+
+            {/* Detail Info */}
+            <Card variant="outlined">
+              <CardContent>
+                <Stack spacing={1.5}>
+                  <Box>
+                    <Typography variant="caption" color="text.secondary">
+                      Email
+                    </Typography>
+                    <Typography>{user?.email}</Typography>
+                  </Box>
+
+                  <Divider />
+
+                  <Box>
+                    <Typography variant="caption" color="text.secondary">
+                      No Telepon
+                    </Typography>
+                    <Typography>{user?.noTlp || "-"}</Typography>
+                  </Box>
+
+                  <Divider />
+                  <div className="flex items-center gap-2 ">
+                    <Typography variant="caption" color="text.secondary">
+                      {lang.text("notify")}
+                    </Typography>
+                    <Switch
+                      checked={user?.notifOrtuEnabled ?? false}
+                      disabled={loading}
+                      onChange={(e) => handleToggle(e.target.checked)}
+                    />
+                    {loading && (
+                      <span className="text-xs text-gray-400">Saving...</span>
+                    )}
+                  </div>
+                </Stack>
+              </CardContent>
+            </Card>
           </Box>
         </DialogContent>
       </Dialog>

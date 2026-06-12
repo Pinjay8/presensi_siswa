@@ -153,26 +153,26 @@ export const AttedancesReport = ({ selectedSchool, selectDate }: AttedancesRepor
   }, [biodata.isLoading]);
 
   const renderLoading = () => {
-    if (isStatsLoading) {
-      return (
-        <Alert className="mb-4">
-          <Loader className="h-4 w-4 animate-spin" />
-          <AlertTitle>{lang.text('loadData')}</AlertTitle>
-          <AlertDescription className="text-gray-500">
-            {lang.text('loadingData')}
-          </AlertDescription>
-        </Alert>
-      );
-    }
+    // if (isStatsLoading) {
+    //   return (
+    //     <Alert className="mb-4">
+    //       <Loader className="h-4 w-4 animate-spin" />
+    //       <AlertTitle>{lang.text('loadData')}</AlertTitle>
+    //       <AlertDescription className="text-gray-500">
+    //         {lang.text('loadingData')}
+    //       </AlertDescription>
+    //     </Alert>
+    //   );
+    // }
   };
 
-  console.log('specificDayStats 1212', specificDayData)
-  console.log('attendanceChanges', attendanceChanges)
+  // console.log('specificDayStats 1212', specificDayData)
+  // console.log('attendanceChanges', attendanceChanges)
 
   return (
     <>
-      <div className="mt-4 mb-12">
-        {renderLoading()}
+      <div className="mt-4 mb-8">
+        {/* {renderLoading()} */}
         <AttendanceDashboard
           stats={specificDayStats}
           changes={attendanceChanges}

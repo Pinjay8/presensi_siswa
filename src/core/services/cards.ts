@@ -3,16 +3,10 @@ import { http } from "@itokun99/http";
 import { API_CONFIG, SERVICE_ENDPOINTS } from "../configs/app";
 import { BaseResponse } from "../models/http";
 import { getInitialOptions } from "../utils/http";
-import {
-  SchoolCreationModel,
-  SchoolDataModel,
-  SchoolRegisterModel,
-} from "../models/schools";
-import { authService } from "./auth";
 
 export const cardsService = {
   all: http.get<BaseResponse<any[]>>(
-    API_CONFIG.baseUrl + SERVICE_ENDPOINTS.cards.all,
+    API_CONFIG.baseUrl + SERVICE_ENDPOINTS.cards.get,
     getInitialOptions,
   ),
   get: (id: number) =>
@@ -36,20 +30,25 @@ export const cardsService = {
     });
   },
 
+  allAssign: http.get<BaseResponse<any[]>>(
+    API_CONFIG.baseUrl + SERVICE_ENDPOINTS.cards.all,
+    getInitialOptions,
+  ),
+
   //   Assign Card
-  assign: (id: number, data: any) => {
-    return http.post<{ message: string; id: number }, any>(
-      API_CONFIG.baseUrl + SERVICE_ENDPOINTS.cards.assignCardToUser,
+  assign: (cardId: number, data: { userId: number }) => {
+    return http.post(
+      `${API_CONFIG.baseUrl}/api/cards/${cardId}/assign`,
       getInitialOptions,
-    )(data, { path: String(id) });
+    )(data);
   },
 
   //   unassign card
-  unassign: (id: number, data: any) => {
-    return http.post<{ message: string; id: number }, any>(
-      API_CONFIG.baseUrl + SERVICE_ENDPOINTS.cards.unAsssignCardToUser,
+  unassign: (cardId: number) => {
+    return http.post(
+      `${API_CONFIG.baseUrl}/api/cards/${cardId}/unassign`,
       getInitialOptions,
-    )(data, { path: String(id) });
+    )();
   },
 
   delete: (id: number) =>

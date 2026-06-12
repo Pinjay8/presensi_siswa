@@ -29,13 +29,15 @@ interface AttendanceChange {
 interface AttendanceDashboardProps {
   dayData: any;
   yesterdayData: any;
-  stats: AttendanceStats;
-  changes: {
-    hadir: AttendanceChange;
-    alpa: AttendanceChange;
-    sakit: AttendanceChange;
-    dispensasi: AttendanceChange;
-  };
+  // stats: AttendanceStats;
+  stats: any;
+  // changes: {
+  //   hadir: AttendanceChange;
+  //   alpa: AttendanceChange;
+  //   sakit: AttendanceChange;
+  //   dispensasi: AttendanceChange;
+  // };
+  changes: any;
   isLoading: boolean;
   dataNoAccess?: {
     nis: string;
@@ -91,16 +93,16 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
 
   return (
     <div className="flex gap-4 w-full justify-between flex-wrap lg:flex-nowrap">
-      <AttendanceCard
+      {/* <AttendanceCard
         dayData={dayData}
         yesterdayData={yesterdayData}
         isLoading={isLoading}
         label={lang.text("presence")}
         value={stats.totalHadir}
-        percentage={changes.hadir.percentage}
-        trend={changes.hadir.trend}
-        bgColor={changes.hadir.trend === "neutral" ? "#FFC107" : "#0f4d3f"}
-        textColor={changes.hadir.trend === "neutral" ? "#000000" : "#3ee07a"}
+        // percentage={changes.hadir.percentage}
+        // trend={changes.hadir.trend}
+        // bgColor={changes.hadir.trend === "neutral" ? "#FFC107" : "#0f4d3f"}
+        // textColor={changes.hadir.trend === "neutral" ? "#000000" : "#3ee07a"}
       />
       <AttendanceCard
         dayData={dayData}
@@ -108,10 +110,10 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
         isLoading={isLoading}
         label={lang.text("absentee")}
         value={stats.totalAlpa}
-        percentage={changes.alpa.percentage}
-        trend={changes.alpa.trend}
-        bgColor={changes.alpa.trend === "neutral" ? "#FFC107" : "#6f1e2a"}
-        textColor={changes.alpa.trend === "neutral" ? "#000000" : "#e04a6a"}
+        // percentage={changes.alpa.percentage}
+        // trend={changes.alpa.trend}
+        // bgColor={changes.alpa.trend === "neutral" ? "#FFC107" : "#6f1e2a"}
+        // textColor={changes.alpa.trend === "neutral" ? "#000000" : "#e04a6a"}
       />
       <AttendanceCard
         dayData={dayData}
@@ -119,10 +121,10 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
         isLoading={isLoading}
         label={lang.text("sickness")}
         value={stats.totalSakit}
-        percentage={changes.sakit.percentage}
-        trend={changes.sakit.trend}
-        bgColor={changes.sakit.trend === "neutral" ? "#FFC107" : "#0f4d3f"}
-        textColor={changes.sakit.trend === "neutral" ? "#000000" : "#3ee07a"}
+        // percentage={changes.sakit.percentage}
+        // trend={changes.sakit.trend}
+        // bgColor={changes.sakit.trend === "neutral" ? "#FFC107" : "#0f4d3f"}
+        // textColor={changes.sakit.trend === "neutral" ? "#000000" : "#3ee07a"}
       />
       <AttendanceCard
         dayData={dayData}
@@ -130,14 +132,43 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
         isLoading={isLoading}
         label={lang.text("dispensation")}
         value={stats.totalDispensasi}
-        percentage={changes.dispensasi.percentage}
-        trend={changes.dispensasi.trend}
-        bgColor={changes.dispensasi.trend === "neutral" ? "#FFC107" : "#0f4d3f"}
-        textColor={
-          changes.dispensasi.trend === "neutral" ? "#000000" : "#3ee07a"
-        }
+        // percentage={changes.dispensasi.percentage}
+        // trend={changes.dispensasi.trend}
+        // bgColor={changes.dispensasi.trend === "neutral" ? "#FFC107" : "#0f4d3f"}
+        // textColor={
+        //   changes.dispensasi.trend === "neutral" ? "#000000" : "#3ee07a"
+        // }
+      /> */}
+      <AttendanceCard
+        label={lang.text("presence")}
+        value={stats.totalHadir}
+        percentage={changes.hadir.percentage}
       />
-      <Card className="w-full bg-theme-color-primary/5">
+
+      <AttendanceCard
+        label={lang.text("absentee")}
+        value={stats.totalAlpa}
+        percentage={changes.alpa.percentage}
+      />
+
+      <AttendanceCard
+        label={lang.text("sickness")}
+        value={stats.totalSakit}
+        percentage={changes.sakit.percentage}
+      />
+
+      <AttendanceCard
+        label={lang.text("dispensation")}
+        value={stats.totalDispensasi}
+        percentage={changes.dispensasi.percentage}
+      />
+
+      <AttendanceCard
+        label={"Belum Absen"}
+        value={stats.totalBelumAbsen}
+        percentage={changes.belumAbsen.percentage}
+      />
+      {/* <Card className="w-full bg-theme-color-primary/5">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-muted-foreground">
@@ -159,7 +190,7 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
             )}
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Sheet untuk menampilkan daftar dataNoAccess */}
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>

@@ -50,7 +50,13 @@ export const QrAttendanceDialog = ({
             gap: 2,
           }}
         >
-          <QRCode value={qrValue} id="attendance-qr" />
+          {/* <QRCode value={qrValue} id="attendance-qr" /> */}
+          <img
+            src={qrValue}
+            alt="qr-code"
+            id="attendance-qr"
+            style={{ width: "250px", height: "250px", objectFit: "cover" }}
+          />
 
           <Box
             sx={{

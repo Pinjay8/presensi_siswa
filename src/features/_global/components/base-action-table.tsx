@@ -24,6 +24,7 @@ import { userService } from "@/core/services";
 import { useAlert } from "../hooks";
 import { XIcon } from "lucide-react";
 import { studentService } from "@/core/services/pagination";
+import { useStudents } from "./dashboard/usermenu/components/useStudents";
 
 export interface BaseActionTableProps {
   editPath?: string;
@@ -35,6 +36,11 @@ export interface BaseActionTableProps {
   onRegisterFace?: () => void;
   onAssignSchedule?: () => void;
   onDelete?: () => void;
+  onAssignCard?: any;
+  unAssignCard?: any;
+  onApprove?: any;
+  onReject?: any;
+  onAbsenManual?: any;
 }
 
 export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
@@ -51,7 +57,7 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
   const handleRegisterFace = async () => {
     try {
       if (!fotoTampakDepan) {
-        alert.error("Foto tampak depan wajib diisi");
+        alert.error(lang.text("pictureValidation"));
         return;
       }
 
@@ -69,7 +75,7 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
         await userService.registerFaceTeacher(formData);
       }
 
-      alert.success("Register face berhasil");
+      alert.success(lang.text("successRegister"));
 
       setOpenDialogRegister(false);
       setFotoTampakDepan(null);
@@ -80,16 +86,9 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
       setLoadingRegisterFace(false);
     }
   };
-  const [students, setStudents] = useState<any[]>([]);
+  // const [students, setStudents] = useState<any[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await studentService.getAll();
-      setStudents(res);
-    };
-
-    fetchData();
-  }, []);
+  const { data: students } = useStudents();
 
   const fileRef = React.useRef<HTMLInputElement>(null);
   return (
@@ -123,6 +122,17 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
             </DropdownMenuItem>
           )}
 
+          {props.onApprove && (
+            <DropdownMenuItem onClick={props.onApprove}>
+              {lang.text("approve")}
+            </DropdownMenuItem>
+          )}
+          {props.onReject && (
+            <DropdownMenuItem onClick={props.onReject}>
+              {lang.text("reject")}
+            </DropdownMenuItem>
+          )}
+
           {props.onWaliKelas && (
             <DropdownMenuItem onClick={props.onWaliKelas}>
               Wali Kelas
@@ -141,6 +151,40 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
           {props.onDelete && (
             <DropdownMenuItem onClick={props.onDelete}>
               {lang.text("delete")}
+            </DropdownMenuItem>
+          )}
+          {props.onAssignCard && (
+            <DropdownMenuItem onClick={props.onAssignCard}>
+              {lang.text("assignCard")}
+            </DropdownMenuItem>
+          )}
+          {props.unAssignCard && (
+            <DropdownMenuItem onClick={props.unAssignCard}>
+              {lang.text("unAssignCard")}
+            </DropdownMenuItem>
+          )}
+          {props.onAbsenManual && (
+            <DropdownMenuItem onClick={props.onAbsenManual}>
+              {/* {lang.text("absenManual")} */}
+              Absen Hadir
+            </DropdownMenuItem>
+          )}
+          {props.onAbsenManual && (
+            <DropdownMenuItem onClick={props.onAbsenManual}>
+              {/* {lang.text("absenManual")} */}
+              Sakit
+            </DropdownMenuItem>
+          )}
+          {props.onAbsenManual && (
+            <DropdownMenuItem onClick={props.onAbsenManual}>
+              {/* {lang.text("absenManual")} */}
+              Terlambat
+            </DropdownMenuItem>
+          )}
+          {props.onAbsenManual && (
+            <DropdownMenuItem onClick={props.onAbsenManual}>
+              {/* {lang.text("absenManual")} */}
+              Alfa
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
@@ -175,7 +219,7 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
             {isAdmin && (
               <Box sx={{ mb: 2 }}>
                 <>
-                  <label className="text-black text-md font-semibold mb-2 flex items-center gap-2 mb-2">
+                  <label className="text-black text-md font-semibold mb-2 flex items-center gap-2">
                     Siswa
                   </label>
                   <Select
@@ -184,7 +228,7 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
                     value={selectedStudent}
                     onChange={(e) => setSelectedStudent(e.target.value)}
                   >
-                    {students.map((student: any) => (
+                    {students?.map((student: any) => (
                       <MenuItem key={student.id} value={student.id}>
                         {student.name}
                       </MenuItem>

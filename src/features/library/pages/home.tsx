@@ -50,26 +50,21 @@ export const LibraryHomePage = () => {
       idKelas: undefined,
       keyword: global,
     }),
-    [pagination.pageIndex, pagination.pageSize, sekolahId, global]
+    [pagination.pageIndex, pagination.pageSize, sekolahId, global],
   );
 
   const { data, isLoading, refetch } = useStudentPagination(studentParams);
-  // console.log("data lib siswa survey:", data);
 
   const encryptPayload = simpleEncode(
-    JSON.stringify({ id: school?.data?.id, text: school?.data?.namaSekolah })
+    JSON.stringify({ id: school?.data?.id, text: school?.data?.namaSekolah }),
   );
 
-  // Initialize state with no default date
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [formattedDate, setFormattedDate] = useState<string>("");
-  // Initialize state tahun with current year
   const [tahun, setTahun] = useState<string>(dayjs().format("YYYY"));
 
-  // State for rating filter
   const [ratingFilter, setRatingFilter] = useState<string>("all");
 
-  // Handle date selection
   const handleDateSelect = (selectedDate: Date | undefined) => {
     setDate(selectedDate);
     if (selectedDate && !isNaN(selectedDate.getTime())) {
@@ -97,7 +92,8 @@ export const LibraryHomePage = () => {
     if (!data?.students) return [];
 
     let result = [...(data.students || [])].filter(
-      (student) => student.surveiApps !== null && student.surveiApps !== undefined
+      (student) =>
+        student.surveiApps !== null && student.surveiApps !== undefined,
     );
 
     if (ratingFilter === "highest") {
@@ -112,8 +108,11 @@ export const LibraryHomePage = () => {
   }, [data?.students, ratingFilter]);
 
   // Debugging logs
-  console.log('Formatted Date di LibraryHomePage:', formattedDate || 'No date selected');
-  console.log('Tahun di LibraryHomePage:', tahun);
+  console.log(
+    "Formatted Date di LibraryHomePage:",
+    formattedDate || "No date selected",
+  );
+  console.log("Tahun di LibraryHomePage:", tahun);
 
   return (
     <div className="pb-6">
@@ -131,7 +130,7 @@ export const LibraryHomePage = () => {
                     className={cn(
                       "w-[240px] justify-start text-left font-normal",
                       !date && "text-muted-foreground",
-                      "bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                      "bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600",
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
@@ -174,11 +173,11 @@ export const LibraryHomePage = () => {
                 </Button>
               )}
             </div>
-              {formattedDate && (
-                <Button variant={"outline"}>
-                    <span className="text-sm">Selected: {formattedDate}</span>
-                </Button>
-              )}
+            {formattedDate && (
+              <Button variant={"outline"}>
+                <span className="text-sm">Selected: {formattedDate}</span>
+              </Button>
+            )}
           </div>
 
           {/* Main Content */}

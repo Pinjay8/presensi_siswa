@@ -1,4 +1,3 @@
-
 import { http } from "@itokun99/http";
 import { API_CONFIG, SERVICE_ENDPOINTS } from "../configs/app";
 import { attendanceCreationModel } from "../models";
@@ -14,4 +13,13 @@ export const attendanceService = {
       getInitialOptions,
     )(data);
   },
+  getMapelHarian: http.get<any>(
+    API_CONFIG.baseUrl + SERVICE_ENDPOINTS.attendances.absentMapel,
+    getInitialOptions,
+  ),
+  createAbsenMapel: (userId: number | string) =>
+    http.post(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.attendances.absentManual}/${userId}`,
+      getInitialOptions,
+    ),
 };
