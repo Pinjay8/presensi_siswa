@@ -1,8 +1,9 @@
 import { VokadashProps } from "@/features/_global";
 import { lang } from "../libs";
 
-export const MENU_STAFF: VokadashProps["menus"] = [
+export const MENU_STAFF: any["menus"] = [
   {
+    key: "dashboard",
     title: lang.text("dashboard"),
     url: "/",
     icon: "LayoutDashboard",
@@ -45,11 +46,13 @@ export const MENU_STAFF: VokadashProps["menus"] = [
     ],
   },
   {
-    title: lang.text("scanAttendanceMapel"),
+    key: "scanAttendanceMapel",
+    title: lang.text?.("scanAttendanceMapel") ?? "Scan Attendance Schedule",
     url: "/qr-scan",
     icon: "QrCode",
   },
   {
+    key: "dataManagement",
     title: lang.text("dataManagement"),
     url: "/data-management",
     icon: "Sheet",
@@ -163,7 +166,7 @@ export const MENU_STAFF: VokadashProps["menus"] = [
       },
     ],
   },
-    {
+  {
     title: lang.text("setting"),
     url: "/setting",
     icon: "Settings",

@@ -63,8 +63,11 @@ export const ReportStudent = ({
               <p className="text-muted-foreground">Tidak ada jadwal hari ini</p>
             ) : (
               <div className="space-y-3">
-                {jadwalHariIni.map((item: any) => (
-                  <div key={item.id} className="rounded-lg border p-3 bg-white">
+                {jadwalHariIni.map((item: any, index) => (
+                  <div
+                    key={item.id ?? index}
+                    className="rounded-lg border p-3 bg-white"
+                  >
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="font-semibold">{item.mataPelajaran}</p>

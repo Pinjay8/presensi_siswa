@@ -5,6 +5,7 @@ export interface NavItemProps {
   title?: string;
   icon?: IconProps["iconName"];
   url?: To;
+  key?: string;
   value?: number | string;
   items?: NavItemProps[];
   mobile?: boolean;

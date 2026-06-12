@@ -239,7 +239,7 @@
     "en": "Setting",
     "id": "Pengaturan"
   },
-    "settings": {
+  "settings": {
     "en": "Settings",
     "id": "Pengaturan"
   },
@@ -283,7 +283,7 @@
     "en": "Clear",
     "id": "Bersihkan"
   },
-  
+
   "logout": {
     "en": "Logout",
     "id": "Keluar"
@@ -2199,6 +2199,7 @@
     "id": "Manajemen Kehadiran",
     "en": "Attendance Management"
   },
+  
   "ChoosePicture": {
     "id": "Pilih Foto",
     "en": "Choose Photo"
@@ -2395,7 +2396,7 @@
   },
   "scanAttendanceMapel": {
     "id": "Scan Kehadiran Mapel",
-    "en": "Scan Attendance Schedule"
+    "en": "Scan Schedule"
   },
   "cards": {
     "id": "Kartu",
@@ -2437,7 +2438,7 @@
     "id": "Tipe Jadwal",
     "en": "Schedule Type"
   },
-    "schedulerDescription": {
+  "schedulerDescription": {
     "id": "Deskripsi Jadwal",
     "en": "Schedule Description"
   },
