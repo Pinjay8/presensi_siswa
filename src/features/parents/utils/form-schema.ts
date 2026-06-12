@@ -20,7 +20,7 @@ export const parentEditSchema = z.object({
   nikki: z.string().optional(),
   noTelegram: z.string().optional(),
   image: z.string().optional(),
-  nis: z.string().optional(),
+  nis: z.array(z.string()).optional(),
   nip: z.string().optional(),
   nik: z.string().optional(),
   noTlp: z.string().optional(),

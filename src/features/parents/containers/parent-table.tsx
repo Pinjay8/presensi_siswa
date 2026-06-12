@@ -42,7 +42,7 @@ export function ParentTable() {
       onDelete: handleOpenDeleteDialog,
     });
   }, [school.data]);
-
+// console.log("ORTU: ", parent.data)
   const biodataStudents = useMemo(() => {
     try {
       return typeof student.data === "string"

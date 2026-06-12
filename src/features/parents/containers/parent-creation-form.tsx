@@ -24,10 +24,13 @@ import { useAlert, useParamDecode } from "@/features/_global/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useMemo } from "react";
+import { Autocomplete, TextField } from "@mui/material";
 // import { useSchool } from "@/features/schools";
 import {
   GENDER_OPTIONS,
   STATUS_OPTIONS,
+  useBiodata,
   useUserCreation,
   useUserDetail,
 } from "@/features/user";
@@ -40,6 +43,20 @@ export const ParentCreationForm = () => {
 
   const detail = useUserDetail(Number(decodeParams?.id));
   const creation = useUserCreation();
+
+  const student = useBiodata();
+
+  const biodataStudents = useMemo(() => {
+    try {
+      return typeof student.data === "string"
+        ? JSON.parse(student.data)
+        : student.data || [];
+    } catch (error) {
+      console.error("Failed parse biodata", error);
+      return [];
+    }
+  }, [student.data]);
+
   const alert = useAlert();
   const navigate = useNavigate();
 
@@ -54,7 +71,11 @@ export const ParentCreationForm = () => {
       tanggalLahir: detail.data?.tanggalLahir || "",
       noTlp: detail.data?.noTlp || "",
       isActive: detail.data?.isActive || 0,
-      nis: detail.data?.nis || "",
+      nis: Array.isArray(detail.data?.nis)
+        ? detail.data.nis
+        : typeof detail.data?.nis === "string"
+        ? detail.data.nis.split(",").map((s: string) => s.trim()).filter(Boolean)
+        : detail.data?.students?.map((s: any) => s.nis || s.user?.nis).filter(Boolean) || [],
       nik: detail.data?.nik || "",
       password: detail.data?.password || "",
       usernameInstagram: detail.data?.usernameInstagram || "",
@@ -218,9 +239,47 @@ export const ParentCreationForm = () => {
             name="nis"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel>Nis</FormLabel>
+                <FormLabel>Siswa (NIS)</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder={"Nis"} {...field} />
+                  <Autocomplete
+                    multiple
+                    id="student-nis-autocomplete"
+                    options={biodataStudents}
+                    getOptionLabel={(option) => {
+                      const name = option.user?.name || option.name || "";
+                      const nis = option.user?.nis || option.nis || "";
+                      return `${name} (${nis})`;
+                    }}
+                    isOptionEqualToValue={(option, value) => {
+                      const optNis = option.user?.nis || option.nis;
+                      const valNis = value.user?.nis || value.nis;
+                      return optNis === valNis;
+                    }}
+                    value={biodataStudents.filter((s: any) =>
+                      field.value?.includes(s.user?.nis || s.nis)
+                    )}
+                    onChange={(_, newValue) => {
+                      field.onChange(newValue.map((s: any) => s.user?.nis || s.nis));
+                    }}
+                    loading={student.isLoading}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder={lang.text("selectStudent") || "Pilih Siswa"}
+                        size="small"
+                        error={!!fieldState.error}
+                        sx={{
+                          backgroundColor: "white",
+                          borderRadius: "6px",
+                          "& .MuiOutlinedInput-root": {
+                            padding: "3px 9px",
+                            fontFamily: "inherit",
+                            fontSize: "0.875rem",
+                          },
+                        }}
+                      />
+                    )}
+                  />
                 </FormControl>
                 <FormMessage>{fieldState.error?.message}</FormMessage>
               </FormItem>
