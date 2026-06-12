@@ -81,7 +81,7 @@ interface BulkSchedule {
   jamSelesai: string;
 }
 
-const daysOrder = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT"];
+const daysOrder = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
 
 export function ScheduleLandingContent() {
   const alert = useAlert();
@@ -812,6 +812,9 @@ export function ScheduleLandingContent() {
     );
   }
 
+  const isRoleSiswa = profile?.user?.role === "siswa";
+  const isRoleGuru = profile?.user?.role === "guru";  
+
   return (
     <>
       <Vokadialog
@@ -1157,7 +1160,8 @@ export function ScheduleLandingContent() {
 
       <div className="mt-5 mb-8">
         <div className="w-full mb-4 flex justify-between items-center">
-          <div className="flex gap-2">
+          {(!isRoleSiswa && !isRoleGuru) && (
+            <div className="flex gap-2">
             <Button variant="outline" onClick={openAddModal}>
               Tambah jadwal baru <Plus />
             </Button>
@@ -1178,7 +1182,9 @@ export function ScheduleLandingContent() {
               Unggah Excel <UploadCloud />
             </Button>
           </div>
+          )}
           <div className="flex items-center gap-4">
+            {!isRoleSiswa && (
             <Select
               onValueChange={(value) => setSelectedClassId(parseInt(value))}
               value={selectedClassId.toString()}
@@ -1195,6 +1201,7 @@ export function ScheduleLandingContent() {
                 ))}
               </SelectContent>
             </Select>
+            )}
             <Button
               variant="outline"
               className="w-[200px] justify-between"
@@ -1259,9 +1266,11 @@ export function ScheduleLandingContent() {
                                     <TableHead>
                                       {lang.text("nameTeacher")}
                                     </TableHead>
-                                    <TableHead>
+                                    {!isRoleSiswa && (
+                                      <TableHead>
                                       {lang.text("actions")}
                                     </TableHead>
+                                    )}
                                   </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -1274,7 +1283,7 @@ export function ScheduleLandingContent() {
                                       <TableCell>
                                         {item.guru.namaGuru}
                                       </TableCell>
-                                      <TableCell className="flex gap-2">
+                                      {!isRoleSiswa && (<TableCell className="flex gap-2">
                                         {!isRole && (
                                           <Button
                                             variant="default"
@@ -1285,7 +1294,7 @@ export function ScheduleLandingContent() {
                                             Show QR
                                           </Button>
                                         )}
-                                        <Button
+                                        {!isRoleGuru && ( <Button
                                           variant="outline"
                                           size="sm"
                                           onClick={() =>
@@ -1293,8 +1302,8 @@ export function ScheduleLandingContent() {
                                           }
                                         >
                                           <Pen />
-                                        </Button>
-                                        <Button
+                                        </Button>)}
+                                        {!isRoleGuru && (<Button
                                           variant="destructive"
                                           size="sm"
                                           onClick={() => {
@@ -1303,8 +1312,8 @@ export function ScheduleLandingContent() {
                                           }}
                                         >
                                           <Trash />
-                                        </Button>
-                                      </TableCell>
+                                        </Button>)}
+                                      </TableCell>)}
                                     </TableRow>
                                   ))}
                                 </TableBody>
