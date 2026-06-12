@@ -54,7 +54,7 @@ export function SubjectAttendanceTable({
     try {
       await attendanceService.createAbsenMapel(row.userId)({
         status,
-        mataPelajaranId: row.id,
+        mataPelajaranId: row.mataPelajaranId,
       });
 
       await queryClient.invalidateQueries({
