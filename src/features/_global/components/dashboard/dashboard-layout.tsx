@@ -601,11 +601,15 @@ export const DashboardLayout = React.memo(
     const [classRoom, setCreateClassRoom] = useState(false);
     const [events, setEvents] = useState([]);
     const [isChatbotVisible, setIsChatbotVisible] = useState(false);
+    const allowedMenusStudent = [
+      "dashboard",
+      "scanAttendanceMapel",
+      "dataManagement",
+    ];
 
     const loadEvents = async () => {
       try {
-        const response = await fetchCalendarEvents(); // Ambil semua event dari API
-        // console.log("reponse", response?.data);
+        const response = await fetchCalendarEvents();
         setEvents(response?.data);
         if (!response || !response.data) {
           console.error("❌ Error: Data tidak ditemukan dalam response API.");
@@ -634,6 +638,24 @@ export const DashboardLayout = React.memo(
             return null;
           }
 
+          // if (
+          //   role === "siswa" &&
+          //   !allowedMenusStudent.includes(data.key ?? "")
+          // ) {
+          //   return null;
+          // }
+
+          if (
+            role === "siswa" &&
+            ![
+              "Dashboard",
+              lang.text("scanAttendanceMapel"),
+              lang.text("dataManagement"),
+            ].includes(data.title ?? "")
+          ) {
+            return null;
+          }
+
           if (
             (role === "admin" && data.title === "Scan Kehadiran Mapel") ||
             data.title === "Scan Attendance Schedule"
@@ -642,30 +664,12 @@ export const DashboardLayout = React.memo(
           }
 
           if (
-            role === "siswa" &&
-            ![
-              "Dashboard",
-              "Scan Attendance Schedule",
-              "Scan Kehadiran Mapel",
-              "Manajemen Data",
-              "Data Management",
-              // "Data perizinan",
-              // "Licensing Data",
-            ].includes(data.title ?? "")
-          ) {
-            return null;
-          }
-
-          if (
             role === "guru" &&
             ![
               "Dashboard",
-              "Manajemen Data",
-              "Manajemen Kehadiran",
-              "Data Management",
-              "Data perizinan",
-              "Licensing Data",
-              "Attendance Management",
+              lang.text("dataManagement"),
+              lang.text("attendanceManagement"),
+              lang.text("LicensingData"),
             ].includes(data.title ?? "")
           ) {
             return null;
@@ -675,12 +679,9 @@ export const DashboardLayout = React.memo(
             role === "orangTua" &&
             ![
               "Dashboard",
-              "Manajemen Data",
-              "Manajemen Kehadiran",
-              "Data Management",
-              "Data perizinan",
-              "Licensing data",
-              "Attendance Management",
+              lang.text("attendanceManagement"),
+              lang.text("dataManagement"),
+              lang.text("LicensingData"),
             ].includes(data.title ?? "")
           ) {
             return null;
@@ -698,22 +699,16 @@ export const DashboardLayout = React.memo(
               if (
                 role === "siswa" &&
                 [
-                  "Sekolah",
-                  "Acara",
-                  "School",
-                  "Events",
-                  "Siswa",
-                  "Guru",
-                  "Orang Tua",
-                  "Teachers",
-                  "Parents",
-                  "Students",
-                  "Cards",
-                  "Kartu",
-                  "Kelas",
-                  "Classrooms",
-                  "Mata Pelajaran",
-                  "Courses"
+                  lang.text("school"),
+                  lang.text("event"),
+                  lang.text("student"),
+                  lang.text("teacher"),
+                  lang.text("parent"),
+                  lang.text("graduation"),
+                  lang.text("cards"),
+                  lang.text("classRoom"),
+                  lang.text("course"),
+
                 ].includes(item.title ?? "")
               ) {
                 return false;
@@ -729,23 +724,15 @@ export const DashboardLayout = React.memo(
               if (
                 role === "orangTua" &&
                 [
-                  "Sekolah",
-                  "Kehadiran Guru",
-                  "Teacher Attendance",
-                  "Acara",
-                  "School",
-                  "Events",
-                  "Guru",
-                  "Teacher",
-                  "Orang Tua",
-                  "Riwayat",
-                  "History",
-                  "Kartu",
-                  "Cards",
-                  "Kelas",
-                  "Classrooms",
-                  "Mata Pelajaran",
-                  "Courses"
+                  lang.text("teacherAttendance"),
+                  lang.text("school"),
+                  lang.text("event"),
+                  lang.text("teacher"),
+                  lang.text("parent"),
+                  lang.text("history"),
+                  lang.text("classRoom"),
+                  lang.text("course"),
+                  lang.text("cards"),
                 ].includes(item.title ?? "")
               ) {
                 return false;
@@ -754,16 +741,12 @@ export const DashboardLayout = React.memo(
               if (
                 role === "guru" &&
                 [
-                  "Sekolah",
-                  "Acara",
-                  "School",
-                  "Events",
-                  "Riwayat",
-                  "History",
-                  "Cards",
-                  "Kartu",
-                  "Kelas",
-                  "Classrooms",
+                  lang.text("school"),
+                  lang.text("event"),
+                  lang.text("history"),
+                  lang.text("classRoom"),
+                  lang.text("cards"),
+                  
                 ].includes(item.title ?? "")
               ) {
                 return false;
