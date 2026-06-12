@@ -138,4 +138,12 @@ export const SERVICE_ENDPOINTS = {
     schoolDetail: "/api/dashboard/schools-detail",
     listCount: "/api/dashboard",
   },
+  settings:{
+    getSetting: "/api/app-setting",
+    updateSetting: "/api/app-setting",
+  },
+  scheduler:{
+    main: "/api/attendance/schedules",
+    holiday: "/api/attendance/holidays",
+  },
 };

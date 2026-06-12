@@ -11,6 +11,7 @@ export interface BiodataGuru {
   createdAt: string;
   updatedAt: string;
   userId?: number;
+  attendanceScheduleId: number;
   mataPelajaranId?: number;
   absensis: Absensi[];
   kehadiranBulanan: KehadiranBulanan[];
@@ -20,6 +21,11 @@ export interface BiodataGuru {
   mataPelajaran?: MataPelajaran;
   user?: UserDataModel;
   attendance?: Absensi;
+  attendanceSchedule?: {
+    id: number;
+    name: string;
+    description: string;
+  };
 }
 
 export interface Absensi {

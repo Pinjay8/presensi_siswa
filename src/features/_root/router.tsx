@@ -469,6 +469,41 @@ export const router = createBrowserRouter(
             })),
         },
         {
+          path: "setting/",
+          lazy: () =>
+            import("../settings/pages/settings-notification").then((m) => ({
+              Component: m.SettingsNotification,
+            })),
+        },
+        {
+          path: "scheduler",
+          lazy: () =>
+            import("../scheduler/pages/scheduler-landing").then((m) => ({
+              Component: m.SchedulerLanding,
+            })),
+        },
+        {
+          path: "scheduler/:id",
+          lazy: () =>
+            import("../scheduler/pages/scheduler-detail").then((m) => ({
+              Component: m.SchedulerDetail,
+            })),
+        },
+        {
+          path: "scheduler/edit/:id",
+          lazy: () =>
+            import("../scheduler/pages/scheduler-edit").then((m) => ({
+              Component: m.SchedulerEdit,
+            })),
+        },
+        {
+          path: "scheduler/create",
+          lazy: () =>
+            import("../scheduler/pages/scheduler-create").then((m) => ({
+              Component: m.SchedulerCreate,
+            })),
+        },
+        {
           path: "logout",
           lazy: () =>
             import("@/features/auth").then((m) => ({

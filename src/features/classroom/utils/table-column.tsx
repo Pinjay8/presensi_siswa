@@ -5,9 +5,21 @@ import {
   BaseTableFilter,
   BaseTableHeader,
 } from "@/features/_global";
+import { Button } from "@mui/material";
 import { ColumnDef } from "@tanstack/react-table";
+import { Pencil } from "lucide-react";
 
-export const classroomColumns = (columFilter?: BaseTableFilter): ColumnDef<ClassroomDataModel>[] => {
+export interface classroomColumnsProps {
+  columnFilter?: BaseTableFilter;
+  onAssignSchedule?: (row: ClassroomDataModel) => void;
+  onDelete?: (row: ClassroomDataModel) => void;
+}
+
+export const classroomColumns = ({
+  columnFilter,
+  onAssignSchedule,
+  onDelete,
+}: classroomColumnsProps): ColumnDef<ClassroomDataModel>[] => {
   return [
     {
       accessorKey: "namaKelas",
@@ -54,7 +66,27 @@ export const classroomColumns = (columFilter?: BaseTableFilter): ColumnDef<Class
         filterLabel: lang.text("school"),
         filterPlaceholder: lang.text("selectSchool"),
         filterVariant: "select",
-        filterOptions: columFilter?.schoolOptions || [],
+        filterOptions: columnFilter?.schoolOptions || [],
+      },
+    },
+    {
+      accessorKey: "Schedule.name",
+      accessorFn: (row) => row.attendanceSchedule?.name,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {"Schedule"}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-2">
+            <div className="text-sm font-medium">{row.original.attendanceSchedule?.name || "- - -"}</div>
+          </div>
+        );
       },
     },
     {
@@ -75,7 +107,9 @@ export const classroomColumns = (columFilter?: BaseTableFilter): ColumnDef<Class
           <BaseActionTable
             detailPath={`/classrooms/${encryptPayload}`}
             editPath={`/classrooms/edit/${encryptPayload}`}
-            deletePath={`/classrooms/delete/${encryptPayload}`}
+            // deletePath={`/classrooms/delete/${encryptPayload}`}
+            onAssignSchedule={() => onAssignSchedule?.(row.original)}
+            onDelete={() => onDelete?.(row.original)}
           />
         );
       },

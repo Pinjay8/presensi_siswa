@@ -1,17 +1,9 @@
 import { APP_CONFIG } from "@/core/configs/app";
 import { MENU_CONFIG, USERMENU_CONFIG } from "@/core/configs/menu";
-import {
-  AuthPage,
-  ForgetPassword,
-  LoginPage,
-  Logout,
-  ResetPassword,
-} from "@/features/auth";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { HomePage, RootPage } from "../dashboard";
+import { RouterProvider } from "react-router-dom";
 
 // Load Component for Pages
-import { CommingSoonPage, Default404, Vokadash } from "@/features/_global";
+import { Vokadash } from "@/features/_global";
 
 import { router } from "./router";
 

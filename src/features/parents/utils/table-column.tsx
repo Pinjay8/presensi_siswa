@@ -18,11 +18,13 @@ import { Switch } from "@mui/material";
 import { useState } from "react";
 import { userService } from "@/core/services";
 
-export const parentColumnWithFilter = (
-  columnFilter?: BaseTableFilter,
-  onToggleNotif?: (id: number, checked: boolean) => void,
-  loadingId?: number | null,
-): ColumnDef<any>[] => {
+export const parentColumnWithFilter = ({
+  columnFilter,
+  onDelete,
+}: {
+  columnFilter?: BaseTableFilter;
+  onDelete?: (row: any) => void;
+}): ColumnDef<any>[] => {
   return [
     {
       accessorKey: "name",
@@ -215,7 +217,7 @@ export const parentColumnWithFilter = (
           <BaseActionTable
             detailPath={`/parents/${encryptPayload}`}
             editPath={`/parents/edit/${encryptPayload}`}
-            // deletePath={`/students/delete/${encryptPayload}`}
+            onDelete={() => onDelete?.(row.original)}
           />
         );
       },

@@ -239,6 +239,51 @@
     "en": "Setting",
     "id": "Pengaturan"
   },
+    "settings": {
+    "en": "Settings",
+    "id": "Pengaturan"
+  },
+  "studentAttendanceNotification": {
+    "en": "Student Attendace Notification",
+    "id": "Notifikasi Absensi Murid"
+  },
+  "teacherAttendanceNotification": {
+    "en": "Teacher Attendace Notification",
+    "id": "Notifikasi Absensi Guru"
+  },
+  "parentAttendanceNotification": {
+    "en": "Parent Attendace Notification",
+    "id": "Notifikasi Absensi Orang Tua"
+  },
+  "courseAttendanceNotification": {
+    "en": "Course Attendace Notification",
+    "id": "Notifikasi Absensi Mata Pelajaran"
+  },
+  "extracurricularAttendanceNotification": {
+    "en": "Extracurricular Attendace Notification",
+    "id": "Notifikasi Absensi Ekstrakurikuler"
+  },
+  "dailyAttendanceNotification": {
+    "en": "Daily Attendance Notification",
+    "id": "Notifikasi Absensi Harian"
+  },
+  "updateSettingSuccess": {
+    "en": "Settings updated successfully",
+    "id": "Pengaturan berhasil diperbarui"
+  },
+  "failUpdateSetting": {
+    "en": "Failed to update settings",
+    "id": "Gagal memperbarui pengaturan"
+  },
+  "scheduler": {
+    "en": "Scheduler",
+    "id": "Penjadwalan"
+  },
+  "clear": {
+    "en": "Clear",
+    "id": "Bersihkan"
+  },
+  
   "logout": {
     "en": "Logout",
     "id": "Keluar"
@@ -2383,5 +2428,45 @@
   "present": {
     "id": "Hadir",
     "en": "Present"
+  },
+  "scheduleName": {
+    "id": "Nama Jadwal",
+    "en": "Schedule Name"
+  },
+  "schedulerType": {
+    "id": "Tipe Jadwal",
+    "en": "Schedule Type"
+  },
+    "schedulerDescription": {
+    "id": "Deskripsi Jadwal",
+    "en": "Schedule Description"
+  },
+  "createScheduleSuccess": {
+    "id": "Jadwal berhasil ditambahkan",
+    "en": "Schedule created successfully"
+  },
+  "createScheduleFailed": {
+    "id": "Gagal menambahkan jadwal",
+    "en": "Failed to create schedule"
+  },
+  "schedulerCreate": {
+    "id": "Pembuatan jadwal",
+    "en": "Create Schedule"
+  },
+  "assignSchedule": {
+    "id": "Tetapkan jadwal",
+    "en": "Assign Schedule"
+  },
+  "deleteMessage": {
+    "id": "Yaking Bang??",
+    "en": "Are you sure??"
+  },
+  "successDelete": {
+    "id": "Data berhasil dihapus",
+    "en": "Data deleted successfully"
+  },
+  "failedDelete": {
+    "id": "Gagal menghapus data",
+    "en": "Failed to delete data"
   }
 }

@@ -10,3 +10,5 @@ export * from "./map";
 export * from "./graduation";
 export * from "./slims";
 export * from "./library";
+export * from "./settings";
+export * from "./scheduler";

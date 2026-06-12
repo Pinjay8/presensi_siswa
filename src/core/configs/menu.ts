@@ -163,6 +163,16 @@ export const MENU_STAFF: VokadashProps["menus"] = [
       },
     ],
   },
+    {
+    title: lang.text("setting"),
+    url: "/setting",
+    icon: "Settings",
+  },
+  {
+    title: lang.text("scheduler"),
+    url: "/scheduler",
+    icon: "Calendar",
+  },
   {
     title: lang.text("formatManagement"),
     url: "/format",

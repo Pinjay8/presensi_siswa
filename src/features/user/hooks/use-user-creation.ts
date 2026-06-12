@@ -30,7 +30,13 @@ export const useUserCreation = () => {
   const update = (id: number, payload: UserCreationModel) =>
     updateMutation.mutateAsync({ id, payload });
 
-  const isLoading = updateMutation.isPending;
+
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => userService.deleteUser(id),
+  })
+
+  const deleteUser = (id: number) => deleteMutation.mutateAsync(id);
 
   // const updateMutationTeacher = useMutation({
   //   mutationFn: (vars: { id: number; payload: UserCreationModel }) =>
@@ -39,12 +45,13 @@ export const useUserCreation = () => {
 
   // const updateTeacher = (id: number, payload: UserCreationModel) =>
   //   updateMutationTeacher.mutateAsync({ id, payload });
-
+  const isLoading = updateMutation.isPending || deleteMutation.isPending;
   return {
     isLoading,
     update,
     create,
     createParents: createMutationParents.mutateAsync,
     updateParents: updateParentsMutation.mutateAsync,
+    deleteUser,
   };
 };
