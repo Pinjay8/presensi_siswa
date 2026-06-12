@@ -75,7 +75,9 @@ export const ParentCreationForm = () => {
         ? detail.data.nis
         : typeof detail.data?.nis === "string"
         ? detail.data.nis.split(",").map((s: string) => s.trim()).filter(Boolean)
-        : detail.data?.students?.map((s: any) => s.nis || s.user?.nis).filter(Boolean) || [],
+        : detail.data?.student?.user?.nis
+        ? [detail.data.student.user.nis]
+        : (detail.data as any)?.students?.map((s: any) => s.user?.nis || s.nis).filter(Boolean) || [],
       nik: detail.data?.nik || "",
       password: detail.data?.password || "",
       usernameInstagram: detail.data?.usernameInstagram || "",
@@ -265,7 +267,7 @@ export const ParentCreationForm = () => {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        placeholder={lang.text("selectStudent") || "Pilih Siswa"}
+                        placeholder={lang.text("selectStudent")}
                         size="small"
                         error={!!fieldState.error}
                         sx={{

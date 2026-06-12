@@ -215,8 +215,8 @@ export const studentColumnWithFilter = ({
             accessorKey: "status",
             header: () => "Status",
             cell: ({ row }: any) => {
-              const status = row.original.status?.toLowerCase();
-
+              const status = row.original.status ? row.original.status : row.original.user.status;
+              console.log("RIW", row)
               const statusConfig = {
                 hadir: {
                   label: "Hadir",
@@ -248,9 +248,9 @@ export const studentColumnWithFilter = ({
                     "bg-slate-100 text-slate-700 border border-slate-200",
                 },
               };
-
+              
               const config = statusConfig[status as keyof typeof statusConfig];
-
+              
               return (
                 <div
                   className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${
@@ -390,8 +390,8 @@ export const studentLibraryColumnWithFilter = ({
   noStatus?: boolean;
   schoolOptions?: { label: string; value: string | number }[];
   classroomOptions?: { label: string; value: string | number }[];
-  handleAttend?: (row: FlatStudentModel) => void;
-}): ColumnDef<FlatStudentModel>[] => {
+  handleAttend?: (row: any) => void;
+}): ColumnDef<any>[] => {
   const classroomFilterMeta = buildSelectFilter(
     "biodataSiswa[0].kelas.namaKelas",
     lang.text("classroom"),
@@ -410,8 +410,9 @@ export const studentLibraryColumnWithFilter = ({
       ),
       enableGlobalFilter: true,
       cell: ({ row }) => {
+        console.log("USER", row)
         const nameArr =
-          (row.original.name || row.original.user?.name)?.split(" ") || [];
+          (row.original.name || row.original.name)?.split(" ") || [];
         const initials =
           nameArr?.[0]?.[0]?.toUpperCase() +
           (nameArr?.[1]?.[0]?.toUpperCase() || "");

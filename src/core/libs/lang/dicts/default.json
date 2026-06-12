@@ -304,6 +304,10 @@
     "en": "Years",
     "id": "Tahunan"
   },
+  "selectStudent": {
+    "id": "Pilih Siswa",
+    "en": "Select Student"
+  },
   "selectPeriod": {
     "en": "Select Period",
     "id": "Pilih Periode"
