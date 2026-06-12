@@ -708,6 +708,12 @@ export const DashboardLayout = React.memo(
                   "Teachers",
                   "Parents",
                   "Students",
+                  "Cards",
+                  "Kartu",
+                  "Kelas",
+                  "Classrooms",
+                  "Mata Pelajaran",
+                  "Courses"
                 ].includes(item.title ?? "")
               ) {
                 return false;
@@ -715,7 +721,7 @@ export const DashboardLayout = React.memo(
 
               if (
                 role === "admin" &&
-                ["Riwayat", "History"].includes(item.title ?? "")
+                ["Riwayat", "History", "Pengguna Admin", "Admin User"].includes(item.title ?? "")
               ) {
                 return false;
               }
@@ -734,6 +740,12 @@ export const DashboardLayout = React.memo(
                   "Orang Tua",
                   "Riwayat",
                   "History",
+                  "Kartu",
+                  "Cards",
+                  "Kelas",
+                  "Classrooms",
+                  "Mata Pelajaran",
+                  "Courses"
                 ].includes(item.title ?? "")
               ) {
                 return false;
@@ -748,6 +760,10 @@ export const DashboardLayout = React.memo(
                   "Events",
                   "Riwayat",
                   "History",
+                  "Cards",
+                  "Kartu",
+                  "Kelas",
+                  "Classrooms",
                 ].includes(item.title ?? "")
               ) {
                 return false;
