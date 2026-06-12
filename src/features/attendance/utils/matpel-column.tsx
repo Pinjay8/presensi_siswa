@@ -130,7 +130,8 @@ export const matpelColumns = (
     header: lang.text("action"),
     enableSorting: false,
     cell: ({ row }) => {
-      const status = row.original.statusKehadiran?.toLowerCase() || "belum hadir";
+      const status =
+        row.original.statusKehadiran?.toLowerCase() || "belum hadir";
       if (status !== "belum hadir") {
         return null;
       }
@@ -142,7 +143,7 @@ export const matpelColumns = (
             onClick={() => onSubmitAttendance(row.original, "hadir")}
             sx={{ textTransform: "capitalize" }}
           >
-            Hadir
+            {lang.text("present")}
           </Button>
 
           <Button
@@ -151,7 +152,7 @@ export const matpelColumns = (
             onClick={() => onSubmitAttendance(row.original, "sakit")}
             sx={{ textTransform: "capitalize" }}
           >
-            Sakit
+            {lang.text("sick")}
           </Button>
 
           <Button
@@ -160,7 +161,7 @@ export const matpelColumns = (
             onClick={() => onSubmitAttendance(row.original, "alfa")}
             sx={{ textTransform: "capitalize" }}
           >
-            Alfa
+            {lang.text("alfa")}
           </Button>
 
           <Button
@@ -169,7 +170,7 @@ export const matpelColumns = (
             onClick={() => onSubmitAttendance(row.original, "terlambat")}
             sx={{ textTransform: "capitalize" }}
           >
-            Terlambat
+            {lang.text("late")}
           </Button>
         </div>
       );

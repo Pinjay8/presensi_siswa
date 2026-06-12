@@ -47,11 +47,11 @@ export const SubjectAttendance = () => {
     localStorage.setItem("attendanceTarget", "students");
   }, []);
 
-  const profile = useProfile();
-  const alert = useAlert();
-  const biodata = useBiodataNew(profile?.user?.sekolahId || 1);
+  // const profile = useProfile();
+  // const alert = useAlert();
+  // const biodata = useBiodataNew(profile?.user?.sekolahId || 1);
 
-  const biodataAll = useBiodata();
+  // const biodataAll = useBiodata();
 
   const [selectedStartMonth, setSelectedStartMonth] = useState<string>(
     dayjs().tz("Asia/Jakarta").startOf("month").format("YYYY-MM"),
@@ -64,20 +64,20 @@ export const SubjectAttendance = () => {
     "harian" | "mingguan" | "bulanan" | "tahunan"
   >("harian");
 
-  // const {
-  //   global,
-  //   sorting,
-  //   filter,
-  //   pagination,
-  //   onSortingChange,
-  //   onPaginationChange,
-  // } = useDataTableController({ defaultPageSize: 10 });
+  const {
+    global,
+    sorting,
+    filter,
+    pagination,
+    onSortingChange,
+    onPaginationChange,
+  } = useDataTableController({ defaultPageSize: 10 });
 
   const attendanceParams = {
     // filter: filters,
-    page: 1,
-    limit: 100,
-    // type: "siswa",
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+    search: global.search,
   };
 
   const {
@@ -88,149 +88,6 @@ export const SubjectAttendance = () => {
   } = useMapelDaily(attendanceParams);
 
   const filteredData = attendanceData?.data || [];
-
-  useEffect(() => {
-    const socket = io("https://presensi-api.app.bio-experience.com", {
-      transports: ["websocket"],
-    });
-
-    socket.on("connect", () => {
-      console.log("Connected");
-    });
-
-    socket.on("absen", async (data) => {
-      await refetch();
-    });
-
-    socket.on("absen-barcode", async (data) => {
-      console.log("[BARCODE]", data);
-
-      await refetch();
-    });
-
-    socket.on("disconnect", () => {
-      console.log("Disconnected");
-    });
-
-    socket.on("error", (err) => {
-      console.error("[ERROR]", err);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [refetch]);
-
-  // const handleExport = async (format: "csv" | "excel" | "pdf") => {
-  //   if (!filteredData.length) {
-  //     alert.error("Tidak ada data untuk diekspor.");
-  //     return;
-  //   }
-
-  //   const exportData = filteredData.map((item: any, index: number) => ({
-  //     No: index + 1,
-  //     Nama: item.siswa?.nama ?? "",
-  //     NISN: item.siswa?.nisn ?? "",
-  //     Kelas: item.siswa?.kelas ?? "N/A",
-  //     Sekolah: item.siswa?.sekolah ?? "N/A",
-  //     StatusKehadiran: item.statusKehadiran ?? "N/A",
-  //     JamMasuk: formatDateTime(item.jamMasuk),
-  //     JamPulang: formatDateTime(item.jamPulang),
-  //   }));
-
-  //   const fileName = `attendance_data_${dataMode}_${dayjs().format("YYYYMMDD")}`;
-
-  //   switch (format) {
-  //     case "csv": {
-  //       const csv = Papa.unparse(exportData, {
-  //         delimiter: ";",
-  //       });
-
-  //       const blob = new Blob([csv], {
-  //         type: "text/csv;charset=utf-8;",
-  //       });
-
-  //       const link = document.createElement("a");
-  //       link.href = URL.createObjectURL(blob);
-  //       link.download = `${fileName}.csv`;
-  //       link.click();
-  //       break;
-  //     }
-
-  //     case "excel": {
-  //       const wb = XLSX.utils.book_new();
-  //       const ws = XLSX.utils.json_to_sheet(exportData);
-
-  //       XLSX.utils.book_append_sheet(wb, ws, `Attendance-${dataMode}`);
-
-  //       XLSX.writeFile(wb, `${fileName}.xlsx`);
-  //       break;
-  //     }
-
-  //     case "pdf": {
-  //       let period: string | undefined;
-
-  //       switch (dataMode) {
-  //         case "mingguan":
-  //           period = `${dayjs()
-  //             .startOf("week")
-  //             .format("DD MMM YYYY")} - ${dayjs()
-  //             .endOf("week")
-  //             .format("DD MMM YYYY")}`;
-  //           break;
-
-  //         case "bulanan":
-  //           period = dayjs(selectedStartMonth).format("MMMM YYYY");
-  //           break;
-
-  //         case "tahunan":
-  //           period = dayjs().format("YYYY");
-  //           break;
-
-  //         default:
-  //           period = undefined;
-  //       }
-
-  //       await generateStudentAttendancePDF({
-  //         attendanceData: exportData,
-  //         alert,
-  //         schoolData: schoolData || {},
-  //         schoolIsLoading,
-  //         mode: dataMode,
-  //         date:
-  //           dataMode === "harian"
-  //             ? dayjs().tz("Asia/Jakarta").format("DD MMMM YYYY")
-  //             : undefined,
-  //         period,
-  //       });
-
-  //       break;
-  //     }
-  //   }
-
-  //   setIsModalOpen(false);
-  // };
-
-  const studentList = Array.isArray(
-    dataMode === "harian" ? biodata.data : biodataAll.data,
-  )
-    ? dataMode === "harian"
-      ? biodata.data
-      : biodataAll.data
-    : [];
-
-  const classOptions = Array.from(
-    new Map(
-      (biodataAll.data ?? []).map((student: any) => [
-        student.kelas?.id,
-        {
-          id: student.kelas?.id,
-          name: student.kelas?.namaKelas,
-        },
-      ]),
-    ).values(),
-  );
-  const attendanceCount = filteredData.length;
 
   const handleExportExcel = async (params: any) => {
     const blob = await attendanceService.exportExcel(params);
@@ -312,7 +169,13 @@ export const SubjectAttendance = () => {
         }}
       /> */}
 
-      <SubjectAttendanceTable totalAttedance={true} data={filteredData} />
+      <SubjectAttendanceTable
+        totalAttedance={true}
+        data={filteredData}
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
+        rowCount={attendanceData?.pagination?.total ?? 0}
+      />
       {/* <ExportFilterModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -9,7 +9,14 @@ import { useNavigate } from "react-router-dom";
 import { lang } from "@/core/libs";
 import { ModalCreateParents } from "../components/ModalCreateParents";
 import { useProfile } from "@/features/profile";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import { FaPlus } from "react-icons/fa";
 export function ParentTable() {
   const alert = useAlert();
@@ -26,7 +33,7 @@ export function ParentTable() {
   const handleOpenDeleteDialog = (parent: any) => {
     setSelectedParent(parent);
     setOpenDeleteDialog(true);
-  }
+  };
 
   const columns = useMemo(() => {
     return parentColumnWithFilter({
@@ -121,18 +128,35 @@ export function ParentTable() {
         }
       />
 
-      
       {/* Delete Dialog */}
-      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>{lang.text("delete")}</DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
           <DialogContentText>
             {lang.text("deleteMessage", { context: selectedParent?.user_name })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDeleteDialog(false)}>{lang.text("cancel")}</Button>
-          <Button onClick={handleDelete} disabled={userDelete.isLoading}>{lang.text("delete")}</Button>
+          <Button
+            onClick={() => setOpenDeleteDialog(false)}
+            color="primary"
+            variant="outlined"
+          >
+            {lang.text("cancel")}
+          </Button>
+          <Button
+            onClick={handleDelete}
+            disabled={userDelete.isLoading}
+            variant="contained"
+            color="primary"
+          >
+            {lang.text("delete")}
+          </Button>
         </DialogActions>
       </Dialog>
     </>

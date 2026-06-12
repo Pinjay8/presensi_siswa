@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/core/libs";
 import { BiodataGuru } from "@/core/models/biodata-guru";
-import { BaseDataTable } from "@/features/_global";
+import { BaseDataTable, useDataTableController } from "@/features/_global";
 import { useSchool } from "@/features/schools";
 import { useBiodataGuru } from "@/features/user/hooks";
 import jsPDF from "jspdf";
@@ -64,17 +64,27 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
     "harian" | "mingguan" | "bulanan" | "tahunan"
   >("harian");
 
-  const [filter, setFilter] = useState<
+  const [filters, setFilter] = useState<
     "harian" | "mingguan" | "bulanan" | "tahunan"
   >("harian");
 
-  const attendanceParams = {
+  const {
+    global,
+    sorting,
     filter,
-    page: 1,
-    limit: 100,
+    pagination,
+    onSortingChange,
+    onPaginationChange,
+  } = useDataTableController({
+    defaultPageSize: 10,
+  });
+
+  const attendanceParams = {
+    filter: filters,
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
     type: "guru",
   };
-
   const {
     data: attendanceData,
     isLoading,
@@ -213,6 +223,10 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
         globalSearch
         searchParamPagination
         showFilterButton
+        manualPagination
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
+        rowCount={attendanceData?.pagination?.total ?? 0}
         initialState={{
           columnVisibility: {
             user_email: false,

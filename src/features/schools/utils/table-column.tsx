@@ -86,9 +86,7 @@ export const schoolColumns: ColumnDef<SchoolDataModel>[] = [
   {
     accessorKey: "id",
     accessorFn: (row) => row.id,
-    header: () => {
-      return null;
-    },
+    header: () => lang.text("action"),
     cell: ({ row }) => {
       const encryptPayload = simpleEncode(
         JSON.stringify({ id: row.original.id, text: row.original.namaSekolah }),

@@ -96,8 +96,6 @@
 
 // export const courseDataFallback: CourseDataModel[] = [];
 
-
-
 import { lang, simpleEncode } from "@/core/libs";
 import { CourseDataModel } from "@/core/models/course";
 import {
@@ -111,7 +109,11 @@ export const courseColumns = ({
   schoolOptions = [],
   classroomOptions = [],
   onEdit, // Add onEdit callback
-}: BaseTableFilter & { onEdit?: (course: CourseDataModel) => void }): ColumnDef<CourseDataModel>[] => {
+  onDelete,
+}: BaseTableFilter & {
+  onEdit?: (course: CourseDataModel) => void;
+  onDelete?: (course: CourseDataModel) => void;
+}): ColumnDef<CourseDataModel>[] => {
   return [
     {
       accessorKey: "namaMataPelajaran",
@@ -156,13 +158,13 @@ export const courseColumns = ({
           <BaseTableHeader
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            {lang.text('className')}
+            {lang.text("className")}
           </BaseTableHeader>
         );
       },
       meta: {
-        filterLabel: lang.text('className'),
-        filterPlaceholder: lang.text('selectClassRoom'),
+        filterLabel: lang.text("className"),
+        filterPlaceholder: lang.text("selectClassRoom"),
         filterVariant: "select",
         filterOptions: schoolOptions,
       },
@@ -172,9 +174,7 @@ export const courseColumns = ({
       accessorFn: (row) => row.id,
       size: 50,
       enableSorting: false,
-      header: () => {
-        return null;
-      },
+      header: () => lang.text("action"),
       cell: ({ row }) => {
         const encryptPayload = simpleEncode(
           JSON.stringify({
@@ -186,7 +186,8 @@ export const courseColumns = ({
           <BaseActionTable
             // detailPath={`/courses/${encryptPayload}`} // Optional: Keep if detail view is needed
             onEdit={() => onEdit?.(row.original)} // Trigger onEdit callback
-            deletePath={`/courses/delete/${encryptPayload}`}
+            // deletePath={`/courses/delete/${encryptPayload}`}
+            onDelete={() => onDelete?.(row.original)}
           />
         );
       },

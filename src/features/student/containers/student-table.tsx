@@ -11,7 +11,7 @@ import {
 import { studentColumnWithFilter } from "../utils";
 import { userService } from "@/core/services";
 import RegisterFaceDialog from "@/features/_global/components/dashboard/usermenu/components/RegisterFaceDialog";
-import { useAlert, useParamDecode } from "@/features/_global";
+import { BaseDataTable, useAlert, useParamDecode } from "@/features/_global";
 import { lang } from "@/core/libs";
 import { useCardAssign } from "../hooks/useUnassignCard";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -20,18 +20,12 @@ import AssignCardDialog from "../components/AsssignCardDialog";
 import UnassignCardDialog from "../components/UnassignCardDialog";
 
 interface StudentTableProps {
-  data: any[];
+  data: any;
   isLoading: boolean;
   refetch: () => void;
-  pagination: {
-    pageIndex: number;
-    pageSize: number;
-    totalItems: number;
-    onPageChange: (newPage: number) => void;
-    onSizeChange: (newSize: number) => void;
-  };
-  sorting: any[];
-  onSortingChange: (sort: any[]) => void;
+  pagination: any;
+  onPaginationChange: any;
+  rowCount: number;
 }
 
 export const useAssignCard = () => {
@@ -55,8 +49,8 @@ export function StudentTable({
   data,
   isLoading,
   pagination,
-  sorting,
-  onSortingChange,
+  onPaginationChange,
+  rowCount,
   refetch,
 }: StudentTableProps) {
   const schoolOptions = useSchoolOptions();
@@ -104,8 +98,8 @@ export function StudentTable({
   const columns = useMemo(
     () =>
       studentColumnWithFilter({
-        schoolOptions,
-        classroomOptions,
+        // schoolOptions,
+        // classroomOptions,
         handleAttend,
         onRegisterFace: handleOpenRegisterFace,
         onAssignCard: handleOpenAssignCard,
@@ -186,22 +180,21 @@ export function StudentTable({
 
   return (
     <>
-      <BaseDataTables
+      <BaseDataTable
         columns={columns}
         data={data}
         globalSearch
+        dataFallback={[]}
+        // searchParamPagination
         searchParamPagination
         showFilterButton
         isLoading={isLoading}
-        initialState={{ sorting }}
-        onSortingChange={onSortingChange}
-        pageIndex={pagination.pageIndex}
-        pageSize={pagination.pageSize}
-        totalItems={pagination.totalItems}
-        onPageChange={pagination.onPageChange}
-        onSizeChange={pagination.onSizeChange}
-        schoolOptions={schoolOptions}
-        classroomOptions={classroomOptions}
+        manualPagination
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
+        rowCount={rowCount}
+        // schoolOptions={schoolOptions}
+        // classroomOptions={classroomOptions}
       />
 
       <RegisterFaceDialog

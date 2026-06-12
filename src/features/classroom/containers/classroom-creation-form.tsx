@@ -35,7 +35,7 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
     ? JSON.parse(simpleDecode(params.id || ""))
     : {};
 
-  const school = useSchool();
+  // const school = useSchool();
   const detail = useClassroomDetail({ id: Number(decodeParams?.id) });
   const creation = useClassroomCreation();
   const alert = useAlert();
@@ -54,7 +54,6 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
 
   async function onSubmit(data: z.infer<typeof classroomCreateSchema>) {
     try {
-      // Ubah namaKelas dan level menjadi uppercase
       const formattedData = {
         namaKelas: data.className,
         level: data.level,
@@ -91,7 +90,7 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="mb-0">
         <div className="gap-6">
           <div className="basis-1 w-max">
-            <div className="flex flex-col gap-4 mb-4">
+            {/* <div className="flex flex-col gap-4 mb-4">
               <div className="basis-1 w-max">
                 <FormField
                   control={form.control}
@@ -125,7 +124,7 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
                   )}
                 />
               </div>
-            </div>
+            </div> */}
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="basis-1 sm:basis-1/2">
                 <FormField
@@ -158,7 +157,7 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <FormControl>
+                        <FormControl style={{ width: "200px" }}>
                           <SelectTrigger>
                             <SelectValue
                               placeholder={lang.text("selectLevel")}

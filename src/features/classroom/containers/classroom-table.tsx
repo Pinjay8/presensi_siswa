@@ -7,7 +7,14 @@ import { useClassroom, useClassroomCreation } from "../hooks";
 import { classroomColumns, classroomDataFallback } from "../utils";
 import { useProfile } from "@/features/profile";
 import ModalAssignSchedule from "../components/modalAssignSchedule";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import { FaPlus } from "react-icons/fa";
 
 export const ClassroomTable = () => {
@@ -22,12 +29,12 @@ export const ClassroomTable = () => {
   const handleOpenDeleteDialog = (classroom: any) => {
     setSelectedClass(classroom);
     setOpenDeleteDialog(true);
-  }
+  };
 
   const handleOpenAssignSchedule = (classroom: any) => {
     setSelectedClass(classroom);
     setOpenAssignSchedule(true);
-  }
+  };
 
   const columns = useMemo(
     () =>
@@ -103,19 +110,37 @@ export const ClassroomTable = () => {
         isLoading={resource.query.isLoading}
       />
 
-            {/* Delete Dialog */}
-            <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
-              <DialogTitle>{lang.text("delete")}</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  {lang.text("deleteMessage", { context: selectedClass?.user_name })}
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={() => setOpenDeleteDialog(false)}>{lang.text("cancel")}</Button>
-                <Button onClick={handleDelete} disabled={classDelete.isLoading}>{lang.text("delete")}</Button>
-              </DialogActions>
-            </Dialog>
+      {/* Delete Dialog */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>{lang.text("delete")}</DialogTitle>
+        <DialogContent dividers>
+          <DialogContentText>
+            {lang.text("deleteMessage", { context: selectedClass?.user_name })}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setOpenDeleteDialog(false)}
+            color="primary"
+            variant="outlined"
+          >
+            {lang.text("cancel")}
+          </Button>
+          <Button
+            onClick={handleDelete}
+            disabled={classDelete.isLoading}
+            variant="contained"
+            color="primary"
+          >
+            {lang.text("delete")}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

@@ -26,7 +26,7 @@ export const SERVICE_ENDPOINTS = {
   },
   auth: {
     login: "/login",
-    logout: "/logout",
+    logout: "/api/logout",
     signup: "/signup",
     forgetPassword: "/forgot-password",
     resetPassword: "/reset-password",

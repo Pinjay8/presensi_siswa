@@ -1,5 +1,5 @@
 import { distinctObjectsByProperty, lang } from "@/core/libs";
-import { BaseDataTable } from "@/features/_global";
+import { BaseDataTable, useAlert } from "@/features/_global";
 import { useClassroom } from "@/features/classroom";
 import {
   courseColumns,
@@ -14,6 +14,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/core/libs";
 import { CourseDataModel } from "@/core/models/course";
 import { useProfile } from "@/features/profile";
 import { FaPlus } from "react-icons/fa";
+import { useUserCreation } from "@/features/user";
+import { DeleteDialog } from "@/features/cards/components/DeleteCardDialog";
 
 export const CourseTable = () => {
   const resource = useCourse();
@@ -21,6 +23,28 @@ export const CourseTable = () => {
   const classroom = useClassroom();
   const [createCourse, setCreateCourse] = useState(false);
   const [editCourse, setEditCourse] = useState<CourseDataModel | null>(null);
+
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [openDelete, setOpenDelete] = useState(false);
+  const alert = useAlert();
+
+  const handleOpenDeleteDialog = (parent: any) => {
+    setSelectedCourse(parent);
+    setOpenDelete(true);
+  };
+  const userDelete = useUserCreation();
+
+  async function handleDelete() {
+    try {
+      await userDelete.deleteUser(Number(selectedCourse?.id));
+      alert.success(lang.text("successDelete"));
+      resource.query.refetch();
+      setOpenDelete(false);
+      setSelectedCourse(null);
+    } catch (error: any) {
+      alert.error(lang.text("failedDelete"));
+    }
+  }
 
   const columns = useMemo(
     () =>
@@ -40,6 +64,7 @@ export const CourseTable = () => {
           "value",
         ),
         onEdit: (course) => setEditCourse(course),
+        onDelete: (course) => handleOpenDeleteDialog(course),
       }),
     [school.data, classroom.data],
   );
@@ -101,6 +126,12 @@ export const CourseTable = () => {
         searchParamPagination
         searchPlaceholder={lang.text("search")}
         isLoading={resource.query.isLoading}
+      />
+      <DeleteDialog
+        open={openDelete}
+        onClose={() => setOpenDelete(false)}
+        onConfirm={handleDelete}
+        loading={userDelete.isLoading}
       />
     </>
   );

@@ -215,7 +215,7 @@ export const studentColumnWithFilter = ({
             accessorKey: "status",
             header: () => "Status",
             cell: ({ row }: any) => {
-              const status = row.original.status?.toLowerCase();
+              const status = row.original.statusKehadiranHariIni?.toLowerCase();
 
               const statusConfig = {
                 hadir: {
@@ -274,9 +274,8 @@ export const studentColumnWithFilter = ({
                   }
                 }}
                 disabled={
-                  // (row.original.user?.status || row.original.status) ===
-                  //   "hadir"
-                  row.original.status !== "belum hadir"
+                  row.original.status !== "belum hadir" &&
+                  row.original.status !== "Belum Hadir"
                 }
               >
                 {lang.text("attend")}
@@ -315,7 +314,7 @@ export const studentColumnWithFilter = ({
     {
       accessorKey: "id",
       enableSorting: false,
-      header: () => null,
+      header: () => lang.text("action"),
       cell: ({ row }) => {
         const encryptPayload = simpleEncode(
           JSON.stringify({

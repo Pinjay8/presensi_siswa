@@ -25,15 +25,14 @@ export const LoginPage = () => {
       //   throw new Error(lang.text("needActiovation"));
       // }
 
-      // Simpan token di localStorage
-      const token = res?.data?.token; // Pastikan token ada di response
+      const token = res?.data?.token;
       if (token) {
-        localStorage.setItem("token", token); // Simpan token ke localStorage
+        localStorage.setItem("token", token);
       } else {
         console.log("Token tidak ditemukan dalam response");
       }
 
-      alert.success("Selamat datang kembali");
+      alert.success(lang.text("welcomeBack"));
 
       navigate("/", { replace: true });
     } catch (err: any) {

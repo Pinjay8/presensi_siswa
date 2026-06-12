@@ -592,10 +592,7 @@
     "id": "Tanggal",
     "en": "Date"
   },
-  "action": {
-    "id": "Aksi",
-    "en": "Action"
-  },
+
   "outOfTownServices": {
     "id": "Dinas Keluar Kota",
     "en": "Out of Town Services"
@@ -895,7 +892,7 @@
     "en": "Making a dispensation"
   },
   "LicensingData": {
-    "id": "Data perizinan",
+    "id": "Data Perizinan",
     "en": "Licensing data"
   },
   "addLicensing": {
@@ -1315,6 +1312,7 @@
     "id": "Alfa",
     "en": "Alfa"
   },
+
   "nipValidation": {
     "id": "NIP harus 18 karakter",
     "en": "NIP must be 18 characters long"
@@ -1524,8 +1522,8 @@
     "en": "Classroom"
   },
   "action": {
-    "id": "Action",
-    "en": "Aksi"
+    "id": "Aksi",
+    "en": "Action"
   },
   "updateSchoolData": {
     "id": "Memperbarui data sekolah",
@@ -2199,7 +2197,7 @@
     "id": "Manajemen Kehadiran",
     "en": "Attendance Management"
   },
-  
+
   "ChoosePicture": {
     "id": "Pilih Foto",
     "en": "Choose Photo"
@@ -2459,8 +2457,8 @@
     "en": "Assign Schedule"
   },
   "deleteMessage": {
-    "id": "Yaking Bang??",
-    "en": "Are you sure??"
+    "id": "Apakah anda ingin menghapus data ini?",
+    "en": "Are you sure to delete this data?"
   },
   "successDelete": {
     "id": "Data berhasil dihapus",
@@ -2469,5 +2467,10 @@
   "failedDelete": {
     "id": "Gagal menghapus data",
     "en": "Failed to delete data"
+  },
+
+  "attendanceSchedule": {
+    "id": "Jadwal",
+    "en": "Schedule"
   }
 }

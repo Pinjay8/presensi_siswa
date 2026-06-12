@@ -91,6 +91,7 @@ export interface BaseDataTableProps {
   pagination?: PaginationState;
   onPaginationChange?: any;
   rowCount?: number;
+  manualPagination?: any;
 
   actions?: {
     title?: React.ReactNode;
@@ -112,6 +113,7 @@ export const BaseDataTable = ({
   rowCount,
   isLoading = false,
   renderAction,
+  manualPagination,
   searchParamPagination,
   showFilterButton,
   actions,

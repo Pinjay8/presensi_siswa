@@ -14,11 +14,17 @@ import { useQueryClient } from "@tanstack/react-query";
 interface StudentAttendanceTableProps {
   data: BiodataSiswa[]; // Terima data yang difilter
   totalAttedance?: boolean;
+  pagination: any;
+  onPaginationChange: any;
+  rowCount: number;
 }
 
 export function SubjectAttendanceTable({
   data,
   totalAttedance,
+  pagination,
+  onPaginationChange,
+  rowCount,
 }: StudentAttendanceTableProps) {
   const school = useSchool();
   const classroom = useClassroom();
@@ -54,7 +60,7 @@ export function SubjectAttendanceTable({
     try {
       await attendanceService.createAbsenMapel(row.userId)({
         status,
-        mataPelajaranId: row.id,
+        mataPelajaranId: row.mataPelajaranId,
       });
 
       await queryClient.invalidateQueries({
@@ -83,6 +89,10 @@ export function SubjectAttendanceTable({
         globalSearch
         searchParamPagination
         showFilterButton
+        manualPagination
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
+        rowCount={rowCount}
         initialState={{
           columnVisibility: {
             user_email: false,

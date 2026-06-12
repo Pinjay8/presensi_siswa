@@ -19,9 +19,9 @@ export const studentService = {
     const query = {
       page: params.page,
       size: params.size,
-      ...(params.sekolahId && { sekolahId: params.sekolahId }),
-      ...(params.idKelas !== undefined && { idKelas: params.idKelas }),
-      ...(params.keyword && { keyword: params.keyword }),
+      // ...(params.sekolahId && { sekolahId: params.sekolahId }),
+      // ...(params.idKelas !== undefined && { idKelas: params.idKelas }),
+      // ...(params.keyword && { keyword: params.keyword }),
     };
 
     const url = withQuery(
@@ -37,8 +37,10 @@ export const studentService = {
         "Content-Type": "application/json",
       },
     });
+    console.log("response", response);
 
     const json = await response.json();
+    console.log("json", json);
     return {
       students: json.data,
       pagination: json.pagination,
