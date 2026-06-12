@@ -89,7 +89,7 @@ export const createSiswaSchema = z.object({
   noTlpOrtu: z.string().optional(),
   alamat: z.string().min(1, "Alamat wajib diisi"),
   password: z.string().optional(),
-  sekolahId: z.number(),
+  // sekolahId: z.number(),
   jenisKelamin: z.enum(["Male", "Female"]),
   tanggalLahir: z.string(),
   rfid: z.string().optional(),

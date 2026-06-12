@@ -73,7 +73,7 @@ export const TeacherCreationForm = ({ id }: any) => {
       noTlp: detail.data?.noTlp || "",
       isVerified: detail.data?.isVerified || false,
       isActive: detail.data?.isActive || 0,
-      sekolahId: detail.data?.sekolahId || 0,
+      // sekolahId: detail.data?.sekolahId || 0,
       usernameInstagram: detail.data?.usernameInstagram || "",
     },
   });
@@ -94,7 +94,7 @@ export const TeacherCreationForm = ({ id }: any) => {
       ...(data.alamat ? { alamat: data.alamat } : {}),
       ...(data.tanggalLahir ? { tanggalLahir: data.tanggalLahir } : {}),
       ...(data.jenisKelamin ? { jenisKelamin: data.jenisKelamin } : {}),
-      ...(data.sekolahId ? { sekolahId: data.sekolahId } : {}),
+      // ...(data.sekolahId ? { sekolahId: data.sekolahId } : {}),
       // ...(data.noWhatsapp ? { noWhatsapp: data.noWhatsapp } : {}),
       ...(data.usernameInstagram
         ? { usernameInstagram: data.usernameInstagram }
@@ -129,7 +129,7 @@ export const TeacherCreationForm = ({ id }: any) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="mb-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 max-w-lg gap-6">
-          <FormField
+          {/* <FormField
             control={form.control}
             name="sekolahId"
             render={({ field, fieldState }) => (
@@ -157,7 +157,7 @@ export const TeacherCreationForm = ({ id }: any) => {
                 <FormMessage>{fieldState.error?.message}</FormMessage>
               </FormItem>
             )}
-          />
+          /> */}
           <FormField
             control={form.control}
             name="name"
