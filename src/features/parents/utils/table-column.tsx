@@ -24,7 +24,7 @@ export const parentColumnWithFilter = ({
 }: {
   columnFilter?: BaseTableFilter;
   onDelete?: (row: any) => void;
-}): ColumnDef<UserDataModel>[] => {
+}): ColumnDef<any>[] => {
   return [
     {
       accessorKey: "name",
