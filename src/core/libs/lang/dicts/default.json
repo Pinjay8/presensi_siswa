@@ -39,6 +39,10 @@
     "en": "First YouTube URL",
     "id": "URL Youtube 1"
   },
+  "subTitleDashboard": {
+    "en": "Below is a summary of the school today.",
+    "id": "Berikut ringkasan data sekolah hari ini."
+  },
   "inputURLYoutube2": {
     "en": "Second YouTube URL",
     "id": "URL Youtube 2"

@@ -6,6 +6,7 @@ import { useProfile } from "@/features/profile";
 import { useSchool } from "@/features/schools";
 import { useBiodata } from "@/features/user";
 import {
+  Bell,
   Loader2,
   Maximize,
   Menu,
@@ -27,6 +28,10 @@ import { ThemeToggle } from "../theme-toggle";
 import { Sidebar } from "./sidebar";
 import { SidebarProps } from "./sidebar/types";
 import { UserMenu, UserMenuProps } from "./usermenu";
+import Notification from "../Notification";
+import { Typography } from "@mui/material";
+import { useSidebarContext } from "../../hooks";
+import { SidebarContext } from "../../context";
 
 export interface DashboardLayoutProps extends PropsWithChildren {
   menus: SidebarProps["menus"];
@@ -754,15 +759,11 @@ export const DashboardLayout = React.memo(
         })
         .filter(Boolean);
     }, [menus, profile?.user?.role]);
+
+    const sidebarContext = useSidebarContext();
+
     return (
       <div className="dashboard-layout grid min-h-[100svh] w-full md:grid-cols-[auto_1fr] lg:grid-cols-[auto_1fr]">
-        {/* <SidebarContext.Provider
-        value={{
-          visible: sidebarVisible,
-          setVisible: () => setSidebarVisible((v) => !v),
-        }}
-      >
-      </SidebarContext.Provider> */}
         <Sidebar.Default
           menus={filteredMenus}
           className={props.sidebarClassName}
@@ -771,11 +772,11 @@ export const DashboardLayout = React.memo(
         <div className="sidebar-content flex flex-col overflow-hidden">
           <header
             className={cn(
-              "sidebar-header flex h-14 items-center gap-2 border-b bg-muted-foreground/5 px-4 lg:h-[60px] lg:px-6",
+              "sidebar-header flex h-14 items-center gap-1 border-b bg-muted-foreground/5 px-4 lg:h-[60px] lg:px-6",
               props.headerClassName,
             )}
           >
-            <div className="relative z-[99] border border-white/10 overflow-hidden hover:border-white/ rounded-full">
+            <div className="hidden lg:block relative z-[99] border border-white/10 overflow-hidden rounded-full">
               <Button
                 variant="ghost"
                 size="icon"
@@ -791,7 +792,7 @@ export const DashboardLayout = React.memo(
                 <p>{visible ? "Hide Sidebar" : "Show Sidebar"}</p>
               </Button>
             </div>
-            <Button
+            {/* <Button
               variant="ghost"
               size="icon"
               onClick={() => setSidebarVisible((v) => !v)}
@@ -799,14 +800,40 @@ export const DashboardLayout = React.memo(
             >
               <Menu className="h-6 w-6" />
               <span className="sr-only">Toggle sidebar</span>
-            </Button>
-            <Sidebar.Sheet
-              className={props.sidebarClassName}
-              menus={filteredMenus}
-            />
+            </Button> */}
+            {/* <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => sidebarContext.setVisible(true)}
+              className="md:hidden"
+            >
+              <Menu className="h-6 w-6" />
+              <span className="sr-only">Toggle sidebar</span>
+            </Button> */}
+            <SidebarContext.Provider
+              value={{
+                visible: sidebarVisible,
+                setVisible: () => setSidebarVisible((v) => !v),
+              }}
+            >
+              <Sidebar.Sheet
+                className={props.sidebarClassName}
+                menus={filteredMenus}
+              />
+            </SidebarContext.Provider>
             <div className="w-full flex-1">
               {/* Search form (jika diaktifkan) */}
             </div>
+
+            <div>
+              <Typography
+                className="lg:mr-1 "
+                sx={{ fontSize: "14px", marginRight: "5px", marginBottom: "0" }}
+              >
+                {profile?.user?.sekolah?.namaSekolah ?? "-"}
+              </Typography>
+            </div>
+            <Notification />
             <ThemeToggle />
             <LangToggle />
             <UserMenu menus={usermenus} />

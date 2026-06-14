@@ -274,8 +274,8 @@ export const studentColumnWithFilter = ({
                   }
                 }}
                 disabled={
-                  row.original.status !== "belum hadir" &&
-                  row.original.status !== "Belum Hadir"
+                  row.original.statusKehadiranHariIni !== "belum hadir" &&
+                  row.original.statusKehadiranHariIni !== "Belum Hadir"
                 }
               >
                 {lang.text("attend")}

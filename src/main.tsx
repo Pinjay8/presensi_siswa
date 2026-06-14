@@ -9,6 +9,7 @@ import { App } from "@/features/_root/app";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    
     <App />
   </StrictMode>,
 );

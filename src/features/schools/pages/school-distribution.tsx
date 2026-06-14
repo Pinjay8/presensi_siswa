@@ -15,6 +15,7 @@ import { ReportStudent } from "../containers/ReportStudent";
 import { AttedancesStudentReport } from "../containers/attedance-student-dashboard";
 import { AttedancesParentReport } from "../containers/attedance-parent-dashboard";
 import { ReportParent } from "../containers/ReportParent";
+import { Typography } from "@mui/material";
 
 type AbsensiCount = {
   count: {
@@ -30,7 +31,8 @@ type AbsensiCount = {
 export const SchoolDistribution = () => {
   const [selectedSchool, setSelectedSchool] = useState<string>("");
   const profile = useProfile();
-  const schools = useSchool();
+
+  const profileLoading = profile.query.isLoading;
 
   const ROLE = profile.user?.role;
 
@@ -143,8 +145,12 @@ export const SchoolDistribution = () => {
     <React.Fragment>
       <DashboardPageLayout
         siteTitle={`${lang.text("dashboard")}`}
-        title={lang.text("intro") + "," + ` ${profile?.user?.name} 😁`}
+        title={lang.text("intro") + "," + ` ${profile?.user?.name}` + "👋"}
+        loadingTitle={profileLoading}
       >
+        <Typography color="text.secondary">
+          {lang.text("subTitleDashboard")}
+        </Typography>
         {/* {ROLE === "superAdmin" ? (
           <>
             <div className="w-full mt-6 flex justify-between items-baseline">
@@ -208,6 +214,7 @@ export const SchoolDistribution = () => {
                 selectedSchool={selectedSchool}
                 changes={changes}
                 stats={stats}
+                isLoading={isLoading}
               />
               <ReportOverview
                 selectedSchool={selectedSchool}

@@ -1,16 +1,18 @@
-import React, { PropsWithChildren } from 'react';
-import { CustomBreadcrumbs, CustomBreadcrumbsProps } from '../breadcrumbs';
-import { Button, VokadashHead } from '@/core/libs';
-import { ChevronLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { PropsWithChildren } from "react";
+import { CustomBreadcrumbs, CustomBreadcrumbsProps } from "../breadcrumbs";
+import { Button, Skeleton, VokadashHead } from "@/core/libs";
+import { ChevronLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Typography } from "@mui/material";
 
 export interface DashboardPageLayoutProps extends PropsWithChildren {
   title?: string;
   description?: string;
-  breadcrumbs?: CustomBreadcrumbsProps['items'];
+  breadcrumbs?: CustomBreadcrumbsProps["items"];
   siteTitle?: string;
   backButton?: boolean;
   onClickBack?: () => void;
+  loadingTitle?: any;
 }
 
 export const DashboardPageLayout = React.memo(
@@ -22,6 +24,7 @@ export const DashboardPageLayout = React.memo(
     siteTitle,
     backButton,
     onClickBack,
+    loadingTitle,
   }: DashboardPageLayoutProps) => {
     const navigate = useNavigate();
 
@@ -34,7 +37,7 @@ export const DashboardPageLayout = React.memo(
       <>
         {siteTitle && (
           <VokadashHead>
-            <title>{siteTitle}</title>
+            <title style={{ textTransform: "capitalize" }}>{siteTitle}</title>
           </VokadashHead>
         )}
 
@@ -44,7 +47,7 @@ export const DashboardPageLayout = React.memo(
               <CustomBreadcrumbs items={breadcrumbs} />
             </div>
           )}
-          <div className="flex flex-row gap-2 mb-4 items-center">
+          <div className="flex flex-row gap-2 mb-2 items-center">
             {backButton && (
               <Button onClick={handleClickBack} variant="outline" size="icon">
                 <ChevronLeft />
@@ -53,9 +56,15 @@ export const DashboardPageLayout = React.memo(
             <div>
               {title && (
                 <div className="flex items-center">
-                  <h1 className="dashboard-page-title  text-lg font-semibold md:text-2xl">
-                    {title}
-                  </h1>
+                  {loadingTitle ? (
+                    <Skeleton className="h-8 w-72" />
+                  ) : (
+                    <div className="flex flex-col">
+                      <h1 className="dashboard-page-title text-lg font-semibold md:text-2xl capitalize">
+                        {title}
+                      </h1>
+                    </div>
+                  )}
                 </div>
               )}
               {description && (

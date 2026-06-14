@@ -9,7 +9,9 @@ export const Trigger = React.memo(() => {
   return (
     <Button
       type="button"
-      onClick={sidebarContext.setVisible}
+      onClick={() => {
+        sidebarContext.setVisible();
+      }}
       variant="outline"
       size="icon"
       className="shrink-0 md:hidden"
