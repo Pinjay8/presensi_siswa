@@ -1,5 +1,9 @@
 import { distinctObjectsByProperty, lang } from "@/core/libs";
-import { BaseDataTable, useAlert } from "@/features/_global";
+import {
+  BaseDataTable,
+  useAlert,
+  useDataTableController,
+} from "@/features/_global";
 import { useClassroom } from "@/features/classroom";
 import {
   courseColumns,
@@ -21,9 +25,23 @@ import { ekstrakurikulerColumns } from "../utils";
 import { EkstrakurikulerForm } from "./EkstrakurikulerForm";
 
 export const EkstrakurikulerTable = () => {
-  const resource = useEkstrakurikuler();
-  const school = useSchool();
-  const classroom = useClassroom();
+  const {
+    global,
+    sorting,
+    filter,
+    pagination,
+    onSortingChange,
+    onPaginationChange,
+  } = useDataTableController({
+    defaultPageSize: 10,
+  });
+
+  const params = {
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+  };
+
+  const resource = useEkstrakurikuler(params);
   const [createCourse, setCreateCourse] = useState(false);
   const [editEkstrakurikuler, setEditEkstrakurikuler] = useState<any | null>(
     null,
@@ -97,9 +115,6 @@ export const EkstrakurikulerTable = () => {
                 lokasi: editEkstrakurikuler.lokasi,
                 thumbnail: editEkstrakurikuler.thumbnail,
                 kontak: editEkstrakurikuler.kontak,
-                // namaMataPelajaran: editEkstrakurikuler.namaMataPelajaran,
-                // kelasId: editCourse.kelas?.id,
-                // tipe: editCourse.tipe,
               }}
             />
           )}
@@ -125,6 +140,9 @@ export const EkstrakurikulerTable = () => {
             : []),
         ]}
         searchParamPagination
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
+        rowCount={resource?.pagination?.total ?? 0}
         searchPlaceholder={lang.text("search")}
         isLoading={resource.query.isLoading}
       />

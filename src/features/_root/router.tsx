@@ -83,6 +83,13 @@ export const router = createBrowserRouter(
             })),
         },
         {
+          path: "schedules-ekstrakurikuler",
+          lazy: () =>
+            import("../schedules-ekstrakurikuler/pages/schedules-ekstrakurikuler-landing").then((m) => ({
+              Component: m.ScheduleEkstrakurikulerLanding,
+            })),
+        },
+        {
           path: "licensing",
           lazy: () =>
             import("@/features/licensing").then((m) => ({
@@ -214,7 +221,7 @@ export const router = createBrowserRouter(
           path: "ekstrakurikuler",
           lazy: () =>
             import("@/features/ekstrakurikuler").then((m) => ({
-              Component: m.EkstrakurikulerLanding
+              Component: m.EkstrakurikulerLanding,
             })),
         },
 
@@ -223,7 +230,7 @@ export const router = createBrowserRouter(
           path: "ekstrakurikuler/delete/:id",
           lazy: () =>
             import("@/features/ekstrakurikuler").then((m) => ({
-              Component: m.EkstrakurikulerDelete
+              Component: m.EkstrakurikulerDelete,
             })),
         },
 
@@ -232,7 +239,7 @@ export const router = createBrowserRouter(
           path: "ekstrakurikuler/create",
           lazy: () =>
             import("@/features/ekstrakurikuler").then((m) => ({
-              Component: m.EkstrakurikulerCreate
+              Component: m.EkstrakurikulerCreate,
             })),
         },
 
@@ -241,7 +248,7 @@ export const router = createBrowserRouter(
           path: "ekstrakurikuler/edit/:id",
           lazy: () =>
             import("@/features/ekstrakurikuler").then((m) => ({
-              Component: m.EkstrakurikulerEdit
+              Component: m.EkstrakurikulerEdit,
             })),
         },
 

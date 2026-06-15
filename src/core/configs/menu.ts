@@ -72,15 +72,21 @@ export const MENU_STAFF: any["menus"] = [
         url: "/courses",
         icon: "Book",
       },
+
+      {
+        title: lang.text("scheduleMapel"),
+        url: "/schedules",
+        icon: "Calendar",
+      },
       {
         title: lang.text("ekstrakurikuler"),
         url: "/ekstrakurikuler",
         icon: "Dumbbell",
       },
       {
-        title: lang.text("scheduleMapel"),
-        url: "/schedules",
-        icon: "Book",
+        title: lang.text("scheduleEkstrakurikuler"),
+        url: "/schedules-ekstrakurikuler",
+        icon: "Calendar",
       },
       {
         title: lang.text("student"),

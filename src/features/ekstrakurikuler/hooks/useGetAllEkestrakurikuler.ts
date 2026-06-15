@@ -4,7 +4,7 @@ import { useProfile } from "@/features/profile";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-export const useEkstrakurikuler = (params: any) => {
+export const useGetAllEkstrakurikuler = () => {
   const auth = useAuth();
   const profile = useProfile();
 
@@ -13,13 +13,15 @@ export const useEkstrakurikuler = (params: any) => {
   const query = useQuery({
     enabled,
     queryKey: ["ekstrakurikuler"],
-    queryFn: () => ekstrakurikulerService.getPaginated(params),
+    queryFn: () => ekstrakurikulerService.all(),
   });
+
+  const data = useMemo(() => query.data, [query.data]);
+  const isLoading = query.isLoading || query.isFetching || query.isPending;
 
   return {
     query,
-    data: query.data?.data ?? [],
-    pagination: query.data?.pagination,
-    isLoading: query.isLoading || query.isFetching || query.isPending,
+    data,
+    isLoading,
   };
 };

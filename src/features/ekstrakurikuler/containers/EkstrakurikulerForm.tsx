@@ -27,12 +27,9 @@ import { useForm } from "react-hook-form";
 import * as XLSX from "xlsx";
 import { z } from "zod";
 import { useEkstrakurikuler, useEkstrakurikulerCreation } from "../hooks";
-import { courseCreateSchema, ekstrakurikulerCreateSchema } from "../utils";
-import { useClassroom } from "@/features/classroom";
-import { useProfile } from "@/features/profile";
-import { FaFileExcel } from "react-icons/fa";
-import { useTeacherDetail } from "@/features/teacher/hooks";
+import { ekstrakurikulerCreateSchema } from "../utils";
 import { useBiodataGuru } from "@/features/user";
+import { useGetAllEkstrakurikuler } from "../hooks/useGetAllEkestrakurikuler";
 
 // Interface for initial data
 interface EkstrakurikulerInitialData {
@@ -73,8 +70,7 @@ export const EkstrakurikulerForm = ({
 }) => {
   const creation = useEkstrakurikulerCreation();
   const alert = useAlert();
-  const profile = useProfile();
-  const resource = useEkstrakurikuler();
+  const resource = useGetAllEkstrakurikuler();
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
 
@@ -97,19 +93,20 @@ export const EkstrakurikulerForm = ({
 
   async function onSubmit(data: z.infer<typeof ekstrakurikulerCreateSchema>) {
     try {
-      if (!isEdit) {
-        const isDuplicate = resource.data?.some(
-          (course) =>
-            course.namaMataPelajaran.toLowerCase() === data.nama.toLowerCase(),
-        );
+      // if (!isEdit) {
+      //   const isDuplicate = resource.data?.some(
+      //     (course) =>
+      //       course.nama.toLowerCase() === data.nama.toLowerCase(),
+      //   );
 
-        if (isDuplicate) {
-          alert.error(
-            lang.text("errorDuplicateCourse", { context: data.nama }),
-          );
-          return;
-        }
-      }
+      //   if (isDuplicate) {
+      //     alert.error(
+      //       lang.text("errorDuplicateCourse", { context: data.nama }),
+      //     );
+      //     return;
+      //   }
+      // }
+      // }
 
       if (isEdit) {
         await creation.update(Number(initialData?.id), {
@@ -365,7 +362,6 @@ export const EkstrakurikulerForm = ({
                             <SelectItem value="AKADEMIK">Akademik</SelectItem>
                             <SelectItem value="KEAGAMAAN">Keagamaan</SelectItem>
                             <SelectItem value="LAINNYA">Lainnya</SelectItem>
-
                           </SelectContent>
                         </Select>
 

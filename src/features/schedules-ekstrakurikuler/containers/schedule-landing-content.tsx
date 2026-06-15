@@ -25,7 +25,11 @@ import { useAlert, useVokadialog, Vokadialog } from "@/features/_global";
 import { useCourse } from "@/features/course";
 import { useBiodataGuru } from "@/features/user";
 import { useRef, useState, useEffect, useMemo } from "react";
-import { useScheduleCreation, useSchedules } from "../hooks";
+import {
+  useScheduleCreation,
+  useSchedules,
+  useSchedulesEkstrakurikuler,
+} from "../hooks";
 import {
   CircleSlashIcon,
   Divide,
@@ -46,10 +50,8 @@ import { teacherService } from "@/core/services/teacher";
 import QRCode from "react-qr-code";
 import { QrAttendanceDialog } from "../components/QrAttendanceDialog";
 import { useProfile } from "@/features/profile";
-import { AddScheduleDialog } from "../components/AddScheduleDialog";
-import { EditScheduleDialog } from "../components/EditScheduleDialog";
-import { DayFilterDialog } from "../components/DayFilterDialog";
-import { UploadScheduleDialog } from "../components/UploadScheduleDialog";
+import { useEkstrakurikuler } from "@/features/ekstrakurikuler";
+import { useGetAllEkstrakurikuler } from "@/features/ekstrakurikuler/hooks/useGetAllEkestrakurikuler";
 
 interface ScheduleItem {
   id: number;
@@ -85,7 +87,28 @@ interface BulkSchedule {
   jamSelesai: string;
 }
 
+interface ScheduleItem {
+  id: number;
+  dayOfWeek: number;
+  jamMulai: string;
+  jamSelesai: string;
+  ekstrakurikuler: {
+    id: number;
+    nama: string;
+    jenis: string;
+  };
+}
+
 const daysOrder = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT"];
+const DAY_NAMES: Record<number, string> = {
+  1: "SENIN",
+  2: "SELASA",
+  3: "RABU",
+  4: "KAMIS",
+  5: "JUMAT",
+  6: "SABTU",
+  7: "MINGGU",
+};
 
 export function ScheduleLandingContent() {
   const alert = useAlert();
@@ -108,21 +131,28 @@ export function ScheduleLandingContent() {
   const [excelFile, setExcelFile] = useState<File | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const teacherSearchInputRef = useRef<HTMLInputElement>(null);
-  const [formData, setFormData] = useState<NewScheduleForm>({
-    mataPelajaranId: 0,
-    guruId: 0,
-    kelasId: 0,
-    hari: "",
+  // const [formData, setFormData] = useState<NewScheduleForm>({
+  //   mataPelajaranId: 0,
+  //   guruId: 0,
+  //   kelasId: 0,
+  //   hari: "",
+  //   jamMulai: "",
+  //   jamSelesai: "",
+  // });
+
+  const [formData, setFormData] = useState({
+    dayOfWeek: 1,
     jamMulai: "",
     jamSelesai: "",
   });
 
   const courses = useCourse();
   const teachers = useBiodataGuru();
-  const schedules = useSchedules();
-  const classes = useClassroom();
-  const classData = classes.data;
+  // const schedules = useSchedules();
+  const schedules = useSchedulesEkstrakurikuler();
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+
+  const { data: ekskulData } = useGetAllEkstrakurikuler();
 
   const [selectedQr, setSelectedQr] = useState<{
     kelasId: number;
@@ -169,23 +199,25 @@ export function ScheduleLandingContent() {
       alert.error(err?.message);
     }
   };
+  const groupedByDay = useMemo(() => {
+    const result: Record<string, ScheduleItem[]> = {};
 
-  // Derive classes from schedules.data
-  // const classes = useMemo(() => {
-  //   if (!schedules?.data) return [];
-  //   const kelasSet = new Map<number, { id: number; namaKelas: string }>();
-  //   Object.keys(schedules.data).forEach((day) => {
-  //     schedules.data[day].forEach((schedule: ScheduleItem) => {
-  //       const { kelas } = schedule.mataPelajaran;
-  //       if (kelas && kelas.id != null && kelas.namaKelas) {
-  //         if (!kelasSet.has(kelas.id)) {
-  //           kelasSet.set(kelas.id, { id: kelas.id, namaKelas: kelas.namaKelas });
-  //         }
-  //       }
-  //     });
-  //   });
-  //   return Array.from(kelasSet.values());
-  // }, [schedules?.data]);
+    daysOrder.forEach((day) => {
+      result[day] = [];
+    });
+
+    schedules?.data?.forEach((item: ScheduleItem) => {
+      const dayName = DAY_NAMES[item.dayOfWeek];
+
+      if (!result[dayName]) {
+        result[dayName] = [];
+      }
+
+      result[dayName].push(item);
+    });
+
+    return result;
+  }, [schedules?.data]);
 
   // Memoize filtered courses
   const filteredCourses = useMemo(() => {
@@ -214,319 +246,6 @@ export function ScheduleLandingContent() {
       ) || []
     );
   }, [teachers?.data, searchTeacher]);
-
-  // Group data by kelasId and then by day
-  const groupedByClassAndDay = useMemo(() => {
-    const result: Record<number, Record<string, ScheduleItem[]>> = {};
-
-    if (schedules?.data) {
-      // Normalize day keys to uppercase
-      const normalizeDay = (day: string) => day.toUpperCase();
-
-      // Collect all unique kelasId
-      const kelasIds = new Set<number>();
-      Object.keys(schedules.data).forEach((day) => {
-        if (schedules?.data[day]) {
-          schedules?.data[day].forEach((schedule: ScheduleItem) => {
-            kelasIds.add(schedule.mataPelajaran.kelasId);
-          });
-        }
-      });
-
-      // Initialize result for all kelasId and days
-      kelasIds.forEach((kelasId) => {
-        result[kelasId] = daysOrder.reduce(
-          (acc, d) => {
-            acc[d] = [];
-            return acc;
-          },
-          {} as Record<string, ScheduleItem[]>,
-        );
-      });
-
-      // Fill result with actual data
-      Object.keys(result).forEach((kelasId) => {
-        Object.keys(result[kelasId]).forEach((day) => {
-          if (schedules.data[day]) {
-            result[kelasId][day] = schedules.data[day].filter(
-              (schedule: ScheduleItem) =>
-                schedule.mataPelajaran.kelasId === Number(kelasId),
-            );
-          }
-        });
-      });
-    }
-
-    return result;
-  }, [schedules?.data]);
-  // const groupedByClassAndDay = useMemo(() => {
-  //   const result: Record<number, Record<string, ScheduleItem[]>> = {};
-
-  //   if (schedules?.data) {
-  //     // Normalize day keys to uppercase
-  //     const normalizeDay = (day: string) => day.toUpperCase();
-
-  //     // Collect all unique kelasId
-  //     const kelasIds = new Set<number>();
-  //     Object.keys(schedules.data).forEach((day) => {
-  //       schedules.data[day].forEach((schedule: ScheduleItem) => {
-  //         kelasIds.add(schedule.mataPelajaran.kelasId);
-  //       });
-  //     });
-
-  //     // Initialize result for all kelasId and days
-  //     kelasIds.forEach((kelasId) => {
-  //       result[kelasId] = daysOrder.reduce(
-  //         (acc, d) => {
-  //           acc[d] = [];
-  //           return acc;
-  //         },
-  //         {} as Record<string, ScheduleItem[]>,
-  //       );
-  //     });
-
-  //     // Populate schedules
-  //     Object.keys(schedules.data).forEach((day) => {
-  //       const normalizedDay = normalizeDay(day);
-  //       if (daysOrder.includes(normalizedDay)) {
-  //         schedules.data[day].forEach((schedule: ScheduleItem) => {
-  //           const kelasId = schedule.mataPelajaran.kelasId;
-  //           if (result[kelasId]) {
-  //             result[kelasId][normalizedDay].push(schedule);
-  //           }
-  //         });
-  //       }
-  //     });
-
-  //     // Sort schedules by jamMulai
-  //     Object.keys(result).forEach((kelasId) => {
-  //       daysOrder.forEach((day) => {
-  //         result[kelasId][day].sort((a, b) => {
-  //           const timeA = new Date(`1970-01-01T${a.jamMulai}:00`);
-  //           const timeB = new Date(`1970-01-01T${b.jamMulai}:00`);
-  //           return timeA.getTime() - timeB.getTime();
-  //         });
-  //       });
-  //     });
-  //   }
-
-  //   return result;
-  // }, [schedules?.data]);
-
-  // Download Excel template
-  const handleDownloadTemplate = () => {
-    try {
-      const link = document.createElement("a");
-      link.href = "/template_jadwal.xlsx";
-      link.download = "template_jadwal.xlsx";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      alert.success("Template Excel berhasil diunduh");
-    } catch (err: any) {
-      alert.error(
-        "Gagal mengunduh template Excel: " + (err.message || "Unknown error"),
-      );
-    }
-  };
-
-  // Handle Excel file upload
-
-  const handleUploadExcel = async () => {
-    if (!excelFile) {
-      alert.error("Pilih file Excel terlebih dahulu");
-      return;
-    }
-
-    try {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const data = new Uint8Array(e.target?.result as ArrayBuffer);
-        const workbook = XLSX.read(data, { type: "array", cellDates: true }); // Pastikan parse sebagai Date
-        const sheet = workbook.Sheets["Schedules"];
-        if (!sheet) {
-          alert.error("Sheet 'Schedules' tidak ditemukan");
-          return;
-        }
-
-        const jsonData: any[] = XLSX.utils.sheet_to_json(sheet);
-        if (jsonData.length === 0) {
-          alert.error("File Excel kosong");
-          return;
-        }
-
-        // Validate data
-        const validSchedules: NewScheduleForm[] = [];
-        const errors: string[] = [];
-        const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-        const validDays = daysOrder;
-
-        jsonData.forEach((row: any, index: number) => {
-          // Konversi jamMulai dan jamSelesai ke format HH:mm
-          const formatTime = (value: any) => {
-            if (value instanceof Date) {
-              const hours = value.getHours().toString().padStart(2, "0");
-              const minutes = value.getMinutes().toString().padStart(2, "0");
-              return `${hours}:${minutes}`;
-            }
-            return value?.toString().trim() || "";
-          };
-
-          const schedule: BulkSchedule = {
-            namaKelas: row.namaKelas?.toString().trim() || "",
-            namaMataPelajaran: row.namaMataPelajaran?.toString().trim() || "",
-            namaGuru: row.namaGuru?.toString().trim() || "",
-            hari: row.hari?.toString().trim() || "",
-            jamMulai: formatTime(row.jamMulai),
-            jamSelesai: formatTime(row.jamSelesai),
-          };
-
-          console.log("schedule saat ini:", schedule);
-
-          // Validate required fields, excluding "Catatan"
-          if (
-            !schedule.namaKelas ||
-            !schedule.namaMataPelajaran ||
-            !schedule.namaGuru ||
-            !schedule.hari ||
-            !schedule.jamMulai ||
-            !schedule.jamSelesai
-          ) {
-            errors.push(
-              `Baris ${index + 2}: Semua kolom wajib diisi (kecuali Catatan). Data: ${JSON.stringify(schedule)}`,
-            );
-            return;
-          }
-
-          // Validate namaKelas
-          const kelas = classData.find(
-            (k: any) =>
-              k.namaKelas.toLowerCase() === schedule.namaKelas.toLowerCase(),
-          );
-          if (!kelas) {
-            errors.push(
-              `Baris ${index + 2}: Nama kelas '${schedule.namaKelas}' tidak valid`,
-            );
-            return;
-          }
-
-          // Validate namaMataPelajaran and kelas match
-          const course = courses.data?.find(
-            (c: any) =>
-              c.namaMataPelajaran.toLowerCase() ===
-                schedule.namaMataPelajaran.toLowerCase() &&
-              c.kelasId === kelas.id,
-          );
-          if (!course) {
-            errors.push(
-              `Baris ${index + 2}: Mata pelajaran '${schedule.namaMataPelajaran}' tidak valid atau tidak sesuai dengan kelas '${schedule.namaKelas}'`,
-            );
-            return;
-          }
-
-          // Validate namaGuru
-          const teacher = teachers.data?.find(
-            (t: any) =>
-              t.namaGuru.toLowerCase() === schedule.namaGuru.toLowerCase(),
-          );
-          if (!teacher) {
-            errors.push(
-              `Baris ${index + 2}: Nama guru '${schedule.namaGuru}' tidak valid`,
-            );
-            return;
-          }
-
-          // Validate hari
-          if (!validDays.includes(schedule.hari.toUpperCase())) {
-            errors.push(
-              `Baris ${index + 2}: Hari tidak valid (gunakan: ${validDays.join(", ")})`,
-            );
-            return;
-          }
-
-          // Validate time format
-          if (
-            !timeRegex.test(schedule.jamMulai) ||
-            !timeRegex.test(schedule.jamSelesai)
-          ) {
-            errors.push(
-              `Baris ${index + 2}: Format waktu harus HH:mm (contoh: 08:00). Data: ${schedule.jamMulai}, ${schedule.jamSelesai}`,
-            );
-            return;
-          }
-
-          // Validate jamSelesai > jamMulai
-          const startTime = new Date(`1970-01-01T${schedule.jamMulai}:00`);
-          const endTime = new Date(`1970-01-01T${schedule.jamSelesai}:00`);
-          if (endTime <= startTime) {
-            errors.push(
-              `Baris ${index + 2}: Jam selesai harus setelah jam mulai`,
-            );
-            return;
-          }
-
-          // Add to valid schedules
-          validSchedules.push({
-            mataPelajaranId: course.id,
-            guruId: teacher.id,
-            kelasId: kelas.id,
-            hari: schedule.hari.toUpperCase(),
-            jamMulai: schedule.jamMulai,
-            jamSelesai: schedule.jamSelesai,
-          });
-        });
-
-        if (errors.length > 0) {
-          alert.error(`Validasi gagal:\n${errors.join("\n")}`);
-          return;
-        }
-
-        if (validSchedules.length === 0) {
-          alert.error("Tidak ada data valid untuk diunggah");
-          return;
-        }
-
-        // Kirim data ke API secara bertahap
-        let successCount = 0;
-        let errorCount = 0;
-
-        for (const item of validSchedules) {
-          try {
-            await creation.create(item);
-            successCount++;
-          } catch (err: any) {
-            console.error(`Gagal mengirim: ${item.mataPelajaranId}`, err);
-            errorCount++;
-          }
-        }
-
-        setIsUploadModalOpen(false);
-        setExcelFile(null);
-
-        if (successCount > 0) {
-          alert.success(
-            lang.text("successful", {
-              context: `Membuat ( ${successCount} jadwal) dan gagal( ${errorCount} jadwal)`,
-            }),
-          );
-          schedules.query.refetch();
-        }
-
-        if (errorCount > 0) {
-          alert.error(
-            lang.text("failed", {
-              context: `Membuat (${successCount} jadwal) dan gagal (${errorCount} jadwal)`,
-            }),
-          );
-        }
-      };
-      reader.readAsArrayBuffer(excelFile);
-    } catch (err: any) {
-      alert.error(
-        "Gagal memproses file Excel: " + (err.message || "Unknown error"),
-      );
-    }
-  };
 
   // Restore focus to course search input
   useEffect(() => {
@@ -595,21 +314,22 @@ export function ScheduleLandingContent() {
   };
 
   const handleAddSchedule = async () => {
-    if (
-      !formData.mataPelajaranId ||
-      !formData.guruId ||
-      !formData.hari ||
-      !formData.jamMulai ||
-      !formData.jamSelesai
-    ) {
-      alert.error("Semua field harus diisi");
-      return;
-    }
+    console.log(formData);
+    // if (
+    //   !formData.mataPelajaranId ||
+    //   !formData.guruId ||
+    //   !formData.hari ||
+    //   !formData.jamMulai ||
+    //   !formData.jamSelesai
+    // ) {
+    //   alert.error("Semua field harus diisi");
+    //   return;
+    // }
 
-    if (selectedKelasIdForAdd === 0) {
-      alert.error("Pilih kelas terlebih dahulu");
-      return;
-    }
+    // if (selectedKelasIdForAdd === 0) {
+    //   alert.error("Pilih kelas terlebih dahulu");
+    //   return;
+    // }
 
     const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
     if (
@@ -629,10 +349,13 @@ export function ScheduleLandingContent() {
 
     const payload = {
       ...formData,
-      kelasId: selectedKelasIdForAdd,
     };
     try {
-      await creation.create(payload);
+      // await creation.create(payload);
+      await creation.create({
+        ekskulId: selectedEkskulId,
+        data: payload,
+      });
       alert.success(
         lang.text("successful", {
           context: lang.text("scheduleSuccessCreate", { context: "" }),
@@ -640,11 +363,11 @@ export function ScheduleLandingContent() {
       );
       schedules.query.refetch();
       setIsAddModalOpen(false);
+      // setFormData({
+
+      // });
       setFormData({
-        mataPelajaranId: 0,
-        guruId: 0,
-        kelasId: 0,
-        hari: "",
+        dayOfWeek: 1,
         jamMulai: "",
         jamSelesai: "",
       });
@@ -662,16 +385,16 @@ export function ScheduleLandingContent() {
   };
 
   const handleEditSchedule = async () => {
-    if (
-      !formData.mataPelajaranId ||
-      !formData.guruId ||
-      !formData.hari ||
-      !formData.jamMulai ||
-      !formData.jamSelesai
-    ) {
-      alert.error("Semua field harus diisi");
-      return;
-    }
+    // if (
+    //   !formData.mataPelajaranId ||
+    //   !formData.guruId ||
+    //   !formData.hari ||
+    //   !formData.jamMulai ||
+    //   !formData.jamSelesai
+    // ) {
+    //   alert.error("Semua field harus diisi");
+    //   return;
+    // }
 
     const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
     if (
@@ -691,7 +414,8 @@ export function ScheduleLandingContent() {
 
     const payload = { ...formData };
     try {
-      await creation.update(editScheduleId, payload);
+      // await creation.update(editScheduleId, payload);
+      await creation.update(selectedEkskulId, editScheduleId, payload);
       alert.success(
         lang.text("successful", {
           context: lang.text("scheduleSuccessUpdate", { context: "" }),
@@ -699,14 +423,9 @@ export function ScheduleLandingContent() {
       );
       schedules.query.refetch();
       setIsEditModalOpen(false);
-      setFormData({
-        mataPelajaranId: 0,
-        guruId: 0,
-        hari: "",
-        kelasId: 0,
-        jamMulai: "",
-        jamSelesai: "",
-      });
+      // setFormData({
+
+      // });
       setSearchCourse("");
       setSearchTeacher("");
     } catch (err: any) {
@@ -721,11 +440,9 @@ export function ScheduleLandingContent() {
 
   const openAddModal = () => {
     setSelectedDay("");
+
     setFormData({
-      mataPelajaranId: 0,
-      guruId: 0,
-      hari: "",
-      kelasId: 0,
+      dayOfWeek: 1,
       jamMulai: "",
       jamSelesai: "",
     });
@@ -737,88 +454,51 @@ export function ScheduleLandingContent() {
 
   const qrRef = useRef<HTMLDivElement>(null);
 
-  const handleDownloadQr = () => {
-    const svg = qrRef.current?.querySelector("svg");
-
-    if (!svg) return;
-
-    const serializer = new XMLSerializer();
-    const svgString = serializer.serializeToString(svg);
-
-    const svgBlob = new Blob([svgString], {
-      type: "image/svg+xml;charset=utf-8",
-    });
-
-    const url = URL.createObjectURL(svgBlob);
-
-    const img = new Image();
-
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const size = 600;
-
-      canvas.width = size;
-      canvas.height = size;
-
-      const ctx = canvas.getContext("2d");
-
-      if (!ctx) return;
-
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fillRect(0, 0, size, size);
-
-      // padding supaya tidak kepotong
-      const padding = 30;
-
-      ctx.drawImage(
-        img,
-        padding,
-        padding,
-        size - padding * 2,
-        size - padding * 2,
-      );
-
-      URL.revokeObjectURL(url);
-
-      const png = canvas.toDataURL("image/png");
-
-      const link = document.createElement("a");
-      link.href = png;
-      link.download = `qr-presensi-${selectedQr?.namaKelas || "kelas"}.png`;
-      link.click();
-    };
-
-    img.src = url;
-  };
-
   const openEditModal = (day: string, schedule: ScheduleItem) => {
     setSelectedDay(day);
     setEditScheduleId(schedule.id);
+
+    setSelectedEkskulId(schedule.ekstrakurikuler.id);
+
     setFormData({
-      mataPelajaranId: schedule.mataPelajaran.id || 0,
-      guruId: schedule.guru.id || 0,
-      hari: day,
-      kelasId: schedule.mataPelajaran.kelasId || 0,
+      dayOfWeek: schedule.dayOfWeek,
       jamMulai: schedule.jamMulai,
       jamSelesai: schedule.jamSelesai,
     });
-    setSearchCourse("");
-    setSearchTeacher("");
+
     setIsEditModalOpen(true);
   };
 
-  const initialFormData = {
-    mataPelajaranId: 0,
-    guruId: 0,
-    hari: "",
-    kelasId: 0,
-    jamMulai: "",
-    jamSelesai: "",
-  };
+  const [selectedEkskulId, setSelectedEkskulId] = useState<number>(0);
+  const [deleteData, setDeleteData] = useState({
+    ekskulId: 0,
+    jadwalId: 0,
+  });
 
-  const resetForm = () => {
-    setFormData(initialFormData);
-    setSelectedKelasIdForAdd(0);
+  const handleDeleteSchedule = async () => {
+    try {
+      await creation.delete(deleteData.ekskulId, deleteData.jadwalId);
+
+      alert.success(
+        lang.text("successful", {
+          context: lang.text("successful", {
+            context: lang.text("jadwalEkstrakurikuler"),
+          }),
+        }),
+      );
+
+      dialog.close();
+      schedules.query.refetch();
+    } catch (err: any) {
+      alert.error(
+        err?.message ||
+          lang.text("failed", {
+            context: lang.text("successful", {
+              context: lang.text("jadwalEkstrakurikuler"),
+            }),
+          }),
+      );
+    }
   };
 
   // Render loading state
@@ -841,7 +521,7 @@ export function ScheduleLandingContent() {
         content={lang.text("deleteConfirmationDesc", { context: "tersebut" })}
         footer={
           <div className="flex flex-col sm:flex-row gap-2">
-            <Button onClick={handleConfirmDelete} variant="destructive">
+            <Button onClick={handleDeleteSchedule} variant="destructive">
               {lang.text("delete")}
             </Button>
             <Button onClick={dialog.close} variant="outline">
@@ -850,17 +530,254 @@ export function ScheduleLandingContent() {
           </div>
         }
       />
+      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle style={{ marginTop: "20px" }}>
+              {lang.text("addSchedule")}
+            </DialogTitle>
+          </DialogHeader>
+          <Divider />
+          <div className="grid gap-3 py-4 pt-0">
+            <div className="grid gap-2">
+              <label>Ekstrakurikuler</label>
+
+              <Select
+                value={
+                  selectedEkskulId === 0 ? "" : selectedEkskulId.toString()
+                }
+                onValueChange={(value) => setSelectedEkskulId(Number(value))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih Ekstrakurikuler" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {ekskulData?.data?.map((item: any) => (
+                    <SelectItem key={item.id} value={item.id.toString()}>
+                      {item.nama}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <label>Hari</label>
+
+              <Select
+                value={formData.dayOfWeek.toString()}
+                onValueChange={(value) =>
+                  setFormData({
+                    ...formData,
+                    dayOfWeek: parseInt(value),
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih Hari" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="1">Senin</SelectItem>
+                  <SelectItem value="2">Selasa</SelectItem>
+                  <SelectItem value="3">Rabu</SelectItem>
+                  <SelectItem value="4">Kamis</SelectItem>
+                  <SelectItem value="5">Jumat</SelectItem>
+                  <SelectItem value="6">Sabtu</SelectItem>
+                  <SelectItem value="7">Minggu</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid gap-2">
+              <label>Jam Mulai</label>
+
+              <Input
+                type="time"
+                value={formData.jamMulai}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    jamMulai: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <label>Jam Selesai</label>
+
+              <Input
+                type="time"
+                value={formData.jamSelesai}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    jamSelesai: e.target.value,
+                  })
+                }
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={handleAddSchedule}>Simpan</Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsAddModalOpen(false);
+                setFormData({
+                  dayOfWeek: 0,
+                  jamMulai: "",
+                  jamSelesai: "",
+                });
+                setSelectedKelasIdForAdd(0);
+              }}
+            >
+              Batal
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Jadwal</DialogTitle>
+          </DialogHeader>
+
+          <div className="grid gap-4 py-4">
+            {/* <div className="grid gap-2">
+              <label>Ekstrakurikuler</label>
+
+              <Select
+                value={
+                  selectedEkskulId === 0 ? "" : selectedEkskulId.toString()
+                }
+                onValueChange={(value) => setSelectedEkskulId(Number(value))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih Ekstrakurikuler" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {ekskulData?.data?.map((item: any) => (
+                    <SelectItem key={item.id} value={item.id.toString()}>
+                      {item.nama}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div> */}
+            <div className="grid gap-2">
+              <label>Hari</label>
+
+              <Select
+                value={formData.dayOfWeek.toString()}
+                onValueChange={(value) =>
+                  setFormData({
+                    ...formData,
+                    dayOfWeek: parseInt(value),
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih Hari" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="1">Senin</SelectItem>
+                  <SelectItem value="2">Selasa</SelectItem>
+                  <SelectItem value="3">Rabu</SelectItem>
+                  <SelectItem value="4">Kamis</SelectItem>
+                  <SelectItem value="5">Jumat</SelectItem>
+                  <SelectItem value="6">Sabtu</SelectItem>
+                  <SelectItem value="7">Minggu</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid gap-2">
+              <label>Jam Mulai</label>
+
+              <Input
+                type="time"
+                value={formData.jamMulai}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    jamMulai: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <label>Jam Selesai</label>
+
+              <Input
+                type="time"
+                value={formData.jamSelesai}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    jamSelesai: e.target.value,
+                  })
+                }
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button onClick={handleEditSchedule}>Simpan</Button>
+
+            <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
+              Batal
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* <Dialog open={isDayFilterOpen} onOpenChange={setIsDayFilterOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Pilih Hari</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="all-days"
+                checked={selectedDays.length === daysOrder.length}
+                onCheckedChange={handleAllDaysToggle}
+              />
+              <label htmlFor="all-days">Semua Hari</label>
+            </div>
+            {daysOrder.map((day) => (
+              <div key={day} className="flex items-center gap-2">
+                <Checkbox
+                  id={day}
+                  checked={selectedDays.includes(day)}
+                  onCheckedChange={() => handleDayToggle(day)}
+                />
+                <label htmlFor={day}>{day}</label>
+              </div>
+            ))}
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setIsDayFilterOpen(false)}>Tutup</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog> */}
 
       <div className="mt-5 mb-8">
         <div className="w-full mb-4 flex justify-between items-center">
           <div className="flex gap-2">
             <Button variant="outline" onClick={openAddModal}>
-              Tambah jadwal baru <Plus />
+              Tambah Jadwal Ekstrakurikuler <Plus />
             </Button>
-            <div className="mx-2 h-[36px] py-1 flex items-center justify-center">
+            {/* <div className="mx-2 h-[36px] py-1 flex items-center justify-center">
               <p>atau</p>
-            </div>
-            <Button
+            </div> */}
+            {/* <Button
               className="text-green-300 border border-green-700"
               variant="outline"
               onClick={handleDownloadTemplate}
@@ -872,10 +789,10 @@ export function ScheduleLandingContent() {
               onClick={() => setIsUploadModalOpen(true)}
             >
               Unggah Excel <UploadCloud />
-            </Button>
+            </Button> */}
           </div>
           <div className="flex items-center gap-4">
-            <Select
+            {/* <Select
               onValueChange={(value) => setSelectedClassId(parseInt(value))}
               value={selectedClassId.toString()}
             >
@@ -902,14 +819,14 @@ export function ScheduleLandingContent() {
                   ? "Pilih Hari"
                   : selectedDays.join(", ")}
               <span>▼</span>
-            </Button>
+            </Button> */}
             <Badge variant="outline" className="py-2.5">
-              <span>Jumlah kelas:</span>
-              <span className="ml-2">{classData.length}</span>
+              <span>Jumlah Jadwal:</span>
+              <span className="ml-2">{schedules.data.length}</span>
             </Badge>
           </div>
         </div>
-        <div className="grid gap-8">
+        {/* <div className="grid gap-8">
           {Object.keys(groupedByClassAndDay).length > 0 &&
           selectedDays.length > 0 ? (
             Object.keys(groupedByClassAndDay)
@@ -1023,6 +940,69 @@ export function ScheduleLandingContent() {
                 : "Tidak ada jadwal tersedia."}
             </p>
           )}
+        </div> */}
+        <div className="grid grid-cols-2 gap-4">
+          {daysOrder
+            .filter((day) => selectedDays.includes(day))
+            .map((day) => (
+              <div key={day} className="border rounded-lg p-4 shadow-sm">
+                <h2 className="text-xl font-bold mb-4">{day}</h2>
+
+                {groupedByDay[day]?.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Jam</TableHead>
+                        <TableHead>Ekskul</TableHead>
+                        <TableHead>Jenis</TableHead>
+                        <TableHead>Aksi</TableHead>
+                      </TableRow>
+                    </TableHeader>
+
+                    <TableBody>
+                      {groupedByDay[day].map((item) => (
+                        <TableRow key={item.id}>
+                          <TableCell>
+                            {item.jamMulai} - {item.jamSelesai}
+                          </TableCell>
+
+                          <TableCell>{item.ekstrakurikuler.nama}</TableCell>
+
+                          <TableCell>{item.ekstrakurikuler.jenis}</TableCell>
+
+                          <TableCell className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => openEditModal(day, item)}
+                            >
+                              <Pen />
+                            </Button>
+
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => {
+                                setDeleteData({
+                                  ekskulId: item.ekstrakurikuler.id,
+                                  jadwalId: item.id,
+                                });
+
+                                showRef.current?.();
+                              }}
+                            >
+                              <Trash />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <p className="text-gray-500">No schedule for {day}</p>
+                )}
+              </div>
+            ))}
         </div>
       </div>
       <QrAttendanceDialog
@@ -1030,74 +1010,6 @@ export function ScheduleLandingContent() {
         onOpenChange={setIsQrModalOpen}
         qrCode={qrCode}
         selectedQr={selectedQr}
-      />
-
-      <AddScheduleDialog
-        open={isAddModalOpen}
-        onOpenChange={(open) => {
-          setIsAddModalOpen(open);
-
-          if (!open) {
-            resetForm();
-          }
-        }}
-        classData={classData}
-        daysOrder={daysOrder}
-        selectedKelasIdForAdd={selectedKelasIdForAdd}
-        setSelectedKelasIdForAdd={setSelectedKelasIdForAdd}
-        formData={formData}
-        setFormData={setFormData}
-        searchCourse={searchCourse}
-        setSearchCourse={setSearchCourse}
-        searchTeacher={searchTeacher}
-        setSearchTeacher={setSearchTeacher}
-        filteredCourses={filteredCourses}
-        filteredTeachers={filteredTeachers}
-        searchInputRef={searchInputRef}
-        teacherSearchInputRef={teacherSearchInputRef}
-        handleSearchKeyDown={handleSearchKeyDown}
-        handleAddSchedule={handleAddSchedule}
-        resetForm={resetForm}
-      />
-
-      <EditScheduleDialog
-        open={isEditModalOpen}
-        onOpenChange={setIsEditModalOpen}
-        selectedDay={selectedDay}
-        formData={formData}
-        setFormData={setFormData}
-        filteredCourses={filteredCourses}
-        filteredTeachers={filteredTeachers}
-        searchCourse={searchCourse}
-        setSearchCourse={setSearchCourse}
-        searchTeacher={searchTeacher}
-        setSearchTeacher={setSearchTeacher}
-        searchInputRef={searchInputRef}
-        teacherSearchInputRef={teacherSearchInputRef}
-        handleSearchKeyDown={handleSearchKeyDown}
-        handleEditSchedule={handleEditSchedule}
-      />
-
-      <DayFilterDialog
-        open={isDayFilterOpen}
-        onOpenChange={setIsDayFilterOpen}
-        daysOrder={daysOrder}
-        selectedDays={selectedDays}
-        handleAllDaysToggle={handleAllDaysToggle}
-        handleDayToggle={handleDayToggle}
-      />
-
-      <UploadScheduleDialog
-        open={isUploadModalOpen}
-        onOpenChange={(open) => {
-          setIsUploadModalOpen(open);
-
-          if (!open) {
-            setExcelFile(null);
-          }
-        }}
-        setExcelFile={setExcelFile}
-        handleUploadExcel={handleUploadExcel}
       />
     </>
   );

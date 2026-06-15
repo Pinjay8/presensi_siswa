@@ -39,6 +39,7 @@ export const SERVICE_ENDPOINTS = {
   },
   ekstrakurikuler: {
     all: "/api/ekstrakurikuler",
+    schedules: "/api/ekstrakurikuler/jadwal",
   },
   student: {
     list: "/api/user-siswa",

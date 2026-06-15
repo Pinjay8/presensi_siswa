@@ -34,6 +34,22 @@ export const ekstrakurikulerColumns = ({
       },
     },
     {
+      accessorKey: "jenis",
+      accessorFn: (row) => row.jenis,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("jenis")}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        return <span>{row.original.jenis}</span>;
+      },
+    },
+    {
       accessorKey: "lokasi",
       accessorFn: (row) => row.lokasi,
       header: ({ column }) => {

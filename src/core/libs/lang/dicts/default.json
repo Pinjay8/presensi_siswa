@@ -623,6 +623,10 @@
     "id": "Gagal",
     "en": "Failed"
   },
+  "jadwalEkstrakurikuler": {
+    "id": "Jadwal Ekstrakurikuler",
+    "en": "Extra Curricular Schedule"
+  },
   "successful": {
     "id": "[context] berhasil!",
     "en": "[context] is successfuly!"
@@ -862,6 +866,10 @@
   "scheduleMapel": {
     "id": "Jadwal mata pelajaran",
     "en": "Schedule"
+  },
+  "scheduleEkstrakurikuler": {
+    "id": "Jadwal Ekstrakurikuler",
+    "en": "Schedule Extracurricular"
   },
   "time": {
     "id": "Jam",
@@ -1785,19 +1793,19 @@
   },
   "ekstrakurikuler": {
     "id": "Ekstrakurikuler",
-    "en": "Ekstrakurikuler"
+    "en": "Extracurricular"
   },
   "addEkstrakurikuler": {
     "id": "Tambah Ekstrakurikuler",
-    "en": "Add Ekstrakurikuler"
+    "en": "Add Extracurricular"
   },
   "editEkstrakurikuler": {
     "id": "Edit Ekstrakurikuler",
-    "en": "Edit Ekstrakurikuler"
+    "en": "Edit Extracurricular"
   },
   "deleteEkstrakurikuler": {
     "id": "Hapus Ekstrakurikuler",
-    "en": "Delete Ekstrakurikuler"
+    "en": "Delete Extracurricular"
   },
   "address": {
     "id": "Alamat",

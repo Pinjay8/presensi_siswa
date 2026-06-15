@@ -208,17 +208,6 @@ export const StudentAttendance = () => {
       <StudentAttendanceTable
         totalAttedance={true}
         data={filteredData}
-        // pagination={{
-        //   pageIndex: pagination.pageIndex,
-        //   pageSize: pagination.pageSize,
-        //   totalItems: filteredData?.pagination?.totalItems || 0,
-        //   onPageChange: (page) =>
-        //     onPaginationChange({ ...pagination, pageIndex: page }),
-        //   onSizeChange: (size) =>
-        //     onPaginationChange({ ...pagination, pageSize: size, pageIndex: 0 }),
-        // }}
-        // sorting={sorting}
-        // onSortingChange={onSortingChange}
         pagination={pagination}
         onPaginationChange={onPaginationChange}
         rowCount={attendanceData?.pagination?.total ?? 0}
