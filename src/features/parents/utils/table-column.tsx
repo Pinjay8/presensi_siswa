@@ -204,9 +204,7 @@ export const parentColumnWithFilter = ({
       accessorFn: (row) => row.id,
       size: 50,
       enableSorting: false,
-      header: () => {
-        return null;
-      },
+      header: () => lang.text("action"),
       cell: ({ row }) => {
         const encryptPayload = simpleEncode(
           JSON.stringify({

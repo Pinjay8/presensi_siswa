@@ -84,7 +84,9 @@ export const classroomColumns = ({
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-2">
-            <div className="text-sm font-medium">{row.original.attendanceSchedule?.name || "- - -"}</div>
+            <div className="text-sm ">
+              {row.original.attendanceSchedule?.name || "-"}
+            </div>
           </div>
         );
       },
@@ -94,9 +96,7 @@ export const classroomColumns = ({
       accessorFn: (row) => row.id,
       size: 50,
       enableSorting: false,
-      header: () => {
-        return null;
-      },
+      header: lang.text("action"),
       cell: ({ row }) => {
         const encryptPayload = simpleEncode(
           JSON.stringify({ id: row.original.id, text: row.original.namaKelas }),

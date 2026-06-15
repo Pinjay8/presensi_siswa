@@ -18,7 +18,7 @@ export const ModalCreateCards = ({ show, onClose }: propsModal) => {
     <Dialog open={show} onOpenChange={onClose}>
       <DialogContent className="w-[500px] pt-3.5 h-max">
         <DialogHeader className="flex justify-between border-b border-b-white/10 mt-2">
-          <DialogTitle className="flex items-baseline">
+          <DialogTitle className="flex items-baseline mt-4">
             <p>{lang.text("addCards")}</p>
           </DialogTitle>
         </DialogHeader>

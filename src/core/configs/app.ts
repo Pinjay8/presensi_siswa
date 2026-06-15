@@ -26,7 +26,7 @@ export const SERVICE_ENDPOINTS = {
   },
   auth: {
     login: "/login",
-    logout: "/logout",
+    logout: "/api/logout",
     signup: "/signup",
     forgetPassword: "/forgot-password",
     resetPassword: "/reset-password",
@@ -36,6 +36,10 @@ export const SERVICE_ENDPOINTS = {
     attedance: "/get-biodata-siswa-new",
     siswa: "/api/get-biodata-siswa",
     guru: "/api/get-all-guru",
+  },
+  ekstrakurikuler: {
+    all: "/api/ekstrakurikuler",
+    schedules: "/api/ekstrakurikuler/jadwal",
   },
   student: {
     list: "/api/user-siswa",
@@ -68,6 +72,7 @@ export const SERVICE_ENDPOINTS = {
   },
   user: {
     user: "/api/user",
+    childParent: "/api/user/daftar-anak",
     update: "api/update-user",
     admin: "/api/all-admin",
     profile: "/api/profile",
@@ -138,11 +143,11 @@ export const SERVICE_ENDPOINTS = {
     schoolDetail: "/api/dashboard/schools-detail",
     listCount: "/api/dashboard",
   },
-  settings:{
+  settings: {
     getSetting: "/api/app-setting",
     updateSetting: "/api/app-setting",
   },
-  scheduler:{
+  scheduler: {
     main: "/api/attendance/schedules",
     holiday: "/api/attendance/holidays",
   },

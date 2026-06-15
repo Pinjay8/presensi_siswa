@@ -96,8 +96,6 @@
 
 // export const courseDataFallback: CourseDataModel[] = [];
 
-
-
 import { lang, simpleEncode } from "@/core/libs";
 import { CourseDataModel } from "@/core/models/course";
 import {
@@ -111,7 +109,11 @@ export const courseColumns = ({
   schoolOptions = [],
   classroomOptions = [],
   onEdit, // Add onEdit callback
-}: BaseTableFilter & { onEdit?: (course: CourseDataModel) => void }): ColumnDef<CourseDataModel>[] => {
+  onDelete,
+}: BaseTableFilter & {
+  onEdit?: (course: CourseDataModel) => void;
+  onDelete?: (course: CourseDataModel) => void;
+}): ColumnDef<CourseDataModel>[] => {
   return [
     {
       accessorKey: "namaMataPelajaran",
@@ -129,25 +131,46 @@ export const courseColumns = ({
         return <span>{row.original.namaMataPelajaran}</span>;
       },
     },
-    {
-      accessorKey: "sekolah.namaSekolah",
-      accessorFn: (row) => row.sekolah?.namaSekolah,
-      header: ({ column }) => {
-        return (
-          <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {lang.text("school")}
-          </BaseTableHeader>
-        );
-      },
-      meta: {
-        filterLabel: lang.text("school"),
-        filterPlaceholder: lang.text("selectSchool"),
-        filterVariant: "select",
-        filterOptions: schoolOptions,
-      },
-    },
+    // {
+    //   accessorKey: "type",
+    //   accessorFn: (row) => row.tipe,
+    //   header: ({ column }) => {
+    //     return (
+    //       <BaseTableHeader
+    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //       >
+    //         {lang.text("type")}
+    //       </BaseTableHeader>
+    //     );
+    //   },
+    //   cell: ({ row }) => {
+    //     const typeMap: Record<string, string> = {
+    //       mata_pelajaran: "Mata Pelajaran",
+    //       ekstrakulikuler: "Ekstrakulikuler",
+    //     };
+
+    //     return <span>{typeMap[row.original.tipe] || row.original.tipe}</span>;
+    //   },
+    // },
+    // {
+    //   accessorKey: "sekolah.namaSekolah",
+    //   accessorFn: (row) => row.sekolah?.namaSekolah,
+    //   header: ({ column }) => {
+    //     return (
+    //       <BaseTableHeader
+    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //       >
+    //         {lang.text("school")}
+    //       </BaseTableHeader>
+    //     );
+    //   },
+    //   meta: {
+    //     filterLabel: lang.text("school"),
+    //     filterPlaceholder: lang.text("selectSchool"),
+    //     filterVariant: "select",
+    //     filterOptions: schoolOptions,
+    //   },
+    // },
     {
       accessorKey: "kelas",
       accessorFn: (row) => row.kelas?.namaKelas,
@@ -156,25 +179,23 @@ export const courseColumns = ({
           <BaseTableHeader
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            {lang.text('className')}
+            {lang.text("className")}
           </BaseTableHeader>
         );
       },
-      meta: {
-        filterLabel: lang.text('className'),
-        filterPlaceholder: lang.text('selectClassRoom'),
-        filterVariant: "select",
-        filterOptions: schoolOptions,
-      },
+      // meta: {
+      //   filterLabel: lang.text("className"),
+      //   filterPlaceholder: lang.text("selectClassRoom"),
+      //   filterVariant: "select",
+      //   filterOptions: schoolOptions,
+      // },
     },
     {
       accessorKey: "id",
       accessorFn: (row) => row.id,
       size: 50,
       enableSorting: false,
-      header: () => {
-        return null;
-      },
+      header: () => lang.text("action"),
       cell: ({ row }) => {
         const encryptPayload = simpleEncode(
           JSON.stringify({
@@ -186,7 +207,8 @@ export const courseColumns = ({
           <BaseActionTable
             // detailPath={`/courses/${encryptPayload}`} // Optional: Keep if detail view is needed
             onEdit={() => onEdit?.(row.original)} // Trigger onEdit callback
-            deletePath={`/courses/delete/${encryptPayload}`}
+            // deletePath={`/courses/delete/${encryptPayload}`}
+            onDelete={() => onDelete?.(row.original)}
           />
         );
       },

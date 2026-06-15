@@ -3,7 +3,7 @@ import { useAuth } from "@/features/auth";
 import { useQuery } from "@tanstack/react-query";
 export const useAbsensiCount = () => {
   const auth = useAuth();
-    const enabled = auth.isAuthenticated();
+  const enabled = auth.isAuthenticated();
   return useQuery({
     enabled,
     queryKey: ["absensi-count"],

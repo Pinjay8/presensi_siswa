@@ -39,7 +39,7 @@ interface AttendanceDashboardProps {
   //   dispensasi: AttendanceChange;
   // };
   changes: any;
-  isLoading: boolean;
+  isLoading?: boolean;
   dataNoAccess?: {
     nis: string;
     name: string;

@@ -6,6 +6,7 @@ import { useProfile } from "@/features/profile";
 import { useSchool } from "@/features/schools";
 import { useBiodata } from "@/features/user";
 import {
+  Bell,
   Loader2,
   Maximize,
   Menu,
@@ -27,6 +28,10 @@ import { ThemeToggle } from "../theme-toggle";
 import { Sidebar } from "./sidebar";
 import { SidebarProps } from "./sidebar/types";
 import { UserMenu, UserMenuProps } from "./usermenu";
+import Notification from "../Notification";
+import { Typography } from "@mui/material";
+import { useSidebarContext } from "../../hooks";
+import { SidebarContext } from "../../context";
 
 export interface DashboardLayoutProps extends PropsWithChildren {
   menus: SidebarProps["menus"];
@@ -46,6 +51,7 @@ const Chatbot = ({
   classRoom,
   events,
   show,
+  setShow,
 }: any) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -296,8 +302,16 @@ const Chatbot = ({
         const studentDetail =
           Array.isArray(studentDetailData?.data) &&
           studentDetailData?.data?.find((d) => d.id === student.id);
-        // console.log("info siswa 751", studentDetail);
-        const reply = `Detail siswa:\nNama: ${studentDetail.user?.name || "-"}\nNIS: ${studentDetail.user?.nis || "-"}\nNISN: ${studentDetail.user?.nisn || "-"}\nEmail: ${studentDetail.user?.email || "-"}\nKelas: ${studentDetail.kelas?.namaKelas || "-"}`;
+
+        const reply = [
+          "Detail siswa:",
+          `Nama: ${studentDetail.user?.name || "-"}`,
+          `NIS: ${studentDetail.user?.nis || "-"}`,
+          `NISN: ${studentDetail.user?.nisn || "-"}`,
+          `Email: ${studentDetail.user?.email || "-"}`,
+          `Kelas: ${studentDetail.kelas?.namaKelas || "-"}`,
+        ].join("\n");
+
         return {
           reply,
           data: [studentDetail],
@@ -449,6 +463,7 @@ const Chatbot = ({
     }
   };
 
+
   const renderData = (data: any) => {
     if (!data || !data.length) return null;
     // console.log("hasil data cek di sini", data);
@@ -458,7 +473,7 @@ const Chatbot = ({
     let rows = [];
     if (data[0]?.user?.nis) {
       // Data siswa
-      headers = ["Nama", "NIS", "nis", "Email", "NoTlp", "Kelas"];
+      headers = ["Nama", "NIS", "NISN", "Email", "NoTlp", "Kelas"];
       rows = data.map((item) => [
         item?.user?.name || "-",
         item?.user?.nis || "-",
@@ -513,10 +528,34 @@ const Chatbot = ({
   };
 
   return (
+    // <div
+    //   className={`z-[555] fixed bottom-28 pb-6 ${show ? "right-[4%]" : "right-[-100%]"} ease duration-500 w-[28%] bg-white shadow-xl rounded-lg p-4 flex flex-col max-h-[75vh]`}
+    // >
     <div
-      className={`z-[555] fixed bottom-28 pb-6 ${show ? "right-[4%]" : "right-[-100%]"} ease duration-500 w-[28%] bg-white shadow-xl rounded-lg p-4 flex flex-col max-h-[75vh]`}
+      className={`
+    fixed z-[555]
+    ${show ? "right-2 md:right-[4%]" : "-right-full"}
+    bottom-4 md:bottom-28
+    w-[85vw] xl:w-[28%]
+    max-w-[500px]
+    h-[80vh] md:max-h-[75vh]
+    bg-white
+    shadow-xl
+    rounded-lg
+    p-4
+    flex
+    flex-col
+    transition-all
+    duration-500
+  `}
     >
       <div className="w-full relative top-0 left-0 p-3 border-b border-black/10 rounded-sm mb-4">
+        <button
+          onClick={() => setShow(false)}
+          className="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-100 transition"
+        >
+          <X size={20} />
+        </button>
         <p className="text-slate-500">
           <span className="font-bold text-black">
             {lang.text("commandWord")}:
@@ -764,15 +803,11 @@ export const DashboardLayout = React.memo(
         })
         .filter(Boolean);
     }, [menus, profile?.user?.role]);
+
+    const sidebarContext = useSidebarContext();
+
     return (
       <div className="dashboard-layout grid min-h-[100svh] w-full md:grid-cols-[auto_1fr] lg:grid-cols-[auto_1fr]">
-        {/* <SidebarContext.Provider
-        value={{
-          visible: sidebarVisible,
-          setVisible: () => setSidebarVisible((v) => !v),
-        }}
-      >
-      </SidebarContext.Provider> */}
         <Sidebar.Default
           menus={filteredMenus}
           className={props.sidebarClassName}
@@ -781,11 +816,11 @@ export const DashboardLayout = React.memo(
         <div className="sidebar-content flex flex-col overflow-hidden">
           <header
             className={cn(
-              "sidebar-header flex h-14 items-center gap-2 border-b bg-muted-foreground/5 px-4 lg:h-[60px] lg:px-6",
+              "sidebar-header flex h-14 items-center gap-1 border-b bg-muted-foreground/5 px-4 lg:h-[60px] lg:px-6",
               props.headerClassName,
             )}
           >
-            <div className="relative z-[99] border border-white/10 overflow-hidden hover:border-white/ rounded-full">
+            <div className="hidden lg:block relative z-[99] border border-white/10 overflow-hidden rounded-full">
               <Button
                 variant="ghost"
                 size="icon"
@@ -801,7 +836,7 @@ export const DashboardLayout = React.memo(
                 <p>{visible ? "Hide Sidebar" : "Show Sidebar"}</p>
               </Button>
             </div>
-            <Button
+            {/* <Button
               variant="ghost"
               size="icon"
               onClick={() => setSidebarVisible((v) => !v)}
@@ -809,14 +844,40 @@ export const DashboardLayout = React.memo(
             >
               <Menu className="h-6 w-6" />
               <span className="sr-only">Toggle sidebar</span>
-            </Button>
-            <Sidebar.Sheet
-              className={props.sidebarClassName}
-              menus={filteredMenus}
-            />
+            </Button> */}
+            {/* <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => sidebarContext.setVisible(true)}
+              className="md:hidden"
+            >
+              <Menu className="h-6 w-6" />
+              <span className="sr-only">Toggle sidebar</span>
+            </Button> */}
+            <SidebarContext.Provider
+              value={{
+                visible: sidebarVisible,
+                setVisible: () => setSidebarVisible((v) => !v),
+              }}
+            >
+              <Sidebar.Sheet
+                className={props.sidebarClassName}
+                menus={filteredMenus}
+              />
+            </SidebarContext.Provider>
             <div className="w-full flex-1">
               {/* Search form (jika diaktifkan) */}
             </div>
+
+            <div>
+              <Typography
+                className="lg:mr-1 "
+                sx={{ fontSize: "14px", marginRight: "5px", marginBottom: "0" }}
+              >
+                {profile?.user?.sekolah?.namaSekolah ?? "-"}
+              </Typography>
+            </div>
+            <Notification />
             <ThemeToggle />
             <LangToggle />
             <UserMenu menus={usermenus} />
@@ -853,6 +914,7 @@ export const DashboardLayout = React.memo(
                     classRoom={classRoom}
                     events={events}
                     show={isChatbotVisible}
+                    setShow={setIsChatbotVisible}
                   />
                 </>
               )}

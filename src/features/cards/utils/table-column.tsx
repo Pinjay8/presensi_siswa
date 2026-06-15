@@ -10,6 +10,7 @@ import { ColumnDef } from "@tanstack/react-table";
 export const cardColumns = (
   columFilter?: BaseTableFilter,
   onEdit?: (id: number) => void,
+  onDelete?: (id: number) => void,
 ): ColumnDef<any>[] => {
   return [
     {
@@ -97,9 +98,7 @@ export const cardColumns = (
       accessorFn: (row) => row.id,
       size: 50,
       enableSorting: false,
-      header: () => {
-        return null;
-      },
+      header: () => lang.text("action"),
       cell: ({ row }) => {
         const encryptPayload = simpleEncode(
           JSON.stringify({
@@ -114,7 +113,7 @@ export const cardColumns = (
             // detailPath={`/classrooms/${encryptPayload}`}
             // editPath={`/cards/edit/${encryptPayload}`}
             onEdit={() => onEdit?.(row.original.id)}
-            deletePath={`/cards/delete/${encryptPayload}`}
+            onDelete={() => onDelete?.(row.original)}
           />
         );
       },

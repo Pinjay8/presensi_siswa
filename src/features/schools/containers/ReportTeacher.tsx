@@ -69,9 +69,11 @@ export const ReportTeacher = ({
       <div className="mt-2 w-full flex gap-8 flex-wrap">
         <Card className="w-full lg:w-[calc(50%-1rem)]  bg-theme-color-primary/5">
           <CardHeader>
-            <h3 className="text-lg font-semibold">
-              {lang.text("jadwalKelasHariIni")}
-            </h3>
+            <div>
+              <span className="inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-white">
+                {lang.text("jadwalKelasHariIni")}
+              </span>
+            </div>
           </CardHeader>
 
           <CardContent>
@@ -105,9 +107,11 @@ export const ReportTeacher = ({
         </Card>
         <Card className="w-full lg:w-[calc(50%-1rem)]  bg-theme-color-primary/5">
           <CardHeader>
-            <h3 className="text-lg font-semibold">
-              {lang.text("jadwalMengajarHariIni")}
-            </h3>
+            <div>
+              <span className="inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-white">
+                {lang.text("jadwalMengajarHariIni")}
+              </span>
+            </div>
           </CardHeader>
 
           <CardContent>
@@ -142,7 +146,7 @@ export const ReportTeacher = ({
             )}
           </CardContent>
         </Card>
-        <Card className="w-full lg:w-[calc(50%-1rem)]  bg-theme-color-primary/5">
+        <Card className="w-full lg:w-[calc(100%-1rem)]  bg-theme-color-primary/5">
           <CardHeader>
             <h3 className="text-lg font-semibold">
               {lang.text("pendingDispensasi")}
@@ -174,11 +178,14 @@ export const ReportTeacher = ({
             )}
           </CardContent>
         </Card>
+
         <Card className="w-full lg:w-[calc(50%-1rem)] bg-theme-color-primary/5">
           <CardHeader>
-            <h3 className="text-lg font-semibold">
-              {lang.text("topSiswaBermasalah")}
-            </h3>
+            <div>
+              <span className="inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-white">
+                {lang.text("topSiswaBermasalah")}
+              </span>
+            </div>
           </CardHeader>
 
           <CardContent>
@@ -189,24 +196,45 @@ export const ReportTeacher = ({
                 </p>
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={150}>
-                <BarChart data={siswaBermasalahChart} layout="vertical">
-                  <XAxis type="number" />
-                  <YAxis dataKey="nama" type="category" width={100} />
+              <div className="space-y-6">
+                {topSiswaBermasalah.map((item: any) => {
+                  const percentage =
+                    topSiswaBermasalah[0]?.totalAlfa > 0
+                      ? (item.totalAlfa / topSiswaBermasalah[0].totalAlfa) * 100
+                      : 0;
 
-                  <Tooltip />
+                  return (
+                    <div key={item.biodataSiswaId}>
+                      <div className="flex justify-between mb-2">
+                        <span className="font-medium">{item.namaSiswa}</span>
 
-                  <Bar dataKey="alfa" fill="#05367a" radius={[0, 6, 6, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+                        <span className="text-muted-foreground">
+                          {item.totalAlfa} Alfa
+                        </span>
+                      </div>
+
+                      <div className="h-3 w-full rounded-full bg-slate-200">
+                        <div
+                          className="h-3 rounded-full bg-[red] transition-all"
+                          style={{
+                            width: `${percentage}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </CardContent>
         </Card>
-        <Card className="w-full lg:w-[calc(100%-1rem)] bg-theme-color-primary/5">
+        <Card className="w-full lg:w-[calc(50%-1rem)] bg-theme-color-primary/5">
           <CardHeader>
-            <h3 className="text-lg font-semibold">
-              {lang.text("topSiswaTerbaik")}
-            </h3>
+            <div>
+              <span className="inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-white">
+                {lang.text("topSiswaTerbaik")}
+              </span>
+            </div>
           </CardHeader>
 
           <CardContent>
@@ -217,16 +245,37 @@ export const ReportTeacher = ({
                 </p>
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={150}>
-                <BarChart data={siswaTerbaikChart} layout="vertical">
-                  <XAxis type="number" />
-                  <YAxis dataKey="nama" type="category" width={100} />
+              <div className="space-y-6">
+                {topSiswaTerbaik.map((item: any, index: number) => {
+                  const percentage =
+                    topSiswaTerbaik[0]?.totalHadir > 0
+                      ? (item.totalHadir / topSiswaTerbaik[0].totalHadir) * 100
+                      : 0;
 
-                  <Tooltip />
+                  return (
+                    <div key={item.biodataSiswaId}>
+                      <div className="flex justify-between mb-2">
+                        <span className="font-medium">
+                          #{index + 1} {item.namaSiswa}
+                        </span>
 
-                  <Bar dataKey="hadir" fill="#05367a" radius={[0, 6, 6, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+                        <span className="text-muted-foreground">
+                          {item.totalHadir} Hadir
+                        </span>
+                      </div>
+
+                      <div className="h-3 w-full rounded-full bg-slate-200">
+                        <div
+                          className="h-3 rounded-full bg-[#22C55E] transition-all"
+                          style={{
+                            width: `${percentage}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </CardContent>
         </Card>

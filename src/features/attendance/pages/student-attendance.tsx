@@ -40,10 +40,6 @@ export const StudentAttendance = () => {
     localStorage.setItem("attendanceTarget", "students");
   }, []);
 
-  const profile = useProfile();
-  const alert = useAlert();
-  const biodata = useBiodataNew(profile?.user?.sekolahId || 1);
-
   const biodataAll = useBiodata();
 
   const [selectedStartMonth, setSelectedStartMonth] = useState<string>(
@@ -64,7 +60,9 @@ export const StudentAttendance = () => {
     pagination,
     onSortingChange,
     onPaginationChange,
-  } = useDataTableController({ defaultPageSize: 10 });
+  } = useDataTableController({
+    defaultPageSize: 10,
+  });
 
   const attendanceParams = {
     filter: filters,
@@ -88,7 +86,7 @@ export const StudentAttendance = () => {
     });
 
     socket.on("connect", () => {
-      console.log("Connected");
+      console.log("Connected", socket.id);
     });
 
     socket.on("absen", async (data) => {
@@ -113,14 +111,6 @@ export const StudentAttendance = () => {
       socket.disconnect();
     };
   }, [refetch]);
-
-  const studentList = Array.isArray(
-    dataMode === "harian" ? biodata.data : biodataAll.data,
-  )
-    ? dataMode === "harian"
-      ? biodata.data
-      : biodataAll.data
-    : [];
 
   const classOptions = Array.from(
     new Map(
@@ -218,17 +208,9 @@ export const StudentAttendance = () => {
       <StudentAttendanceTable
         totalAttedance={true}
         data={filteredData}
-        pagination={{
-          pageIndex: pagination.pageIndex,
-          pageSize: pagination.pageSize,
-          totalItems: filteredData?.pagination?.totalItems || 0,
-          onPageChange: (page) =>
-            onPaginationChange({ ...pagination, pageIndex: page }),
-          onSizeChange: (size) =>
-            onPaginationChange({ ...pagination, pageSize: size, pageIndex: 0 }),
-        }}
-        sorting={sorting}
-        onSortingChange={onSortingChange}
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
+        rowCount={attendanceData?.pagination?.total ?? 0}
       />
       <ExportFilterModal
         open={isModalOpen}

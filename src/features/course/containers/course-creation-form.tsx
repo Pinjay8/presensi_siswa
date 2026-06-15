@@ -38,7 +38,7 @@ interface CourseInitialData {
   namaMataPelajaran?: string;
   sekolahId?: number;
   kelasId?: number;
-  tipe?: string;
+  // tipe?: string;
 }
 
 // Fungsi untuk menghasilkan template Excel dari file di public folder
@@ -78,7 +78,7 @@ export const CourseCreationForm = ({
       courseName: initialData?.namaMataPelajaran || "",
       school: initialData?.sekolahId || profile?.user?.sekolahId || 0,
       classroom: initialData?.kelasId || 0,
-      tipe: initialData?.tipe || "",
+      // tipe: initialData?.tipe || "",
     },
   });
 
@@ -103,14 +103,14 @@ export const CourseCreationForm = ({
         await creation.update(Number(initialData?.id), {
           namaMataPelajaran: data.courseName,
           kelasId: Number(data.classroom), // Include kelasId in update
-          tipe: data.tipe,
+          // tipe: data.tipe,
         });
       } else {
         await creation.create({
           namaMataPelajaran: data.courseName,
           // sekolahId: data.school,
           kelasId: Number(data.classroom),
-          tipe: data.tipe,
+          // tipe: data.tipe,
         });
       }
 
@@ -341,7 +341,7 @@ export const CourseCreationForm = ({
                   />
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4">
+              {/* <div className="flex flex-col sm:flex-row gap-4 mt-2">
                 <div className="w-full">
                   <FormField
                     control={form.control}
@@ -349,7 +349,6 @@ export const CourseCreationForm = ({
                     render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel>{lang.text("type")}</FormLabel>
-
                         <Select
                           value={field.value}
                           onValueChange={field.onChange}
@@ -375,7 +374,7 @@ export const CourseCreationForm = ({
                     )}
                   />
                 </div>
-              </div>
+              </div> */}
               <div className="flex flex-col gap-4 mt-2">
                 <div className="basis-1">
                   <FormField

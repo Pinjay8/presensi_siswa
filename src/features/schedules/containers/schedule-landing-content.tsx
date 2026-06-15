@@ -46,6 +46,10 @@ import { teacherService } from "@/core/services/teacher";
 import QRCode from "react-qr-code";
 import { QrAttendanceDialog } from "../components/QrAttendanceDialog";
 import { useProfile } from "@/features/profile";
+import { AddScheduleDialog } from "../components/AddScheduleDialog";
+import { EditScheduleDialog } from "../components/EditScheduleDialog";
+import { DayFilterDialog } from "../components/DayFilterDialog";
+import { UploadScheduleDialog } from "../components/UploadScheduleDialog";
 
 interface ScheduleItem {
   id: number;
@@ -803,6 +807,20 @@ export function ScheduleLandingContent() {
     setIsEditModalOpen(true);
   };
 
+  const initialFormData = {
+    mataPelajaranId: 0,
+    guruId: 0,
+    hari: "",
+    kelasId: 0,
+    jamMulai: "",
+    jamSelesai: "",
+  };
+
+  const resetForm = () => {
+    setFormData(initialFormData);
+    setSelectedKelasIdForAdd(0);
+  };
+
   // Render loading state
   if (!schedules?.data || schedules.isLoading) {
     return (
@@ -835,328 +853,6 @@ export function ScheduleLandingContent() {
           </div>
         }
       />
-      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle style={{ marginTop: "20px" }}>
-              {lang.text("addSchedule")}
-            </DialogTitle>
-          </DialogHeader>
-          <Divider />
-          <div className="grid gap-3 py-4 pt-0">
-            <div className="grid gap-2">
-              <label htmlFor="kelasId">Kelas</label>
-              <Select
-                onValueChange={(value) =>
-                  setSelectedKelasIdForAdd(parseInt(value))
-                }
-                value={
-                  selectedKelasIdForAdd === 0
-                    ? ""
-                    : selectedKelasIdForAdd.toString()
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Kelas" />
-                </SelectTrigger>
-                <SelectContent>
-                  {classData.map((kelas: any) => (
-                    <SelectItem key={kelas.id} value={kelas.id.toString()}>
-                      {kelas.namaKelas}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <label htmlFor="hari">Hari</label>
-              <Select
-                onValueChange={(value) =>
-                  setFormData({ ...formData, hari: value })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Hari" />
-                </SelectTrigger>
-                <SelectContent>
-                  {daysOrder.map((day) => (
-                    <SelectItem key={day} value={day}>
-                      {day}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <label htmlFor="mataPelajaranId">Mata Pelajaran</label>
-              <Select
-                onValueChange={(value) =>
-                  setFormData({ ...formData, mataPelajaranId: parseInt(value) })
-                }
-                disabled={selectedKelasIdForAdd === 0}
-              >
-                <SelectTrigger>
-                  <SelectValue
-                    placeholder={
-                      selectedKelasIdForAdd === 0
-                        ? "Pilih kelas terlebih dahulu"
-                        : "Pilih Mata Pelajaran"
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent className="px-2">
-                  <div className="py-1 mb-2">
-                    <Input
-                      ref={searchInputRef}
-                      placeholder="Cari Mata Pelajaran..."
-                      value={searchCourse}
-                      onChange={(e) => setSearchCourse(e.target.value)}
-                      onKeyDown={handleSearchKeyDown}
-                      className="w-full"
-                    />
-                  </div>
-                  {filteredCourses.map((course: any) => (
-                    <SelectItem key={course.id} value={course.id.toString()}>
-                      {course.namaMataPelajaran}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <label htmlFor="guruId">Guru</label>
-              <Select
-                onValueChange={(value) =>
-                  setFormData({ ...formData, guruId: parseInt(value) })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Guru" />
-                </SelectTrigger>
-                <SelectContent className="px-2">
-                  <div className="py-1 mb-2">
-                    <Input
-                      ref={teacherSearchInputRef}
-                      placeholder="Cari Guru..."
-                      value={searchTeacher}
-                      onChange={(e) => setSearchTeacher(e.target.value)}
-                      onKeyDown={handleSearchKeyDown}
-                      className="w-full"
-                    />
-                  </div>
-                  {filteredTeachers?.map((teacher: any) => (
-                    <SelectItem key={teacher.id} value={teacher.id.toString()}>
-                      {teacher.namaGuru}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <label htmlFor="jamMulai">Jam Mulai</label>
-              <Input
-                type="time"
-                value={formData.jamMulai}
-                onChange={(e) =>
-                  setFormData({ ...formData, jamMulai: e.target.value })
-                }
-                className="w-full"
-              />
-            </div>
-            <div className="grid gap-2">
-              <label htmlFor="jamSelesai">Jam Selesai</label>
-              <Input
-                type="time"
-                value={formData.jamSelesai}
-                onChange={(e) =>
-                  setFormData({ ...formData, jamSelesai: e.target.value })
-                }
-                className="w-full"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={handleAddSchedule}>Simpan</Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsAddModalOpen(false);
-                setFormData({
-                  mataPelajaranId: 0,
-                  guruId: 0,
-                  hari: "",
-                  kelasId: 0,
-                  jamMulai: "",
-                  jamSelesai: "",
-                });
-                setSelectedKelasIdForAdd(0);
-              }}
-            >
-              Batal
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Jadwal - {selectedDay}</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <label htmlFor="mataPelajaranId">Mata Pelajaran</label>
-              <Select
-                value={formData.mataPelajaranId.toString()}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, mataPelajaranId: parseInt(value) })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Mata Pelajaran" />
-                </SelectTrigger>
-                <SelectContent className="px-2">
-                  <div className="py-1 mb-2">
-                    <Input
-                      ref={searchInputRef}
-                      placeholder="Cari Mata Pelajaran..."
-                      value={searchCourse}
-                      onChange={(e) => setSearchCourse(e.target.value)}
-                      onKeyDown={handleSearchKeyDown}
-                      className="w-full"
-                    />
-                  </div>
-                  {filteredCourses.map((course: any) => (
-                    <SelectItem key={course.id} value={course.id.toString()}>
-                      {course.namaMataPelajaran}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <label htmlFor="guruId">Guru</label>
-              <Select
-                value={formData.guruId.toString()}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, guruId: parseInt(value) })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Guru" />
-                </SelectTrigger>
-                <SelectContent className="px-2">
-                  <div className="py-1 mb-2">
-                    <Input
-                      ref={teacherSearchInputRef}
-                      placeholder="Cari Guru..."
-                      value={searchTeacher}
-                      onChange={(e) => setSearchTeacher(e.target.value)}
-                      onKeyDown={handleSearchKeyDown}
-                      className="w-full"
-                    />
-                  </div>
-                  {filteredTeachers.map((teacher: any) => (
-                    <SelectItem key={teacher.id} value={teacher.id.toString()}>
-                      {teacher.namaGuru}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <label htmlFor="jamMulai">Jam Mulai</label>
-              <Input
-                type="time"
-                value={formData.jamMulai}
-                onChange={(e) =>
-                  setFormData({ ...formData, jamMulai: e.target.value })
-                }
-                className="w-full"
-              />
-            </div>
-            <div className="grid gap-2">
-              <label htmlFor="jamSelesai">Jam Selesai</label>
-              <Input
-                type="time"
-                value={formData.jamSelesai}
-                onChange={(e) =>
-                  setFormData({ ...formData, jamSelesai: e.target.value })
-                }
-                className="w-full"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={handleEditSchedule}>Simpan</Button>
-            <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
-              Batal
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isDayFilterOpen} onOpenChange={setIsDayFilterOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Pilih Hari</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="all-days"
-                checked={selectedDays.length === daysOrder.length}
-                onCheckedChange={handleAllDaysToggle}
-              />
-              <label htmlFor="all-days">Semua Hari</label>
-            </div>
-            {daysOrder.map((day) => (
-              <div key={day} className="flex items-center gap-2">
-                <Checkbox
-                  id={day}
-                  checked={selectedDays.includes(day)}
-                  onCheckedChange={() => handleDayToggle(day)}
-                />
-                <label htmlFor={day}>{day}</label>
-              </div>
-            ))}
-          </div>
-          <DialogFooter>
-            <Button onClick={() => setIsDayFilterOpen(false)}>Tutup</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isUploadModalOpen} onOpenChange={setIsUploadModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Unggah Jadwal dari Excel</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <label htmlFor="excelFile">Pilih File Excel</label>
-              <Input
-                type="file"
-                id="excelFile"
-                accept=".xlsx,.xls"
-                onChange={(e) => setExcelFile(e.target.files?.[0] || null)}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={handleUploadExcel}>Unggah</Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsUploadModalOpen(false);
-                setExcelFile(null);
-              }}
-            >
-              Batal
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       <div className="mt-5 mb-8">
         <div className="w-full mb-4 flex justify-between items-center">
@@ -1343,6 +1039,74 @@ export function ScheduleLandingContent() {
         onOpenChange={setIsQrModalOpen}
         qrCode={qrCode}
         selectedQr={selectedQr}
+      />
+
+      <AddScheduleDialog
+        open={isAddModalOpen}
+        onOpenChange={(open) => {
+          setIsAddModalOpen(open);
+
+          if (!open) {
+            resetForm();
+          }
+        }}
+        classData={classData}
+        daysOrder={daysOrder}
+        selectedKelasIdForAdd={selectedKelasIdForAdd}
+        setSelectedKelasIdForAdd={setSelectedKelasIdForAdd}
+        formData={formData}
+        setFormData={setFormData}
+        searchCourse={searchCourse}
+        setSearchCourse={setSearchCourse}
+        searchTeacher={searchTeacher}
+        setSearchTeacher={setSearchTeacher}
+        filteredCourses={filteredCourses}
+        filteredTeachers={filteredTeachers}
+        searchInputRef={searchInputRef}
+        teacherSearchInputRef={teacherSearchInputRef}
+        handleSearchKeyDown={handleSearchKeyDown}
+        handleAddSchedule={handleAddSchedule}
+        resetForm={resetForm}
+      />
+
+      <EditScheduleDialog
+        open={isEditModalOpen}
+        onOpenChange={setIsEditModalOpen}
+        selectedDay={selectedDay}
+        formData={formData}
+        setFormData={setFormData}
+        filteredCourses={filteredCourses}
+        filteredTeachers={filteredTeachers}
+        searchCourse={searchCourse}
+        setSearchCourse={setSearchCourse}
+        searchTeacher={searchTeacher}
+        setSearchTeacher={setSearchTeacher}
+        searchInputRef={searchInputRef}
+        teacherSearchInputRef={teacherSearchInputRef}
+        handleSearchKeyDown={handleSearchKeyDown}
+        handleEditSchedule={handleEditSchedule}
+      />
+
+      <DayFilterDialog
+        open={isDayFilterOpen}
+        onOpenChange={setIsDayFilterOpen}
+        daysOrder={daysOrder}
+        selectedDays={selectedDays}
+        handleAllDaysToggle={handleAllDaysToggle}
+        handleDayToggle={handleDayToggle}
+      />
+
+      <UploadScheduleDialog
+        open={isUploadModalOpen}
+        onOpenChange={(open) => {
+          setIsUploadModalOpen(open);
+
+          if (!open) {
+            setExcelFile(null);
+          }
+        }}
+        setExcelFile={setExcelFile}
+        handleUploadExcel={handleUploadExcel}
       />
     </>
   );

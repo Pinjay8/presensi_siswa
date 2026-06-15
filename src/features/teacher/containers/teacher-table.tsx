@@ -12,7 +12,14 @@ import { useClassroom } from "@/features/classroom";
 import { teacherService } from "@/core/services/teacher";
 import { useMutation } from "@tanstack/react-query";
 import ModalAssignSchedule from "../components/modalAssignSchedule";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import { FaPlus } from "react-icons/fa";
 import RegisterFaceDialog from "@/features/_global/components/dashboard/usermenu/components/RegisterFaceDialog";
 import { userService } from "@/core/services";
@@ -125,26 +132,26 @@ export function TeacherTable() {
       )}
       {!isRole && (
         <ModalAssignSchedule
-        open={openAssignSchedule}
-        selectedTeacher={selectedTeacher}
-        onClose={() => setOpenAssignSchedule(false)}
-      />
+          open={openAssignSchedule}
+          selectedTeacher={selectedTeacher}
+          onClose={() => setOpenAssignSchedule(false)}
+        />
       )}
       {!isRole && (
         <ModalAssignWaliKelas
-        open={openWaliKelas}
-        teacher={selectedTeacher}
-        kelasOptions={
-          kelas.data?.map((d) => ({
-            label: d.namaKelas,
-            value: String(d.id),
-          })) ?? []
-        }
-        onClose={() => setOpenWaliKelas(false)}
-        onSubmit={(payload) => {
-          assignWaliKelasMutation.mutate(payload);
-        }}
-      />
+          open={openWaliKelas}
+          teacher={selectedTeacher}
+          kelasOptions={
+            kelas.data?.map((d) => ({
+              label: d.namaKelas,
+              value: String(d.id),
+            })) ?? []
+          }
+          onClose={() => setOpenWaliKelas(false)}
+          onSubmit={(payload) => {
+            assignWaliKelasMutation.mutate(payload);
+          }}
+        />
       )}
       <BaseDataTable
         columns={columns}
@@ -183,16 +190,36 @@ export function TeacherTable() {
             />
 
       {/* Delete Dialog */}
-      <Dialog open={openDelete} onClose={() => setOpenDelete(false)}>
+      <Dialog
+        open={openDelete}
+        onClose={() => setOpenDelete(false)}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>{lang.text("delete")}</DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
           <DialogContentText>
-            {lang.text("deleteMessage", { context: selectedTeacher?.user_name })}
+            {lang.text("deleteMessage", {
+              context: selectedTeacher?.user_name,
+            })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDelete(false)}>{lang.text("cancel")}</Button>
-          <Button onClick={handleDelete} disabled={userDelete.isLoading}>{lang.text("delete")}</Button>
+          <Button
+            onClick={() => setOpenDelete(false)}
+            variant="outlined"
+            color="primary"
+          >
+            {lang.text("cancel")}
+          </Button>
+          <Button
+            onClick={handleDelete}
+            disabled={userDelete.isLoading}
+            variant="contained"
+            color="primary"
+          >
+            {lang.text("delete")}
+          </Button>
         </DialogActions>
       </Dialog>
     </>

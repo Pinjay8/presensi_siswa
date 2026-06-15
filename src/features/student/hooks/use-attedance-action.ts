@@ -28,12 +28,12 @@ export const useAttendanceActions = () => {
       );
 
       if (userId) {
-        navigate(-1);
+        // navigate(-1);
+        navigate("/students", { replace: true });
       } else {
         navigate("/students", { replace: true });
       }
     } catch (err: any) {
-      // Jika error berisi 'prisma.devices.findUnique', anggap sukses
       if (err.message?.includes("prisma.devices.findUnique")) {
         console.warn("Prisma device query failed, but treating as success");
         await Promise.all([

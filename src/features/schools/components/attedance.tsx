@@ -9,6 +9,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  Skeleton,
 } from "@/core/libs";
 import React, { useState, useEffect } from "react";
 import { FaEye, FaPhone, FaSpinner } from "react-icons/fa";
@@ -38,7 +39,7 @@ interface AttendanceDashboardProps {
   //   dispensasi: AttendanceChange;
   // };
   changes: any;
-  isLoading: boolean;
+  isLoading?: boolean;
   dataNoAccess?: {
     nis: string;
     name: string;
@@ -139,35 +140,50 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
         //   changes.dispensasi.trend === "neutral" ? "#000000" : "#3ee07a"
         // }
       /> */}
-      <AttendanceCard
-        label={lang.text("presence")}
-        value={stats.totalHadir}
-        percentage={changes.hadir.percentage}
-      />
+      {isLoading ? (
+        <>
+          {[...Array(5)].map((_, index) => (
+            <AttendanceCardSkeleton key={index} />
+          ))}
+        </>
+      ) : (
+        <>
+          <AttendanceCard
+            label={lang.text("presence")}
+            value={stats.totalHadir}
+            percentage={changes.hadir.percentage}
+            isLoading={isLoading}
+          />
 
-      <AttendanceCard
-        label={lang.text("absentee")}
-        value={stats.totalAlpa}
-        percentage={changes.alpa.percentage}
-      />
+          <AttendanceCard
+            label={lang.text("absentee")}
+            value={stats.totalAlpa}
+            percentage={changes.alpa.percentage}
+            isLoading={isLoading}
+          />
 
-      <AttendanceCard
-        label={lang.text("sickness")}
-        value={stats.totalSakit}
-        percentage={changes.sakit.percentage}
-      />
+          <AttendanceCard
+            label={lang.text("sickness")}
+            value={stats.totalSakit}
+            percentage={changes.sakit.percentage}
+            isLoading={isLoading}
+          />
 
-      <AttendanceCard
-        label={lang.text("dispensation")}
-        value={stats.totalDispensasi}
-        percentage={changes.dispensasi.percentage}
-      />
+          <AttendanceCard
+            label={lang.text("dispensation")}
+            value={stats.totalDispensasi}
+            percentage={changes.dispensasi.percentage}
+            isLoading={isLoading}
+          />
 
-      <AttendanceCard
-        label={"Belum Absen"}
-        value={stats.totalBelumAbsen}
-        percentage={changes.belumAbsen.percentage}
-      />
+          <AttendanceCard
+            label={"Belum Absen"}
+            value={stats.totalBelumAbsen}
+            percentage={changes.belumAbsen.percentage}
+            isLoading={isLoading}
+          />
+        </>
+      )}
       {/* <Card className="w-full bg-theme-color-primary/5">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div className="flex items-center gap-2">
@@ -292,3 +308,21 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
     </div>
   );
 };
+
+export function AttendanceCardSkeleton() {
+  return (
+    <Card className="w-full bg-theme-color-primary/5">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Skeleton className="h-4 w-28" />
+        <Skeleton className="h-4 w-4 rounded-full" />
+      </CardHeader>
+
+      <CardContent>
+        <div className="flex items-center gap-4">
+          <Skeleton className="h-8 w-12" />
+          <Skeleton className="h-6 w-16 rounded-md" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

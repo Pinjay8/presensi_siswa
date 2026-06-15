@@ -32,12 +32,20 @@
     "id": "URL Youtube 3"
   },
   "imageMessage": {
-    "en": "Only PNG, JPG and JPEG are supported",
+    "en": "Only PNG, JPG and JPEGd are supported",
     "id": "Hanya PNG, JPG dan JPEG yang didukung"
   },
   "inputURLYoutube1": {
     "en": "First YouTube URL",
     "id": "URL Youtube 1"
+  },
+  "percentagePresent": {
+    "en": "Percentage Present",
+    "id": "Persentase Kehadiran"
+  },
+  "subTitleDashboard": {
+    "en": "Below is a summary of the school today.",
+    "id": "Berikut ringkasan data sekolah hari ini."
   },
   "inputURLYoutube2": {
     "en": "Second YouTube URL",
@@ -183,6 +191,7 @@
     "en": "Calendar",
     "id": "Kalender"
   },
+
   "presence": {
     "en": "Presence",
     "id": "Kehadiran"
@@ -239,7 +248,7 @@
     "en": "Setting",
     "id": "Pengaturan"
   },
-    "settings": {
+  "settings": {
     "en": "Settings",
     "id": "Pengaturan"
   },
@@ -283,7 +292,7 @@
     "en": "Clear",
     "id": "Bersihkan"
   },
-  
+
   "logout": {
     "en": "Logout",
     "id": "Keluar"
@@ -292,6 +301,7 @@
     "en": "Daily",
     "id": "Harian"
   },
+
   "weeks": {
     "en": "Weeks",
     "id": "Mingguan"
@@ -307,6 +317,9 @@
   "selectStudent": {
     "id": "Pilih Siswa",
     "en": "Select Student"
+  "distributePresent": {
+    "en": "Distribute Present",
+    "id": "Distribusi Kehadiran"
   },
   "selectPeriod": {
     "en": "Select Period",
@@ -596,10 +609,7 @@
     "id": "Tanggal",
     "en": "Date"
   },
-  "action": {
-    "id": "Aksi",
-    "en": "Action"
-  },
+
   "outOfTownServices": {
     "id": "Dinas Keluar Kota",
     "en": "Out of Town Services"
@@ -615,6 +625,10 @@
   "fail": {
     "id": "Gagal",
     "en": "Failed"
+  },
+  "jadwalEkstrakurikuler": {
+    "id": "Jadwal Ekstrakurikuler",
+    "en": "Extra Curricular Schedule"
   },
   "successful": {
     "id": "[context] berhasil!",
@@ -856,6 +870,10 @@
     "id": "Jadwal mata pelajaran",
     "en": "Schedule"
   },
+  "scheduleEkstrakurikuler": {
+    "id": "Jadwal Ekstrakurikuler",
+    "en": "Schedule Extracurricular"
+  },
   "time": {
     "id": "Jam",
     "en": "Hour"
@@ -899,7 +917,7 @@
     "en": "Making a dispensation"
   },
   "LicensingData": {
-    "id": "Data perizinan",
+    "id": "Data Perizinan",
     "en": "Licensing data"
   },
   "addLicensing": {
@@ -1063,6 +1081,10 @@
     "id": "Pilih Status",
     "en": "Select Status"
   },
+  "selectDay": {
+    "id": "Pilih Status",
+    "en": "Select Status"
+  },
   "weekendStatus": {
     "id": "Status Weekend",
     "en": "Weekend Status"
@@ -1151,6 +1173,14 @@
     "id": "Total Titik Lokasi",
     "en": "Total Location Points"
   },
+  "location": {
+    "id": "Lokasi",
+    "en": "Location"
+  },
+  "advisor": {
+    "id": "Pembina",
+    "en": "Advisor"
+  },
   "student": {
     "id": "Siswa",
     "en": "Students"
@@ -1169,8 +1199,8 @@
   },
 
   "ReportOverview": {
-    "id": "Ikhtisar Laporan",
-    "en": "Report Overview"
+    "id": "Ringkasan Kehadiran",
+    "en": "Attendance Summary"
   },
   "reportStudentToday": {
     "id": "Laporan Kehadiran (Siswa) Hari ini",
@@ -1319,6 +1349,7 @@
     "id": "Alfa",
     "en": "Alfa"
   },
+
   "nipValidation": {
     "id": "NIP harus 18 karakter",
     "en": "NIP must be 18 characters long"
@@ -1528,8 +1559,8 @@
     "en": "Classroom"
   },
   "action": {
-    "id": "Action",
-    "en": "Aksi"
+    "id": "Aksi",
+    "en": "Action"
   },
   "updateSchoolData": {
     "id": "Memperbarui data sekolah",
@@ -1695,6 +1726,10 @@
     "id": "Masukan nama mata pelajaran",
     "en": "Insert course name"
   },
+  "inputEkstrakurikuler": {
+    "id": "Masukan nama ekstrakurikuler",
+    "en": "Insert extracurricular name"
+  },
   "inputType": {
     "id": "Masukan tipe",
     "en": "Insert course type"
@@ -1702,6 +1737,10 @@
   "completeDataCourse": {
     "id": "Lengkapi data mata pelajaran",
     "en": "Complete the subject data"
+  },
+  "completeDataEkstrakurikuler": {
+    "id": "Lengkapi data ekstrakurikuler",
+    "en": "Complete the extracurricular data"
   },
   "completeDataClassroom": {
     "id": "Lengkapi data kelas",
@@ -1718,6 +1757,10 @@
   "selectClassroom": {
     "id": "Pilih kelas",
     "en": "Choose classroom"
+  },
+  "selectAdvisor": {
+    "id": "Pilih Pembina",
+    "en": "Choose advisor"
   },
   "addCourse": {
     "id": "Tambah Mata Pelajaran",
@@ -1739,6 +1782,10 @@
     "id": "Semua Status",
     "en": "All Status"
   },
+  "jenis": {
+    "id": "Jenis",
+    "en": "Type"
+  },
   "openMap": {
     "id": "Buka Peta",
     "en": "Open Map"
@@ -1746,6 +1793,22 @@
   "studentDetail": {
     "id": "Detail Siswa",
     "en": "Student Detail"
+  },
+  "ekstrakurikuler": {
+    "id": "Ekstrakurikuler",
+    "en": "Extracurricular"
+  },
+  "addEkstrakurikuler": {
+    "id": "Tambah Ekstrakurikuler",
+    "en": "Add Extracurricular"
+  },
+  "editEkstrakurikuler": {
+    "id": "Edit Ekstrakurikuler",
+    "en": "Edit Extracurricular"
+  },
+  "deleteEkstrakurikuler": {
+    "id": "Hapus Ekstrakurikuler",
+    "en": "Delete Extracurricular"
   },
   "address": {
     "id": "Alamat",
@@ -1866,6 +1929,14 @@
   "today": {
     "id": "Hari ini",
     "en": "Today"
+  },
+  "thisMonth": {
+    "id": "Bulan ini",
+    "en": "This month"
+  },
+  "thisYear": {
+    "id": "Tahun ini",
+    "en": "This year"
   },
   "refresh": {
     "id": "Muat ulang data",
@@ -2203,6 +2274,7 @@
     "id": "Manajemen Kehadiran",
     "en": "Attendance Management"
   },
+
   "ChoosePicture": {
     "id": "Pilih Foto",
     "en": "Choose Photo"
@@ -2282,6 +2354,26 @@
   "descriptionLogin": {
     "id": "Mendukung kemajuan siswa melalui inovasi, data, dan integritas.",
     "en": " Empowering students through innovation, data, and trust."
+  },
+  "description": {
+    "id": "Deskripsi",
+    "en": "Description"
+  },
+  "contact": {
+    "id": "Kontak",
+    "en": "Contact"
+  },
+  "inputContact": {
+    "id": "Masukan kontak",
+    "en": "Input contact"
+  },
+  "inputLocation": {
+    "id": "Masukan lokasi",
+    "en": "Input location"
+  },
+  "inputDescription": {
+    "id": "Masukan deskripsi",
+    "en": "Input description"
   },
   "welcomeToSchool": {
     "id": "Selamat datang di Sekolah Bio",
@@ -2399,7 +2491,7 @@
   },
   "scanAttendanceMapel": {
     "id": "Scan Kehadiran Mapel",
-    "en": "Scan Attendance Schedule"
+    "en": "Scan Schedule"
   },
   "cards": {
     "id": "Kartu",
@@ -2441,7 +2533,7 @@
     "id": "Tipe Jadwal",
     "en": "Schedule Type"
   },
-    "schedulerDescription": {
+  "schedulerDescription": {
     "id": "Deskripsi Jadwal",
     "en": "Schedule Description"
   },
@@ -2462,8 +2554,8 @@
     "en": "Assign Schedule"
   },
   "deleteMessage": {
-    "id": "Yaking Bang??",
-    "en": "Are you sure??"
+    "id": "Apakah anda ingin menghapus data ini?",
+    "en": "Are you sure to delete this data?"
   },
   "successDelete": {
     "id": "Data berhasil dihapus",
@@ -2472,5 +2564,10 @@
   "failedDelete": {
     "id": "Gagal menghapus data",
     "en": "Failed to delete data"
+  },
+
+  "attendanceSchedule": {
+    "id": "Jadwal",
+    "en": "Schedule"
   }
 }

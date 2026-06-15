@@ -32,7 +32,11 @@ export const Brand = React.memo(() => {
               className="object-cover object-center bg-white"
             />
             <AvatarFallback>
-              <Star />
+              <AvatarImage
+                src={imgLogo}
+                alt={appContext.appName}
+                className="object-cover object-center bg-white"
+              />
             </AvatarFallback>
           </>
         ) : (
@@ -43,7 +47,11 @@ export const Brand = React.memo(() => {
               className="object-cover object-center bg-white"
             />
             <AvatarFallback>
-              <Star />
+              <AvatarImage
+                src={imgLogo}
+                alt={appContext.appName}
+                className="object-cover object-center bg-white"
+              />
             </AvatarFallback>
           </>
         )}

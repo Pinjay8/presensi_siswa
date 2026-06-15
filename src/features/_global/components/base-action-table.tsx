@@ -7,7 +7,7 @@ import {
   lang,
 } from "@/core/libs";
 import { useProfile } from "@/features/profile";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { DotsHorizontalIcon, FaceIcon } from "@radix-ui/react-icons";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -22,7 +22,18 @@ import {
 } from "@mui/material";
 import { userService } from "@/core/services";
 import { useAlert } from "../hooks";
-import { XIcon } from "lucide-react";
+import {
+  CalendarCheck,
+  Check,
+  Eye,
+  IdCard,
+  Pencil,
+  ScanFace,
+  Trash,
+  User,
+  X,
+  XIcon,
+} from "lucide-react";
 import { studentService } from "@/core/services/pagination";
 import { useStudents } from "./dashboard/usermenu/components/useStudents";
 
@@ -103,88 +114,82 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
         <DropdownMenuContent align="end">
           {props.detailPath && (
             <DropdownMenuItem asChild>
-              <Link to={props.detailPath}>{lang.text("seeDetails")}</Link>
+              <Link to={props.detailPath}>
+                <Eye className="h-4 w-4" />
+                {lang.text("seeDetails")}
+              </Link>
             </DropdownMenuItem>
           )}
           {props.editPath && (
             <DropdownMenuItem asChild>
-              <Link to={props.editPath}>{lang.text("edit")}</Link>
+              <Link to={props.editPath}>
+                <Pencil className="h-4 w-4" />
+                {lang.text("edit")}
+              </Link>
             </DropdownMenuItem>
           )}
           {props.onEdit && (
             <DropdownMenuItem onClick={props.onEdit}>
+              <Pencil className="h-4 w-4" />
               {lang.text("edit")}
             </DropdownMenuItem>
           )}
           {props.deletePath && (
             <DropdownMenuItem asChild>
-              <Link to={props.deletePath}>{lang.text("delete")}</Link>
+              <Link to={props.deletePath}>
+                <Trash className="h-4 w-4" />
+                {lang.text("delete")}
+              </Link>
             </DropdownMenuItem>
           )}
 
           {props.onApprove && (
             <DropdownMenuItem onClick={props.onApprove}>
+              <Check className="h-4 w-4" />
               {lang.text("approve")}
             </DropdownMenuItem>
           )}
           {props.onReject && (
             <DropdownMenuItem onClick={props.onReject}>
+              <XIcon className="h-4 w-4" />
               {lang.text("reject")}
             </DropdownMenuItem>
           )}
 
           {props.onWaliKelas && (
             <DropdownMenuItem onClick={props.onWaliKelas}>
-              Wali Kelas
+              <User className="h-4 w-4" />
+              {lang.text("homeroom-teacher")}
             </DropdownMenuItem>
           )}
           {props.onRegisterFace && (
             <DropdownMenuItem onClick={props.onRegisterFace}>
+              <ScanFace className="h-4 w-4" />
               {lang.text("RegisterFace")}
             </DropdownMenuItem>
           )}
           {props.onAssignSchedule && (
             <DropdownMenuItem onClick={props.onAssignSchedule}>
+              <CalendarCheck className="h-4 w-4" />
               {lang.text("assignSchedule")}
             </DropdownMenuItem>
           )}
           {props.onDelete && (
             <DropdownMenuItem onClick={props.onDelete}>
+              <Trash className="h-4 w-4" />
               {lang.text("delete")}
             </DropdownMenuItem>
           )}
           {props.onAssignCard && (
             <DropdownMenuItem onClick={props.onAssignCard}>
+              <IdCard className="h-4 w-4" />
               {lang.text("assignCard")}
             </DropdownMenuItem>
           )}
           {props.unAssignCard && (
             <DropdownMenuItem onClick={props.unAssignCard}>
+              <IdCard className="h-4 w-4" />
               {lang.text("unAssignCard")}
-            </DropdownMenuItem>
-          )}
-          {props.onAbsenManual && (
-            <DropdownMenuItem onClick={props.onAbsenManual}>
-              {/* {lang.text("absenManual")} */}
-              Absen Hadir
-            </DropdownMenuItem>
-          )}
-          {props.onAbsenManual && (
-            <DropdownMenuItem onClick={props.onAbsenManual}>
-              {/* {lang.text("absenManual")} */}
-              Sakit
-            </DropdownMenuItem>
-          )}
-          {props.onAbsenManual && (
-            <DropdownMenuItem onClick={props.onAbsenManual}>
-              {/* {lang.text("absenManual")} */}
-              Terlambat
-            </DropdownMenuItem>
-          )}
-          {props.onAbsenManual && (
-            <DropdownMenuItem onClick={props.onAbsenManual}>
-              {/* {lang.text("absenManual")} */}
-              Alfa
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>

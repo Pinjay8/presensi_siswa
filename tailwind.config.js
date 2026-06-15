@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        nunito: ["Poppins", "sans-serif"],
+        sans: ["Poppins", "sans-serif"],
       },
       zIndex: {
         toast: "9999",

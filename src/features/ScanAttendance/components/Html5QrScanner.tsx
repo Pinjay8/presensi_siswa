@@ -17,6 +17,7 @@ export const Html5QrScanner = ({
   const qrRef = useRef<HTMLDivElement>(null);
   const qrInstance = useRef<Html5Qrcode | null>(null);
   const scanning = useRef(false);
+  const isRunning = useRef(false);
 
   useEffect(() => {
     if (!active || !qrRef.current) return;
@@ -39,25 +40,37 @@ export const Html5QrScanner = ({
         scanning.current = true;
 
         try {
-          console.log("✅ QR VALUE:", decodedText);
           await onScan(decodedText);
-        } catch (e) {
-          //   scanning.current = false;
-          onError?.(e);
         } finally {
           scanning.current = false;
         }
       },
-      () => {
-        // ignore scan errors (blur / noise)
-      },
-    );
+      () => {},
+    )
+      .then(() => {
+        isRunning.current = true;
+      })
+      .catch((err) => {
+        console.error("QR start error:", err);
+      });
 
     return () => {
       scanning.current = false;
+
+      const qr = qrInstance.current;
+
+      if (!qr || !isRunning.current) return;
+
+      isRunning.current = false;
+
       qr.stop()
         .then(() => qr.clear())
-        .catch(() => {});
+        .catch((err) => {
+          // ignore "not running or paused"
+          if (!String(err).includes("not running")) {
+            console.warn("QR stop error:", err);
+          }
+        });
     };
   }, [active, facingMode]);
 

@@ -21,7 +21,6 @@ export const useAuth = () => {
       return authService.login(vars);
     },
     onSuccess: (res) => {
-      console.log("LOGIN RES", res);
       if (res.data?.token) {
         saveToken(String(res?.data?.token));
       }

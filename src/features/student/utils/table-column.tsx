@@ -50,6 +50,70 @@ interface FlatStudentModel {
   }[];
 }
 
+export const studentColumn = (): ColumnDef<FlatStudentModel>[] => [
+  {
+    accessorKey: "name",
+    header: ({ column }) => (
+      <BaseTableHeader
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        {lang.text("studentName")}
+      </BaseTableHeader>
+    ),
+    enableGlobalFilter: true,
+    cell: ({ row }) => {
+      const nameArr =
+        (row.original.nama || row.original?.nama)?.split(" ") || [];
+      const initials =
+        nameArr?.[0]?.[0]?.toUpperCase() +
+        (nameArr?.[1]?.[0]?.toUpperCase() || "");
+      return (
+        <div className="flex flex-row items-center gap-2">
+          {/* <Avatar>
+            <AvatarImage
+              src={
+                `&${row.original.fotoTampakDepan || row.original?.user?.image}` ||
+                ""
+              }
+              alt={
+                row.original.name ||
+                row.original.user.image ||
+                row.original.user?.name
+              }
+            />
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar> */}
+          <p>{row.original.nama || "-"}</p>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "nis",
+    header: () => <BaseTableHeader>NIS</BaseTableHeader>,
+    cell: ({ row }) => {
+      const nis = row.original.nis || row.original.nis;
+      return <span>{nis ? String(nis) : "-"}</span>;
+    },
+  },
+  {
+    accessorKey: "nisn",
+    header: () => <BaseTableHeader>NISN</BaseTableHeader>,
+    cell: ({ row }) => {
+      const nisn = row.original.nisn || row.original.nisn;
+      return <span>{nisn ? String(nisn) : "-"}</span>; // Ubah nisn menjadi string
+    },
+  },
+  {
+    accessorKey: "kelas",
+    header: () => <BaseTableHeader>{lang.text("classRoom")}</BaseTableHeader>,
+    cell: ({ row }) => {
+      const kelas = row.original.kelas;
+      return <span>{kelas ? String(kelas) : "-"}</span>;
+    },
+  },
+];
+
 export const studentColumnWithFilter = ({
   noStatus = false,
   schoolOptions = [],
@@ -217,8 +281,8 @@ export const studentColumnWithFilter = ({
             accessorKey: "status",
             header: () => "Status",
             cell: ({ row }: any) => {
-              const status = row.original.status ? row.original.status : row.original.user.status;
-              console.log("RIW", row)
+              const status = row.original.statusKehadiranHariIni?.toLowerCase();
+
               const statusConfig = {
                 hadir: {
                   label: "Hadir",
@@ -276,9 +340,8 @@ export const studentColumnWithFilter = ({
                   }
                 }}
                 disabled={
-                  // (row.original.user?.status || row.original.status) ===
-                  //   "hadir"
-                  row.original.status !== "belum hadir"
+                  row.original.statusKehadiranHariIni !== "belum hadir" &&
+                  row.original.statusKehadiranHariIni !== "Belum Hadir"
                 }
               >
                 {lang.text("attend")}
@@ -317,7 +380,7 @@ export const studentColumnWithFilter = ({
     {
       accessorKey: "id",
       enableSorting: false,
-      header: () => null,
+      header: () => lang.text("action"),
       cell: ({ row }) => {
         const encryptPayload = simpleEncode(
           JSON.stringify({

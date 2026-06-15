@@ -6,7 +6,7 @@ interface UseDataTableControllerProps {
   defaultPageSize?: number;
 }
 
-export function useDataTableController({ defaultPageSize = 20 }: UseDataTableControllerProps) {
+export function useDataTableController({ defaultPageSize = 10 }: UseDataTableControllerProps) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // ✅ Global Search

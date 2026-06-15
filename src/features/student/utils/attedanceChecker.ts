@@ -46,7 +46,7 @@ export const checkAttendance = (dataA: any, dataB: any) => {
       idKelas: kelas?.id || null,
       sekolahId: kelas?.sekolahId || null,
       namaKelas: kelas?.namaKelas || null,
-      status: attendanceStatusMap.get(item.id) || "Belum Hadir",
+      status: attendanceStatusMap.get(item.id),
     };
   });
 

@@ -70,21 +70,34 @@ export const StudentLandingTables = () => {
     pagination,
     onSortingChange,
     onPaginationChange,
-  } = useDataTableController({ defaultPageSize: 100 });
+  } = useDataTableController({ defaultPageSize: 10 });
 
-  const profile = useProfile();
+  const studentParams = useMemo(
+    () => ({
+      page: pagination.pageIndex + 1,
+      size: pagination.pageSize,
+      // sekolahId: sekolahId ? +sekolahId : undefined,
+      // idKelas: idKelas ? +idKelas : undefined,
+      // keyword: global,
+    }),
+    [pagination.pageIndex, pagination.pageSize],
+  );
+
+  const { data, isLoading, refetch } = useStudentPagination(studentParams);
+
+  // const profile = useProfile();
   const classRoom = useClassroom();
-  const sekolahId =
-    filter.find((f: any) => f.id === "sekolahId")?.value ||
-    profile.user?.sekolahId ||
-    1;
-  const { data: schoolData, isLoading: schoolIsLoading } = useSchoolDetail({
-    id: sekolahId,
-  });
+  // const sekolahId =
+  //   filter.find((f: any) => f.id === "sekolahId")?.value ||
+  //   profile.user?.sekolahId ||
+  //   1;
+  // const { data: schoolData, isLoading: schoolIsLoading } = useSchoolDetail({
+  //   id: sekolahId,
+  // });
 
-  useEffect(() => {
-    setProfileSchoolId(profile.user?.sekolahId || null);
-  }, [profile.user]);
+  // useEffect(() => {
+  //   setProfileSchoolId(profile.user?.sekolahId || null);
+  // }, [profile.user]);
 
   const attedances =
     profileSchoolId !== null
@@ -93,42 +106,36 @@ export const StudentLandingTables = () => {
 
   const idKelas = filter.find((f: any) => f.id === "idKelas")?.value;
 
-  const studentParams = useMemo(
-    () => ({
-      page: pagination.pageIndex + 1,
-      size: pagination.pageSize,
-      sekolahId: sekolahId ? +sekolahId : undefined,
-      idKelas: idKelas ? +idKelas : undefined,
-      keyword: global,
-    }),
-    [pagination.pageIndex, pagination.pageSize, sekolahId, idKelas, global],
-  );
-
-  const { data, isLoading, refetch } = useStudentPagination(studentParams);
   const [reloadKey, setReloadKey] = useState(0);
 
-  useEffect(() => {
-    if (
-      attedances.isLoading ||
-      isLoading ||
-      !attedances.data ||
-      !data?.students
-    ) {
-      return;
-    }
-    const result = checkAttendance(attedances.data, data.students);
-    setAttendanceResult(result);
-  }, [
-    attedances.isLoading,
-    attedances.data,
-    isLoading,
-    data?.students,
-    reloadKey,
-  ]);
+  // useEffect(() => {
+  //   if (
+  //     attedances.isLoading ||
+  //     isLoading ||
+  //     !attedances.data ||
+  //     !data?.students
+  //   ) {
+  //     return;
+  //   }
+  //   const result = checkAttendance(attedances.data, data.students);
+  //   setAttendanceResult(result);
+  // }, [
+  //   attedances.isLoading,
+  //   attedances.data,
+  //   isLoading,
+  //   data?.students,
+  //   reloadKey,
+  // ]);
+
+  // console.log("attendanceResult", attendanceResult);
 
   const presentCount = useMemo(() => {
-    return attendanceResult.filter((item) => item.status === "hadir").length;
-  }, [attendanceResult]);
+    return (
+      data?.students?.filter(
+        (item: any) => item.statusKehadiranHariIni === "hadir",
+      ).length ?? 0
+    );
+  }, [data?.students]);
 
   const handleDownload = (type: string) => {
     const fileUrl =
@@ -236,37 +243,37 @@ export const StudentLandingTables = () => {
     }
   };
 
-  const handleDownloadPDF = async () => {
-    setGeneratingPDF(true);
-    try {
-      await generateAttendancePDF({
-        studentParams,
-        attendanceData: attendanceResult,
-        alert,
-        nameSchool: (profile.user?.sekolah?.namaSekolah || "") as string,
-        schoolData,
-        schoolIsLoading,
-      });
-    } finally {
-      setGeneratingPDF(false);
-    }
-  };
+  // const handleDownloadPDF = async () => {
+  //   setGeneratingPDF(true);
+  //   try {
+  //     await generateAttendancePDF({
+  //       studentParams,
+  //       attendanceData: attendanceResult,
+  //       alert,
+  //       nameSchool: (profile.user?.sekolah?.namaSekolah || "") as string,
+  //       schoolData,
+  //       schoolIsLoading,
+  //     });
+  //   } finally {
+  //     setGeneratingPDF(false);
+  //   }
+  // };
 
-  const handleDownloadMonthlyPDF = async () => {
-    setGeneratingPDF(true);
-    try {
-      await generateMonthlyAttendancePDF({
-        studentParams,
-        attendanceData: attendanceResult,
-        alert,
-        nameSchool: (profile.user?.sekolah?.namaSekolah || "") as string,
-        schoolData,
-        schoolIsLoading,
-      });
-    } finally {
-      setGeneratingPDF(false);
-    }
-  };
+  // const handleDownloadMonthlyPDF = async () => {
+  //   setGeneratingPDF(true);
+  //   try {
+  //     await generateMonthlyAttendancePDF({
+  //       studentParams,
+  //       attendanceData: attendanceResult,
+  //       alert,
+  //       nameSchool: (profile.user?.sekolah?.namaSekolah || "") as string,
+  //       schoolData,
+  //       schoolIsLoading,
+  //     });
+  //   } finally {
+  //     setGeneratingPDF(false);
+  //   }
+  // };
 
   const handleAlert = () => {
     alert.error(lang.text("shouldClassroom"));
@@ -443,14 +450,14 @@ export const StudentLandingTables = () => {
                         )}
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent>
+                    {/* <DropdownMenuContent>
                       <DropdownMenuItem onClick={handleDownloadPDF}>
                         {lang.text("downloadAttedanceDay")}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={handleDownloadMonthlyPDF}>
                         {lang.text("downloadAttedanceMonthly")}
                       </DropdownMenuItem>
-                    </DropdownMenuContent>
+                    </DropdownMenuContent> */}
                   </DropdownMenu>
                 </div>
               </div>
@@ -460,20 +467,12 @@ export const StudentLandingTables = () => {
       </div>
 
       <StudentTable
-        data={attendanceResult}
-        isLoading={isLoading || attedances.isLoading}
+        data={data?.students ?? []}
+        isLoading={isLoading}
         refetch={refetch}
-        pagination={{
-          pageIndex: pagination.pageIndex,
-          pageSize: pagination.pageSize,
-          totalItems: data?.pagination?.totalItems || 0,
-          onPageChange: (page) =>
-            onPaginationChange({ ...pagination, pageIndex: page }),
-          onSizeChange: (size) =>
-            onPaginationChange({ ...pagination, pageSize: size, pageIndex: 0 }),
-        }}
-        sorting={sorting}
-        onSortingChange={onSortingChange}
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
+        rowCount={data?.pagination?.totalItems ?? 0}
       />
 
       <StudentFormDialog

@@ -130,7 +130,8 @@ export const matpelColumns = (
     header: lang.text("action"),
     enableSorting: false,
     cell: ({ row }) => {
-      const status = row.original.statusKehadiran?.toLowerCase() || "belum hadir";
+      const status =
+        row.original.statusKehadiran?.toLowerCase() || "belum hadir";
       if (status !== "belum hadir") {
         return null;
       }
@@ -138,20 +139,22 @@ export const matpelColumns = (
         <div className="flex gap-2 flex-wrap">
           <Button
             variant="contained"
-            color="success"
+            // color="success"
+
             onClick={() => onSubmitAttendance(row.original, "hadir")}
-            sx={{ textTransform: "capitalize" }}
+            sx={{ textTransform: "capitalize", backgroundColor: "#22C55E" }}
           >
-            Hadir
+            {lang.text("present")}
           </Button>
 
           <Button
             variant="contained"
-            color="warning"
+            // color="#0EA5E9"
+
             onClick={() => onSubmitAttendance(row.original, "sakit")}
-            sx={{ textTransform: "capitalize" }}
+            sx={{ textTransform: "capitalize", backgroundColor: "#0EA5E9" }}
           >
-            Sakit
+            {lang.text("sick")}
           </Button>
 
           <Button
@@ -160,16 +163,17 @@ export const matpelColumns = (
             onClick={() => onSubmitAttendance(row.original, "alfa")}
             sx={{ textTransform: "capitalize" }}
           >
-            Alfa
+            {lang.text("alfa")}
           </Button>
 
           <Button
             variant="contained"
-            color="info"
+            // color="info"
+
             onClick={() => onSubmitAttendance(row.original, "terlambat")}
-            sx={{ textTransform: "capitalize" }}
+            sx={{ textTransform: "capitalize", backgroundColor: "#64748B" }}
           >
-            Terlambat
+            {lang.text("late")}
           </Button>
         </div>
       );

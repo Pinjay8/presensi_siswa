@@ -58,13 +58,15 @@ import {
 } from "@/core/services/pagination";
 import { useQuery } from "@tanstack/react-query";
 
-export const useStudentPagination = (params: GetPaginatedStudentParams) => {
-  return useQuery<StudentPaginationResponse, Error>({
+export const useStudentPagination = (params: any) => {
+  return useQuery<any, Error>({
     queryKey: ["students", params],
-    queryFn: () => studentService.getPaginated(params),
-    // keepPreviousData: true,
+    queryFn: () => {
+      return studentService.getPaginated(params);
+    },
 
-    enabled: !!params.page && !!params.size && params.keyword !== undefined,
+    // keepPreviousData: true,
+    enabled: true,
     // staleTime: 1000,
   });
 };

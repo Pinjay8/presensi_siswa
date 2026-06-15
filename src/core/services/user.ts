@@ -28,6 +28,17 @@ export const userService = {
       `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.user.user}`,
       getInitialOptions,
     )({ path: String(id) }),
+
+  getChildParent: (parentId: number) =>
+    http.get<BaseResponse<any[]>>(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.user.childParent}`,
+      getInitialOptions,
+    )({
+      params: {
+        parentId,
+      },
+    }),
+
   getAdmin: http.get<BaseResponse<UserDataModel[]>>(
     `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.user.admin}`,
     getInitialOptions,
@@ -80,7 +91,7 @@ export const userService = {
     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.users.parents,
     getInitialOptions,
   ),
-  
+
   updateNotifParents: (userId: number, data: { notifOrtuEnabled: boolean }) =>
     http.put<BaseResponse<any>>(
       API_CONFIG.baseUrl +

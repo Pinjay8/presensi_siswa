@@ -18,7 +18,7 @@ export const ModalCreateClass = ({ show, onClose }: propsModal) => {
     <Dialog open={show} onOpenChange={onClose}>
       <DialogContent className="w-max pt-3.5 h-max">
         <DialogHeader className="flex] justify-between border-b border-b-white/10">
-          <DialogTitle className="flex items-baseline">
+          <DialogTitle className="flex items-baseline mt-6">
             <p>{lang.text("completeDataClassroom")}</p>
           </DialogTitle>
         </DialogHeader>

@@ -270,9 +270,7 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({
       <Card className="w-full bg-theme-color-primary/5">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-muted-foreground">
-              {label} ({lang.text("today")})
-            </span>
+            <span className="text-md font-medium  text-black">{label}</span>
           </div>
           <FaEye
             className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
@@ -281,8 +279,8 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({
           />
         </CardHeader>
         <CardContent>
-          <div className="flex items-center gap-4">
-            <div className="text-2xl font-normal text-[#4BC0C0]">
+          <div className="flex items-center gap-4 justify-between">
+            <div className="text-3xl font-normal text-[#000]">
               {isLoading || value === null || value === undefined ? (
                 <FaSpinner className="animate-spin duration-1500 opacity-30" />
               ) : (
@@ -293,7 +291,6 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({
               className="flex items-center gap-1 text-xs"
               style={{ backgroundColor: bgColor, color: textColor }}
             >
-              {/* {percentage} {renderTrendIcon()} */}
               {percentage} %
             </Badge>
           </div>
