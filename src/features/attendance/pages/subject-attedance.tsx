@@ -89,6 +89,7 @@ export const SubjectAttendance = () => {
 
   const filteredData = attendanceData?.data || [];
 
+
   const handleExportExcel = async (params: any) => {
     const blob = await attendanceService.exportExcel(params);
 

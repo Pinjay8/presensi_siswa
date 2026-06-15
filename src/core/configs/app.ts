@@ -37,6 +37,9 @@ export const SERVICE_ENDPOINTS = {
     siswa: "/api/get-biodata-siswa",
     guru: "/api/get-all-guru",
   },
+  ekstrakurikuler: {
+    all: "/api/ekstrakurikuler",
+  },
   student: {
     list: "/api/user-siswa",
   },

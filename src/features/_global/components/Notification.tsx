@@ -18,11 +18,11 @@ const Notification = () => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>Notifikasi 1</DropdownMenuItem>
+        {/* <DropdownMenuItem>Notifikasi 1</DropdownMenuItem>
 
         <DropdownMenuItem>Notifikasi 2</DropdownMenuItem>
 
-        <DropdownMenuItem>Lihat Semua</DropdownMenuItem>
+        <DropdownMenuItem>Lihat Semua</DropdownMenuItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

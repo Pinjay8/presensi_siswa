@@ -6,7 +6,14 @@ import { useSchool } from "@/features/schools";
 import { useMemo, useState } from "react";
 
 import { matpelColumns } from "../utils";
-import { Button, Dialog, DialogActions, DialogContent } from "@mui/material";
+import {
+  Backdrop,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+} from "@mui/material";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { attendanceService } from "@/core/services/attedance";
 import { useQueryClient } from "@tanstack/react-query";
@@ -26,38 +33,17 @@ export function SubjectAttendanceTable({
   onPaginationChange,
   rowCount,
 }: StudentAttendanceTableProps) {
-  const school = useSchool();
-  const classroom = useClassroom();
-
-  // const columns = useMemo(
-  //   () =>
-  //     matpelColumns({
-  //       classroomOptions: distinctObjectsByProperty(
-  //         classroom.data?.map((d) => ({
-  //           label: d.namaKelas,
-  //           value: d.namaKelas,
-  //         })) || [],
-  //         "value",
-  //       ),
-  //       schoolOptions: distinctObjectsByProperty(
-  //         school.data?.map((d) => ({
-  //           label: d.namaSekolah,
-  //           value: d.namaSekolah,
-  //         })) || [],
-  //         "value",
-  //       ),
-  //     }),
-  //   [school.data, classroom.data],
-  // );
-
   const queryClient = useQueryClient();
   const alert = useAlert();
+
+  const [loadingAttendance, setLoadingAttendance] = useState(false);
 
   const handleSubmitAttendance = async (
     row: any,
     status: "hadir" | "sakit" | "alfa" | "terlambat",
   ) => {
     try {
+      setLoadingAttendance(true);
       await attendanceService.createAbsenMapel(row.userId)({
         status,
         mataPelajaranId: row.mataPelajaranId,
@@ -72,6 +58,8 @@ export function SubjectAttendanceTable({
       );
     } catch (error: any) {
       alert.error(error?.message);
+    } finally {
+      setLoadingAttendance(false);
     }
   };
 
@@ -109,6 +97,14 @@ export function SubjectAttendanceTable({
         searchPlaceholder={lang.text("search")}
         isLoading={data.length > 0 ? false : true}
       />
+      <Backdrop
+        open={loadingAttendance}
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 999,
+        }}
+      >
+        <CircularProgress />
+      </Backdrop>
     </div>
   );
 }

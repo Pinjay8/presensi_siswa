@@ -73,6 +73,11 @@ export const MENU_STAFF: any["menus"] = [
         icon: "Book",
       },
       {
+        title: lang.text("ekstrakurikuler"),
+        url: "/ekstrakurikuler",
+        icon: "Dumbbell",
+      },
+      {
         title: lang.text("scheduleMapel"),
         url: "/schedules",
         icon: "Book",

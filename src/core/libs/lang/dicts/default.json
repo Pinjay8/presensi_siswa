@@ -32,7 +32,7 @@
     "id": "URL Youtube 3"
   },
   "imageMessage": {
-    "en": "Only PNG, JPG and JPEG are supported",
+    "en": "Only PNG, JPG and JPEGd are supported",
     "id": "Hanya PNG, JPG dan JPEG yang didukung"
   },
   "inputURLYoutube1": {
@@ -1162,6 +1162,14 @@
     "id": "Total Titik Lokasi",
     "en": "Total Location Points"
   },
+  "location": {
+    "id": "Lokasi",
+    "en": "Location"
+  },
+  "advisor": {
+    "id": "Pembina",
+    "en": "Advisor"
+  },
   "student": {
     "id": "Siswa",
     "en": "Students"
@@ -1707,6 +1715,10 @@
     "id": "Masukan nama mata pelajaran",
     "en": "Insert course name"
   },
+  "inputEkstrakurikuler": {
+    "id": "Masukan nama ekstrakurikuler",
+    "en": "Insert extracurricular name"
+  },
   "inputType": {
     "id": "Masukan tipe",
     "en": "Insert course type"
@@ -1714,6 +1726,10 @@
   "completeDataCourse": {
     "id": "Lengkapi data mata pelajaran",
     "en": "Complete the subject data"
+  },
+  "completeDataEkstrakurikuler": {
+    "id": "Lengkapi data ekstrakurikuler",
+    "en": "Complete the extracurricular data"
   },
   "completeDataClassroom": {
     "id": "Lengkapi data kelas",
@@ -1730,6 +1746,10 @@
   "selectClassroom": {
     "id": "Pilih kelas",
     "en": "Choose classroom"
+  },
+  "selectAdvisor": {
+    "id": "Pilih Pembina",
+    "en": "Choose advisor"
   },
   "addCourse": {
     "id": "Tambah Mata Pelajaran",
@@ -1751,6 +1771,10 @@
     "id": "Semua Status",
     "en": "All Status"
   },
+  "jenis": {
+    "id": "Jenis",
+    "en": "Type"
+  },
   "openMap": {
     "id": "Buka Peta",
     "en": "Open Map"
@@ -1758,6 +1782,22 @@
   "studentDetail": {
     "id": "Detail Siswa",
     "en": "Student Detail"
+  },
+  "ekstrakurikuler": {
+    "id": "Ekstrakurikuler",
+    "en": "Ekstrakurikuler"
+  },
+  "addEkstrakurikuler": {
+    "id": "Tambah Ekstrakurikuler",
+    "en": "Add Ekstrakurikuler"
+  },
+  "editEkstrakurikuler": {
+    "id": "Edit Ekstrakurikuler",
+    "en": "Edit Ekstrakurikuler"
+  },
+  "deleteEkstrakurikuler": {
+    "id": "Hapus Ekstrakurikuler",
+    "en": "Delete Ekstrakurikuler"
   },
   "address": {
     "id": "Alamat",
@@ -2303,6 +2343,26 @@
   "descriptionLogin": {
     "id": "Mendukung kemajuan siswa melalui inovasi, data, dan integritas.",
     "en": " Empowering students through innovation, data, and trust."
+  },
+  "description": {
+    "id": "Deskripsi",
+    "en": "Description"
+  },
+  "contact": {
+    "id": "Kontak",
+    "en": "Contact"
+  },
+  "inputContact": {
+    "id": "Masukan kontak",
+    "en": "Input contact"
+  },
+  "inputLocation": {
+    "id": "Masukan lokasi",
+    "en": "Input location"
+  },
+  "inputDescription": {
+    "id": "Masukan deskripsi",
+    "en": "Input description"
   },
   "welcomeToSchool": {
     "id": "Selamat datang di Sekolah Bio",

@@ -211,6 +211,41 @@ export const router = createBrowserRouter(
         },
 
         {
+          path: "ekstrakurikuler",
+          lazy: () =>
+            import("@/features/ekstrakurikuler").then((m) => ({
+              Component: m.EkstrakurikulerLanding
+            })),
+        },
+
+        // delete
+        {
+          path: "ekstrakurikuler/delete/:id",
+          lazy: () =>
+            import("@/features/ekstrakurikuler").then((m) => ({
+              Component: m.EkstrakurikulerDelete
+            })),
+        },
+
+        // create
+        {
+          path: "ekstrakurikuler/create",
+          lazy: () =>
+            import("@/features/ekstrakurikuler").then((m) => ({
+              Component: m.EkstrakurikulerCreate
+            })),
+        },
+
+        // edit
+        {
+          path: "ekstrakurikuler/edit/:id",
+          lazy: () =>
+            import("@/features/ekstrakurikuler").then((m) => ({
+              Component: m.EkstrakurikulerEdit
+            })),
+        },
+
+        {
           path: "courses",
           lazy: () =>
             import("@/features/course").then((m) => ({
