@@ -35,5 +35,5 @@ export const studentEditSchema = z.object({
   isVerified: z.boolean().optional(),
   isActive: z.number().optional(),
   status: z.number().optional(),
-  sekolahId: z.number().optional(),
+  // sekolahId: z.number().optional(),
 });

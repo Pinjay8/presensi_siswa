@@ -164,7 +164,7 @@ return (
       >
         <p className="text-xs text-slate-500 leading-relaxed mb-5">
           Atur waktu mulai dan selesai kehadiran untuk setiap hari dalam
-          seminggu menggunakan kalender interaktif.
+          seminggu.
         </p>
 
         <div className="flex flex-col gap-4">
@@ -422,7 +422,7 @@ return (
 type AccordionCardProps = {
   title: string;
   icon: React.ReactNode;
-  open: boolean;
+  open: boolean;  
   onToggle: () => void;
   children: React.ReactNode;
 };

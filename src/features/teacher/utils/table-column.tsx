@@ -116,11 +116,13 @@ export const teacherColumnWithFilter = ({
   onWaliKelas,
   onAssignSchedule,
   onDelete,
+  onRegisterFace,
 }: {
   schoolOptions: BaseDataTableFilterValueItem[];
   onWaliKelas?: (teacher: any) => void;
   onAssignSchedule?: (teacher: any) => void;
   onDelete?: (teacher: any) => void;
+  onRegisterFace?: (teacher: any) => void;
 }): ColumnDef<BiodataGuru>[] => {
   return [
     {
@@ -269,6 +271,7 @@ export const teacherColumnWithFilter = ({
             onWaliKelas={() => onWaliKelas?.(row.original)}
             onAssignSchedule={() => onAssignSchedule?.(row.original)}
             onDelete={() => onDelete?.(row.original)}
+            onRegisterFace={() => onRegisterFace?.(row.original)}
           />
         );
       },

@@ -744,6 +744,10 @@ export const DashboardLayout = React.memo(
                   lang.text("teacher"),
                   lang.text("parent"),
                   lang.text("graduation"),
+                  lang.text("cards"),
+                  lang.text("classRoom"),
+                  lang.text("course"),
+
                 ].includes(item.title ?? "")
               ) {
                 return false;
@@ -751,7 +755,7 @@ export const DashboardLayout = React.memo(
 
               if (
                 role === "admin" &&
-                ["Riwayat", "History"].includes(item.title ?? "")
+                ["Riwayat", "History", "Pengguna Admin", "Admin User"].includes(item.title ?? "")
               ) {
                 return false;
               }
@@ -765,6 +769,9 @@ export const DashboardLayout = React.memo(
                   lang.text("teacher"),
                   lang.text("parent"),
                   lang.text("history"),
+                  lang.text("classRoom"),
+                  lang.text("course"),
+                  lang.text("cards"),
                 ].includes(item.title ?? "")
               ) {
                 return false;
@@ -776,6 +783,9 @@ export const DashboardLayout = React.memo(
                   lang.text("school"),
                   lang.text("event"),
                   lang.text("history"),
+                  lang.text("classRoom"),
+                  lang.text("cards"),
+                  
                 ].includes(item.title ?? "")
               ) {
                 return false;

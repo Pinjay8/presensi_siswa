@@ -314,6 +314,10 @@
     "en": "Years",
     "id": "Tahunan"
   },
+  "selectStudent": {
+    "id": "Pilih Siswa",
+    "en": "Select Student"
+  },
   "distributePresent": {
     "en": "Distribute Present",
     "id": "Distribusi Kehadiran"

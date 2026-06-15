@@ -85,7 +85,7 @@ interface BulkSchedule {
   jamSelesai: string;
 }
 
-const daysOrder = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT"];
+const daysOrder = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
 
 export function ScheduleLandingContent() {
   const alert = useAlert();
@@ -728,6 +728,9 @@ export function ScheduleLandingContent() {
     );
   }
 
+  const isRoleSiswa = profile?.user?.role === "siswa";
+  const isRoleGuru = profile?.user?.role === "guru";
+
   return (
     <>
       <Vokadialog
@@ -750,12 +753,8 @@ export function ScheduleLandingContent() {
       />
 
       <div className="mt-5 mb-8">
-        <div
-          className={`w-full mb-4 flex items-center ${
-            isRoleAdmin ? "justify-between" : "justify-end"
-          }`}
-        >
-          {isRoleAdmin && (
+        <div className="w-full mb-4 flex justify-between items-center">
+          {!isRoleSiswa && !isRoleGuru && (
             <div className="flex gap-2">
               <Button variant="outline" onClick={openAddModal}>
                 Tambah jadwal baru <Plus />
@@ -779,22 +778,24 @@ export function ScheduleLandingContent() {
             </div>
           )}
           <div className="flex items-center gap-4">
-            <Select
-              onValueChange={(value) => setSelectedClassId(parseInt(value))}
-              value={selectedClassId.toString()}
-            >
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Pilih Kelas" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="0">Semua Kelas</SelectItem>
-                {classData.map((kelas: any) => (
-                  <SelectItem key={kelas.id} value={kelas.id.toString()}>
-                    {kelas.namaKelas}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {!isRoleSiswa && (
+              <Select
+                onValueChange={(value) => setSelectedClassId(parseInt(value))}
+                value={selectedClassId.toString()}
+              >
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Pilih Kelas" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0">Semua Kelas</SelectItem>
+                  {classData.map((kelas: any) => (
+                    <SelectItem key={kelas.id} value={kelas.id.toString()}>
+                      {kelas.namaKelas}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
             <Button
               variant="outline"
               className="w-[200px] justify-between"
@@ -859,7 +860,8 @@ export function ScheduleLandingContent() {
                                     <TableHead>
                                       {lang.text("nameTeacher")}
                                     </TableHead>
-                                    {isRoleAdmin && (
+
+                                    {!isRoleSiswa && (
                                       <TableHead>
                                         {lang.text("actions")}
                                       </TableHead>
@@ -876,19 +878,20 @@ export function ScheduleLandingContent() {
                                       <TableCell>
                                         {item.guru.namaGuru}
                                       </TableCell>
-                                      <TableCell className="flex gap-2">
-                                        {!isRole && (
-                                          <Button
-                                            variant="default"
-                                            size="sm"
-                                            // startIcon={<QrCode />}
-                                            onClick={() => handleShowQr(item)}
-                                          >
-                                            Show QR
-                                          </Button>
-                                        )}
-                                        {isRoleAdmin && (
-                                          <>
+                                      {!isRoleSiswa && (
+                                        <TableCell className="flex gap-2">
+                                          {!isRole && (
+                                            <Button
+                                              variant="default"
+                                              size="sm"
+                                              // startIcon={<QrCode />}
+                                              onClick={() => handleShowQr(item)}
+                                            >
+                                              Show QR
+                                            </Button>
+                                          )}
+
+                                          {!isRoleGuru && (
                                             <Button
                                               variant="outline"
                                               size="sm"
@@ -898,6 +901,8 @@ export function ScheduleLandingContent() {
                                             >
                                               <Pen />
                                             </Button>
+                                          )}
+                                          {!isRoleGuru && (
                                             <Button
                                               variant="destructive"
                                               size="sm"
@@ -908,9 +913,9 @@ export function ScheduleLandingContent() {
                                             >
                                               <Trash />
                                             </Button>
-                                          </>
-                                        )}
-                                      </TableCell>
+                                          )}
+                                        </TableCell>
+                                      )}
                                     </TableRow>
                                   ))}
                                 </TableBody>

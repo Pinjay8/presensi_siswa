@@ -66,14 +66,24 @@ export const classroomColumns = ({
     {
       accessorKey: "Schedule.name",
       accessorFn: (row) => row.attendanceSchedule?.name,
-      header: ({ column }) => (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("attendanceSchedule")}
-        </BaseTableHeader>
-      ),
-      cell: ({ row }) => row.original.attendanceSchedule?.name || "-",
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("scheduler")}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-2">
+            <div className="text-sm ">
+              {row.original.attendanceSchedule?.name || "-"}
+            </div>
+          </div>
+        );
+      },
     },
   ];
 
