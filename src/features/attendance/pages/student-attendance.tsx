@@ -86,7 +86,7 @@ export const StudentAttendance = () => {
     });
 
     socket.on("connect", () => {
-      console.log("Connected");
+      console.log("Connected", socket.id);
     });
 
     socket.on("absen", async (data) => {

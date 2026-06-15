@@ -45,6 +45,7 @@ export const SchoolDistribution = () => {
     totalAlpa: count?.alfa ?? 0,
     totalSakit: count?.sakit ?? 0,
     totalDispensasi: count?.izin ?? 0,
+    totalTerlambat: count?.terlambat ?? 0,
     totalBelumAbsen: count?.belumHadir ?? 0,
     totalSiswa: count?.totalSiswa ?? 0,
   };
@@ -220,6 +221,7 @@ export const SchoolDistribution = () => {
                 selectedSchool={selectedSchool}
                 stats={stats}
                 isLoading={isLoading}
+                changes={changes}
               />
               <SchoolMap />
             </>
@@ -232,6 +234,7 @@ export const SchoolDistribution = () => {
               selectedSchool={selectedSchool}
               changes={changesData}
               stats={statsData}
+              isLoadingDashboard={isLoadingDashboard}
             />
             <ReportTeacher
               selectedSchool={selectedSchool}

@@ -15,12 +15,14 @@ interface AttedancesReportProps {
   selectedSchool?: string;
   changes?: any;
   stats?: any;
+  isLoadingDashboard?: boolean;
 }
 
 export const AttedancesTeacherReport = ({
   selectedSchool,
   changes,
   stats,
+  isLoadingDashboard,
 }: AttedancesReportProps) => {
   const [isStatsLoading, setIsStatsLoading] = useState<boolean>(true);
   const [turn, setTurn] = useState<boolean>(true);
@@ -116,7 +118,7 @@ export const AttedancesTeacherReport = ({
           yesterdayData={[]}
           stats={stats}
           changes={changes}
-          isLoading={isStatsLoading}
+          isLoading={isLoadingDashboard}
         />
       </div>
     </>

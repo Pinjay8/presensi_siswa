@@ -50,6 +50,70 @@ interface FlatStudentModel {
   }[];
 }
 
+export const studentColumn = (): ColumnDef<FlatStudentModel>[] => [
+  {
+    accessorKey: "name",
+    header: ({ column }) => (
+      <BaseTableHeader
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        {lang.text("studentName")}
+      </BaseTableHeader>
+    ),
+    enableGlobalFilter: true,
+    cell: ({ row }) => {
+      const nameArr =
+        (row.original.nama || row.original?.nama)?.split(" ") || [];
+      const initials =
+        nameArr?.[0]?.[0]?.toUpperCase() +
+        (nameArr?.[1]?.[0]?.toUpperCase() || "");
+      return (
+        <div className="flex flex-row items-center gap-2">
+          {/* <Avatar>
+            <AvatarImage
+              src={
+                `&${row.original.fotoTampakDepan || row.original?.user?.image}` ||
+                ""
+              }
+              alt={
+                row.original.name ||
+                row.original.user.image ||
+                row.original.user?.name
+              }
+            />
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar> */}
+          <p>{row.original.nama || "-"}</p>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "nis",
+    header: () => <BaseTableHeader>NIS</BaseTableHeader>,
+    cell: ({ row }) => {
+      const nis = row.original.nis || row.original.nis;
+      return <span>{nis ? String(nis) : "-"}</span>;
+    },
+  },
+  {
+    accessorKey: "nisn",
+    header: () => <BaseTableHeader>NISN</BaseTableHeader>,
+    cell: ({ row }) => {
+      const nisn = row.original.nisn || row.original.nisn;
+      return <span>{nisn ? String(nisn) : "-"}</span>; // Ubah nisn menjadi string
+    },
+  },
+  {
+    accessorKey: "kelas",
+    header: () => <BaseTableHeader>{lang.text("classRoom")}</BaseTableHeader>,
+    cell: ({ row }) => {
+      const kelas = row.original.kelas;
+      return <span>{kelas ? String(kelas) : "-"}</span>;
+    },
+  },
+];
+
 export const studentColumnWithFilter = ({
   noStatus = false,
   schoolOptions = [],

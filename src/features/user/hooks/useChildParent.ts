@@ -4,16 +4,15 @@ import { useProfile } from "@/features/profile";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-export const useUserDetail = (id: number) => {
+export const useChildParent = (id: number) => {
   const auth = useAuth();
   const profile = useProfile();
-  const enabled =
-    auth.isAuthenticated() && Boolean(profile.user?.id) && Boolean(id);
+  const enabled = auth.isAuthenticated() && Boolean(profile.user?.id);
 
   const query = useQuery({
     enabled,
-    queryKey: ["user-detail", { id }],
-    queryFn: () => userService.getUserDetail(id),
+    queryKey: ["user-detail-child-parent", { id }],
+    queryFn: () => userService.getChildParent(id),
   });
 
   const data = useMemo(() => query.data?.data, [query.data?.data]);

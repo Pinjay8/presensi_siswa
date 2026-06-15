@@ -68,6 +68,7 @@ export const SERVICE_ENDPOINTS = {
   },
   user: {
     user: "/api/user",
+    childParent: "/api/user/daftar-anak",
     update: "api/update-user",
     admin: "/api/all-admin",
     profile: "/api/profile",
@@ -138,11 +139,11 @@ export const SERVICE_ENDPOINTS = {
     schoolDetail: "/api/dashboard/schools-detail",
     listCount: "/api/dashboard",
   },
-  settings:{
+  settings: {
     getSetting: "/api/app-setting",
     updateSetting: "/api/app-setting",
   },
-  scheduler:{
+  scheduler: {
     main: "/api/attendance/schedules",
     holiday: "/api/attendance/holidays",
   },

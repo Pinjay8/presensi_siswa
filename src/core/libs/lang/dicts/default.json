@@ -39,6 +39,10 @@
     "en": "First YouTube URL",
     "id": "URL Youtube 1"
   },
+  "percentagePresent": {
+    "en": "Percentage Present",
+    "id": "Persentase Kehadiran"
+  },
   "subTitleDashboard": {
     "en": "Below is a summary of the school today.",
     "id": "Berikut ringkasan data sekolah hari ini."
@@ -187,6 +191,7 @@
     "en": "Calendar",
     "id": "Kalender"
   },
+
   "presence": {
     "en": "Presence",
     "id": "Kehadiran"
@@ -296,6 +301,7 @@
     "en": "Daily",
     "id": "Harian"
   },
+
   "weeks": {
     "en": "Weeks",
     "id": "Mingguan"
@@ -307,6 +313,10 @@
   "years": {
     "en": "Years",
     "id": "Tahunan"
+  },
+  "distributePresent": {
+    "en": "Distribute Present",
+    "id": "Distribusi Kehadiran"
   },
   "selectPeriod": {
     "en": "Select Period",
@@ -1060,6 +1070,10 @@
     "id": "Pilih Status",
     "en": "Select Status"
   },
+  "selectDay": {
+    "id": "Pilih Status",
+    "en": "Select Status"
+  },
   "weekendStatus": {
     "id": "Status Weekend",
     "en": "Weekend Status"
@@ -1166,8 +1180,8 @@
   },
 
   "ReportOverview": {
-    "id": "Ikhtisar Laporan",
-    "en": "Report Overview"
+    "id": "Ringkasan Kehadiran",
+    "en": "Attendance Summary"
   },
   "reportStudentToday": {
     "id": "Laporan Kehadiran (Siswa) Hari ini",
@@ -1864,6 +1878,14 @@
   "today": {
     "id": "Hari ini",
     "en": "Today"
+  },
+  "thisMonth": {
+    "id": "Bulan ini",
+    "en": "This month"
+  },
+  "thisYear": {
+    "id": "Tahun ini",
+    "en": "This year"
   },
   "refresh": {
     "id": "Muat ulang data",

@@ -263,9 +263,7 @@ const CardTeacherDashboard: React.FC<AttendanceCardProps> = ({
       <Card className="w-full bg-theme-color-primary/5">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-muted-foreground">
-              {label}
-            </span>
+            <span className="text-md font-medium text-black">{label}</span>
             {/* ({lang.text("today")}) */}
           </div>
           <FaEye
@@ -276,7 +274,7 @@ const CardTeacherDashboard: React.FC<AttendanceCardProps> = ({
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
-            <div className="text-2xl font-normal text-[#4BC0C0]">
+            <div className="text-2xl font-normal text-black]">
               {isLoading || value === null || value === undefined ? (
                 <FaSpinner className="animate-spin duration-1500 opacity-30" />
               ) : (
