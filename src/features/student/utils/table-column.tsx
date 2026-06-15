@@ -58,6 +58,7 @@ export const studentColumnWithFilter = ({
   onRegisterFace,
   onAssignCard,
   unAssignCard,
+  onDelete,
 }: {
   schoolOptions?: { label: string; value: string | number }[];
   classroomOptions?: { label: string; value: string | number }[];
@@ -66,6 +67,7 @@ export const studentColumnWithFilter = ({
   onRegisterFace?: any;
   onAssignCard?: any;
   unAssignCard?: any;
+  onDelete?: (row: any) => void;
 }): ColumnDef<any>[] => {
   // const MemoizedFormRfid = React.memo(FormRfid);
   // const queryClient = useQueryClient();
@@ -331,6 +333,7 @@ export const studentColumnWithFilter = ({
             onRegisterFace={() => onRegisterFace?.(row.original)}
             onAssignCard={() => onAssignCard?.(row.original.id)}
             unAssignCard={() => unAssignCard?.(row.original)}
+            onDelete={() => onDelete?.(row.original)}
           />
         );
       },

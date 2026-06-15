@@ -18,6 +18,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { cardsService } from "@/core/services/cards";
 import AssignCardDialog from "../components/AsssignCardDialog";
 import UnassignCardDialog from "../components/UnassignCardDialog";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { useUserCreation } from "@/features/user/hooks";
 
 interface StudentTableProps {
   data: any[];
@@ -68,6 +70,7 @@ export function StudentTable({
   const alert = useAlert();
   const [openUnassignCard, setOpenUnassignCard] = useState(false);
   const queryClient = useQueryClient();
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const userCards = selectedUser?.kartus || [];
 
@@ -84,6 +87,11 @@ export function StudentTable({
   const handleOpenUnassignCard = (user: any) => {
     setSelectedUser(user);
     setOpenUnassignCard(true);
+  };
+
+  const handleOpenDeleteDialog = (student: any) => {
+    setSelectedStudent(student);
+    setOpenDeleteDialog(true);
   };
 
   const handleSubmitRegisterFace = async (file: File) => {
@@ -110,6 +118,7 @@ export function StudentTable({
         onRegisterFace: handleOpenRegisterFace,
         onAssignCard: handleOpenAssignCard,
         unAssignCard: handleOpenUnassignCard,
+        onDelete: handleOpenDeleteDialog,
       }),
     [schoolOptions, classroomOptions],
   );
@@ -184,6 +193,20 @@ export function StudentTable({
     }
   };
 
+  const userDelete = useUserCreation();
+
+    async function handleDelete() {
+    try {
+      await userDelete.deleteUser(Number(selectedStudent?.userId));
+      alert.success(lang.text("successDelete"));
+      refetch();
+      setOpenDeleteDialog(false);
+      setSelectedStudent(null);
+    } catch (error: any) {
+      alert.error(lang.text("failedDelete"));
+    }
+  }
+
   return (
     <>
       <BaseDataTables
@@ -231,6 +254,20 @@ export function StudentTable({
         onUnassign={handleUnassign}
         isUnassigning={unassignMutation.isPending}
       />
+
+                  {/* Delete Dialog */}
+                  <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+                    <DialogTitle>{lang.text("delete")}</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        {lang.text("deleteMessage", { context: selectedStudent?.nama_lengkap })}
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={() => setOpenDeleteDialog(false)}>{lang.text("cancel")}</Button>
+                      <Button onClick={handleDelete} disabled={userDelete.isLoading}>{lang.text("delete")}</Button>
+                    </DialogActions>
+                  </Dialog>
     </>
   );
 }
