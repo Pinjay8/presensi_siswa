@@ -106,15 +106,14 @@ import {
 import { ColumnDef } from "@tanstack/react-table";
 
 export const courseColumns = ({
-  schoolOptions = [],
-  classroomOptions = [],
-  onEdit, // Add onEdit callback
+  isAdmin,
+  onEdit,
   onDelete,
-}: BaseTableFilter & {
+}: any & {
   onEdit?: (course: CourseDataModel) => void;
   onDelete?: (course: CourseDataModel) => void;
 }): ColumnDef<CourseDataModel>[] => {
-  return [
+  const columns: ColumnDef<CourseDataModel>[] = [
     {
       accessorKey: "namaMataPelajaran",
       accessorFn: (row) => row.namaMataPelajaran,
@@ -131,46 +130,7 @@ export const courseColumns = ({
         return <span>{row.original.namaMataPelajaran}</span>;
       },
     },
-    // {
-    //   accessorKey: "type",
-    //   accessorFn: (row) => row.tipe,
-    //   header: ({ column }) => {
-    //     return (
-    //       <BaseTableHeader
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         {lang.text("type")}
-    //       </BaseTableHeader>
-    //     );
-    //   },
-    //   cell: ({ row }) => {
-    //     const typeMap: Record<string, string> = {
-    //       mata_pelajaran: "Mata Pelajaran",
-    //       ekstrakulikuler: "Ekstrakulikuler",
-    //     };
 
-    //     return <span>{typeMap[row.original.tipe] || row.original.tipe}</span>;
-    //   },
-    // },
-    // {
-    //   accessorKey: "sekolah.namaSekolah",
-    //   accessorFn: (row) => row.sekolah?.namaSekolah,
-    //   header: ({ column }) => {
-    //     return (
-    //       <BaseTableHeader
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         {lang.text("school")}
-    //       </BaseTableHeader>
-    //     );
-    //   },
-    //   meta: {
-    //     filterLabel: lang.text("school"),
-    //     filterPlaceholder: lang.text("selectSchool"),
-    //     filterVariant: "select",
-    //     filterOptions: schoolOptions,
-    //   },
-    // },
     {
       accessorKey: "kelas",
       accessorFn: (row) => row.kelas?.namaKelas,
@@ -190,7 +150,10 @@ export const courseColumns = ({
       //   filterOptions: schoolOptions,
       // },
     },
-    {
+  ];
+
+  if (isAdmin) {
+    columns.push({
       accessorKey: "id",
       accessorFn: (row) => row.id,
       size: 50,
@@ -212,8 +175,9 @@ export const courseColumns = ({
           />
         );
       },
-    },
-  ];
+    });
+  }
+  return columns;
 };
 
 export const courseDataFallback: CourseDataModel[] = [];

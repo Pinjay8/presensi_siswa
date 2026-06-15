@@ -5,142 +5,71 @@ import {
   BaseTableFilter,
   BaseTableHeader,
 } from "@/features/_global";
+import { useProfile } from "@/features/profile";
 import { ColumnDef } from "@tanstack/react-table";
 
 export const ekstrakurikulerColumns = ({
-  schoolOptions = [],
-  classroomOptions = [],
-  onEdit, // Add onEdit callback
+  isAdmin,
+  onEdit,
   onDelete,
 }: BaseTableFilter & {
+  isAdmin?: boolean;
   onEdit?: (course: any) => void;
   onDelete?: (course: any) => void;
 }): ColumnDef<any>[] => {
-  return [
+  const columns: ColumnDef<any>[] = [
     {
       accessorKey: "nama",
       accessorFn: (row) => row.nama,
-      header: ({ column }) => {
-        return (
-          <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {lang.text("name")}
-          </BaseTableHeader>
-        );
-      },
-      cell: ({ row }) => {
-        return <span>{row.original.nama}</span>;
-      },
+      header: ({ column }) => (
+        <BaseTableHeader
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {lang.text("name")}
+        </BaseTableHeader>
+      ),
+      cell: ({ row }) => row.original.nama,
     },
     {
       accessorKey: "jenis",
       accessorFn: (row) => row.jenis,
-      header: ({ column }) => {
-        return (
-          <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {lang.text("jenis")}
-          </BaseTableHeader>
-        );
-      },
-      cell: ({ row }) => {
-        return <span>{row.original.jenis}</span>;
-      },
+      header: ({ column }) => (
+        <BaseTableHeader
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {lang.text("jenis")}
+        </BaseTableHeader>
+      ),
+      cell: ({ row }) => row.original.jenis,
     },
     {
       accessorKey: "lokasi",
       accessorFn: (row) => row.lokasi,
-      header: ({ column }) => {
-        return (
-          <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {lang.text("location")}
-          </BaseTableHeader>
-        );
-      },
-      cell: ({ row }) => {
-        return <span>{row.original.lokasi}</span>;
-      },
+      header: ({ column }) => (
+        <BaseTableHeader
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {lang.text("location")}
+        </BaseTableHeader>
+      ),
+      cell: ({ row }) => row.original.lokasi,
     },
     {
       accessorKey: "pembina",
       accessorFn: (row) => row.pembina.namaGuru,
-      header: ({ column }) => {
-        return (
-          <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {lang.text("advisor")}
-          </BaseTableHeader>
-        );
-      },
-      cell: ({ row }) => {
-        return <span>{row.original.pembina.namaGuru}</span>;
-      },
+      header: ({ column }) => (
+        <BaseTableHeader
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {lang.text("advisor")}
+        </BaseTableHeader>
+      ),
+      cell: ({ row }) => row.original.pembina.namaGuru,
     },
-    // {
-    //   accessorKey: "type",
-    //   accessorFn: (row) => row.tipe,
-    //   header: ({ column }) => {
-    //     return (
-    //       <BaseTableHeader
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         {lang.text("type")}
-    //       </BaseTableHeader>
-    //     );
-    //   },
-    //   cell: ({ row }) => {
-    //     const typeMap: Record<string, string> = {
-    //       mata_pelajaran: "Mata Pelajaran",
-    //       ekstrakulikuler: "Ekstrakulikuler",
-    //     };
+  ];
 
-    //     return <span>{typeMap[row.original.tipe] || row.original.tipe}</span>;
-    //   },
-    // },
-    // {
-    //   accessorKey: "sekolah.namaSekolah",
-    //   accessorFn: (row) => row.sekolah?.namaSekolah,
-    //   header: ({ column }) => {
-    //     return (
-    //       <BaseTableHeader
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         {lang.text("school")}
-    //       </BaseTableHeader>
-    //     );
-    //   },
-    //   meta: {
-    //     filterLabel: lang.text("school"),
-    //     filterPlaceholder: lang.text("selectSchool"),
-    //     filterVariant: "select",
-    //     filterOptions: schoolOptions,
-    //   },
-    // },
-    // {
-    //   accessorKey: "kelas",
-    //   accessorFn: (row) => row.kelas?.namaKelas,
-    //   header: ({ column }) => {
-    //     return (
-    //       <BaseTableHeader
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         {lang.text("className")}
-    //       </BaseTableHeader>
-    //     );
-    //   },
-    //   // meta: {
-    //   //   filterLabel: lang.text("className"),
-    //   //   filterPlaceholder: lang.text("selectClassRoom"),
-    //   //   filterVariant: "select",
-    //   //   filterOptions: schoolOptions,
-    //   // },
-    // },
-    {
+  if (isAdmin) {
+    columns.push({
       accessorKey: "id",
       accessorFn: (row) => row.id,
       size: 50,
@@ -153,17 +82,19 @@ export const ekstrakurikulerColumns = ({
             text: row.original.nama,
           }),
         );
+
         return (
           <BaseActionTable
-            // detailPath={`/ekstrakurikuler/${encryptPayload}`}
-            onEdit={() => onEdit?.(row.original)} // Trigger onEdit callback
-            // deletePath={`/courses/delete/${encryptPayload}`}
+            detailPath={`/ekstrakurikuler/${encryptPayload}`}
+            onEdit={() => onEdit?.(row.original)}
             onDelete={() => onDelete?.(row.original)}
           />
         );
       },
-    },
-  ];
+    });
+  }
+
+  return columns;
 };
 
 export const courseDataFallback: CourseDataModel[] = [];

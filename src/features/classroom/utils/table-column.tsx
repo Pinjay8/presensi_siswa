@@ -13,55 +13,49 @@ export interface classroomColumnsProps {
   columnFilter?: BaseTableFilter;
   onAssignSchedule?: (row: ClassroomDataModel) => void;
   onDelete?: (row: ClassroomDataModel) => void;
+  isAdmin?: any;
 }
 
 export const classroomColumns = ({
   columnFilter,
   onAssignSchedule,
   onDelete,
-}: classroomColumnsProps): ColumnDef<ClassroomDataModel>[] => {
-  return [
+  isAdmin,
+}: classroomColumnsProps): ColumnDef<any>[] => {
+  const columns: ColumnDef<any>[] = [
     {
       accessorKey: "namaKelas",
       accessorFn: (row) => row.namaKelas,
-      header: ({ column }) => {
-        return (
-          <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {lang.text("classRoom")}
-          </BaseTableHeader>
-        );
-      },
-      cell: ({ row }) => {
-        return <span>{row.original.namaKelas}</span>;
-      },
+      header: ({ column }) => (
+        <BaseTableHeader
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {lang.text("classRoom")}
+        </BaseTableHeader>
+      ),
+      cell: ({ row }) => row.original.namaKelas,
     },
     {
       accessorKey: "level",
       accessorFn: (row) => row.level,
-      header: ({ column }) => {
-        return (
-          <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {"Level"}
-          </BaseTableHeader>
-        );
-      },
+      header: ({ column }) => (
+        <BaseTableHeader
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Level
+        </BaseTableHeader>
+      ),
     },
     {
       accessorKey: "Sekolah.namaSekolah",
       accessorFn: (row) => row.Sekolah?.namaSekolah,
-      header: ({ column }) => {
-        return (
-          <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {"Sekolah"}
-          </BaseTableHeader>
-        );
-      },
+      header: ({ column }) => (
+        <BaseTableHeader
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Sekolah
+        </BaseTableHeader>
+      ),
       meta: {
         filterLabel: lang.text("school"),
         filterPlaceholder: lang.text("selectSchool"),
@@ -72,49 +66,45 @@ export const classroomColumns = ({
     {
       accessorKey: "Schedule.name",
       accessorFn: (row) => row.attendanceSchedule?.name,
-      header: ({ column }) => {
-        return (
-          <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {lang.text("attendanceSchedule")}
-          </BaseTableHeader>
-        );
-      },
-      cell: ({ row }) => {
-        return (
-          <div className="flex items-center gap-2">
-            <div className="text-sm ">
-              {row.original.attendanceSchedule?.name || "-"}
-            </div>
-          </div>
-        );
-      },
+      header: ({ column }) => (
+        <BaseTableHeader
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {lang.text("attendanceSchedule")}
+        </BaseTableHeader>
+      ),
+      cell: ({ row }) => row.original.attendanceSchedule?.name || "-",
     },
-    {
+  ];
+
+  if (isAdmin) {
+    columns.push({
       accessorKey: "id",
       accessorFn: (row) => row.id,
       size: 50,
       enableSorting: false,
-      header: lang.text("action"),
+      header: () => lang.text("action"),
       cell: ({ row }) => {
         const encryptPayload = simpleEncode(
-          JSON.stringify({ id: row.original.id, text: row.original.namaKelas }),
+          JSON.stringify({
+            id: row.original.id,
+            text: row.original.namaKelas,
+          }),
         );
-        // // console.log(encryptPayload)
-        // const encryptPayload = JSON.stringify({ id: row.original.id, text: row.original.namaKelas })
+
         return (
           <BaseActionTable
             detailPath={`/classrooms/${encryptPayload}`}
             editPath={`/classrooms/edit/${encryptPayload}`}
-            // deletePath={`/classrooms/delete/${encryptPayload}`}
             onAssignSchedule={() => onAssignSchedule?.(row.original)}
             onDelete={() => onDelete?.(row.original)}
           />
         );
       },
-    },
-  ];
+    });
+  }
+
+  return columns;
 };
 
 export const classroomDataFallback: ClassroomDataModel[] = [];

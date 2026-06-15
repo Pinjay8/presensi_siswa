@@ -23,10 +23,16 @@ export const CourseTable = () => {
   const classroom = useClassroom();
   const [createCourse, setCreateCourse] = useState(false);
   const [editCourse, setEditCourse] = useState<CourseDataModel | null>(null);
-
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [openDelete, setOpenDelete] = useState(false);
   const alert = useAlert();
+
+  const profile = useProfile();
+  const isRole =
+    profile?.user?.role === "guru" ||
+    profile?.user?.role === "siswa" ||
+    profile?.user?.role === "orangTua";
+  const isAdmin = profile?.user?.role === "admin" || profile?.user?.role === "superAdmin";
 
   const handleOpenDeleteDialog = (parent: any) => {
     setSelectedCourse(parent);
@@ -49,20 +55,7 @@ export const CourseTable = () => {
   const columns = useMemo(
     () =>
       courseColumns({
-        // schoolOptions: distinctObjectsByProperty(
-        //   school.data?.map((d) => ({
-        //     label: d.namaSekolah,
-        //     value: d.namaSekolah,
-        //   })) || [],
-        //   "value",
-        // ),
-        // classroomOptions: distinctObjectsByProperty(
-        //   classroom.data?.map((d) => ({
-        //     label: d.namaKelas,
-        //     value: d.namaKelas,
-        //   })) || [],
-        //   "value",
-        // ),
+        isAdmin,
         onEdit: (course) => setEditCourse(course),
         onDelete: (course) => handleOpenDeleteDialog(course),
       }),
@@ -73,12 +66,6 @@ export const CourseTable = () => {
     () => distinctObjectsByProperty(resource.data || [], "namaMataPelajaran"),
     [resource.data],
   );
-
-  const profile = useProfile();
-  const isRole =
-    profile?.user?.role === "guru" ||
-    profile?.user?.role === "siswa" ||
-    profile?.user?.role === "orangTua";
 
   return (
     <>
@@ -98,7 +85,6 @@ export const CourseTable = () => {
                 id: editCourse.id,
                 namaMataPelajaran: editCourse.namaMataPelajaran,
                 kelasId: editCourse.kelas?.id,
-                tipe: editCourse.tipe,
               }}
             />
           )}

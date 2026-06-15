@@ -36,6 +36,14 @@ export const ClassroomTable = () => {
     setOpenAssignSchedule(true);
   };
 
+  const profile = useProfile();
+  const isRole =
+    profile?.user?.role === "guru" ||
+    profile?.user?.role === "siswa" ||
+    profile?.user?.role === "orangTua";
+  const isAdmin =
+    profile?.user?.role === "admin" || profile?.user?.role === "superAdmin";
+
   const columns = useMemo(
     () =>
       classroomColumns({
@@ -50,15 +58,10 @@ export const ClassroomTable = () => {
         },
         onAssignSchedule: handleOpenAssignSchedule,
         onDelete: handleOpenDeleteDialog,
+        isAdmin,
       }),
     [school.data],
   );
-
-  const profile = useProfile();
-  const isRole =
-    profile?.user?.role === "guru" ||
-    profile?.user?.role === "siswa" ||
-    profile?.user?.role === "orangTua";
 
   const classDelete = useClassroomCreation();
 

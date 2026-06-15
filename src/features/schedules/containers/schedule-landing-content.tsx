@@ -137,6 +137,7 @@ export function ScheduleLandingContent() {
     profile?.user?.role === "superAdmin" ||
     profile?.user?.role === "siswa" ||
     profile?.user?.role === "orangTua";
+  const isRoleAdmin = profile?.user?.role === "admin";
 
   const [qrCode, setQrCode] = useState("");
 
@@ -259,59 +260,6 @@ export function ScheduleLandingContent() {
 
     return result;
   }, [schedules?.data]);
-  // const groupedByClassAndDay = useMemo(() => {
-  //   const result: Record<number, Record<string, ScheduleItem[]>> = {};
-
-  //   if (schedules?.data) {
-  //     // Normalize day keys to uppercase
-  //     const normalizeDay = (day: string) => day.toUpperCase();
-
-  //     // Collect all unique kelasId
-  //     const kelasIds = new Set<number>();
-  //     Object.keys(schedules.data).forEach((day) => {
-  //       schedules.data[day].forEach((schedule: ScheduleItem) => {
-  //         kelasIds.add(schedule.mataPelajaran.kelasId);
-  //       });
-  //     });
-
-  //     // Initialize result for all kelasId and days
-  //     kelasIds.forEach((kelasId) => {
-  //       result[kelasId] = daysOrder.reduce(
-  //         (acc, d) => {
-  //           acc[d] = [];
-  //           return acc;
-  //         },
-  //         {} as Record<string, ScheduleItem[]>,
-  //       );
-  //     });
-
-  //     // Populate schedules
-  //     Object.keys(schedules.data).forEach((day) => {
-  //       const normalizedDay = normalizeDay(day);
-  //       if (daysOrder.includes(normalizedDay)) {
-  //         schedules.data[day].forEach((schedule: ScheduleItem) => {
-  //           const kelasId = schedule.mataPelajaran.kelasId;
-  //           if (result[kelasId]) {
-  //             result[kelasId][normalizedDay].push(schedule);
-  //           }
-  //         });
-  //       }
-  //     });
-
-  //     // Sort schedules by jamMulai
-  //     Object.keys(result).forEach((kelasId) => {
-  //       daysOrder.forEach((day) => {
-  //         result[kelasId][day].sort((a, b) => {
-  //           const timeA = new Date(`1970-01-01T${a.jamMulai}:00`);
-  //           const timeB = new Date(`1970-01-01T${b.jamMulai}:00`);
-  //           return timeA.getTime() - timeB.getTime();
-  //         });
-  //       });
-  //     });
-  //   }
-
-  //   return result;
-  // }, [schedules?.data]);
 
   // Download Excel template
   const handleDownloadTemplate = () => {
@@ -342,7 +290,7 @@ export function ScheduleLandingContent() {
       const reader = new FileReader();
       reader.onload = async (e) => {
         const data = new Uint8Array(e.target?.result as ArrayBuffer);
-        const workbook = XLSX.read(data, { type: "array", cellDates: true }); // Pastikan parse sebagai Date
+        const workbook = XLSX.read(data, { type: "array", cellDates: true });
         const sheet = workbook.Sheets["Schedules"];
         if (!sheet) {
           alert.error("Sheet 'Schedules' tidak ditemukan");
@@ -578,7 +526,9 @@ export function ScheduleLandingContent() {
       await creation.delete(id);
       alert.success(
         lang.text("successful", {
-          context: lang.text("dataSuccessDelete", { context: "" }),
+          context: lang.text("dataSuccessDelete", {
+            context: lang.text("scheduleMapel"),
+          }),
         }),
       );
       schedules.query.refetch();
@@ -588,7 +538,9 @@ export function ScheduleLandingContent() {
       alert.error(
         err?.message ||
           lang.text("failed", {
-            context: lang.text("dataFailDelete", { context: "" }),
+            context: lang.text("dataFailDelete", {
+              context: lang.text("scheduleMapel"),
+            }),
           }),
       );
     }
@@ -737,60 +689,6 @@ export function ScheduleLandingContent() {
 
   const qrRef = useRef<HTMLDivElement>(null);
 
-  const handleDownloadQr = () => {
-    const svg = qrRef.current?.querySelector("svg");
-
-    if (!svg) return;
-
-    const serializer = new XMLSerializer();
-    const svgString = serializer.serializeToString(svg);
-
-    const svgBlob = new Blob([svgString], {
-      type: "image/svg+xml;charset=utf-8",
-    });
-
-    const url = URL.createObjectURL(svgBlob);
-
-    const img = new Image();
-
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const size = 600;
-
-      canvas.width = size;
-      canvas.height = size;
-
-      const ctx = canvas.getContext("2d");
-
-      if (!ctx) return;
-
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fillRect(0, 0, size, size);
-
-      // padding supaya tidak kepotong
-      const padding = 30;
-
-      ctx.drawImage(
-        img,
-        padding,
-        padding,
-        size - padding * 2,
-        size - padding * 2,
-      );
-
-      URL.revokeObjectURL(url);
-
-      const png = canvas.toDataURL("image/png");
-
-      const link = document.createElement("a");
-      link.href = png;
-      link.download = `qr-presensi-${selectedQr?.namaKelas || "kelas"}.png`;
-      link.click();
-    };
-
-    img.src = url;
-  };
-
   const openEditModal = (day: string, schedule: ScheduleItem) => {
     setSelectedDay(day);
     setEditScheduleId(schedule.id);
@@ -852,28 +750,34 @@ export function ScheduleLandingContent() {
       />
 
       <div className="mt-5 mb-8">
-        <div className="w-full mb-4 flex justify-between items-center">
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={openAddModal}>
-              Tambah jadwal baru <Plus />
-            </Button>
-            <div className="mx-2 h-[36px] py-1 flex items-center justify-center">
-              <p>atau</p>
+        <div
+          className={`w-full mb-4 flex items-center ${
+            isRoleAdmin ? "justify-between" : "justify-end"
+          }`}
+        >
+          {isRoleAdmin && (
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={openAddModal}>
+                Tambah jadwal baru <Plus />
+              </Button>
+              <div className="mx-2 h-[36px] py-1 flex items-center justify-center">
+                <p>atau</p>
+              </div>
+              <Button
+                className="text-green-300 border border-green-700"
+                variant="outline"
+                onClick={handleDownloadTemplate}
+              >
+                Unduh Template Excel <Download />
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setIsUploadModalOpen(true)}
+              >
+                Unggah Excel <UploadCloud />
+              </Button>
             </div>
-            <Button
-              className="text-green-300 border border-green-700"
-              variant="outline"
-              onClick={handleDownloadTemplate}
-            >
-              Unduh Template Excel <Download />
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setIsUploadModalOpen(true)}
-            >
-              Unggah Excel <UploadCloud />
-            </Button>
-          </div>
+          )}
           <div className="flex items-center gap-4">
             <Select
               onValueChange={(value) => setSelectedClassId(parseInt(value))}
@@ -955,9 +859,11 @@ export function ScheduleLandingContent() {
                                     <TableHead>
                                       {lang.text("nameTeacher")}
                                     </TableHead>
-                                    <TableHead>
-                                      {lang.text("actions")}
-                                    </TableHead>
+                                    {isRoleAdmin && (
+                                      <TableHead>
+                                        {lang.text("actions")}
+                                      </TableHead>
+                                    )}
                                   </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -981,25 +887,29 @@ export function ScheduleLandingContent() {
                                             Show QR
                                           </Button>
                                         )}
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          onClick={() =>
-                                            openEditModal(day, item)
-                                          }
-                                        >
-                                          <Pen />
-                                        </Button>
-                                        <Button
-                                          variant="destructive"
-                                          size="sm"
-                                          onClick={() => {
-                                            setId(item.id);
-                                            showRef.current?.();
-                                          }}
-                                        >
-                                          <Trash />
-                                        </Button>
+                                        {isRoleAdmin && (
+                                          <>
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              onClick={() =>
+                                                openEditModal(day, item)
+                                              }
+                                            >
+                                              <Pen />
+                                            </Button>
+                                            <Button
+                                              variant="destructive"
+                                              size="sm"
+                                              onClick={() => {
+                                                setId(item.id);
+                                                showRef.current?.();
+                                              }}
+                                            >
+                                              <Trash />
+                                            </Button>
+                                          </>
+                                        )}
                                       </TableCell>
                                     </TableRow>
                                   ))}

@@ -57,6 +57,14 @@ export const EkstrakurikulerTable = () => {
   };
   const userDelete = useUserCreation();
 
+  const profile = useProfile();
+  const isRole =
+    profile?.user?.role === "guru" ||
+    profile?.user?.role === "siswa" ||
+    profile?.user?.role === "orangTua";
+  const isAdmin =
+    profile?.user?.role === "admin" || profile?.user?.role === "superAdmin";
+
   async function handleDelete() {
     try {
       await userDelete.deleteUser(Number(selectedCourse?.id));
@@ -72,6 +80,7 @@ export const EkstrakurikulerTable = () => {
   const columns = useMemo(
     () =>
       ekstrakurikulerColumns({
+        isAdmin,
         onEdit: (course) => setEditEkstrakurikuler(course),
         onDelete: (course) => handleOpenDeleteDialog(course),
       }),
@@ -82,12 +91,6 @@ export const EkstrakurikulerTable = () => {
     () => distinctObjectsByProperty(resource.data || [], "id"),
     [resource.data],
   );
-
-  const profile = useProfile();
-  const isRole =
-    profile?.user?.role === "guru" ||
-    profile?.user?.role === "siswa" ||
-    profile?.user?.role === "orangTua";
 
   return (
     <>

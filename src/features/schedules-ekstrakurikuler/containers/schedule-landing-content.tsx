@@ -168,6 +168,9 @@ export function ScheduleLandingContent() {
     profile?.user?.role === "siswa" ||
     profile?.user?.role === "orangTua";
 
+  const isAdmin =
+    profile?.user?.role === "admin" || profile?.user?.role === "superAdmin";
+
   const [qrCode, setQrCode] = useState("");
 
   const handleShowQr = async (item: any) => {
@@ -955,7 +958,7 @@ export function ScheduleLandingContent() {
                         <TableHead>Jam</TableHead>
                         <TableHead>Ekskul</TableHead>
                         <TableHead>Jenis</TableHead>
-                        <TableHead>Aksi</TableHead>
+                        {isAdmin && <TableHead>Aksi</TableHead>}
                       </TableRow>
                     </TableHeader>
 
@@ -970,30 +973,32 @@ export function ScheduleLandingContent() {
 
                           <TableCell>{item.ekstrakurikuler.jenis}</TableCell>
 
-                          <TableCell className="flex gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => openEditModal(day, item)}
-                            >
-                              <Pen />
-                            </Button>
+                          {isAdmin && (
+                            <TableCell className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => openEditModal(day, item)}
+                              >
+                                <Pen />
+                              </Button>
 
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => {
-                                setDeleteData({
-                                  ekskulId: item.ekstrakurikuler.id,
-                                  jadwalId: item.id,
-                                });
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => {
+                                  setDeleteData({
+                                    ekskulId: item.ekstrakurikuler.id,
+                                    jadwalId: item.id,
+                                  });
 
-                                showRef.current?.();
-                              }}
-                            >
-                              <Trash />
-                            </Button>
-                          </TableCell>
+                                  showRef.current?.();
+                                }}
+                              >
+                                <Trash />
+                              </Button>
+                            </TableCell>
+                          )}
                         </TableRow>
                       ))}
                     </TableBody>
