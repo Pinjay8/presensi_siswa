@@ -139,18 +139,20 @@ export const matpelColumns = (
         <div className="flex gap-2 flex-wrap">
           <Button
             variant="contained"
-            color="success"
+            // color="success"
+
             onClick={() => onSubmitAttendance(row.original, "hadir")}
-            sx={{ textTransform: "capitalize" }}
+            sx={{ textTransform: "capitalize", backgroundColor: "#22C55E" }}
           >
             {lang.text("present")}
           </Button>
 
           <Button
             variant="contained"
-            color="warning"
+            // color="#0EA5E9"
+
             onClick={() => onSubmitAttendance(row.original, "sakit")}
-            sx={{ textTransform: "capitalize" }}
+            sx={{ textTransform: "capitalize", backgroundColor: "#0EA5E9" }}
           >
             {lang.text("sick")}
           </Button>
@@ -166,9 +168,10 @@ export const matpelColumns = (
 
           <Button
             variant="contained"
-            color="info"
+            // color="info"
+
             onClick={() => onSubmitAttendance(row.original, "terlambat")}
-            sx={{ textTransform: "capitalize" }}
+            sx={{ textTransform: "capitalize", backgroundColor: "#64748B" }}
           >
             {lang.text("late")}
           </Button>

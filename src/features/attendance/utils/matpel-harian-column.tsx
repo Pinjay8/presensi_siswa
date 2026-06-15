@@ -25,7 +25,7 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "namaSiswa",
     header: "Nama Siswa",
-    cell: ({ row }) => row.original.namaSiswa || "N/A",
+    cell: ({ row }) => row.original.namaSiswa || "-",
     enableSorting: true,
   },
   {
@@ -37,20 +37,34 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "namaKelas",
     header: "Kelas",
-    cell: ({ row }) => row.original.namaKelas || "N/A",
+    cell: ({ row }) => row.original.namaKelas || "-",
     enableSorting: true,
   },
   {
     accessorKey: "namaMataPelajaran",
     header: "Mata Pelajaran",
-    cell: ({ row }) => row.original.namaMataPelajaran || "N/A",
+    cell: ({ row }) => row.original.namaMataPelajaran || "-",
     enableSorting: true,
   },
+  {
+    accessorKey: "jamMulai",
+    header: "Jam Mulai",
+    cell: ({ row }) => row.original.jamMulai || "-",
+    enableSorting: true,
+  },
+
+  {
+    accessorKey: "jamSelesai",
+    header: "Jam Selesai",
+    cell: ({ row }) => row.original.jamSelesai || "-",
+    enableSorting: true,
+  },
+
   {
     accessorKey: "attendance.statusKehadiran",
     header: "Status",
     // cell: ({ row }) => {
-    //   const status = row.original.statusKehadiran || "N/A";
+    //   const status = row.original.statusKehadiran || "-";
     //   let variant;
 
     //   if (status === "Hadir" || status === "hadir") {
@@ -116,32 +130,32 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) =>
       dayjs(row.original.tanggal, "DD MMM YYYY, HH:mm:ss")
         .tz("Asia/Jakarta")
-        .format("DD MMM YYYY") || "N/A",
+        .format("DD MMM YYYY") || "-",
     enableSorting: true,
   },
-//   {
-//     accessorKey: "id",
-//     accessorFn: (row) => row.id,
-//     size: 50,
-//     enableSorting: false,
-//     header: () => {
-//       return null;
-//     },
-//     cell: ({ row }) => {
-//       const encryptPayload = simpleEncode(
-//         JSON.stringify({ id: row.original.id, text: row.original.namaKelas }),
-//       );
-//       // // console.log(encryptPayload)
-//       // const encryptPayload = JSON.stringify({ id: row.original.id, text: row.original.namaKelas })
-//       return (
-//         <BaseActionTable
-//           detailPath={`/classrooms/${encryptPayload}`}
-//           editPath={`/classrooms/edit/${encryptPayload}`}
-//           deletePath={`/classrooms/delete/${encryptPayload}`}
-//         />
-//       );
-//     },
-//   },
+  //   {
+  //     accessorKey: "id",
+  //     accessorFn: (row) => row.id,
+  //     size: 50,
+  //     enableSorting: false,
+  //     header: () => {
+  //       return null;
+  //     },
+  //     cell: ({ row }) => {
+  //       const encryptPayload = simpleEncode(
+  //         JSON.stringify({ id: row.original.id, text: row.original.namaKelas }),
+  //       );
+  //       // // console.log(encryptPayload)
+  //       // const encryptPayload = JSON.stringify({ id: row.original.id, text: row.original.namaKelas })
+  //       return (
+  //         <BaseActionTable
+  //           detailPath={`/classrooms/${encryptPayload}`}
+  //           editPath={`/classrooms/edit/${encryptPayload}`}
+  //           deletePath={`/classrooms/delete/${encryptPayload}`}
+  //         />
+  //       );
+  //     },
+  //   },
 
   // {
   //   accessorKey: "attendance.jamMasuk",

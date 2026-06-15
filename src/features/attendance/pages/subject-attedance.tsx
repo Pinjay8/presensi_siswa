@@ -157,18 +157,6 @@ export const SubjectAttendance = () => {
       ]}
       title={lang.text("SubjectAttendance")}
     >
-      {/* <AttendanceFilter
-        period={dataMode}
-        attendanceCount={attendanceCount}
-        setIsModalOpen={setIsModalOpen}
-        onPeriodChange={(
-          value: "harian" | "bulanan" | "mingguan" | "tahunan",
-        ) => {
-          setDataMode(value);
-          setFilter(value);
-        }}
-      /> */}
-
       <SubjectAttendanceTable
         totalAttedance={true}
         data={filteredData}
@@ -176,19 +164,6 @@ export const SubjectAttendance = () => {
         onPaginationChange={onPaginationChange}
         rowCount={attendanceData?.pagination?.total ?? 0}
       />
-      {/* <ExportFilterModal
-        open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        dataMode={dataMode}
-        selectedStartMonth={selectedStartMonth}
-        selectedEndMonth={selectedEndMonth}
-        selectedClass={selectedClass}
-        classOptions={classOptions}
-        setSelectedClass={setSelectedClass}
-        setSelectedStartMonth={setSelectedStartMonth}
-        setSelectedEndMonth={setSelectedEndMonth}
-        handleExport={handleExport}
-      /> */}
     </DashboardPageLayout>
   );
 };

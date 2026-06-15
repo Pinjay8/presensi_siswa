@@ -85,7 +85,9 @@ export function QrAttendanceDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>QR Code Presensi Mata Pelajaran</DialogTitle>
+          <DialogTitle style={{ marginTop: "20px", marginBottom: '10px' }}>
+            QR Code Presensi Mata Pelajaran
+          </DialogTitle>
         </DialogHeader>
 
         <Divider />
@@ -111,7 +113,7 @@ export function QrAttendanceDialog({
                 </div>
 
                 <Button
-                  sx={{ mt: 2 }}
+                  sx={{ mt: 4 }}
                   onClick={handleDownloadQr}
                   // variant="default"
                   variant="contained"

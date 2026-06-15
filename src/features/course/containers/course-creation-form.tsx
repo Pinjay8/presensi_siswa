@@ -341,7 +341,7 @@ export const CourseCreationForm = ({
                   />
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 mt-2">
                 <div className="w-full">
                   <FormField
                     control={form.control}
@@ -349,7 +349,6 @@ export const CourseCreationForm = ({
                     render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel>{lang.text("type")}</FormLabel>
-
                         <Select
                           value={field.value}
                           onValueChange={field.onChange}

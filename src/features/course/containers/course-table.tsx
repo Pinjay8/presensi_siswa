@@ -49,20 +49,20 @@ export const CourseTable = () => {
   const columns = useMemo(
     () =>
       courseColumns({
-        schoolOptions: distinctObjectsByProperty(
-          school.data?.map((d) => ({
-            label: d.namaSekolah,
-            value: d.namaSekolah,
-          })) || [],
-          "value",
-        ),
-        classroomOptions: distinctObjectsByProperty(
-          classroom.data?.map((d) => ({
-            label: d.namaKelas,
-            value: d.namaKelas,
-          })) || [],
-          "value",
-        ),
+        // schoolOptions: distinctObjectsByProperty(
+        //   school.data?.map((d) => ({
+        //     label: d.namaSekolah,
+        //     value: d.namaSekolah,
+        //   })) || [],
+        //   "value",
+        // ),
+        // classroomOptions: distinctObjectsByProperty(
+        //   classroom.data?.map((d) => ({
+        //     label: d.namaKelas,
+        //     value: d.namaKelas,
+        //   })) || [],
+        //   "value",
+        // ),
         onEdit: (course) => setEditCourse(course),
         onDelete: (course) => handleOpenDeleteDialog(course),
       }),
