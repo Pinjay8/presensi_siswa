@@ -21,6 +21,8 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { FaPlus } from "react-icons/fa";
+import RegisterFaceDialog from "@/features/_global/components/dashboard/usermenu/components/RegisterFaceDialog";
+import { userService } from "@/core/services";
 
 export function TeacherTable() {
   const biodata = useBiodataGuru();
@@ -29,10 +31,33 @@ export function TeacherTable() {
   const [teacher, setTeacher] = useState(false);
   const [openWaliKelas, setOpenWaliKelas] = useState(false);
   const [openAssignSchedule, setOpenAssignSchedule] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false)
+    const [openRegisterFace, setOpenRegisterFace] = useState(false);
+
   const [selectedTeacher, setSelectedTeacher] = useState<any | null>(null);
   const kelas = useClassroom();
   const alert = useAlert();
+
+    const handleOpenRegisterFace = (teacher: any) => {
+    setSelectedTeacher(teacher);
+    console.log("selected Teacher", selectedTeacher)
+    setOpenRegisterFace(true);
+  };
+  
+  const handleSubmitRegisterFace = async (file: File) => {
+    try {
+      const formData = new FormData();
+
+      formData.append("fotoTampakDepan", file);
+      formData.append("userId", String(selectedTeacher.user?.id));
+      console.log("selected Teacher", selectedTeacher.user?.id)
+      await userService.registerFaceTeacher(formData);
+
+      alert.success(lang.text("successRegister"));
+    } catch (error: any) {
+      alert.error(error?.message || "Gagal mendaftarkan wajah");
+    }
+  };
   const columns = useMemo(
     () =>
       teacherColumnWithFilter({
@@ -56,6 +81,7 @@ export function TeacherTable() {
           setSelectedTeacher(teacher);
           setOpenDelete(true);
         },
+        onRegisterFace: handleOpenRegisterFace,
       }),
     [school.data],
   );
@@ -156,6 +182,12 @@ export function TeacherTable() {
         searchPlaceholder={lang.text("search")}
         isLoading={biodata.query.isLoading}
       />
+
+            <RegisterFaceDialog
+              open={openRegisterFace}
+              onClose={() => setOpenRegisterFace(false)}
+              onSubmit={handleSubmitRegisterFace}
+            />
 
       {/* Delete Dialog */}
       <Dialog

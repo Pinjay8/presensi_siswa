@@ -82,7 +82,7 @@ export const StudentCreationForm = () => {
       noTlp: "",
       isVerified: false,
       isActive: 0,
-      sekolahId: 0,
+
     },
   });
 
@@ -120,7 +120,6 @@ export const StudentCreationForm = () => {
         noTlp: detail.data?.noTlp || "",
         isVerified: detail.data?.isVerified || false,
         isActive: detail.data?.isActive || 0,
-        sekolahId: detail.data?.sekolahId || 0,
       });
     }
   }, [detail.data, detailKelas.data, resource.data, form]);
@@ -172,11 +171,6 @@ export const StudentCreationForm = () => {
         data.isActive !== detail.data?.isActive
       )
         updatedData.isActive = data.isActive;
-      if (
-        data.sekolahId !== undefined &&
-        data.sekolahId !== detail.data?.sekolahId
-      )
-        updatedData.sekolahId = data.sekolahId;
       if (data.jenisKelamin && data.jenisKelamin !== detail.data?.jenisKelamin)
         updatedData.jenisKelamin =
           data.jenisKelamin === "Male" ? "Male" : "Female";

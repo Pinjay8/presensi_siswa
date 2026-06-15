@@ -88,8 +88,8 @@ export function ScanAttendanceTable() {
     try {
       setQrValue(value);
 
-      await absenQrMutation.mutateAsync(value);
-
+      const res = await absenQrMutation.mutateAsync(value);
+      console.log("Result", res)
       // supaya scanner tidak spam
       setOpen(false);
 

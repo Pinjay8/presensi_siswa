@@ -77,7 +77,7 @@ export const classroomColumns = ({
           <BaseTableHeader
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            {lang.text("attendanceSchedule")}
+            {lang.text("scheduler")}
           </BaseTableHeader>
         );
       },

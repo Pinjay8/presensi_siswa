@@ -122,6 +122,7 @@ export const studentColumnWithFilter = ({
   onRegisterFace,
   onAssignCard,
   unAssignCard,
+  onDelete,
 }: {
   schoolOptions?: { label: string; value: string | number }[];
   classroomOptions?: { label: string; value: string | number }[];
@@ -130,6 +131,7 @@ export const studentColumnWithFilter = ({
   onRegisterFace?: any;
   onAssignCard?: any;
   unAssignCard?: any;
+  onDelete?: (row: any) => void;
 }): ColumnDef<any>[] => {
   // const MemoizedFormRfid = React.memo(FormRfid);
   // const queryClient = useQueryClient();
@@ -312,9 +314,9 @@ export const studentColumnWithFilter = ({
                     "bg-slate-100 text-slate-700 border border-slate-200",
                 },
               };
-
+              
               const config = statusConfig[status as keyof typeof statusConfig];
-
+              
               return (
                 <div
                   className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${
@@ -394,6 +396,7 @@ export const studentColumnWithFilter = ({
             onRegisterFace={() => onRegisterFace?.(row.original)}
             onAssignCard={() => onAssignCard?.(row.original.id)}
             unAssignCard={() => unAssignCard?.(row.original)}
+            onDelete={() => onDelete?.(row.original)}
           />
         );
       },
@@ -453,8 +456,8 @@ export const studentLibraryColumnWithFilter = ({
   noStatus?: boolean;
   schoolOptions?: { label: string; value: string | number }[];
   classroomOptions?: { label: string; value: string | number }[];
-  handleAttend?: (row: FlatStudentModel) => void;
-}): ColumnDef<FlatStudentModel>[] => {
+  handleAttend?: (row: any) => void;
+}): ColumnDef<any>[] => {
   const classroomFilterMeta = buildSelectFilter(
     "biodataSiswa[0].kelas.namaKelas",
     lang.text("classroom"),
@@ -473,8 +476,9 @@ export const studentLibraryColumnWithFilter = ({
       ),
       enableGlobalFilter: true,
       cell: ({ row }) => {
+        console.log("USER", row)
         const nameArr =
-          (row.original.name || row.original.user?.name)?.split(" ") || [];
+          (row.original.name || row.original.name)?.split(" ") || [];
         const initials =
           nameArr?.[0]?.[0]?.toUpperCase() +
           (nameArr?.[1]?.[0]?.toUpperCase() || "");

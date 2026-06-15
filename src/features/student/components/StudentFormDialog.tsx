@@ -242,7 +242,7 @@ export default function StudentFormDialog({
                   )}
                 />
 
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="sekolahId"
                   render={({ field }) => (
@@ -274,11 +274,11 @@ export default function StudentFormDialog({
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                /> */}
               </div>
 
               <div className="mt-6">
-                <Button type="submit">{lang.text("saveChanges")}</Button>
+                <Button type="submit" >{lang.text("saveChanges")}</Button>
               </div>
             </form>
           </Form>

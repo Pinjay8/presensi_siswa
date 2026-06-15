@@ -44,5 +44,5 @@ export const teacherEditSchema = z.object({
   noTlp: z.string().optional(),
   isVerified: z.boolean().optional(),
   isActive: z.number().optional(),
-  sekolahId: z.number().optional(),
+  // sekolahId: z.number().optional(),
 });

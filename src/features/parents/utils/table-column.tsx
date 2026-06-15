@@ -138,6 +138,7 @@ export const parentColumnWithFilter = ({
           nameArr && nameArr.length > 0
             ? `${nameArr?.[0]?.[0]?.toUpperCase() || ""}${nameArr?.[1]?.[0]?.toUpperCase() || ""}`
             : "-";
+            // console.log("ORTU: ", row)
         return (
           <div className="flex flex-row items-center gap-2">
             <Avatar>

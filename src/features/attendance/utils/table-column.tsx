@@ -99,7 +99,9 @@ export const studentAttendanceColumn = ({
       },
       enableGlobalFilter: true,
       cell: ({ row }) => {
+        console.log("SISWA", row.original)
         return (
+          
           <BaseUserItem
             image={row.original.siswa?.image}
             name={row.original.siswa?.nama}
@@ -113,19 +115,19 @@ export const studentAttendanceColumn = ({
         );
       },
     },
-    {
-      accessorKey: "user.email",
-      accessorFn: (row) => row.siswa?.email,
-      header: ({ column }) => {
-        return (
-          <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {"NIS"}
-          </BaseTableHeader>
-        );
-      },
-    },
+    // {
+    //   accessorKey: "user.email",
+    //   accessorFn: (row) => row.siswa?.email,
+    //   header: ({ column }) => {
+    //     return (
+    //       <BaseTableHeader
+    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //       >
+    //         {"Email"}
+    //       </BaseTableHeader>
+    //     );
+    //   },
+    // },
     {
       accessorKey: "user.nis",
       accessorFn: (row) => row.siswa?.nis,
