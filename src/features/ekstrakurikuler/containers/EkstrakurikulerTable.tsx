@@ -15,7 +15,6 @@ import { useSchool } from "@/features/schools";
 import { useMemo, useState } from "react";
 import { ModalEkstrakurikuler } from "../components";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/core/libs";
-import { CourseDataModel } from "@/core/models/course";
 import { useProfile } from "@/features/profile";
 import { FaPlus } from "react-icons/fa";
 import { useUserCreation } from "@/features/user";

@@ -52,6 +52,7 @@ export interface BaseActionTableProps {
   onApprove?: any;
   onReject?: any;
   onAbsenManual?: any;
+  onRemove?: any;
 }
 
 export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
@@ -153,6 +154,12 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
             <DropdownMenuItem onClick={props.onReject}>
               <XIcon className="h-4 w-4" />
               {lang.text("reject")}
+            </DropdownMenuItem>
+          )}
+          {props.onRemove && (
+            <DropdownMenuItem onClick={props.onRemove}>
+              <XIcon className="h-4 w-4" />
+              {lang.text("removeAssign")}
             </DropdownMenuItem>
           )}
 

@@ -34,6 +34,7 @@ import {
   YAxis,
 } from "recharts";
 import { getEmoji } from "../utils";
+import { Typography } from "@mui/material";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -67,6 +68,8 @@ interface AttendanceCardProps {
   bgColor?: string;
   textColor?: string;
   isLoading?: boolean;
+  icon?: any;
+  subTitle?: any;
 }
 
 const AttendanceCard: React.FC<AttendanceCardProps> = ({
@@ -79,6 +82,8 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({
   bgColor,
   textColor,
   isLoading,
+  icon,
+  subTitle,
 }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(
@@ -272,11 +277,12 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({
           <div className="flex items-center gap-2">
             <span className="text-md font-medium  text-black">{label}</span>
           </div>
-          <FaEye
+          {/* <FaEye
             className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
             onClick={() => setIsSheetOpen(true)}
             aria-label="Lihat detail kehadiran"
-          />
+          /> */}
+          {icon}
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4 justify-between">
@@ -284,15 +290,28 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({
               {isLoading || value === null || value === undefined ? (
                 <FaSpinner className="animate-spin duration-1500 opacity-30" />
               ) : (
-                value
+                <div className="flex  gap-2 items-center">
+                  <span>{value}</span>
+                  {subTitle && (
+                    <Typography
+                      className="text-md text-muted-foreground"
+                      sx={{ fontWeight: "semibold" }}
+                    >
+                      {subTitle}
+                    </Typography>
+                  )}
+                </div>
               )}
             </div>
-            <Badge
-              className="flex items-center gap-1 text-xs"
-              style={{ backgroundColor: bgColor, color: textColor }}
-            >
-              {percentage} %
-            </Badge>
+
+            {percentage !== undefined && percentage !== null && (
+              <Badge
+                className="flex items-center gap-1 text-xs"
+                style={{ backgroundColor: bgColor, color: textColor }}
+              >
+                {percentage}%
+              </Badge>
+            )}
           </div>
         </CardContent>
       </Card>

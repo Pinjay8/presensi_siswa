@@ -297,7 +297,9 @@ export const ReportOverview = ({
                 <div className="mb-2 flex items-center justify-start gap-2">
                   <div className="flex items-center gap-4">
                     <div className="w-3 h-3 rounded-full bg-[#64748B]"></div>
-                    <p className="text-muted-foreground">{lang.text("late")}</p>
+                    <p className="text-muted-foreground">
+                      {lang.text("AttendanceNotRecorded")}
+                    </p>
                   </div>
                   {/* <p className="text-md text-foreground">
                   {stats.totalTerlambat}

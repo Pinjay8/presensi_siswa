@@ -10,7 +10,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Pencil } from "lucide-react";
 
 export interface classroomColumnsProps {
-  columnFilter?: BaseTableFilter;
+  columnFilter?: BaseTableFilter | undefined;
   onAssignSchedule?: (row: ClassroomDataModel) => void;
   onDelete?: (row: ClassroomDataModel) => void;
   isAdmin?: any;
@@ -21,7 +21,7 @@ export const classroomColumns = ({
   onAssignSchedule,
   onDelete,
   isAdmin,
-}: classroomColumnsProps): ColumnDef<any>[] => {
+}: classroomColumnsProps = {}): ColumnDef<any>[] => {
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "namaKelas",

@@ -225,6 +225,16 @@ export const router = createBrowserRouter(
             })),
         },
 
+        // detail
+        {
+          path: "ekstrakurikuler/:id",
+
+          lazy: () =>
+            import("@/features/ekstrakurikuler").then((m) => ({
+              Component: m.EkstrakurikulerDetail,
+            })),
+        },
+
         // delete
         {
           path: "ekstrakurikuler/delete/:id",

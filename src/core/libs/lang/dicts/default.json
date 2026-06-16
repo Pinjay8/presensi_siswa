@@ -318,6 +318,18 @@
     "id": "Pilih Siswa",
     "en": "Select Student"
   },
+  "totalsStudents": {
+    "en": "Total Students",
+    "id": "Total Siswa"
+  },
+  "addNewSchedule": {
+    "en": "Add New Schedule",
+    "id": "Tambah Jadwal Baru"
+  },
+  "sumClassroom": {
+    "en": "Total Classrooms",
+    "id": "Jumlah Kelas"
+  },
   "distributePresent": {
     "en": "Distribute Present",
     "id": "Distribusi Kehadiran"
@@ -325,6 +337,10 @@
   "selectPeriod": {
     "en": "Select Period",
     "id": "Pilih Periode"
+  },
+  "selectDays": {
+    "en": "Select Days",
+    "id": "Pilih Hari"
   },
   "chooseClassroom": {
     "en": "Choose Classroom",
@@ -334,6 +350,15 @@
     "en": "All Classroom",
     "id": "Semua Kelas"
   },
+  "detailEkstrakurikuler": {
+    "en": "Detail Extracurricular",
+    "id": "Detail Ekstrakurikuler"
+  },
+  "totalMember": {
+    "en": "Total Member",
+    "id": "Jumlah Anggota"
+  },
+
   "rangeMonth": {
     "en": "Choose Range Month",
     "id": "Pilih Rentang Bulan"
@@ -663,6 +688,14 @@
     "id": "Jam Mulai",
     "en": "Start Hour"
   },
+  "createAbsent": {
+    "id": "Tambah Absensi",
+    "en": "Create Absent"
+  },
+  "rekapBulanan": {
+    "id": "Rekap Bulanan",
+    "en": "Monthly Summary"
+  },
   "endHour": {
     "id": "Jam Selesai",
     "en": "End Hour"
@@ -890,6 +923,10 @@
   "Licensing": {
     "id": "Perizinan",
     "en": "Licensing"
+  },
+  "listMember": {
+    "id": "List Anggota",
+    "en": "List Member"
   },
   "upload": {
     "id": "Kirim surat sekarang",
@@ -1146,6 +1183,10 @@
     "id": "Sebaran lokasi",
     "en": "Location distribution"
   },
+  "absensi": {
+    "id": "List Absensi",
+    "en": "List Attendance"
+  },
   "absensiMapel": {
     "id": "Absensi Mata Pelajaran",
     "en": "Subject Attendance"
@@ -1297,6 +1338,10 @@
   "addSchool": {
     "id": "Tambah Sekolah",
     "en": "Add school"
+  },
+  "addStudents": {
+    "id": "Tambah Siswa",
+    "en": "Add Students"
   },
   "editSchool": {
     "id": "Edit Sekolah",
@@ -1643,9 +1688,34 @@
     "id": "Tingkat",
     "en": "Level"
   },
+  "member": {
+    "id": "Anggota",
+    "en": "Member"
+  },
+  "addMember": {
+    "id": "Tambah Anggota",
+    "en": "Add Member"
+  },
+  "removeAssign": {
+    "id": "Hapus Anggota",
+    "en": "Remove Member"
+  },
+  "successRemove": {
+    "id": "Data [context] berhasil dihapus.",
+    "en": "[context] data has been successfully deleted."
+  },
+
   "successCreate": {
     "id": "Data [context] berhasil ditambahkan.",
     "en": "[context] data has been successfully created."
+  },
+  "successAssign": {
+    "id": "Data [context] berhasil dimasukkan.",
+    "en": "[context] data has been successfully added."
+  },
+  "failAssign": {
+    "id": "Data [context] gagal dimasukkan.",
+    "en": "Failed to added [context] data."
   },
   "failCreate": {
     "id": "Data [context] gagal ditambahkan.",
@@ -1715,6 +1785,10 @@
     "id": "Belum ada kehadiran untuk kelas ini",
     "en": "There is no attendance for this class"
   },
+  "AttendanceNotRecorded": {
+    "id": "Belum Absen",
+    "en": "Not Recorded"
+  },
   "errorFetchStats": {
     "id": "Gagal dapatkan statistik buku",
     "en": "Failed to fetch book statisticss"
@@ -1739,6 +1813,7 @@
     "id": "Lengkapi data mata pelajaran",
     "en": "Complete the subject data"
   },
+
   "completeDataEkstrakurikuler": {
     "id": "Lengkapi data ekstrakurikuler",
     "en": "Complete the extracurricular data"

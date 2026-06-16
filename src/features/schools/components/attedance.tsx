@@ -12,7 +12,18 @@ import {
   Skeleton,
 } from "@/core/libs";
 import React, { useState, useEffect } from "react";
-import { FaEye, FaPhone, FaSpinner } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaClock,
+  FaEye,
+  FaFileAlt,
+  FaNotesMedical,
+  FaPhone,
+  FaSpinner,
+  FaTimesCircle,
+  FaUser,
+  FaUsers,
+} from "react-icons/fa";
 import AttendanceCard from "./attedance-card";
 
 interface AttendanceStats {
@@ -93,7 +104,8 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
   );
 
   return (
-    <div className="flex gap-4 w-full justify-between flex-wrap lg:flex-nowrap">
+    // <div className="flex gap-4 w-full justify-between flex-wrap lg:flex-nowrap">
+    <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
       {/* <AttendanceCard
         dayData={dayData}
         yesterdayData={yesterdayData}
@@ -149,9 +161,26 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
       ) : (
         <>
           <AttendanceCard
+            label={lang.text("totalsStudents")}
+            value={stats.totalSiswa}
+            // percentage={changes.hadir.percentage}
+            isLoading={isLoading}
+            icon={
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-100">
+                <FaUsers className="text-blue-600 text-lg" />
+              </div>
+            }
+            subTitle={"Orang"}
+          />
+          <AttendanceCard
             label={lang.text("presence")}
             value={stats.totalHadir}
             percentage={changes.hadir.percentage}
+            icon={
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-green-100">
+                <FaCheckCircle className="text-green-500 text-lg" />
+              </div>
+            }
             isLoading={isLoading}
           />
 
@@ -159,6 +188,11 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
             label={lang.text("absentee")}
             value={stats.totalAlpa}
             percentage={changes.alpa.percentage}
+            icon={
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-100">
+                <FaTimesCircle className="text-red-500 text-lg" />
+              </div>
+            }
             isLoading={isLoading}
           />
 
@@ -166,13 +200,23 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
             label={lang.text("sickness")}
             value={stats.totalSakit}
             percentage={changes.sakit.percentage}
+            icon={
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-sky-100">
+                <FaNotesMedical className="text-sky-500 text-lg" />
+              </div>
+            }
             isLoading={isLoading}
           />
 
           <AttendanceCard
-            label={lang.text("dispensation")}
+            label={lang.text("permit")}
             value={stats.totalDispensasi}
             percentage={changes.dispensasi.percentage}
+            icon={
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-100">
+                <FaFileAlt className="text-amber-500 text-lg" />
+              </div>
+            }
             isLoading={isLoading}
           />
 
@@ -180,6 +224,11 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
             label={"Belum Absen"}
             value={stats.totalBelumAbsen}
             percentage={changes.belumAbsen.percentage}
+            icon={
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-300">
+                <FaClock className="text-slate-500 text-lg" />
+              </div>
+            }
             isLoading={isLoading}
           />
         </>

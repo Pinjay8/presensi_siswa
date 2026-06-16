@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow,
   Checkbox,
+  cn,
 } from "@/core/libs";
 import { useAlert, useVokadialog, Vokadialog } from "@/features/_global";
 import { useCourse } from "@/features/course";
@@ -170,23 +171,6 @@ export function ScheduleLandingContent() {
       alert.error(err?.message);
     }
   };
-
-  // Derive classes from schedules.data
-  // const classes = useMemo(() => {
-  //   if (!schedules?.data) return [];
-  //   const kelasSet = new Map<number, { id: number; namaKelas: string }>();
-  //   Object.keys(schedules.data).forEach((day) => {
-  //     schedules.data[day].forEach((schedule: ScheduleItem) => {
-  //       const { kelas } = schedule.mataPelajaran;
-  //       if (kelas && kelas.id != null && kelas.namaKelas) {
-  //         if (!kelasSet.has(kelas.id)) {
-  //           kelasSet.set(kelas.id, { id: kelas.id, namaKelas: kelas.namaKelas });
-  //         }
-  //       }
-  //     });
-  //   });
-  //   return Array.from(kelasSet.values());
-  // }, [schedules?.data]);
 
   // Memoize filtered courses
   const filteredCourses = useMemo(() => {
@@ -753,11 +737,16 @@ export function ScheduleLandingContent() {
       />
 
       <div className="mt-5 mb-8">
-        <div className="w-full mb-4 flex justify-between items-center">
+        <div
+          className={cn(
+            "w-full mb-4 flex items-center",
+            isRoleAdmin ? "justify-between" : "justify-end",
+          )}
+        >
           {!isRoleSiswa && !isRoleGuru && (
             <div className="flex gap-2">
               <Button variant="outline" onClick={openAddModal}>
-                Tambah jadwal baru <Plus />
+                {lang.text("addNewSchedule")} <Plus />
               </Button>
               <div className="mx-2 h-[36px] py-1 flex items-center justify-center">
                 <p>atau</p>
@@ -802,14 +791,14 @@ export function ScheduleLandingContent() {
               onClick={() => setIsDayFilterOpen(true)}
             >
               {selectedDays.length === daysOrder.length
-                ? "Semua Hari"
+                ? lang.text("allDays")
                 : selectedDays.length === 0
-                  ? "Pilih Hari"
+                  ? lang.text("selectDays")
                   : selectedDays.join(", ")}
               <span>▼</span>
             </Button>
             <Badge variant="outline" className="py-2.5">
-              <span>Jumlah kelas:</span>
+              <span>{lang.text("sumClassroom")}:</span>
               <span className="ml-2">{classData.length}</span>
             </Badge>
           </div>

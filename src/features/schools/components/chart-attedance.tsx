@@ -11,6 +11,8 @@ interface Stats {
   totalSakit: number;
   totalDispensasi: number;
   totalTerlambat: number;
+  totalBelumAbsen: number;
+  totalSiswa: number;
 }
 
 interface ChartInterface {
@@ -21,7 +23,7 @@ interface ChartInterface {
 export const ChartSemiCircle = ({ stats, isLoading }: ChartInterface) => {
   // Data untuk chart
   const data = {
-    labels: ["Hadir", "Alpa", "Sakit", "Izin", "Terlambat"],
+    labels: ["Hadir", "Alpa", "Sakit", "Izin", "Belum Absen"],
     datasets: [
       {
         data: [
@@ -29,15 +31,15 @@ export const ChartSemiCircle = ({ stats, isLoading }: ChartInterface) => {
           stats.totalAlpa,
           stats.totalSakit,
           stats.totalDispensasi,
-          stats.totalTerlambat,
+          stats.totalBelumAbsen,
         ],
+
         backgroundColor: [
-          "#22C55E", // Hadir (emerald-500)
-          "#FBBF24", // Dispensasi (amber-400)
-          "#0EA5E9", // Sakit (sky-500)
-          "#EF4444", // Alpa (red-500)
-          "#64748B", // Belum Absen (slate-500)
-          "#FF0000",
+          "#22C55E", // Hadir
+          "#EF4444", // Alpa
+          "#0EA5E9", // Sakit
+          "#FBBF24", // Izin
+          "#64748B", // Belum Absen
         ],
         borderWidth: 0,
       },
@@ -60,7 +62,12 @@ export const ChartSemiCircle = ({ stats, isLoading }: ChartInterface) => {
     maintainAspectRatio: false, // Allow custom height
   };
 
-  const total = stats.totalHadir + stats.totalAlpa + stats.totalSakit;
+  const total =
+    stats.totalHadir +
+    stats.totalAlpa +
+    stats.totalSakit +
+    stats.totalDispensasi +
+    stats.totalBelumAbsen;
 
   return (
     <Card className="w-full h-[260px] relative bg-theme-color-primary/5 bg-none border-none! shadow-none">

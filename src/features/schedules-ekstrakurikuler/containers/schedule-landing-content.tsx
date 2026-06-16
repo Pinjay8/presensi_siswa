@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow,
   Checkbox,
+  cn,
 } from "@/core/libs";
 import { useAlert, useVokadialog, Vokadialog } from "@/features/_global";
 import { useCourse } from "@/features/course";
@@ -99,7 +100,7 @@ interface ScheduleItem {
   };
 }
 
-const daysOrder = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT"];
+const daysOrder = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
 const DAY_NAMES: Record<number, string> = {
   1: "SENIN",
   2: "SELASA",
@@ -107,7 +108,7 @@ const DAY_NAMES: Record<number, string> = {
   4: "KAMIS",
   5: "JUMAT",
   6: "SABTU",
-  7: "MINGGU",
+  // 7: "MINGGU",
 };
 
 export function ScheduleLandingContent() {
@@ -131,14 +132,6 @@ export function ScheduleLandingContent() {
   const [excelFile, setExcelFile] = useState<File | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const teacherSearchInputRef = useRef<HTMLInputElement>(null);
-  // const [formData, setFormData] = useState<NewScheduleForm>({
-  //   mataPelajaranId: 0,
-  //   guruId: 0,
-  //   kelasId: 0,
-  //   hari: "",
-  //   jamMulai: "",
-  //   jamSelesai: "",
-  // });
 
   const [formData, setFormData] = useState({
     dayOfWeek: 1,
@@ -146,9 +139,6 @@ export function ScheduleLandingContent() {
     jamSelesai: "",
   });
 
-  const courses = useCourse();
-  const teachers = useBiodataGuru();
-  // const schedules = useSchedules();
   const schedules = useSchedulesEkstrakurikuler();
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
@@ -173,35 +163,6 @@ export function ScheduleLandingContent() {
 
   const [qrCode, setQrCode] = useState("");
 
-  const handleShowQr = async (item: any) => {
-    try {
-      // console.log("QR ITEM", item);
-
-      const payload = {
-        kelasId: item.kelasId,
-        mataPelajaranId: item.mataPelajaranId,
-      };
-
-      // console.log("QR PAYLOAD", payload);
-
-      setSelectedQr({
-        kelasId: item.kelasId,
-        mataPelajaranId: item.mataPelajaranId,
-        namaKelas: item.kelas?.namaKelas ?? "-",
-        namaMapel: item.mataPelajaran.namaMataPelajaran,
-      });
-
-      setIsQrModalOpen(true);
-
-      const result = await teacherService.qrCodeGenerate(payload);
-
-      // console.log("QR RESULT", result);
-
-      setQrCode(result?.data?.qrCodeData ?? result?.collection?.qrCode ?? "");
-    } catch (err: any) {
-      alert.error(err?.message);
-    }
-  };
   const groupedByDay = useMemo(() => {
     const result: Record<string, ScheduleItem[]> = {};
 
@@ -222,34 +183,6 @@ export function ScheduleLandingContent() {
     return result;
   }, [schedules?.data]);
 
-  // Memoize filtered courses
-  const filteredCourses = useMemo(() => {
-    let filtered =
-      courses?.data?.filter((course: any) =>
-        course.namaMataPelajaran
-          .toLowerCase()
-          .includes(searchCourse.toLowerCase()),
-      ) || [];
-
-    // When adding a schedule, further filter by selectedKelasIdForAdd
-    if (isAddModalOpen && selectedKelasIdForAdd !== 0) {
-      filtered = filtered.filter(
-        (course: any) => course.kelasId === selectedKelasIdForAdd,
-      );
-    }
-
-    return filtered;
-  }, [courses?.data, searchCourse, isAddModalOpen, selectedKelasIdForAdd]);
-
-  // Memoize filtered teachers
-  const filteredTeachers = useMemo(() => {
-    return (
-      teachers?.data?.filter((teacher: any) =>
-        teacher.namaGuru.toLowerCase().includes(searchTeacher.toLowerCase()),
-      ) || []
-    );
-  }, [teachers?.data, searchTeacher]);
-
   // Restore focus to course search input
   useEffect(() => {
     if (
@@ -269,52 +202,6 @@ export function ScheduleLandingContent() {
       teacherSearchInputRef.current.focus();
     }
   }, [searchTeacher]);
-
-  // Handle keydown to prevent focus shift
-  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) {
-      e.preventDefault();
-    }
-  };
-
-  // Handle day checkbox toggle
-  const handleDayToggle = (day: string) => {
-    setSelectedDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day],
-    );
-  };
-
-  // Handle "All Days" checkbox toggle
-  const handleAllDaysToggle = () => {
-    setSelectedDays((prev) =>
-      prev.length === daysOrder.length ? [] : [...daysOrder],
-    );
-  };
-
-  const handleConfirmDelete = async () => {
-    if (id === 0) {
-      alert.error("Anda perlu ID");
-      return;
-    }
-    try {
-      await creation.delete(id);
-      alert.success(
-        lang.text("successful", {
-          context: lang.text("dataSuccessDelete", { context: "" }),
-        }),
-      );
-      schedules.query.refetch();
-      dialog.close();
-    } catch (err: any) {
-      // alert.error("Error deleting schedule:", err);
-      alert.error(
-        err?.message ||
-          lang.text("failed", {
-            context: lang.text("dataFailDelete", { context: "" }),
-          }),
-      );
-    }
-  };
 
   const handleAddSchedule = async () => {
     console.log(formData);
@@ -649,28 +536,6 @@ export function ScheduleLandingContent() {
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
-            {/* <div className="grid gap-2">
-              <label>Ekstrakurikuler</label>
-
-              <Select
-                value={
-                  selectedEkskulId === 0 ? "" : selectedEkskulId.toString()
-                }
-                onValueChange={(value) => setSelectedEkskulId(Number(value))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Ekstrakurikuler" />
-                </SelectTrigger>
-
-                <SelectContent>
-                  {ekskulData?.data?.map((item: any) => (
-                    <SelectItem key={item.id} value={item.id.toString()}>
-                      {item.nama}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div> */}
             <div className="grid gap-2">
               <label>Hari</label>
 
@@ -694,7 +559,7 @@ export function ScheduleLandingContent() {
                   <SelectItem value="4">Kamis</SelectItem>
                   <SelectItem value="5">Jumat</SelectItem>
                   <SelectItem value="6">Sabtu</SelectItem>
-                  <SelectItem value="7">Minggu</SelectItem>
+                  {/* <SelectItem value="7">Minggu</SelectItem> */}
                 </SelectContent>
               </Select>
             </div>
@@ -740,210 +605,28 @@ export function ScheduleLandingContent() {
         </DialogContent>
       </Dialog>
 
-      {/* <Dialog open={isDayFilterOpen} onOpenChange={setIsDayFilterOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Pilih Hari</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="all-days"
-                checked={selectedDays.length === daysOrder.length}
-                onCheckedChange={handleAllDaysToggle}
-              />
-              <label htmlFor="all-days">Semua Hari</label>
-            </div>
-            {daysOrder.map((day) => (
-              <div key={day} className="flex items-center gap-2">
-                <Checkbox
-                  id={day}
-                  checked={selectedDays.includes(day)}
-                  onCheckedChange={() => handleDayToggle(day)}
-                />
-                <label htmlFor={day}>{day}</label>
-              </div>
-            ))}
-          </div>
-          <DialogFooter>
-            <Button onClick={() => setIsDayFilterOpen(false)}>Tutup</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog> */}
-
       <div className="mt-5 mb-8">
-        <div className="w-full mb-4 flex justify-between items-center">
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={openAddModal}>
-              Tambah Jadwal Ekstrakurikuler <Plus />
-            </Button>
-            {/* <div className="mx-2 h-[36px] py-1 flex items-center justify-center">
-              <p>atau</p>
-            </div> */}
-            {/* <Button
-              className="text-green-300 border border-green-700"
-              variant="outline"
-              onClick={handleDownloadTemplate}
-            >
-              Unduh Template Excel <Download />
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setIsUploadModalOpen(true)}
-            >
-              Unggah Excel <UploadCloud />
-            </Button> */}
-          </div>
+        <div
+          className={cn(
+            "w-full mb-4 flex items-center",
+            isAdmin ? "justify-between" : "justify-end",
+          )}
+        >
+          {isAdmin && (
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={openAddModal}>
+                Tambah Jadwal Ekstrakurikuler <Plus />
+              </Button>
+            </div>
+          )}
           <div className="flex items-center gap-4">
-            {/* <Select
-              onValueChange={(value) => setSelectedClassId(parseInt(value))}
-              value={selectedClassId.toString()}
-            >
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Pilih Kelas" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="0">Semua Kelas</SelectItem>
-                {classData.map((kelas: any) => (
-                  <SelectItem key={kelas.id} value={kelas.id.toString()}>
-                    {kelas.namaKelas}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button
-              variant="outline"
-              className="w-[200px] justify-between"
-              onClick={() => setIsDayFilterOpen(true)}
-            >
-              {selectedDays.length === daysOrder.length
-                ? "Semua Hari"
-                : selectedDays.length === 0
-                  ? "Pilih Hari"
-                  : selectedDays.join(", ")}
-              <span>▼</span>
-            </Button> */}
             <Badge variant="outline" className="py-2.5">
               <span>Jumlah Jadwal:</span>
               <span className="ml-2">{schedules.data.length}</span>
             </Badge>
           </div>
         </div>
-        {/* <div className="grid gap-8">
-          {Object.keys(groupedByClassAndDay).length > 0 &&
-          selectedDays.length > 0 ? (
-            Object.keys(groupedByClassAndDay)
-              .filter(
-                (kelasId) =>
-                  selectedClassId === 0 ||
-                  parseInt(kelasId) === selectedClassId,
-              )
-              .map((kelasId) => {
-                const classSchedules = groupedByClassAndDay[parseInt(kelasId)];
-                if (!classSchedules) {
-                  console.warn(`No schedules found for kelasId: ${kelasId}`);
-                  return null;
-                }
-                return (
-                  <div
-                    key={kelasId}
-                    className="border rounded-lg p-6 shadow-md"
-                  >
-                    <h1 className="flex gap-5 text-2xl font-bold mb-6">
-                      <School2 /> Kelas:{" "}
-                      {classData.find((k: any) => k.id === parseInt(kelasId))
-                        ?.namaKelas || `Kelas ${kelasId}`}
-                    </h1>
-                    <div className="grid grid-cols-2 gap-4">
-                      {daysOrder
-                        .filter((day) => selectedDays.includes(day))
-                        .map((day) => (
-                          <div
-                            key={day}
-                            className="border rounded-lg p-4 shadow-sm"
-                          >
-                            <h2 className="text-xl font-bold mb-4">{day}</h2>
-                            {classSchedules[day] &&
-                            classSchedules[day].length > 0 ? (
-                              <Table>
-                                <TableHeader>
-                                  <TableRow>
-                                    <TableHead>{lang.text("time")}</TableHead>
-                                    <TableHead>
-                                      {lang.text("nameMapel")}
-                                    </TableHead>
-                                    <TableHead>
-                                      {lang.text("nameTeacher")}
-                                    </TableHead>
-                                    <TableHead>
-                                      {lang.text("actions")}
-                                    </TableHead>
-                                  </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                  {classSchedules[day].map((item) => (
-                                    <TableRow key={item.id}>
-                                      <TableCell>{`${item.jamMulai} - ${item.jamSelesai}`}</TableCell>
-                                      <TableCell>
-                                        {item.mataPelajaran.namaMataPelajaran}
-                                      </TableCell>
-                                      <TableCell>
-                                        {item.guru.namaGuru}
-                                      </TableCell>
-                                      <TableCell className="flex gap-2">
-                                        {!isRole && (
-                                          <Button
-                                            variant="default"
-                                            size="sm"
-                                            // startIcon={<QrCode />}
-                                            onClick={() => handleShowQr(item)}
-                                          >
-                                            Show QR
-                                          </Button>
-                                        )}
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          onClick={() =>
-                                            openEditModal(day, item)
-                                          }
-                                        >
-                                          <Pen />
-                                        </Button>
-                                        <Button
-                                          variant="destructive"
-                                          size="sm"
-                                          onClick={() => {
-                                            setId(item.id);
-                                            showRef.current?.();
-                                          }}
-                                        >
-                                          <Trash />
-                                        </Button>
-                                      </TableCell>
-                                    </TableRow>
-                                  ))}
-                                </TableBody>
-                              </Table>
-                            ) : (
-                              <p className="text-gray-500">
-                                No schedule for {day}
-                              </p>
-                            )}
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                );
-              })
-          ) : (
-            <p className="text-gray-500 text-center">
-              {selectedDays.length === 0
-                ? "Pilih setidaknya satu hari untuk menampilkan jadwal."
-                : "Tidak ada jadwal tersedia."}
-            </p>
-          )}
-        </div> */}
+
         <div className="grid grid-cols-2 gap-4">
           {daysOrder
             .filter((day) => selectedDays.includes(day))
