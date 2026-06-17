@@ -35,7 +35,7 @@ export const ClassroomInformation = (props: ClassroomInformationProps) => {
         <Card className="w-full">
           <CardHeader>
             <CardTitle>{detail.data?.namaKelas || "-"}</CardTitle>
-            <CardDescription>{`${detail?.data?.Sekolah?.namaSekolah || "-"}`}</CardDescription>
+            {/* <CardDescription>{`${detail?.data?.Sekolah?.namaSekolah || "-"}`}</CardDescription> */}
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

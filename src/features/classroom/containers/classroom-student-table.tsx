@@ -1,5 +1,6 @@
 import { useBiodata } from "@/features/user/hooks";
 import {
+  studentClassroomColumn,
   studentColumnWithFilter,
   tableColumnSiswaFallback,
 } from "@/features/student";
@@ -30,25 +31,8 @@ export function ClassroomStudentTable(props: ClassroomStudentTableProps) {
       }),
     [student.data, props.id, detail?.data?.sekolahId],
   );
-  const biodata = useBiodata();
-  console.log(biodata)
-  // if (typeof biodata.data === "string") {
-  //   biodata.data = JSON.parse(biodata.data);
-  // }
 
-  const school = useSchool();
-
-  const columns = useMemo(
-    () =>
-      studentColumnWithFilter({
-        schoolOptions:
-          school.data?.map((d) => ({
-            label: d.namaSekolah,
-            value: d.namaSekolah,
-          })) || [],
-      }),
-    [school.data],
-  );
+  const columns = useMemo(() => studentClassroomColumn({}), []);
 
   return (
     <BaseDataTable
@@ -59,7 +43,7 @@ export function ClassroomStudentTable(props: ClassroomStudentTableProps) {
       searchParamPagination
       // showFilterButton
       searchPlaceholder={lang.text("search")}
-      isLoading={biodata.query.isLoading}
+      isLoading={student.query.isLoading}
     />
   );
 }

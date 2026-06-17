@@ -114,18 +114,79 @@ export const studentColumn = (): ColumnDef<any>[] => [
   },
 ];
 
+export const studentClassroomColumn = ({}: {}): ColumnDef<any>[] => {
+  return [
+    {
+      accessorKey: "name",
+      header: ({ column }) => (
+        <BaseTableHeader
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {lang.text("studentName")}
+        </BaseTableHeader>
+      ),
+      enableGlobalFilter: true,
+      cell: ({ row }) => {
+        const nameArr =
+          (row.original.name || row.original?.user?.name)?.split(" ") || [];
+        const initials =
+          nameArr?.[0]?.[0]?.toUpperCase() +
+          (nameArr?.[1]?.[0]?.toUpperCase() || "");
+        return (
+          <div className="flex flex-row items-center gap-2">
+            <Avatar>
+              <AvatarImage
+                src={
+                  `&${row.original.fotoTampakDepan || row.original?.user?.image}` ||
+                  ""
+                }
+                alt={
+                  row.original.name ||
+                  row.original.user.image ||
+                  row.original.user?.name
+                }
+              />
+              <AvatarFallback>{initials}</AvatarFallback>
+            </Avatar>
+            <p>{row.original.name || row.original?.user?.name || "-"}</p>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "email",
+      header: () => <BaseTableHeader>{lang.text("email")}</BaseTableHeader>,
+      cell: ({ row }) => (
+        <span>{row.original.user?.email || row.original.email || "-"}</span>
+      ),
+    },
+    {
+      accessorKey: "nis",
+      header: () => <BaseTableHeader>NIS</BaseTableHeader>,
+      cell: ({ row }) => {
+        const nis = row.original.user?.nis || row.original.nis;
+        return <span>{nis ? String(nis) : "-"}</span>;
+      },
+    },
+    {
+      accessorKey: "nisn",
+      header: () => <BaseTableHeader>NISN</BaseTableHeader>,
+      cell: ({ row }) => {
+        const nisn = row.original.user?.nisn || row.original.nisn;
+        return <span>{nisn ? String(nisn) : "-"}</span>; // Ubah nisn menjadi string
+      },
+    },
+  ];
+};
+
 export const studentColumnWithFilter = ({
   noStatus = false,
-  // schoolOptions = [],
-  // classroomOptions = [],
   handleAttend,
   onRegisterFace,
   onAssignCard,
   unAssignCard,
   onDelete,
 }: {
-  // schoolOptions?: { label: string; value: string | number }[];
-  // classroomOptions?: { label: string; value: string | number }[];
   noStatus?: boolean;
   handleAttend?: (row: any) => void;
   onRegisterFace?: any;
@@ -133,15 +194,6 @@ export const studentColumnWithFilter = ({
   unAssignCard?: any;
   onDelete?: (row: any) => void;
 }): ColumnDef<any>[] => {
-  // const MemoizedFormRfid = React.memo(FormRfid);
-  // const queryClient = useQueryClient();
-
-  // const classroomFilterMeta = buildSelectFilter(
-  //   "biodataSiswa[0].kelas.namaKelas",
-  //   lang.text("classroom"),
-  //   classroomOptions,
-  // );
-
   return [
     {
       accessorKey: "name",
@@ -570,10 +622,10 @@ export const tableColumnSiswa: ColumnDef<BiodataSiswa>[] = [
     accessorKey: "user.nisn",
     accessorFn: (row) => row.user?.nisn,
   },
-  {
-    accessorKey: "user.sekolah.namaSekolah",
-    accessorFn: (row) => row.user?.sekolah?.namaSekolah,
-  },
+  // {
+  //   accessorKey: "user.sekolah.namaSekolah",
+  //   accessorFn: (row) => row.user?.sekolah?.namaSekolah,
+  // },
   {
     accessorKey: "kelas.namaKelas",
     accessorFn: (row) => row.kelas?.namaKelas,
@@ -597,7 +649,6 @@ export const tableColumnSiswa: ColumnDef<BiodataSiswa>[] = [
           text: row.original.user?.name,
         }),
       );
-      console.log("detailPath", `/students`);
       return (
         <div className="flex flex-row justify-end">
           <BaseActionTable

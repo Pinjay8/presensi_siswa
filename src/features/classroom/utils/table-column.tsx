@@ -46,23 +46,23 @@ export const classroomColumns = ({
         </BaseTableHeader>
       ),
     },
-    {
-      accessorKey: "Sekolah.namaSekolah",
-      accessorFn: (row) => row.Sekolah?.namaSekolah,
-      header: ({ column }) => (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Sekolah
-        </BaseTableHeader>
-      ),
-      meta: {
-        filterLabel: lang.text("school"),
-        filterPlaceholder: lang.text("selectSchool"),
-        filterVariant: "select",
-        filterOptions: columnFilter?.schoolOptions || [],
-      },
-    },
+    // {
+    //   accessorKey: "Sekolah.namaSekolah",
+    //   accessorFn: (row) => row.Sekolah?.namaSekolah,
+    //   header: ({ column }) => (
+    //     <BaseTableHeader
+    //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //     >
+    //       Sekolah
+    //     </BaseTableHeader>
+    //   ),
+    //   meta: {
+    //     filterLabel: lang.text("school"),
+    //     filterPlaceholder: lang.text("selectSchool"),
+    //     filterVariant: "select",
+    //     filterOptions: columnFilter?.schoolOptions || [],
+    //   },
+    // },
     {
       accessorKey: "Schedule.name",
       accessorFn: (row) => row.attendanceSchedule?.name,

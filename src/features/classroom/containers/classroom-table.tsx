@@ -1,5 +1,9 @@
 import { distinctObjectsByProperty, lang } from "@/core/libs";
-import { BaseDataTable, useAlert } from "@/features/_global";
+import {
+  BaseDataTable,
+  useAlert,
+  useDataTableController,
+} from "@/features/_global";
 import { useSchool } from "@/features/schools";
 import { useMemo, useState } from "react";
 import { ModalCreateClass } from "../components";
@@ -16,9 +20,33 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { FaPlus } from "react-icons/fa";
+import { useClassroomPaginated } from "../hooks/use-classroom-paginated";
 
 export const ClassroomTable = () => {
-  const resource = useClassroom();
+  const {
+    global,
+    sorting,
+    filter,
+    pagination,
+    onSortingChange,
+    onPaginationChange,
+  } = useDataTableController({
+    defaultPageSize: 10,
+  });
+  // const resource = useClassroom();
+
+  const params = {
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+  };
+
+  const {
+    data: classroom,
+    pagination: paginationInfo,
+    isLoading,
+    query,
+  } = useClassroomPaginated(params);
+
   const school = useSchool();
   const [classRoom, setCreateClassRoom] = useState(false);
   const [openAssignSchedule, setOpenAssignSchedule] = useState(false);
@@ -47,15 +75,15 @@ export const ClassroomTable = () => {
   const columns = useMemo(
     () =>
       classroomColumns({
-        columnFilter: {
-          schoolOptions: distinctObjectsByProperty(
-            school.data?.map((d) => ({
-              label: d.namaSekolah,
-              value: d.namaSekolah,
-            })) || [],
-            "value",
-          ),
-        },
+        // columnFilter: {
+        //   schoolOptions: distinctObjectsByProperty(
+        //     school.data?.map((d) => ({
+        //       label: d.namaSekolah,
+        //       value: d.namaSekolah,
+        //     })) || [],
+        //     "value",
+        //   ),
+        // },
         onAssignSchedule: handleOpenAssignSchedule,
         onDelete: handleOpenDeleteDialog,
         isAdmin,
@@ -69,7 +97,7 @@ export const ClassroomTable = () => {
     try {
       await classDelete.delete(Number(selectedClass?.id));
       alert.success(lang.text("successDelete"));
-      resource.query.refetch();
+      await query.refetch();
       setOpenDeleteDialog(false);
     } catch (error) {
       alert.error(lang.text("failedDelete"));
@@ -93,7 +121,7 @@ export const ClassroomTable = () => {
       )}
       <BaseDataTable
         columns={columns}
-        data={resource.data}
+        data={classroom}
         dataFallback={classroomDataFallback}
         globalSearch
         showFilterButton
@@ -110,7 +138,11 @@ export const ClassroomTable = () => {
         ]}
         searchParamPagination
         searchPlaceholder={lang.text("search")}
-        isLoading={resource.query.isLoading}
+        isLoading={isLoading}
+        manualPagination
+        rowCount={paginationInfo?.total ?? 0}
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
       />
 
       {/* Delete Dialog */}

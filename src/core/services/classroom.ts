@@ -1,4 +1,3 @@
-
 import { http } from "@itokun99/http";
 import { API_CONFIG, SERVICE_ENDPOINTS } from "../configs/app";
 import { BaseResponse } from "../models/http";
@@ -15,6 +14,11 @@ export const classroomService = {
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.classroom.classroom,
       getInitialOptions,
     )({ query: params }),
+  getPaginated: (params?: { page?: number; limit?: number }) =>
+    http.get(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.classroom.classroom}?page=${params?.page}&limit=${params?.limit}`,
+      getInitialOptions,
+    )(),
   get: (id: number) =>
     http.get<BaseResponse<ClassroomDataModel>>(
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.classroom.classroom,
