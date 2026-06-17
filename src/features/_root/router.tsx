@@ -85,9 +85,11 @@ export const router = createBrowserRouter(
         {
           path: "schedules-ekstrakurikuler",
           lazy: () =>
-            import("../schedules-ekstrakurikuler/pages/schedules-ekstrakurikuler-landing").then((m) => ({
-              Component: m.ScheduleEkstrakurikulerLanding,
-            })),
+            import("../schedules-ekstrakurikuler/pages/schedules-ekstrakurikuler-landing").then(
+              (m) => ({
+                Component: m.ScheduleEkstrakurikulerLanding,
+              }),
+            ),
         },
         {
           path: "licensing",

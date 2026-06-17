@@ -90,13 +90,6 @@ export const DashboardLayout = React.memo(
             return null;
           }
 
-          // if (
-          //   role === "siswa" &&
-          //   !allowedMenusStudent.includes(data.key ?? "")
-          // ) {
-          //   return null;
-          // }
-
           if (
             role === "siswa" &&
             ![

@@ -24,10 +24,7 @@ import { FaPlus } from "react-icons/fa";
 import { ekstrakurikulerService } from "@/core/services/ekstrakurikuler";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/core/libs";
 import { useAbsensiEkskul } from "../hooks/useAbsensiEskul";
-import {
-  ModalAssignAbsen,
-  ModalAssigNAbsen,
-} from "../components/modalAssignAbsen";
+import { ModalAssignAbsen } from "../components/modalAssignAbsen";
 import { useRekapBulanan } from "../hooks/useRekapBulanan";
 
 export const EkstrakurikulerDetail = () => {
@@ -49,7 +46,10 @@ export const EkstrakurikulerDetail = () => {
 
   const handleRemove = async (member: any) => {
     try {
-      await ekstrakurikulerService.removeMember(member.id);
+      const res = await ekstrakurikulerService.removeMember(
+        member.ekskulId,
+        member.biodataSiswaId,
+      )();
 
       alert.success(
         lang.text("successRemove", {
@@ -58,14 +58,10 @@ export const EkstrakurikulerDetail = () => {
       );
 
       memberResource.query.refetch();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
 
-      alert.error(
-        lang.text("failedDelete", {
-          context: lang.text("member"),
-        }),
-      );
+      alert.error(error.message);
     }
   };
 

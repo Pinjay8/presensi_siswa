@@ -12,7 +12,7 @@ const Notification = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="bg-white border-md border-1">
+        <Button variant="outline" className=" border-md border-1">
           <BellRing className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>

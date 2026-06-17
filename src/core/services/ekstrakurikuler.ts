@@ -107,9 +107,9 @@ export const ekstrakurikulerService = {
       getInitialOptions,
     )(data);
   },
-  removeMember: (id: number) => {
+  removeMember: (ekskulId: number, biodataSiswaId: number) => {
     return http.delete<any, any>(
-      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.ekstrakurikuler.all}/${id}/anggota`,
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.ekstrakurikuler.all}/${ekskulId}/anggota/${biodataSiswaId}`,
       getInitialOptions,
     );
   },

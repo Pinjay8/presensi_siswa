@@ -50,7 +50,7 @@ interface FlatStudentModel {
   }[];
 }
 
-export const studentColumn = (): ColumnDef<FlatStudentModel>[] => [
+export const studentColumn = (): ColumnDef<any>[] => [
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -116,16 +116,16 @@ export const studentColumn = (): ColumnDef<FlatStudentModel>[] => [
 
 export const studentColumnWithFilter = ({
   noStatus = false,
-  schoolOptions = [],
-  classroomOptions = [],
+  // schoolOptions = [],
+  // classroomOptions = [],
   handleAttend,
   onRegisterFace,
   onAssignCard,
   unAssignCard,
   onDelete,
 }: {
-  schoolOptions?: { label: string; value: string | number }[];
-  classroomOptions?: { label: string; value: string | number }[];
+  // schoolOptions?: { label: string; value: string | number }[];
+  // classroomOptions?: { label: string; value: string | number }[];
   noStatus?: boolean;
   handleAttend?: (row: any) => void;
   onRegisterFace?: any;
@@ -136,11 +136,11 @@ export const studentColumnWithFilter = ({
   // const MemoizedFormRfid = React.memo(FormRfid);
   // const queryClient = useQueryClient();
 
-  const classroomFilterMeta = buildSelectFilter(
-    "biodataSiswa[0].kelas.namaKelas",
-    lang.text("classroom"),
-    classroomOptions,
-  );
+  // const classroomFilterMeta = buildSelectFilter(
+  //   "biodataSiswa[0].kelas.namaKelas",
+  //   lang.text("classroom"),
+  //   classroomOptions,
+  // );
 
   return [
     {
@@ -239,29 +239,29 @@ export const studentColumnWithFilter = ({
     //     );
     //   },
     // },
-    {
-      ...classroomFilterMeta,
-      accessorFn: (row) =>
-        row.biodataSiswa?.[0]?.kelas?.namaKelas ||
-        row.original?.namaKelas ||
-        "-",
-      header: () => <BaseTableHeader>{lang.text("classroom")}</BaseTableHeader>,
-      cell: ({ row }) => (
-        <span>
-          {row.original.biodataSiswa?.[0]?.kelas?.namaKelas ||
-            row.original.kelas?.namaKelas ||
-            row.original.namaKelas ||
-            "-"}
-        </span>
-      ),
-      meta: {
-        filterLabel: lang.text("classroom"),
-        filterPlaceholder: lang.text("selectClassroom"),
-        filterVariant: "select",
-        filterOptions: classroomOptions,
-      },
-      id: "idKelas",
-    },
+    // {
+    //   ...classroomFilterMeta,
+    //   accessorFn: (row) =>
+    //     row.biodataSiswa?.[0]?.kelas?.namaKelas ||
+    //     row.original?.namaKelas ||
+    //     "-",
+    //   header: () => <BaseTableHeader>{lang.text("classroom")}</BaseTableHeader>,
+    //   cell: ({ row }) => (
+    //     <span>
+    //       {row.original.biodataSiswa?.[0]?.kelas?.namaKelas ||
+    //         row.original.kelas?.namaKelas ||
+    //         row.original.namaKelas ||
+    //         "-"}
+    //     </span>
+    //   ),
+    //   meta: {
+    //     filterLabel: lang.text("classroom"),
+    //     filterPlaceholder: lang.text("selectClassroom"),
+    //     filterVariant: "select",
+    //     filterOptions: classroomOptions,
+    //   },
+    //   id: "idKelas",
+    // },
     // {
     //   accessorKey: "sekolah.namaSekolah",
     //   accessorFn: (row) => row.sekolah?.namaSekolah || "-",
@@ -314,9 +314,9 @@ export const studentColumnWithFilter = ({
                     "bg-slate-100 text-slate-700 border border-slate-200",
                 },
               };
-              
+
               const config = statusConfig[status as keyof typeof statusConfig];
-              
+
               return (
                 <div
                   className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${
@@ -350,33 +350,6 @@ export const studentColumnWithFilter = ({
           },
         ]
       : []),
-    //   {
-    //   accessorKey: "surveiApps",
-    //   header: () => <BaseTableHeader>Rating</BaseTableHeader>,
-    //   cell: ({ row }) => {
-    //     const surveiApps = row.original.user?.surveiApps || row.original.surveiApps;
-    //     if (surveiApps === null || surveiApps === undefined) {
-    //       return <span>-</span>;
-    //     }
-    //     const rating = Number(surveiApps);
-    //     if (isNaN(rating) || rating < 1 || rating > 5) {
-    //       return <span>-</span>;
-    //     }
-    //     return (
-    //       <div className="flex">
-    //         {[1, 2, 3, 4, 5].map((star) => (
-    //           <Star
-    //             key={star}
-    //             className={cn(
-    //               "h-4 w-4",
-    //               star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300 dark:text-gray-600"
-    //             )}
-    //           />
-    //         ))}
-    //       </div>
-    //     );
-    //   },
-    // },
     {
       accessorKey: "id",
       enableSorting: false,
@@ -384,8 +357,8 @@ export const studentColumnWithFilter = ({
       cell: ({ row }) => {
         const encryptPayload = simpleEncode(
           JSON.stringify({
-            id: row.original.idBiodataSiswa,
-            biodataId: row.original.id,
+            id: row.original.id,
+            // biodataId: row.original.id,
             text: row.original.name,
           }),
         );
@@ -476,7 +449,7 @@ export const studentLibraryColumnWithFilter = ({
       ),
       enableGlobalFilter: true,
       cell: ({ row }) => {
-        console.log("USER", row)
+        console.log("USER", row);
         const nameArr =
           (row.original.name || row.original.name)?.split(" ") || [];
         const initials =
@@ -624,6 +597,7 @@ export const tableColumnSiswa: ColumnDef<BiodataSiswa>[] = [
           text: row.original.user?.name,
         }),
       );
+      console.log("detailPath", `/students`);
       return (
         <div className="flex flex-row justify-end">
           <BaseActionTable

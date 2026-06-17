@@ -2,30 +2,18 @@ import {
   Button,
   Calendar,
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Input,
   lang,
 } from "@/core/libs";
 import { getStaticFile } from "@/core/utils";
 import { useAlert, useDataTableController } from "@/features/_global";
 import { useClassroom } from "@/features/classroom";
-import { useProfile } from "@/features/profile";
-import { useSchoolDetail } from "@/features/schools";
 import {
   checkAttendance,
   StudentTable,
   useAttedances,
 } from "@/features/student";
 
-import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import axios from "axios";
 import dayjs from "dayjs";
 import {
@@ -40,10 +28,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FaFileExcel, FaFilePdf, FaPlus } from "react-icons/fa";
 import { useStudentPagination } from "../hooks/use-student-pagination";
 import { ImportStudentDialog } from "../components/ImportStudentDialog";
-import { pdfStyles } from "../components/pdfStylles";
-import { generateAttendancePDF } from "../components/generateAttendancePDF";
-import { generateMonthlyAttendancePDF } from "../components/GenerateMonthlyAttendancePDF";
-import { Box } from "@mui/material";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateSiswaFormValues, createSiswaSchema } from "@/core/models";
 import { userService } from "@/core/services";
@@ -58,8 +43,7 @@ export const StudentLandingTables = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isGeneratingPDF, setGeneratingPDF] = useState(false);
-  const [attendanceResult, setAttendanceResult] = useState<any[]>([]);
-  const [profileSchoolId, setProfileSchoolId] = useState<number | null>(null);
+
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const alert = useAlert();
 
@@ -99,12 +83,12 @@ export const StudentLandingTables = () => {
   //   setProfileSchoolId(profile.user?.sekolahId || null);
   // }, [profile.user]);
 
-  const attedances =
-    profileSchoolId !== null
-      ? useAttedances({ id: profileSchoolId })
-      : useAttedances();
+  // const attedances =
+  //   profileSchoolId !== null
+  //     ? useAttedances({ id: profileSchoolId })
+  //     : useAttedances();
 
-  const idKelas = filter.find((f: any) => f.id === "idKelas")?.value;
+  // const idKelas = filter.find((f: any) => f.id === "idKelas")?.value;
 
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -217,14 +201,14 @@ export const StudentLandingTables = () => {
 
         if (response.data.success) {
           setSelectedFile(null);
-          await Promise.all([attedances.query.refetch(), refetch()]);
+          // await Promise.all([attedances.query.refetch(), refetch()]);
           alert.success(
             (formattedMessage && formattedMessage.toString()) ||
               "Data berhasil diimport",
           );
         } else {
           setSelectedFile(null);
-          await Promise.all([attedances.query.refetch(), refetch()]);
+          // await Promise.all([attedances.query.refetch(), refetch()]);
           alert.error(
             (formattedMessage && formattedMessage.toString()) ||
               "Data gagal diimport",

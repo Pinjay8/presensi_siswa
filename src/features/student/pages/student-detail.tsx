@@ -1,31 +1,31 @@
-import { APP_CONFIG } from '@/core/configs';
-import { buttonVariants, cn, lang } from '@/core/libs';
-import { DashboardPageLayout, useParamDecode } from '@/features/_global';
-import { Navigate, NavLink, Outlet } from 'react-router-dom';
-import { StudentInformation } from '../containers';
-import { STUDENT_SUBMENU } from '../utils';
+import { APP_CONFIG } from "@/core/configs";
+import { buttonVariants, cn, lang } from "@/core/libs";
+import { DashboardPageLayout, useParamDecode } from "@/features/_global";
+import { Navigate, NavLink, Outlet } from "react-router-dom";
+import { StudentInformation } from "../containers";
+import { STUDENT_SUBMENU } from "../utils";
 
 export const StudentDetail = () => {
   const { decodeParams, params } = useParamDecode();
 
-  if (!decodeParams?.id || !decodeParams?.text) {
+  if (!decodeParams?.id) {
     return <Navigate to="/404" replace />;
   }
 
   return (
     <DashboardPageLayout
-      siteTitle={`${lang.text('studentDetail')} | ${APP_CONFIG.appName}`}
+      siteTitle={`${lang.text("studentDetail")} | ${APP_CONFIG.appName}`}
       breadcrumbs={[
         {
-          label: lang.text('student'),
-          url: '/students',
+          label: lang.text("student"),
+          url: "/students",
         },
         {
           label: decodeParams?.text,
           url: `/students/${params.id}`,
         },
       ]}
-      title={lang.text('studentDetail')}
+      title={lang.text("studentDetail")}
       backButton
     >
       <div className="pb-4" />
@@ -39,8 +39,8 @@ export const StudentDetail = () => {
               end
               className={({ isActive }) => {
                 return cn(
-                  buttonVariants({ variant: isActive ? 'default' : 'outline' }),
-                  'mr-2',
+                  buttonVariants({ variant: isActive ? "default" : "outline" }),
+                  "mr-2",
                 );
               }}
             >

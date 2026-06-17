@@ -22,7 +22,7 @@ export const LangToggle = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="border rounded-md bg-white">
+        <Button variant="ghost" className="border rounded-md ">
           <ReactCountryFlag
             countryCode={currentLanguage?.countryCode || "ID"}
             svg

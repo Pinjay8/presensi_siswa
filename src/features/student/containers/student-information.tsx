@@ -54,8 +54,8 @@ export interface StudentInformationProps {}
 export const StudentInformation = () => {
   const { decodeParams } = useParamDecode();
   const navigate = useNavigate();
-  const detail = useStudentDetail({ id: decodeParams?.biodataId });
-  const userDetail = useUserDetail(decodeParams?.biodataId);
+  const detail = useStudentDetail({ id: decodeParams?.id });
+  const userDetail = useUserDetail(decodeParams?.id);
   const classroom = useClassroom();
   const creation = useUserCreation();
   const biodata = useBiodata();
@@ -73,11 +73,11 @@ export const StudentInformation = () => {
 
   // Validasi ID
   useEffect(() => {
-    if (!decodeParams?.id || !decodeParams?.biodataId) {
+    if (!decodeParams?.id) {
       alert.error("ID siswa atau biodata tidak valid");
       navigate("/students");
     }
-  }, [decodeParams?.id, decodeParams?.biodataId, alert, navigate]);
+  }, [decodeParams?.id, alert, navigate]);
 
   const form = useForm<z.infer<typeof studentEditSchema>>({
     resolver: zodResolver(studentEditSchema),
@@ -304,7 +304,7 @@ export const StudentInformation = () => {
       updatedData.kelasId = Number(data.kelasId);
       // console.log("Data yang dikirim saat submit:", updatedData);
 
-      await creation.update(decodeParams?.biodataId!, updatedData);
+      await creation.update(decodeParams?.id!, updatedData);
       setIsEditMode(false);
       alert.success(
         lang.text("successUpdate", { context: lang.text("student") }),
