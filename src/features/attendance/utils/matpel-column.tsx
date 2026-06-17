@@ -117,6 +117,18 @@ export const matpelColumns = (
     enableSorting: true,
   },
   {
+    accessorKey: "jamMulai",
+    header: lang.text("startHour"),
+    cell: ({ row }) => row.original.jamMulai || "-",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "jamSelesai",
+    header: lang.text("endHour"),
+    cell: ({ row }) => row.original.jamSelesai || "-",
+    enableSorting: true,
+  },
+  {
     accessorKey: "attendance.tanggal",
     header: lang.text("date"),
     cell: ({ row }) =>

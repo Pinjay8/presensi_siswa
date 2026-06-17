@@ -44,8 +44,8 @@ const letterUpdateFormSchema = z.object({
   }),
   dari: z.string().min(1, "Tanggal izin wajib diisi"),
   sampai: z.string().min(1, "Tanggal selesai izin wajib diisi"),
-  jamMulai: z.string().optional(),
-  jamSelesai: z.string().optional(),
+  // jamMulai: z.string().optional(),
+  // jamSelesai: z.string().optional(),
   siswaId: z.number(),
 });
 
@@ -67,8 +67,8 @@ export const LincensingCreationForm = () => {
       alasan: undefined,
       dari: "",
       sampai: "",
-      jamMulai: "",
-      jamSelesai: "",
+      // jamMulai: "",
+      // jamSelesai: "",
       siswaId: 0,
     },
   });
@@ -80,8 +80,8 @@ export const LincensingCreationForm = () => {
         alasan: undefined, // Explicitly reset alasan to undefined
         dari: "",
         sampai: "",
-        jamMulai: "",
-        jamSelesai: "",
+        // jamMulai: "",
+        // jamSelesai: "",
         siswaId: 0,
       });
     }
@@ -97,11 +97,11 @@ export const LincensingCreationForm = () => {
       formData.append("dari", data.dari);
       formData.append("sampai", data.sampai);
       formData.append("buktiSurat", data.buktiSurat);
-      const jamMulai = data?.jamMulai?.replace(":", ".") || "";
-      const jamSelesai = data?.jamSelesai?.replace(":", ".") || "";
+      // const jamMulai = data?.jamMulai?.replace(":", ".") || "";
+      // const jamSelesai = data?.jamSelesai?.replace(":", ".") || "";
 
-      formData.append("jamMulai", jamMulai);
-      formData.append("jamSelesai", jamSelesai);
+      // formData.append("jamMulai", jamMulai);
+      // formData.append("jamSelesai", jamSelesai);
 
       await dispensasiService.create(formData);
 
@@ -113,8 +113,8 @@ export const LincensingCreationForm = () => {
         alasan: undefined,
         dari: "",
         sampai: "",
-        jamMulai: "",
-        jamSelesai: "",
+        // jamMulai: "",
+        // jamSelesai: "",
         siswaId: 0,
       });
       navigate("/licensing", { replace: true });
@@ -346,7 +346,7 @@ export const LincensingCreationForm = () => {
                     />
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4 mt-0">
+                {/* <div className="flex flex-col sm:flex-row gap-4 mt-0">
                   <div className="basis-1 sm:basis-1/2">
                     <FormField
                       control={form.control}
@@ -378,7 +378,7 @@ export const LincensingCreationForm = () => {
                       )}
                     />
                   </div>
-                </div>
+                </div> */}
                 <FormField
                   control={form.control}
                   name="buktiSurat"
