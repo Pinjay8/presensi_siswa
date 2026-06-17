@@ -29,7 +29,6 @@ import { Autocomplete, TextField } from "@mui/material";
 // import { useSchool } from "@/features/schools";
 import {
   GENDER_OPTIONS,
-  STATUS_OPTIONS,
   useBiodata,
   useUserCreation,
   useUserDetail,
@@ -71,8 +70,8 @@ export const ParentCreationForm = () => {
       tanggalLahir: detail.data?.tanggalLahir || "",
       noTlp: detail.data?.noTlp || "",
       isActive: detail.data?.isActive || 0,
-      nis: Array.isArray(detail.data?.nis)
-        ? detail.data.nis
+      nis: Array.isArray((detail.data as any)?.orangTua)
+        ? (detail.data as any).orangTua.map((o: any) => o.biodataSiswa?.user?.nis || o.biodataSiswa?.nis).filter(Boolean)
         : typeof detail.data?.nis === "string"
         ? detail.data.nis.split(",").map((s: string) => s.trim()).filter(Boolean)
         : detail.data?.student?.user?.nis
@@ -96,7 +95,7 @@ export const ParentCreationForm = () => {
       // sekolahId: detail.data?.sekolahId || 0,
     },
   });
-
+// console.log("Form: ", form.getValues("nis"))
   async function onSubmit(data: z.infer<typeof parentEditSchema>) {
     try {
       const payload = {
