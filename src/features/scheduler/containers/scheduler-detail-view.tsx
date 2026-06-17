@@ -113,7 +113,7 @@ return (
     
     {/* Nama */}
     <div>
-      <label className="block text-xs font-semibold text-slate-700 mb-1">
+      <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">
         Nama Jadwal *
       </label>
 
@@ -125,9 +125,10 @@ return (
           w-full
           px-3 py-2
           rounded-xl
-          border border-slate-200
+          border border-slate-200 dark:border-zinc-800
           text-sm
-          bg-slate-50
+          bg-slate-50 dark:bg-zinc-900
+          text-slate-800 dark:text-zinc-200
           cursor-not-allowed
           focus:outline-none
         "
@@ -136,7 +137,7 @@ return (
 
     {/* Deskripsi */}
     <div>
-      <label className="block text-xs font-semibold text-slate-700 mb-1">
+      <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">
         Deskripsi
       </label>
 
@@ -149,10 +150,11 @@ return (
           w-full
           px-3 py-2
           rounded-xl
-          border border-slate-200
+          border border-slate-200 dark:border-zinc-800
           text-sm
           resize-none
-          bg-slate-50
+          bg-slate-50 dark:bg-zinc-900
+          text-slate-800 dark:text-zinc-200
           cursor-not-allowed
           focus:outline-none
         "
@@ -161,12 +163,12 @@ return (
 
     {/* Type */}
     <div>
-      <label className="block text-xs font-semibold text-slate-700 mb-2">
+      <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-2">
         Tipe Jadwal *
       </label>
 
       <div className="flex gap-4">
-        <label className="flex items-center gap-2 text-sm cursor-not-allowed">
+        <label className="flex items-center gap-2 text-sm text-slate-800 dark:text-zinc-200 cursor-not-allowed">
           <input
             type="radio"
             checked={scheduleType === "SISWA"}
@@ -176,7 +178,7 @@ return (
           Siswa
         </label>
 
-        <label className="flex items-center gap-2 text-sm cursor-not-allowed">
+        <label className="flex items-center gap-2 text-sm text-slate-800 dark:text-zinc-200 cursor-not-allowed">
           <input
             type="radio"
             checked={scheduleType === "GURU"}
@@ -189,7 +191,7 @@ return (
     </div>
 
     {/* Default */}
-    <label className="flex items-center gap-3 cursor-not-allowed">
+    <label className="flex items-center gap-3 text-slate-800 dark:text-zinc-200 cursor-not-allowed">
       <input
         type="checkbox"
         checked={isDefault}
@@ -198,11 +200,11 @@ return (
       />
 
       <div>
-        <div className="text-sm font-medium text-slate-700">
+        <div className="text-sm font-medium text-slate-700 dark:text-zinc-300">
           Jadikan sebagai jadwal default
         </div>
 
-        <div className="text-xs text-slate-400">
+        <div className="text-xs text-slate-400 dark:text-zinc-500">
           Digunakan otomatis ketika tidak ada jadwal khusus.
         </div>
       </div>
@@ -234,29 +236,29 @@ return (
                 className="
                   flex items-center justify-between
                   p-3 rounded-xl
-                  border border-slate-50
-                  bg-slate-50/30
-                  hover:bg-slate-50
+                  border border-slate-50 dark:border-zinc-900
+                  bg-slate-50/30 dark:bg-zinc-900/30
+                  hover:bg-slate-50 dark:hover:bg-zinc-900
                   transition-colors
                 "
               >
-                <span className="text-xs font-bold text-slate-600">
+                <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">
                   {dayName}
                 </span>
 
                 {hasStart || hasEnd ? (
                   <div className="flex flex-col items-end gap-0.5">
-                    <span className="text-[11px] font-semibold text-slate-700">
+                    <span className="text-[11px] font-semibold text-slate-700 dark:text-zinc-300">
                       {daySched.jamMasuk ?? "-"} -{" "}
                       {daySched.jamPulang ?? "-"}
                     </span>
 
-                    <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-green-50 text-green-600 uppercase tracking-wide">
+                    <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400 uppercase tracking-wide">
                       Tersimpan
                     </span>
                   </div>
                 ) : (
-                  <span className="text-[11px] font-medium text-slate-400 italic">
+                  <span className="text-[11px] font-medium text-slate-400 dark:text-zinc-500 italic">
                     Belum diatur
                   </span>
                 )}
@@ -296,7 +298,7 @@ const AccordionCard = ({
   children,
 }: AccordionCardProps) => {
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm">
+    <div className="bg-white dark:bg-zinc-950 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-sm">
       <button
         onClick={onToggle}
         className="
@@ -308,14 +310,14 @@ const AccordionCard = ({
         <div className="flex items-center gap-3">
           {icon}
 
-          <h3 className="font-bold text-slate-800 text-base">
+          <h3 className="font-bold text-slate-800 dark:text-zinc-100 text-base">
             {title}
           </h3>
         </div>
 
         <ChevronRight
           className={`
-            w-4 h-4 text-slate-500
+            w-4 h-4 text-slate-500 dark:text-zinc-400
             transition-transform duration-300
             ${open ? "rotate-90" : ""}
           `}

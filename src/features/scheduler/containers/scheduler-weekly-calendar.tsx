@@ -298,14 +298,14 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
   const tzLabel = "GMT+07";
 
   return (
-    <div className="flex flex-col h-[750px] bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden select-none relative">
+    <div className="flex flex-col h-[750px] bg-white dark:bg-zinc-950 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-sm overflow-hidden select-none relative">
       {/* Calendar Controls/Navigation */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-zinc-800 bg-white dark:bg-zinc-950">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
+          <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400">
             <CalendarDays className="w-5 h-5" />
           </div>
-          <h2 className="text-lg font-bold text-slate-800 tracking-tight">
+          <h2 className="text-lg font-bold text-slate-800 dark:text-zinc-100 tracking-tight">
             {getMonthYearLabel(currentDate)}
           </h2>
         </div>
@@ -314,29 +314,29 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
             {!readOnly && (
               <button
                 onClick={handleClearSchedule}
-                className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-100 active:scale-95 transition-all"
+                className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-slate-50 dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-100 dark:border-zinc-800 active:scale-95 transition-all"
               >
                 {lang.text('clear')}
               </button>
             )}
           <button
             onClick={handleToday}
-            className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-100 active:scale-95 transition-all"
+            className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-slate-50 dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-100 dark:border-zinc-800 active:scale-95 transition-all"
           >
             Hari Ini
           </button>
           
-          <div className="flex items-center rounded-lg border border-slate-100 bg-slate-50 p-0.5">
+          <div className="flex items-center rounded-lg border border-slate-100 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-900 p-0.5">
             <button
               onClick={handlePrevWeek}
-              className="p-1 rounded-md hover:bg-white text-slate-600 hover:text-slate-900 active:scale-90 transition-all"
+              className="p-1 rounded-md hover:bg-white dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 active:scale-90 transition-all"
               title="Minggu Sebelumnya"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={handleNextWeek}
-              className="p-1 rounded-md hover:bg-white text-slate-600 hover:text-slate-900 active:scale-90 transition-all"
+              className="p-1 rounded-md hover:bg-white dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 active:scale-90 transition-all"
               title="Minggu Berikutnya"
             >
               <ChevronRight className="w-4 h-4" />
@@ -346,10 +346,10 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
       </div>
 
       {/* Sticky Header Columns */}
-      <div className="flex border-b border-slate-100 bg-slate-50/50 flex-shrink-0">
+      <div className="flex border-b border-slate-100 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/30 flex-shrink-0">
         {/* Timezone header cell */}
-        <div className="w-20 flex-shrink-0 flex flex-col items-center justify-center border-r border-slate-100 text-[10px] font-bold text-slate-400 py-4">
-          <Clock className="w-3.5 h-3.5 mb-1 text-slate-400" />
+        <div className="w-20 flex-shrink-0 flex flex-col items-center justify-center border-r border-slate-100 dark:border-zinc-800 text-[10px] font-bold text-slate-400 dark:text-zinc-500 py-4">
+          <Clock className="w-3.5 h-3.5 mb-1 text-slate-400 dark:text-zinc-500" />
           {tzLabel}
         </div>
         
@@ -360,17 +360,17 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
             return (
               <div
                 key={idx}
-                className="flex flex-col items-center justify-center py-2.5 border-r border-slate-100 last:border-r-0"
+                className="flex flex-col items-center justify-center py-2.5 border-r border-slate-100 dark:border-zinc-800 last:border-r-0"
               >
                 <span className={`text-[10px] font-bold tracking-wider uppercase ${
-                  today ? "text-blue-600" : "text-slate-400"
+                  today ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-zinc-500"
                 }`}>
                   {DAY_NAMES[idx]}
                 </span>
                 <span className={`text-base font-bold mt-1 w-9 h-9 flex items-center justify-center rounded-full transition-colors ${
                   today 
-                    ? "bg-blue-600 text-white shadow-md shadow-blue-100" 
-                    : "text-slate-700"
+                    ? "bg-blue-600 text-white shadow-md shadow-blue-100 dark:shadow-none" 
+                    : "text-slate-700 dark:text-zinc-300"
                 }`}>
                   {date.getDate()}
                 </span>
@@ -383,16 +383,16 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
       {/* Scrollable grid area */}
       <div 
         ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto relative bg-white"
+        className="flex-1 overflow-y-auto relative bg-white dark:bg-zinc-950"
         style={{ scrollBehavior: "smooth" }}
       >
         <div className="flex relative min-h-[1440px]">
           {/* Left sticky/scrollable hours column */}
-          <div className="w-20 flex-shrink-0 relative border-r border-slate-100 bg-white z-10">
+          <div className="w-20 flex-shrink-0 relative border-r border-slate-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 z-10">
             {hoursArray.slice(1).map((h) => (
               <span
                 key={h}
-                className="absolute right-2.5 text-[10px] font-bold text-slate-400/80 -translate-y-1/2 select-none"
+                className="absolute right-2.5 text-[10px] font-bold text-slate-400/80 dark:text-zinc-500/80 -translate-y-1/2 select-none"
                 style={{ top: `${h * 60}px` }}
               >
                 {formatHour(h)}
@@ -406,7 +406,7 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
             {hoursArray.map((h) => (
               <div
                 key={h}
-                className="absolute left-0 right-0 border-b border-slate-100 pointer-events-none"
+                className="absolute left-0 right-0 border-b border-slate-100 dark:border-zinc-900 pointer-events-none"
                 style={{ top: `${h * 60}px`, height: "1px" }}
               />
             ))}
@@ -418,7 +418,7 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
               return (
                 <div 
                   key={dayIdx} 
-                  className="relative h-full border-r border-slate-100 last:border-r-0 bg-slate-50/5"
+                  className="relative h-full border-r border-slate-100 dark:border-zinc-900 last:border-r-0 bg-slate-50/5"
                 >
                   {/* Clickable transparent hour slots and schedules rendered in place */}
                   {hoursArray.map((h) => {
@@ -438,7 +438,7 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
                           <div
                             onClick={readOnly ? undefined : (e) => handleCellClick(e, dayIdx, h, null)}
                             className={`w-full h-full transition-colors ${
-                              readOnly ? "" : "cursor-pointer hover:bg-blue-50/30 active:bg-blue-50/60"
+                              readOnly ? "" : "cursor-pointer hover:bg-blue-50/30 dark:hover:bg-blue-900/10 active:bg-blue-50/60 dark:active:bg-blue-900/20"
                             }`}
                           />
                         )}
@@ -447,15 +447,15 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
                         {role === "both" && start !== null && end !== null && (
                           <div
                             onClick={readOnly ? undefined : (e) => handleCellClick(e, dayIdx, h, "middle")}
-                            className={`absolute inset-x-1 inset-y-0.5 rounded-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-b border-r border-blue-200/50 ${
-                              readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 hover:shadow"
+                            className={`absolute inset-x-1 inset-y-0.5 rounded-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 dark:from-blue-950/40 dark:to-indigo-950/30 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-b border-r border-blue-200/50 dark:border-blue-900/40 ${
+                              readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/20 hover:shadow"
                             }`}
                           >
                             <div className="flex flex-col gap-0.5">
-                              <span className="text-[7px] font-bold text-emerald-600 tracking-wide uppercase leading-none">
+                              <span className="text-[7px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wide uppercase leading-none">
                                 Mulai: {formatHour(start)}
                               </span>
-                              <span className="text-[7px] font-bold text-amber-600 tracking-wide uppercase leading-none mt-1">
+                              <span className="text-[7px] font-bold text-amber-600 dark:text-amber-400 tracking-wide uppercase leading-none mt-1">
                                 Selesai: {formatHour(end)}
                               </span>
                             </div>
@@ -468,22 +468,22 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
                           const endSlot = end !== null ? end - 1 : null;
                           const isTop = !isSingle && endSlot !== null && start < endSlot;
                           const cardClass = isSingle
-                            ? `absolute inset-x-1 inset-y-0.5 rounded-xl border-l-[4px] border-emerald-500 bg-gradient-to-r from-emerald-50 to-teal-50 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-b border-r border-emerald-200/50 ${
-                                readOnly ? "cursor-default" : "cursor-pointer hover:from-emerald-100 hover:to-teal-100 hover:shadow"
+                            ? `absolute inset-x-1 inset-y-0.5 rounded-xl border-l-[4px] border-emerald-500 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/35 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-b border-r border-emerald-200/50 dark:border-emerald-900/40 ${
+                                readOnly ? "cursor-default" : "cursor-pointer hover:from-emerald-100 hover:to-teal-100 dark:hover:from-emerald-900/30 dark:hover:to-teal-900/20 hover:shadow"
                               }`
                             : isTop
-                              ? `absolute inset-x-1 bottom-0 top-0 rounded-t-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-r border-blue-200/40 ${
-                                  readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 hover:shadow"
+                              ? `absolute inset-x-1 bottom-0 top-0 rounded-t-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 dark:from-blue-950/40 dark:to-indigo-950/35 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-r border-blue-200/40 dark:border-blue-900/40 ${
+                                  readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/20 hover:shadow"
                                 }`
-                              : `absolute inset-x-1 bottom-0 top-0 rounded-b-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-b border-r border-blue-200/40 ${
-                                  readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 hover:shadow"
+                              : `absolute inset-x-1 bottom-0 top-0 rounded-b-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 dark:from-blue-950/40 dark:to-indigo-950/35 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-b border-r border-blue-200/40 dark:border-blue-900/40 ${
+                                  readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/20 hover:shadow"
                                 }`;
                           const labelClass = isSingle
-                            ? "text-[8px] font-bold text-emerald-800 tracking-wide uppercase"
-                            : "text-[8px] font-bold text-emerald-600 tracking-wide uppercase";
+                            ? "text-[8px] font-bold text-emerald-800 dark:text-emerald-300 tracking-wide uppercase"
+                            : "text-[8px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wide uppercase";
                           const timeClass = isSingle
-                            ? "text-[10px] text-emerald-600 font-bold mt-0.5 leading-none"
-                            : "text-[10px] text-blue-600 font-bold mt-0.5 leading-none";
+                            ? "text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-0.5 leading-none"
+                            : "text-[10px] text-blue-600 dark:text-blue-400 font-bold mt-0.5 leading-none";
 
                           return (
                             <div
@@ -506,22 +506,22 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
                           const endSlot = end - 1;
                           const isTop = !isSingle && endSlot < start;
                           const cardClass = isSingle
-                            ? `absolute inset-x-1 inset-y-0.5 rounded-xl border-l-[4px] border-amber-500 bg-gradient-to-r from-amber-50 to-orange-50 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-b border-r border-amber-200/50 ${
-                                readOnly ? "cursor-default" : "cursor-pointer hover:from-amber-100 hover:to-orange-100 hover:shadow"
+                            ? `absolute inset-x-1 inset-y-0.5 rounded-xl border-l-[4px] border-amber-500 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/35 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-b border-r border-amber-200/50 dark:border-amber-900/40 ${
+                                readOnly ? "cursor-default" : "cursor-pointer hover:from-amber-100 hover:to-orange-100 dark:hover:from-amber-900/30 dark:hover:to-orange-900/20 hover:shadow"
                               }`
                             : isTop
-                              ? `absolute inset-x-1 bottom-0 top-0 rounded-t-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-r border-blue-200/40 ${
-                                  readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 hover:shadow"
+                              ? `absolute inset-x-1 bottom-0 top-0 rounded-t-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 dark:from-blue-950/40 dark:to-indigo-950/35 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-t border-r border-blue-200/40 dark:border-blue-900/40 ${
+                                  readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/20 hover:shadow"
                                 }`
-                              : `absolute inset-x-1 bottom-0 top-0 rounded-b-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-b border-r border-blue-200/40 ${
-                                  readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 hover:shadow"
+                              : `absolute inset-x-1 bottom-0 top-0 rounded-b-xl border-l-[4px] border-blue-500 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 dark:from-blue-950/40 dark:to-indigo-950/35 shadow-sm p-1.5 flex flex-col justify-center overflow-hidden z-10 select-none border-b border-r border-blue-200/40 dark:border-blue-900/40 ${
+                                  readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/20 hover:shadow"
                                 }`;
                           const labelClass = isSingle
-                            ? "text-[8px] font-bold text-amber-800 tracking-wide uppercase"
-                            : "text-[8px] font-bold text-amber-600 tracking-wide uppercase";
+                            ? "text-[8px] font-bold text-amber-800 dark:text-amber-300 tracking-wide uppercase"
+                            : "text-[8px] font-bold text-amber-600 dark:text-amber-400 tracking-wide uppercase";
                           const timeClass = isSingle
-                            ? "text-[10px] text-amber-600 font-bold mt-0.5 leading-none"
-                            : "text-[10px] text-blue-600 font-bold mt-0.5 leading-none";
+                            ? "text-[10px] text-amber-600 dark:text-amber-400 font-bold mt-0.5 leading-none"
+                            : "text-[10px] text-blue-600 dark:text-blue-400 font-bold mt-0.5 leading-none";
 
                           return (
                             <div
@@ -542,8 +542,8 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
                         {role === "middle" && (
                           <div
                             onClick={readOnly ? undefined : (e) => handleCellClick(e, dayIdx, h, "middle")}
-                            className={`absolute inset-x-1 bottom-0 top-0 border-l-[4px] border-blue-500 border-r border-blue-200/30 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 p-1.5 flex flex-col justify-center items-center select-none z-10 ${
-                              readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100"
+                            className={`absolute inset-x-1 bottom-0 top-0 border-l-[4px] border-blue-500 border-r border-blue-200/30 dark:border-blue-900/20 bg-gradient-to-r from-blue-50/95 to-indigo-50/90 dark:from-blue-950/40 dark:to-indigo-950/30 p-1.5 flex flex-col justify-center items-center select-none z-10 ${
+                              readOnly ? "cursor-default" : "cursor-pointer hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/20"
                             }`}
                           >
                           </div>
@@ -572,31 +572,20 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
       {/* Floating Action Menu (Context Popover) */}
       {menuState.visible && (
         <div
-          className="fixed bg-white/95 backdrop-blur-md border border-slate-100 shadow-xl rounded-xl p-1.5 min-w-[170px] z-[9999] animate-in fade-in zoom-in-95 duration-100 pointer-events-auto"
+          className="fixed bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-slate-100 dark:border-zinc-800 shadow-xl rounded-xl p-1.5 min-w-[170px] z-[9999] animate-in fade-in zoom-in-95 duration-100 pointer-events-auto"
           style={{
             top: `${Math.min(window.innerHeight - 200, menuState.y)}px`,
             left: `${Math.min(window.innerWidth - 190, menuState.x)}px`,
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* <div className="px-3 py-1.5 border-b border-slate-100/60 mb-1 flex items-center justify-between">
-            <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase">
-              Slot: {menuState.hour !== null ? formatHour(menuState.hour) : ""}
-            </span>
-            <button 
-              onClick={closeMenu}
-              className="p-0.5 rounded-md hover:bg-slate-100 text-slate-400 hover:text-slate-600"
-            >
-              <X className="w-3 h-3" />
-            </button>
-          </div> */}
-<div className="px-3 py-1.5 border-b border-slate-100/60 mb-1 flex items-center justify-between">
-  <span className="text-[10px] font-bold text-slate-400">
+<div className="px-3 py-1.5 border-b border-slate-100/60 dark:border-zinc-800 mb-1 flex items-center justify-between">
+  <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-500">
     {menuState.hour !== null ? formatHour(menuState.hour) : ""}
   </span>
   <button 
               onClick={closeMenu}
-              className="p-0.5 rounded-md hover:bg-slate-100 text-slate-400 hover:text-slate-600"
+              className="p-0.5 rounded-md hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-400 dark:text-zinc-500 hover:text-slate-600 dark:hover:text-zinc-300"
             >
               <X className="w-3 h-3" />
             </button>
@@ -606,32 +595,32 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
             <div className="flex flex-col gap-0.5">
 <button
   onClick={setStartHour}
-  className="w-full text-left px-3 py-2 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors flex items-start gap-2"
+  className="w-full text-left px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-700 dark:hover:text-blue-400 rounded-lg transition-colors flex items-start gap-2"
 >
   <Play className="w-3.5 h-3.5 text-blue-500 mt-0.5" />
 
   <div className="flex flex-col">
-    <span className="text-xs font-semibold">
+    <span className="text-xs font-semibold text-slate-700 dark:text-zinc-200">
       Atur Jam Mulai
     </span>
 
-    <span className="text-[10px] text-slate-500">
+    <span className="text-[10px] text-slate-500 dark:text-zinc-500">
       {menuState.hour !== null ? formatHour(menuState.hour) : "-"}
     </span>
   </div>
 </button>
 <button
   onClick={setEndHour}
-  className="w-full text-left px-3 py-2 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition-colors flex items-start gap-2"
+  className="w-full text-left px-3 py-2 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:text-indigo-700 dark:hover:text-indigo-400 rounded-lg transition-colors flex items-start gap-2"
 >
   <Clock className="w-3.5 h-3.5 text-indigo-500 mt-0.5" />
 
   <div className="flex flex-col">
-    <span className="text-xs font-semibold">
+    <span className="text-xs font-semibold text-slate-700 dark:text-zinc-200">
       Atur Jam Selesai
     </span>
 
-    <span className="text-[10px] text-slate-500">
+    <span className="text-[10px] text-slate-500 dark:text-zinc-500">
       {menuState.hour !== null
         ? formatHour((menuState.hour + 1) % 24)
         : "-"}
@@ -640,9 +629,9 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
 </button>
               <button
                 onClick={closeMenu}
-                className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-500 hover:bg-slate-50 rounded-lg transition-colors flex items-center gap-2 border-t border-slate-50/50 mt-1 pt-1.5"
+                className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800 rounded-lg transition-colors flex items-center gap-2 border-t border-slate-50/50 dark:border-zinc-800 mt-1 pt-1.5"
               >
-                <X className="w-3.5 h-3.5 text-slate-400" />
+                <X className="w-3.5 h-3.5 text-slate-400 dark:text-zinc-500" />
                 Batal
               </button>
             </div>
@@ -650,30 +639,30 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
             <div className="flex flex-col gap-0.5">
               <button
                 onClick={setStartHour}
-                className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors flex items-center gap-2"
+                className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-700 dark:hover:text-blue-400 rounded-lg transition-colors flex items-center gap-2"
               >
                 <Play className="w-3.5 h-3.5 text-blue-500" />
                 Atur Jam Mulai
               </button>
               <button
                 onClick={setEndHour}
-                className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-lg transition-colors flex items-center gap-2"
+                className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:text-indigo-700 dark:hover:text-indigo-400 rounded-lg transition-colors flex items-center gap-2"
               >
                 <Clock className="w-3.5 h-3.5 text-indigo-500" />
                 Atur Jam Selesai
               </button>
               <button
                 onClick={removeHour}
-                className="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2 border-t border-slate-100/60 mt-1 pt-1.5"
+                className="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-colors flex items-center gap-2 border-t border-slate-100/60 dark:border-zinc-800 mt-1 pt-1.5"
               >
                 <Trash2 className="w-3.5 h-3.5 text-red-500" />
                 Hapus Jadwal
               </button>
               <button
                 onClick={closeMenu}
-                className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-500 hover:bg-slate-50 rounded-lg transition-colors flex items-center gap-2"
+                className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800 rounded-lg transition-colors flex items-center gap-2"
               >
-                <X className="w-3.5 h-3.5 text-slate-400" />
+                <X className="w-3.5 h-3.5 text-slate-400 dark:text-zinc-500" />
                 Batal
               </button>
             </div>
@@ -681,16 +670,16 @@ export const SchedulerWeeklyCalendar: React.FC<SchedulerWeeklyCalendarProps> = (
             <div className="flex flex-col gap-0.5">
               <button
                 onClick={removeHour}
-                className="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2"
+                className="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-colors flex items-center gap-2"
               >
                 <Trash2 className="w-3.5 h-3.5 text-red-500" />
                 Hapus
               </button>
               <button
                 onClick={closeMenu}
-                className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-500 hover:bg-slate-50 rounded-lg transition-colors flex items-center gap-2"
+                className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800 rounded-lg transition-colors flex items-center gap-2"
               >
-                <X className="w-3.5 h-3.5 text-slate-400" />
+                <X className="w-3.5 h-3.5 text-slate-400 dark:text-zinc-500" />
                 Batal
               </button>
             </div>
