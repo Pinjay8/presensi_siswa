@@ -20,13 +20,9 @@ export const ClassroomInformation = (props: ClassroomInformationProps) => {
   const student = useBiodata();
 
   const students = student.data?.filter((d) => {
-    const studentSchoolId = Number(d?.user?.sekolah?.id);
     const studentClassroomId = Number(d?.kelas?.id);
 
-    return (
-      studentSchoolId === Number(detail.data?.sekolahId) &&
-      studentClassroomId === Number(props?.id)
-    );
+    return studentClassroomId === Number(props?.id);
   });
 
   return (

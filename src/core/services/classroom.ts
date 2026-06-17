@@ -47,4 +47,29 @@ export const classroomService = {
       getInitialOptions,
     )(data, { path: String(id) });
   },
+  getStudents: (
+    id: number,
+    params?: {
+      page?: number;
+      limit?: number;
+      search?: string;
+    },
+  ) => {
+    const searchParams = new URLSearchParams();
+
+    if (params?.page) searchParams.append("page", String(params.page));
+
+    if (params?.limit) searchParams.append("limit", String(params.limit));
+
+    if (params?.search) searchParams.append("search", params.search);
+
+    return http.get<BaseResponse<any[]>>(
+      `${API_CONFIG.baseUrl}${
+        SERVICE_ENDPOINTS.classroom.classroom
+      }/${id}/siswa${
+        searchParams.toString() ? `?${searchParams.toString()}` : ""
+      }`,
+      getInitialOptions,
+    )();
+  },
 };
