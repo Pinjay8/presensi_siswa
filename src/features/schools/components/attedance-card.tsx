@@ -294,8 +294,8 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({
                   <span>{value}</span>
                   {subTitle && (
                     <Typography
-                      className="text-md text-muted-foreground"
-                      sx={{ fontWeight: "semibold" }}
+                      className="text-md font-semibold"
+                      sx={{ fontWeight: "bold" }}
                     >
                       {subTitle}
                     </Typography>

@@ -1,5 +1,9 @@
 import { distinctObjectsByProperty, lang } from "@/core/libs";
-import { BaseDataTable, useAlert } from "@/features/_global";
+import {
+  BaseDataTable,
+  useAlert,
+  useDataTableController,
+} from "@/features/_global";
 import { useClassroom } from "@/features/classroom";
 import {
   courseColumns,
@@ -16,8 +20,20 @@ import { useProfile } from "@/features/profile";
 import { FaPlus } from "react-icons/fa";
 import { useUserCreation } from "@/features/user";
 import { DeleteDialog } from "@/features/cards/components/DeleteCardDialog";
+import { Divider } from "@mui/material";
 
 export const CourseTable = () => {
+  const {
+    global,
+    sorting,
+    filter,
+    pagination,
+    onSortingChange,
+    onPaginationChange,
+  } = useDataTableController({
+    defaultPageSize: 10,
+  });
+
   const resource = useCourse();
   const school = useSchool();
   const classroom = useClassroom();
@@ -32,7 +48,8 @@ export const CourseTable = () => {
     profile?.user?.role === "guru" ||
     profile?.user?.role === "siswa" ||
     profile?.user?.role === "orangTua";
-  const isAdmin = profile?.user?.role === "admin" || profile?.user?.role === "superAdmin";
+  const isAdmin =
+    profile?.user?.role === "admin" || profile?.user?.role === "superAdmin";
 
   const handleOpenDeleteDialog = (parent: any) => {
     setSelectedCourse(parent);
@@ -56,8 +73,8 @@ export const CourseTable = () => {
     () =>
       courseColumns({
         isAdmin,
-        onEdit: (course) => setEditCourse(course),
-        onDelete: (course) => handleOpenDeleteDialog(course),
+        onEdit: (course: any) => setEditCourse(course),
+        onDelete: (course: any) => handleOpenDeleteDialog(course),
       }),
     [school.data, classroom.data],
   );
@@ -76,15 +93,18 @@ export const CourseTable = () => {
       <Dialog open={!!editCourse} onOpenChange={() => setEditCourse(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{lang.text("editCourse")}</DialogTitle>
+            <DialogTitle style={{ marginTop: "15px" }}>
+              {lang.text("editCourse")}
+            </DialogTitle>
           </DialogHeader>
+          <Divider />
           {editCourse && (
             <CourseCreationForm
               onClose={() => setEditCourse(null)}
               initialData={{
                 id: editCourse.id,
                 namaMataPelajaran: editCourse.namaMataPelajaran,
-                kelasId: editCourse.kelas?.id,
+                // kelasId: editCourse.kelas?.id,
               }}
             />
           )}

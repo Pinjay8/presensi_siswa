@@ -21,6 +21,7 @@ import {
   TableRow,
   Checkbox,
 } from "@/core/libs";
+import { Divider } from "@mui/material";
 type EditScheduleDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -73,11 +74,12 @@ export function EditScheduleDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DialogHeader>
+        <DialogHeader style={{ marginTop: "15px" }}>
           <DialogTitle>Edit Jadwal - {selectedDay}</DialogTitle>
         </DialogHeader>
 
-        <div className="grid gap-4 py-4">
+        <Divider />
+        <div className="grid gap-4 pb-4">
           <div className="grid gap-2">
             <label>Mata Pelajaran</label>
 

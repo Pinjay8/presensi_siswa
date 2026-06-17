@@ -97,12 +97,12 @@ export const EkstrakurikulerDetail = () => {
     limit: pagination.pageSize,
   });
 
-  const rekapBulananResource = useRekapBulanan({
-    id: Number(decodeParams.id),
-  });
+  // const rekapBulananResource = useRekapBulanan({
+  //   id: Number(decodeParams.id),
+  // });
 
   const columnsAbsensi = useMemo(() => absensiEkstrakurikulerColumns({}), []);
-  const columnsRekapBulanan = useMemo(() => rekapBulananColumns({}), []);
+  // const columnsRekapBulanan = useMemo(() => rekapBulananColumns({}), []);
   const days = [
     { value: 1, label: "Senin" },
     { value: 2, label: "Selasa" },
@@ -173,9 +173,9 @@ export const EkstrakurikulerDetail = () => {
 
             <TabsTrigger value="member">{lang.text("listMember")}</TabsTrigger>
             <TabsTrigger value="absent">{lang.text("absensi")}</TabsTrigger>
-            <TabsTrigger value="rekapBulanan">
+            {/* <TabsTrigger value="rekapBulanan">
               {lang.text("rekapBulanan")}
-            </TabsTrigger>
+            </TabsTrigger> */}
           </TabsList>
 
           <TabsContent value="schedule">
@@ -288,7 +288,7 @@ export const EkstrakurikulerDetail = () => {
               ]}
             />
           </TabsContent>
-          <TabsContent value="rekapBulanan">
+          {/* <TabsContent value="rekapBulanan">
             <BaseDataTable
               columns={columnsRekapBulanan}
               data={rekapBulananResource.data}
@@ -299,7 +299,7 @@ export const EkstrakurikulerDetail = () => {
               // rowCount={absensiSource?.pagination?.total ?? 0}
               searchPlaceholder={lang.text("search")}
             />
-          </TabsContent>
+          </TabsContent> */}
         </Tabs>
 
         {/* <Divider sx={{ my: 2 }} /> */}

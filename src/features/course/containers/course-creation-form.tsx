@@ -76,8 +76,8 @@ export const CourseCreationForm = ({
     resolver: zodResolver(courseCreateSchema),
     defaultValues: {
       courseName: initialData?.namaMataPelajaran || "",
-      school: initialData?.sekolahId || profile?.user?.sekolahId || 0,
-      classroom: initialData?.kelasId || 0,
+      // school: initialData?.sekolahId || profile?.user?.sekolahId || 0,
+      // classroom: initialData?.kelasId || 0,
       // tipe: initialData?.tipe || "",
     },
   });
@@ -102,14 +102,14 @@ export const CourseCreationForm = ({
       if (isEdit) {
         await creation.update(Number(initialData?.id), {
           namaMataPelajaran: data.courseName,
-          kelasId: Number(data.classroom), // Include kelasId in update
+          // kelasId: Number(data.classroom), // Include kelasId in update
           // tipe: data.tipe,
         });
       } else {
         await creation.create({
           namaMataPelajaran: data.courseName,
           // sekolahId: data.school,
-          kelasId: Number(data.classroom),
+          // kelasId: Number(data.classroom),
           // tipe: data.tipe,
         });
       }
@@ -375,7 +375,7 @@ export const CourseCreationForm = ({
                   />
                 </div>
               </div> */}
-              <div className="flex flex-col gap-4 mt-2">
+              {/* <div className="flex flex-col gap-4 mt-2">
                 <div className="basis-1">
                   <FormField
                     control={form.control}
@@ -407,7 +407,7 @@ export const CourseCreationForm = ({
                     )}
                   />
                 </div>
-              </div>
+              </div> */}
               <div className="py-4">
                 <Button
                   // disabled={

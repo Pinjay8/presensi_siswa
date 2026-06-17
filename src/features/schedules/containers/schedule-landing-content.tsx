@@ -28,6 +28,7 @@ import { useBiodataGuru } from "@/features/user";
 import { useRef, useState, useEffect, useMemo } from "react";
 import { useScheduleCreation, useSchedules } from "../hooks";
 import {
+  ChevronDown,
   CircleSlashIcon,
   Divide,
   Download,
@@ -182,11 +183,11 @@ export function ScheduleLandingContent() {
       ) || [];
 
     // When adding a schedule, further filter by selectedKelasIdForAdd
-    if (isAddModalOpen && selectedKelasIdForAdd !== 0) {
-      filtered = filtered.filter(
-        (course: any) => course.kelasId === selectedKelasIdForAdd,
-      );
-    }
+    // if (isAddModalOpen && selectedKelasIdForAdd !== 0) {
+    //   filtered = filtered.filter(
+    //     (course: any) => course.kelasId === selectedKelasIdForAdd,
+    //   );
+    // }
 
     return filtered;
   }, [courses?.data, searchCourse, isAddModalOpen, selectedKelasIdForAdd]);
@@ -746,23 +747,24 @@ export function ScheduleLandingContent() {
           {!isRoleSiswa && !isRoleGuru && (
             <div className="flex gap-2">
               <Button variant="outline" onClick={openAddModal}>
-                {lang.text("addNewSchedule")} <Plus />
+                <Plus /> {lang.text("addNewSchedule")}
               </Button>
               <div className="mx-2 h-[36px] py-1 flex items-center justify-center">
                 <p>atau</p>
               </div>
               <Button
-                className="text-green-300 border border-green-700"
-                variant="outline"
+                className="text-white bg-green-500"
+                // variant="destructive"
                 onClick={handleDownloadTemplate}
               >
-                Unduh Template Excel <Download />
+                <Download /> Unduh Template Excel
               </Button>
               <Button
                 variant="outline"
+                className="border-md border-green-500"
                 onClick={() => setIsUploadModalOpen(true)}
               >
-                Unggah Excel <UploadCloud />
+                <UploadCloud /> Unggah Excel
               </Button>
             </div>
           )}
@@ -795,7 +797,9 @@ export function ScheduleLandingContent() {
                 : selectedDays.length === 0
                   ? lang.text("selectDays")
                   : selectedDays.join(", ")}
-              <span>▼</span>
+              <span>
+                <ChevronDown />
+              </span>
             </Button>
             <Badge variant="outline" className="py-2.5">
               <span>{lang.text("sumClassroom")}:</span>

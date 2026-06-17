@@ -125,16 +125,10 @@ export function AddScheduleDialog({
               onValueChange={(value) =>
                 setFormData({ ...formData, mataPelajaranId: parseInt(value) })
               }
-              disabled={selectedKelasIdForAdd === 0}
+              // disabled={selectedKelasIdForAdd === 0}
             >
               <SelectTrigger>
-                <SelectValue
-                  placeholder={
-                    selectedKelasIdForAdd === 0
-                      ? "Pilih kelas terlebih dahulu"
-                      : "Pilih Mata Pelajaran"
-                  }
-                />
+                <SelectValue placeholder={"Pilih Mata Pelajaran"} />
               </SelectTrigger>
               <SelectContent className="px-2">
                 <div className="py-1 mb-2">

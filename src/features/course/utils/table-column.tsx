@@ -131,25 +131,25 @@ export const courseColumns = ({
       },
     },
 
-    {
-      accessorKey: "kelas",
-      accessorFn: (row) => row.kelas?.namaKelas,
-      header: ({ column }) => {
-        return (
-          <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {lang.text("className")}
-          </BaseTableHeader>
-        );
-      },
-      // meta: {
-      //   filterLabel: lang.text("className"),
-      //   filterPlaceholder: lang.text("selectClassRoom"),
-      //   filterVariant: "select",
-      //   filterOptions: schoolOptions,
-      // },
-    },
+    // {
+    //   accessorKey: "kelas",
+    //   accessorFn: (row) => row.kelas?.namaKelas,
+    //   header: ({ column }) => {
+    //     return (
+    //       <BaseTableHeader
+    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //       >
+    //         {lang.text("className")}
+    //       </BaseTableHeader>
+    //     );
+    //   },
+    //   // meta: {
+    //   //   filterLabel: lang.text("className"),
+    //   //   filterPlaceholder: lang.text("selectClassRoom"),
+    //   //   filterVariant: "select",
+    //   //   filterOptions: schoolOptions,
+    //   // },
+    // },
   ];
 
   if (isAdmin) {

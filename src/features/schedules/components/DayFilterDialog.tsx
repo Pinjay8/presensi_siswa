@@ -6,7 +6,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  lang,
 } from "@/core/libs";
+import { Divider } from "@mui/material";
 
 type DayFilterDialogProps = {
   open: boolean;
@@ -30,10 +32,10 @@ export function DayFilterDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Pilih Hari</DialogTitle>
+        <DialogHeader style={{ marginTop: "15px" }}>
+          <DialogTitle>{lang.text("selectDays")}</DialogTitle>
         </DialogHeader>
-
+        <Divider />
         <div className="grid gap-4 py-4">
           <div className="flex items-center gap-2">
             <Checkbox
@@ -56,9 +58,9 @@ export function DayFilterDialog({
           ))}
         </div>
 
-        <DialogFooter>
+        {/* <DialogFooter>
           <Button onClick={() => onOpenChange(false)}>Tutup</Button>
-        </DialogFooter>
+        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );
