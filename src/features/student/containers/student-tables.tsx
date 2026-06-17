@@ -84,7 +84,11 @@ export const StudentLandingTables = () => {
   );
 
   const { data, isLoading, refetch } = useStudentPagination(studentParams);
-
+    const profile = useProfile();
+    const canEdit =
+      profile?.user?.role === "admin" ||
+      profile?.user?.role === "superAdmin";
+  
   // const profile = useProfile();
   const classRoom = useClassroom();
   // const sekolahId =
@@ -379,7 +383,8 @@ export const StudentLandingTables = () => {
     <>
       <div className="flex justify-between items-center pb-4">
         <div className="w-full flex justify-between lg:flex-nowrap flex-wrap gap-2">
-          <div className="flex w-max gap-2 items-center">
+          {canEdit && (
+                      <div className="flex w-max gap-2 items-center">
             <Button
               className="hidden"
               variant="outline"
@@ -418,6 +423,7 @@ export const StudentLandingTables = () => {
               {lang.text("createStudents")}
             </Button>
           </div>
+          )}
           <div className="flex items-center space-x-2">
             <div className="flex justify-between items-center pb-0 gap-4">
               <Button

@@ -20,6 +20,7 @@ import AssignCardDialog from "../components/AsssignCardDialog";
 import UnassignCardDialog from "../components/UnassignCardDialog";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useUserCreation } from "@/features/user/hooks";
+import { useProfile } from "@/features/profile";
 
 interface StudentTableProps {
   data: any;
@@ -68,6 +69,12 @@ export function StudentTable({
 
   const userCards = selectedUser?.kartus || [];
 
+    const profile = useProfile();
+    const canEdit =
+      profile?.user?.role === "admin" ||
+      profile?.user?.role === "superAdmin";
+  
+
   const handleOpenRegisterFace = (student: any) => {
     setSelectedStudent(student);
     setOpenRegisterFace(true);
@@ -113,8 +120,9 @@ export function StudentTable({
         onAssignCard: handleOpenAssignCard,
         unAssignCard: handleOpenUnassignCard,
         onDelete: handleOpenDeleteDialog,
+        canEdit,
       }),
-    [schoolOptions, classroomOptions],
+    [schoolOptions, classroomOptions, canEdit],
   );
 
   const [openAssignCard, setOpenAssignCard] = useState(false);

@@ -123,6 +123,7 @@ export const studentColumnWithFilter = ({
   onAssignCard,
   unAssignCard,
   onDelete,
+  canEdit,
 }: {
   schoolOptions?: { label: string; value: string | number }[];
   classroomOptions?: { label: string; value: string | number }[];
@@ -132,6 +133,7 @@ export const studentColumnWithFilter = ({
   onAssignCard?: any;
   unAssignCard?: any;
   onDelete?: (row: any) => void;
+  canEdit: boolean;
 }): ColumnDef<any>[] => {
   // const MemoizedFormRfid = React.memo(FormRfid);
   // const queryClient = useQueryClient();
@@ -329,25 +331,27 @@ export const studentColumnWithFilter = ({
               );
             },
           },
-          {
-            accessorKey: "absen",
-            header: () => <BaseTableHeader>Absen</BaseTableHeader>,
-            cell: ({ row }: any) => (
-              <Button
-                onClick={() => {
-                  if (handleAttend) {
-                    handleAttend(row.original?.id);
+          ...(canEdit ? [
+            {
+              accessorKey: "absen",
+              header: () => <BaseTableHeader>Absen</BaseTableHeader>,
+              cell: ({ row }: any) => (
+                <Button
+                  onClick={() => {
+                    if (handleAttend) {
+                      handleAttend(row.original?.id);
+                    }
+                  }}
+                  disabled={
+                    row.original.statusKehadiranHariIni !== "belum hadir" &&
+                    row.original.statusKehadiranHariIni !== "Belum Hadir"
                   }
-                }}
-                disabled={
-                  row.original.statusKehadiranHariIni !== "belum hadir" &&
-                  row.original.statusKehadiranHariIni !== "Belum Hadir"
-                }
-              >
-                {lang.text("attend")}
-              </Button>
-            ),
-          },
+                >
+                  {lang.text("attend")}
+                </Button>
+              ),
+            },
+          ] : [])
         ]
       : []),
     //   {
@@ -391,13 +395,19 @@ export const studentColumnWithFilter = ({
         );
 
         return (
-          <BaseActionTable
+          canEdit ? (
+            <BaseActionTable
             detailPath={`/students/${encryptPayload}`}
             onRegisterFace={() => onRegisterFace?.(row.original)}
             onAssignCard={() => onAssignCard?.(row.original.id)}
             unAssignCard={() => unAssignCard?.(row.original)}
             onDelete={() => onDelete?.(row.original)}
           />
+          ) : (
+            <BaseActionTable
+            detailPath={`/students/${encryptPayload}`}
+          />
+          )
         );
       },
     },
