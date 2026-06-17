@@ -157,28 +157,28 @@ return (
         open={showGuide}
         onToggle={() => setShowGuide(!showGuide)}
         icon={
-          <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600">
+          <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400">
             <Calendar className="w-5 h-5" />
           </div>
         }
       >
-        <p className="text-xs text-slate-500 leading-relaxed mb-5">
+        <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed mb-5">
           Atur waktu mulai dan selesai kehadiran untuk setiap hari dalam
           seminggu.
         </p>
 
         <div className="flex flex-col gap-4">
           <div className="flex gap-3 items-start">
-            <div className="p-1 rounded bg-slate-100 text-slate-600 mt-0.5">
+            <div className="p-1 rounded bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 mt-0.5">
               <Clock className="w-3.5 h-3.5" />
             </div>
 
             <div>
-              <div className="text-xs font-bold text-slate-700">
+              <div className="text-xs font-bold text-slate-700 dark:text-zinc-300">
                 Pilih Jam
               </div>
 
-              <div className="text-[11px] text-slate-400 leading-relaxed">
+              <div className="text-[11px] text-slate-400 dark:text-zinc-500 leading-relaxed">
                 Klik pada baris atau kolom kosong untuk menetapkan jam
                 mulai atau selesai.
               </div>
@@ -186,16 +186,16 @@ return (
           </div>
 
           <div className="flex gap-3 items-start">
-            <div className="p-1 rounded bg-slate-100 text-slate-600 mt-0.5">
+            <div className="p-1 rounded bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 mt-0.5">
               <AlertCircle className="w-3.5 h-3.5" />
             </div>
 
             <div>
-              <div className="text-xs font-bold text-slate-700">
+              <div className="text-xs font-bold text-slate-700 dark:text-zinc-300">
                 Ubah Jam
               </div>
 
-              <div className="text-[11px] text-slate-400 leading-relaxed">
+              <div className="text-[11px] text-slate-400 dark:text-zinc-500 leading-relaxed">
                 Menetapkan jam baru pada hari yang sama akan otomatis
                 mengganti pilihan sebelumnya.
               </div>
@@ -203,16 +203,16 @@ return (
           </div>
 
           <div className="flex gap-3 items-start">
-            <div className="p-1 rounded bg-slate-100 text-slate-600 mt-0.5">
+            <div className="p-1 rounded bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 mt-0.5">
               <CheckCircle2 className="w-3.5 h-3.5" />
             </div>
 
             <div>
-              <div className="text-xs font-bold text-slate-700">
+              <div className="text-xs font-bold text-slate-700 dark:text-zinc-300">
                 Hapus Slot
               </div>
 
-              <div className="text-[11px] text-slate-400 leading-relaxed">
+              <div className="text-[11px] text-slate-400 dark:text-zinc-500 leading-relaxed">
                 Klik slot aktif untuk menghapus jadwal atau membatalkan
                 aksi.
               </div>
@@ -231,7 +231,7 @@ return (
     
     {/* Nama */}
     <div>
-      <label className="block text-xs font-semibold text-slate-700 mb-1">
+      <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">
         Nama Jadwal *
       </label>
 
@@ -244,17 +244,19 @@ return (
           w-full
           px-3 py-2
           rounded-xl
-          border border-slate-200
+          border border-slate-200 dark:border-zinc-800
           text-sm
           focus:outline-none
-          ${isDetail ? "bg-slate-50 cursor-not-allowed" : "focus:ring-2 focus:ring-blue-500"}
+          bg-white dark:bg-zinc-950
+          text-slate-800 dark:text-zinc-200
+          ${isDetail ? "bg-slate-50 dark:bg-zinc-900 cursor-not-allowed" : "focus:ring-2 focus:ring-blue-500"}
         `}
       />
     </div>
 
     {/* Deskripsi */}
     <div>
-      <label className="block text-xs font-semibold text-slate-700 mb-1">
+      <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">
         Deskripsi
       </label>
 
@@ -268,23 +270,25 @@ return (
           w-full
           px-3 py-2
           rounded-xl
-          border border-slate-200
+          border border-slate-200 dark:border-zinc-800
           text-sm
           resize-none
           focus:outline-none
-          ${isDetail ? "bg-slate-50 cursor-not-allowed" : "focus:ring-2 focus:ring-blue-500"}
+          bg-white dark:bg-zinc-950
+          text-slate-800 dark:text-zinc-200
+          ${isDetail ? "bg-slate-50 dark:bg-zinc-900 cursor-not-allowed" : "focus:ring-2 focus:ring-blue-500"}
         `}
       />
     </div>
 
     {/* Type */}
     <div>
-      <label className="block text-xs font-semibold text-slate-700 mb-2">
+      <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-2">
         Tipe Jadwal *
       </label>
 
       <div className="flex gap-4">
-        <label className={`flex items-center gap-2 text-sm ${isDetail ? "cursor-not-allowed" : "cursor-pointer"}`}>
+        <label className={`flex items-center gap-2 text-sm ${isDetail ? "cursor-not-allowed" : "cursor-pointer"} text-slate-800 dark:text-zinc-200`}>
           <input
             type="radio"
             checked={scheduleType === "SISWA"}
@@ -295,7 +299,7 @@ return (
           Siswa
         </label>
 
-        <label className={`flex items-center gap-2 text-sm ${isDetail ? "cursor-not-allowed" : "cursor-pointer"}`}>
+        <label className={`flex items-center gap-2 text-sm ${isDetail ? "cursor-not-allowed" : "cursor-pointer"} text-slate-800 dark:text-zinc-200`}>
           <input
             type="radio"
             checked={scheduleType === "GURU"}
@@ -309,7 +313,7 @@ return (
     </div>
 
     {/* Default */}
-    <label className={`flex items-center gap-3 ${isDetail ? "cursor-not-allowed" : "cursor-pointer"}`}>
+    <label className={`flex items-center gap-3 ${isDetail ? "cursor-not-allowed" : "cursor-pointer"} text-slate-800 dark:text-zinc-200`}>
       <input
         type="checkbox"
         checked={isDefault}
@@ -319,11 +323,11 @@ return (
       />
 
       <div>
-        <div className="text-sm font-medium text-slate-700">
+        <div className="text-sm font-medium text-slate-700 dark:text-zinc-300">
           Jadikan sebagai jadwal default
         </div>
 
-        <div className="text-xs text-slate-400">
+        <div className="text-xs text-slate-400 dark:text-zinc-500">
           Digunakan otomatis ketika tidak ada jadwal khusus.
         </div>
       </div>
@@ -355,29 +359,29 @@ return (
                 className="
                   flex items-center justify-between
                   p-3 rounded-xl
-                  border border-slate-50
-                  bg-slate-50/30
-                  hover:bg-slate-50
+                  border border-slate-50 dark:border-zinc-900
+                  bg-slate-50/30 dark:bg-zinc-900/30
+                  hover:bg-slate-50 dark:hover:bg-zinc-900
                   transition-colors
                 "
               >
-                <span className="text-xs font-bold text-slate-600">
+                <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">
                   {dayName}
                 </span>
 
                 {hasStart || hasEnd ? (
                   <div className="flex flex-col items-end gap-0.5">
-                    <span className="text-[11px] font-semibold text-slate-700">
+                    <span className="text-[11px] font-semibold text-slate-700 dark:text-zinc-300">
                       {daySched.jamMasuk ?? "-"} -{" "}
                       {daySched.jamPulang ?? "-"}
                     </span>
 
-                    <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-green-50 text-green-600 uppercase tracking-wide">
+                    <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400 uppercase tracking-wide">
                       Tersimpan
                     </span>
                   </div>
                 ) : (
-                  <span className="text-[11px] font-medium text-slate-400 italic">
+                  <span className="text-[11px] font-medium text-slate-400 dark:text-zinc-500 italic">
                     Belum diatur
                   </span>
                 )}
@@ -390,7 +394,7 @@ return (
 
       {/* Submit Button */}
       {editable && (
-        <div className="mt-4 pt-2 border-t border-slate-100 bg-white">
+        <div className="mt-4 pt-2 border-t border-slate-100 dark:border-zinc-800 bg-white dark:bg-zinc-950">
           <button
             disabled={isLoading || isAllDaysNull}
             onClick={handleSubmit}
@@ -435,7 +439,7 @@ const AccordionCard = ({
   children,
 }: AccordionCardProps) => {
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm">
+    <div className="bg-white dark:bg-zinc-950 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-sm">
       <button
         onClick={onToggle}
         className="
@@ -447,14 +451,14 @@ const AccordionCard = ({
         <div className="flex items-center gap-3">
           {icon}
 
-          <h3 className="font-bold text-slate-800 text-base">
+          <h3 className="font-bold text-slate-800 dark:text-zinc-100 text-base">
             {title}
           </h3>
         </div>
 
         <ChevronRight
           className={`
-            w-4 h-4 text-slate-500
+            w-4 h-4 text-slate-500 dark:text-zinc-400
             transition-transform duration-300
             ${open ? "rotate-90" : ""}
           `}
