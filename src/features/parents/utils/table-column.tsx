@@ -120,39 +120,39 @@ export const parentColumnWithFilter = ({
         );
       },
     },
-    {
-      accessorKey: "student.name",
-      accessorFn: (row) => row.student?.user?.name,
-      header: ({ column }) => {
-        return (
-          <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {lang.text("student")}
-          </BaseTableHeader>
-        );
-      },
-      cell: ({ row }) => {
-        const nameArr = row.original.student?.user?.name?.split(" ") || [];
-        const initialName =
-          nameArr && nameArr.length > 0
-            ? `${nameArr?.[0]?.[0]?.toUpperCase() || ""}${nameArr?.[1]?.[0]?.toUpperCase() || ""}`
-            : "-";
-            // console.log("ORTU: ", row)
-        return (
-          <div className="flex flex-row items-center gap-2">
-            <Avatar>
-              <AvatarImage
-                src={getStaticFile(String(row.original?.student?.user?.image))}
-                alt={row.original.student?.user?.name}
-              />
-              <AvatarFallback>{initialName}</AvatarFallback>
-            </Avatar>
-            <p>{row.original.student?.user?.name}</p>
-          </div>
-        );
-      },
-    },
+    // {
+    //   accessorKey: "student.name",
+    //   accessorFn: (row) => row.student?.user?.name,
+    //   header: ({ column }) => {
+    //     return (
+    //       <BaseTableHeader
+    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //       >
+    //         {lang.text("student")}
+    //       </BaseTableHeader>
+    //     );
+    //   },
+    //   cell: ({ row }) => {
+    //     const nameArr = row.original.student?.user?.name?.split(" ") || [];
+    //     const initialName =
+    //       nameArr && nameArr.length > 0
+    //         ? `${nameArr?.[0]?.[0]?.toUpperCase() || ""}${nameArr?.[1]?.[0]?.toUpperCase() || ""}`
+    //         : "-";
+    //         // console.log("ORTU: ", row)
+    //     return (
+    //       <div className="flex flex-row items-center gap-2">
+    //         <Avatar>
+    //           <AvatarImage
+    //             src={getStaticFile(String(row.original?.student?.user?.image))}
+    //             alt={row.original.student?.user?.name}
+    //           />
+    //           <AvatarFallback>{initialName}</AvatarFallback>
+    //         </Avatar>
+    //         <p>{row.original.student?.user?.name}</p>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       accessorKey: "notifOrtuEnabled",
       accessorFn: (row) => row.notifOrtuEnabled,
