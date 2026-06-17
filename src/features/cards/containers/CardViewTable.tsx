@@ -12,6 +12,7 @@ import { Divider } from "@mui/material";
 import { FaPlus } from "react-icons/fa";
 import { DeleteCardDialog, DeleteDialog } from "../components/DeleteCardDialog";
 import { useUserCreation } from "@/features/user";
+import { cardsService } from "@/core/services/cards";
 
 export const CardViewTable = () => {
   //   const resource = useClassroom();
@@ -49,7 +50,8 @@ export const CardViewTable = () => {
 
   async function handleDelete() {
     try {
-      await userDelete.deleteUser(Number(selectedCard?.userId));
+      // await userDelete.deleteUser(Number(selectedCard?.id));
+      await cardsService.delete(Number(selectedCard.id));
       alert.success(lang.text("successDelete"));
       // biodata.query.refetch();
       resource.query.refetch();

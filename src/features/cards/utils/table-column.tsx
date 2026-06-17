@@ -12,6 +12,24 @@ export const cardColumns = (
   onEdit?: (id: number) => void,
   onDelete?: (id: number) => void,
 ): ColumnDef<any>[] => {
+  const availabilityConfig = {
+    tersedia: {
+      label: "available",
+      className: "bg-green-50 text-green-600 border-green-200",
+    },
+    digunakan: {
+      label: "inUse",
+      className: "bg-blue-50 text-blue-600 border-blue-200",
+    },
+    hilang: {
+      label: "lost",
+      className: "bg-red-50 text-red-600 border-red-200",
+    },
+    rusak: {
+      label: "damaged",
+      className: "bg-orange-50 text-orange-600 border-orange-200",
+    },
+  };
   return [
     {
       accessorKey: "nomorKartu",
@@ -43,6 +61,37 @@ export const cardColumns = (
       },
       cell: ({ row }) => {
         return <span>{row.original.tipe}</span>;
+      },
+    },
+    {
+      accessorKey: "ketersediaan",
+      accessorFn: (row) => row.ketersediaan,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("Availability")}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        const status =
+          availabilityConfig[
+            row.original.ketersediaan as keyof typeof availabilityConfig
+          ];
+
+        if (!status) {
+          return <span>{row.original.ketersediaan}</span>;
+        }
+
+        return (
+          <span
+            className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium ${status.className}`}
+          >
+            {lang.text(status.label)}
+          </span>
+        );
       },
     },
     {

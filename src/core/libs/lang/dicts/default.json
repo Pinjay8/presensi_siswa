@@ -708,6 +708,7 @@
     "id": "Sebelum Jam Kerja",
     "en": "Before Working Hour"
   },
+
   "weekend": {
     "id": "Hari Libur",
     "en": "Weekend"
@@ -2548,6 +2549,22 @@
   "available": {
     "id": "Tersedia",
     "en": "Available"
+  },
+  "inUse": {
+    "id": "Digunakan",
+    "en": "Used"
+  },
+  "lost": {
+    "id": "Hilang",
+    "en": "lost"
+  },
+  "damaged": {
+    "id": "Rusak",
+    "en": "Damaged"
+  },
+  "Availability": {
+    "id": "Ketersediaan",
+    "en": "Availability"
   },
   "visitorTrendGraph": {
     "id": "Grafik Pengunjung",
