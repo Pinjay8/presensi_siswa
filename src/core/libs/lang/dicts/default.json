@@ -2311,6 +2311,10 @@
     "id": "Dispensasi",
     "en": "Dispensation"
   },
+  "lateWarning": {
+    "id": "Peringatan Terlambat",
+    "en": "Late Warning"
+  },
   "totalTeachers": {
     "id": "Jumlah Guru",
     "en": "Total Teachers"
