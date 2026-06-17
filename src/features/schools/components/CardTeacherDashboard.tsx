@@ -11,6 +11,7 @@ import {
   TabsTrigger,
 } from "@/core/libs";
 import { Card, CardContent, CardHeader } from "@/core/libs";
+import { Typography } from "@mui/material";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
@@ -66,6 +67,8 @@ interface AttendanceCardProps {
   bgColor?: string;
   textColor?: string;
   isLoading?: boolean;
+  icon?: any;
+  subTitle?: any;
 }
 
 const CardTeacherDashboard: React.FC<AttendanceCardProps> = ({
@@ -78,6 +81,8 @@ const CardTeacherDashboard: React.FC<AttendanceCardProps> = ({
   bgColor,
   textColor,
   isLoading,
+  icon,
+  subTitle,
 }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(
@@ -266,29 +271,39 @@ const CardTeacherDashboard: React.FC<AttendanceCardProps> = ({
             <span className="text-md font-medium text-black">{label}</span>
             {/* ({lang.text("today")}) */}
           </div>
-          <FaEye
+          {icon}
+          {/* <FaEye
             className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
             onClick={() => setIsSheetOpen(true)}
             aria-label="Lihat detail kehadiran"
-          />
+          /> */}
         </CardHeader>
         <CardContent>
-          <div className="flex items-center gap-4">
-            <div className="text-2xl font-normal text-black]">
+          <div className="flex items-center gap-4 justify-between">
+            <div className="text-3xl font-normal text-[#000]">
               {isLoading || value === null || value === undefined ? (
                 <FaSpinner className="animate-spin duration-1500 opacity-30" />
               ) : (
-                value
+                <div className="flex  gap-2 items-center">
+                  <span>{value}</span>
+                  {subTitle && (
+                    <Typography
+                      className="text-md font-semibold"
+                      sx={{ fontWeight: "bold" }}
+                    >
+                      {subTitle}
+                    </Typography>
+                  )}
+                </div>
               )}
             </div>
-            {percentage && (
+
+            {percentage !== undefined && percentage !== null && (
               <Badge
                 className="flex items-center gap-1 text-xs"
                 style={{ backgroundColor: bgColor, color: textColor }}
               >
-                <>
-                  <span>{percentage}</span>%
-                </>
+                {percentage}%
               </Badge>
             )}
           </div>

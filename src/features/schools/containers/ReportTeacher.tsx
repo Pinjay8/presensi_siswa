@@ -255,9 +255,7 @@ export const ReportTeacher = ({
                   return (
                     <div key={item.biodataSiswaId}>
                       <div className="flex justify-between mb-2">
-                        <span className="font-medium">
-                          #{index + 1} {item.namaSiswa}
-                        </span>
+                        <span className="font-medium">{item.namaSiswa}</span>
 
                         <span className="text-muted-foreground">
                           {item.totalHadir} Hadir

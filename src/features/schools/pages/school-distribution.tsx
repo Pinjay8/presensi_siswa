@@ -15,7 +15,8 @@ import { ReportStudent } from "../containers/ReportStudent";
 import { AttedancesStudentReport } from "../containers/attedance-student-dashboard";
 import { AttedancesParentReport } from "../containers/attedance-parent-dashboard";
 import { ReportParent } from "../containers/ReportParent";
-import { Typography } from "@mui/material";
+import { Avatar, Typography } from "@mui/material";
+import { CheckCircle } from "lucide-react";
 
 type AbsensiCount = {
   count: {
@@ -261,40 +262,64 @@ export const SchoolDistribution = () => {
 
         {ROLE === "orangTua" && (
           <>
-            <Card className="mb-4">
+            <Card className="mb-2 mt-3">
               <CardHeader>
                 <h3 className="font-semibold">Pilih Anak</h3>
               </CardHeader>
 
               <CardContent>
-                {/* <select
-                  className="w-full border rounded-md p-2"
-                  value={selectedStudentId ?? ""}
-                  onChange={(e) => setSelectedStudentId(Number(e.target.value))}
-                >
-                  {children.map((child: any) => (
-                    <option
-                      key={child.biodataSiswaId}
-                      value={child.biodataSiswaId}
-                    >
-                      {child.name} - {child.kelas ?? "-"}
-                    </option>
-                  ))}
-                </select> */}
-                <div className="flex gap-2 flex-wrap mb-4">
-                  {children.map((child: any) => (
-                    <Button
-                      key={child.biodataSiswaId}
-                      variant={
-                        selectedStudentId === child.biodataSiswaId
-                          ? "default"
-                          : "outline"
-                      }
-                      onClick={() => setSelectedStudentId(child.biodataSiswaId)}
-                    >
-                      {child.name}
-                    </Button>
-                  ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {children.map((child: any) => {
+                    const isSelected =
+                      selectedStudentId === child.biodataSiswaId;
+
+                    return (
+                      <div
+                        key={child.biodataSiswaId}
+                        onClick={() =>
+                          setSelectedStudentId(child.biodataSiswaId)
+                        }
+                        className={`
+            relative cursor-pointer rounded-2xl border p-4
+            transition-all hover:shadow-md
+            ${
+              isSelected
+                ? "border-primary ring-2 ring-primary/20 bg-primary/5"
+                : "border-gray-200"
+            }
+          `}
+                      >
+                        {isSelected && (
+                          <CheckCircle className="absolute right-3 top-3 h-5 w-5 text-primary" />
+                        )}
+
+                        <div className="flex items-center gap-4">
+                          {/* <img
+                            src={`https://i.pravatar.cc/150?u=${child.biodataSiswaId}`}
+                            alt={child.name}
+                            className="h-16 w-16 rounded-full object-cover"
+                          /> */}
+                          <Avatar sx={{ width: "60px", height: "60px" }} />
+
+                          <div>
+                            <h4 className="font-semibold text-lg">
+                              {child.name} - {child.nis}
+                            </h4>
+
+                            <p className="text-muted-foreground">
+                              {child.kelas || "Kelas"}
+                            </p>
+
+                            {isSelected && (
+                              <span className="mt-1 inline-flex rounded-full bg-gray-100 px-0 py-1 text-xs text-gray-600">
+                                Selected
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>

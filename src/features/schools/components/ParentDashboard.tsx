@@ -11,7 +11,17 @@ import {
   SheetTitle,
 } from "@/core/libs";
 import React, { useState, useEffect } from "react";
-import { FaEye, FaPhone, FaSpinner } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaClock,
+  FaEye,
+  FaFileAlt,
+  FaNotesMedical,
+  FaPhone,
+  FaSpinner,
+  FaTimesCircle,
+  FaUsers,
+} from "react-icons/fa";
 import AttendanceCard from "./attedance-card";
 import CardTeacherDashboard from "./CardTeacherDashboard";
 
@@ -94,15 +104,55 @@ export const ParentDashboard: React.FC<AttendanceDashboardProps> = ({
 
   return (
     <div className="flex gap-4 w-full justify-between flex-wrap lg:flex-nowrap">
-      <CardTeacherDashboard label="Hadir" value={stats.totalHadir} />
+      <CardTeacherDashboard
+        label={lang.text("presence")}
+        value={stats.totalHadir}
+        icon={
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-green-100">
+            <FaCheckCircle className="text-green-500 text-lg" />
+          </div>
+        }
+      />
 
-      <CardTeacherDashboard label="Alfa" value={stats.totalAlpa} />
+      <CardTeacherDashboard
+        label={lang.text("absentee")}
+        value={stats.totalAlpa}
+        icon={
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-100">
+            <FaTimesCircle className="text-red-500 text-lg" />
+          </div>
+        }
+      />
 
-      <CardTeacherDashboard label="Sakit" value={stats.totalSakit} />
+      <CardTeacherDashboard
+        label={lang.text("sickness")}
+        value={stats.totalSakit}
+        icon={
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-sky-100">
+            <FaNotesMedical className="text-sky-500 text-lg" />
+          </div>
+        }
+      />
 
-      <CardTeacherDashboard label="Terlambat" value={stats.totalTerlambat} />
+      <CardTeacherDashboard
+        label={lang.text("permit")}
+        value={stats.totalIzin}
+        icon={
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-100">
+            <FaFileAlt className="text-amber-500 text-lg" />
+          </div>
+        }
+      />
 
-      <CardTeacherDashboard label="Izin" value={stats.totalIzin} />
+      <CardTeacherDashboard
+        label={lang.text("late")}
+        value={stats.totalTerlambat}
+        icon={
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-300">
+            <FaClock className="text-slate-500 text-lg" />
+          </div>
+        }
+      />
 
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent

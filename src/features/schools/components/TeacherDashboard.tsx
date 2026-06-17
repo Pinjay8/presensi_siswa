@@ -11,7 +11,17 @@ import {
   SheetTitle,
 } from "@/core/libs";
 import React, { useState, useEffect } from "react";
-import { FaEye, FaPhone, FaSpinner } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaClock,
+  FaEye,
+  FaFileAlt,
+  FaNotesMedical,
+  FaPhone,
+  FaSpinner,
+  FaTimesCircle,
+  FaUsers,
+} from "react-icons/fa";
 import AttendanceCard from "./attedance-card";
 import CardTeacherDashboard from "./CardTeacherDashboard";
 
@@ -94,17 +104,76 @@ export const TeacherDashboard: React.FC<AttendanceDashboardProps> = ({
 
   return (
     <div className="flex gap-4 w-full justify-between flex-wrap lg:flex-nowrap">
-      <CardTeacherDashboard label="Total Siswa" value={stats.totalSiswa} />
+      {/* <CardTeacherDashboard
+        label="Total Siswa"
+        value={stats.totalSiswa}
+        icon={
+          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-100">
+            <FaUsers className="text-blue-600 text-lg" />
+          </div>
+        }
+        subTitle={"Orang"}
+      /> */}
 
-      <CardTeacherDashboard label="Hadir" value={stats.totalHadir} />
+      <CardTeacherDashboard
+        label="Hadir"
+        value={stats.totalHadir}
+        icon={
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-green-100">
+            <FaCheckCircle className="text-green-500 text-lg" />
+          </div>
+        }
+      />
 
-      <CardTeacherDashboard label="Alfa" value={stats.totalAlpa} />
+      <CardTeacherDashboard
+        label="Alfa"
+        value={stats.totalAlpa}
+        icon={
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-100">
+            <FaTimesCircle className="text-red-500 text-lg" />
+          </div>
+        }
+      />
 
-      <CardTeacherDashboard label="Sakit" value={stats.totalSakit} />
+      <CardTeacherDashboard
+        label="Sakit"
+        value={stats.totalSakit}
+        icon={
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-sky-100">
+            <FaNotesMedical className="text-sky-500 text-lg" />
+          </div>
+        }
+      />
 
-      <CardTeacherDashboard label="Terlambat" value={stats.totalTerlambat} />
+      <CardTeacherDashboard
+        label={lang.text("permit")}
+        value={stats.totalDispensasi}
+        icon={
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-sky-100">
+            <FaFileAlt className="text-sky-500 text-lg" />
+          </div>
+        }
+      />
 
-      <CardTeacherDashboard label="Belum Absen" value={stats.totalBelumAbsen} />
+      <CardTeacherDashboard
+        label="Terlambat"
+        value={stats.totalTerlambat}
+        icon={
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-300">
+            <FaClock className="text-slate-500 text-lg" />
+          </div>
+        }
+      />
+
+      <CardTeacherDashboard
+        label="Belum Absen"
+        value={stats.totalBelumAbsen}
+        icon={
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-300">
+            <FaClock className="text-slate-500 text-lg" />
+          </div>
+        }
+      />
       {/* Sheet untuk menampilkan daftar dataNoAccess */}
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent
