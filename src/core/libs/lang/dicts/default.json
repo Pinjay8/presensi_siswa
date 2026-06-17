@@ -317,6 +317,7 @@
   "selectStudent": {
     "id": "Pilih Siswa",
     "en": "Select Student"
+  },
   "distributePresent": {
     "en": "Distribute Present",
     "id": "Distribusi Kehadiran"
@@ -2233,6 +2234,10 @@
   "dispensation": {
     "id": "Dispensasi",
     "en": "Dispensation"
+  },
+  "lateWarning": {
+    "id": "Peringatan Terlambat",
+    "en": "Late Warning"
   },
   "totalTeachers": {
     "id": "Jumlah Guru",
