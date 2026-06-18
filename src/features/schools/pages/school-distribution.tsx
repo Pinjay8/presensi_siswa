@@ -63,6 +63,9 @@ export const SchoolDistribution = () => {
     dispensasi: {
       percentage: count?.persentase?.izin ?? 0,
     },
+    terlambat: {
+      percentage: count?.persentase?.terlambat ?? 0,
+    },
     belumAbsen: {
       percentage: count?.persentase?.belumAbsen ?? 0,
     },
