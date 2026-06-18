@@ -358,12 +358,12 @@ export const studentColumnWithFilter = ({
                 terlambat: {
                   label: "Terlambat",
                   className:
-                    "bg-slate-100 text-slate-700 border border-slate-200",
+                    "bg-orange-100 text-orange-700 border border-orange-200",
                 },
                 sakit: {
                   label: "Sakit",
                   className:
-                    "bg-slate-100 text-slate-700 border border-slate-200",
+                    "bg-blue-100 text-blue-700 border border-blue-200",
                 },
               };
 

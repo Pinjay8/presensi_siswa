@@ -116,11 +116,11 @@ export const ReportStudent = ({
     },
     terlambat: {
       label: "Terlambat",
-      className: "bg-slate-100 text-slate-700 border border-slate-200",
+      className: "bg-orange-100 text-orange-700 border border-orange-200",
     },
     sakit: {
       label: "Sakit",
-      className: "bg-slate-100 text-slate-700 border border-slate-200",
+      className: "bg-blue-100 text-blue-700 border border-blue-200",
     },
   };
 
@@ -140,10 +140,7 @@ export const ReportStudent = ({
       label: "Ditolak",
       className: "bg-red-100 text-red-700 border border-red-200",
     },
-    batal: {
-      label: "Dibatalkan",
-      className: "bg-slate-100 text-slate-700 border border-slate-200",
-    },
+
   };
   const attendanceConfig = statusConfig?.[todayAbsen?.statusKehadiran] ?? {
     className: "bg-gray-100 text-gray-700 border border-gray-200",
