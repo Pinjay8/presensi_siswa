@@ -191,7 +191,7 @@ export function StudentTable({
 
     async function handleDelete() {
     try {
-      await userDelete.deleteUser(Number(selectedStudent?.userId));
+      await userDelete.deleteUser(Number(selectedStudent?.id));
       alert.success(lang.text("successDelete"));
       refetch();
       setOpenDeleteDialog(false);
