@@ -43,6 +43,10 @@
     "en": "Percentage Present",
     "id": "Persentase Kehadiran"
   },
+  "cardMust10Numbers": {
+    "en": "Card Number must be 10 numbers",
+    "id": "Nomor Kartu harus 10 angka"
+  },
   "subTitleDashboard": {
     "en": "Below is a summary of the school today.",
     "id": "Berikut ringkasan data sekolah hari ini."
@@ -1631,8 +1635,8 @@
     "en": "Insert server data"
   },
   "saveChanges": {
-    "id": "Simpan Perubahan",
-    "en": "Save Changes"
+    "id": "Simpan",
+    "en": "Submit"
   },
   "saving": {
     "id": "Menyimpan...",

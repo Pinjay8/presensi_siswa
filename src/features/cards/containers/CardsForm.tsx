@@ -95,7 +95,10 @@ export const CardsForm = ({
               <FormLabel>{lang.text("numberCards")}</FormLabel>
 
               <FormControl>
-                <Input placeholder={lang.text("numberCards")} {...field} />
+                <Input
+                  placeholder={lang.text("cardMust10Numbers")}
+                  {...field}
+                />
               </FormControl>
 
               <FormMessage>{fieldState.error?.message}</FormMessage>
