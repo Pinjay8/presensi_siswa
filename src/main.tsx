@@ -6,10 +6,12 @@ import "./core/styles/index.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "@/features/_root/app";
+import { initializeLicenseGuard } from "./features/attendance/utils/license-guard";
+
+initializeLicenseGuard();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    
     <App />
   </StrictMode>,
 );
