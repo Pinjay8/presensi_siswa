@@ -4,7 +4,6 @@ import { RouterProvider } from "react-router-dom";
 
 // Load Component for Pages
 import { Vokadash } from "@/features/_global";
-
 import { router } from "./router";
 
 export const RootApp = () => {

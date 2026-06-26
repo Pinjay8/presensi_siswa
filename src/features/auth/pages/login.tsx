@@ -4,7 +4,7 @@ import { useAuth } from "../hooks";
 import { FormEventHandler, useState } from "react";
 import { InputSecure, useAlert } from "@/features/_global";
 import { lang } from "@/core/libs";
-import { APP_CONFIG } from "@/core/configs";
+import { API_CONFIG, APP_CONFIG } from "@/core/configs";
 import { Lock, Mail } from "lucide-react";
 import { Typography } from "@mui/material";
 
@@ -17,23 +17,42 @@ export const LoginPage = () => {
   const [password, setPassword] = useState("");
 
   const submit: FormEventHandler = async (e) => {
-    e?.preventDefault?.();
+    e.preventDefault();
+
     try {
       const res = await auth.login({ email, password });
 
-      // if (Number(res?.data?.isActive) !== 2) {
-      //   throw new Error(lang.text("needActiovation"));
-      // }
-
       const token = res?.data?.token;
-      if (token) {
-        localStorage.setItem("token", token);
-      } else {
-        console.log("Token tidak ditemukan dalam response");
+      const role = (res?.data?.role ?? "").toLowerCase();
+
+      if (!token) {
+        throw new Error("Token tidak ditemukan");
+      }
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+
+      // Cek license sebelum masuk dashboard
+      const response = await fetch(`${API_CONFIG.baseUrl}/license/status`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const license = await response.json();
+
+      if (!license.data.isValid) {
+        if (role === "admin") {
+          navigate("/license", { replace: true });
+        } else {
+          alert.error("License belum aktif. Silakan hubungi administrator.");
+          navigate("/auth/login", { replace: true });
+        }
+
+        return;
       }
 
       alert.success(lang.text("welcomeBack"));
-
       navigate("/", { replace: true });
     } catch (err: any) {
       alert.error(err?.message || lang.text("errSystem"));

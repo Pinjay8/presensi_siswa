@@ -51,8 +51,11 @@ export const useAuth = () => {
   const logout = () => {
     logoutMutation.mutateAsync();
     setTimeout(() => {
-      // storage.clear();
       storage.delete("auth.token");
+      storage.delete("role");
+      storage.delete("token");
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
       queryClient.clear();
       navigate?.("/auth/login", { replace: true });
     }, 10);

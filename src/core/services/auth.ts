@@ -29,4 +29,7 @@ export const authService = {
     BaseResponse<UserRegisterResponseModel>,
     AdminRegisterModel
   >(`${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.auth.signup}`),
+  uploadLicense: http.post<BaseResponse, FormData>(
+    `${API_CONFIG.baseUrl}/license/upload`,
+  ),
 };

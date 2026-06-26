@@ -3,6 +3,7 @@ import {
   AvatarFallback,
   AvatarImage,
   Button,
+  dayjs,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -38,6 +39,7 @@ import { useAlert } from "@/features/_global/hooks";
 import { useStudents } from "./components/useStudents";
 import { FaceRegisterUploader } from "./components/FaceRegisterUploader";
 import { useProfileUser } from "@/features/parents/hooks/useProfileParent";
+import ProfileDialog from "./components/ProfileDialog";
 
 export interface UserMenuItem {
   title?: string;
@@ -214,12 +216,20 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {isAdmin && (
-              <DropdownMenuLabel
-                style={{ fontWeight: "normal", cursor: "pointer" }}
-                onClick={() => setOpenDialogRegister(true)}
-              >
-                {lang.text("RegisterFace")}
-              </DropdownMenuLabel>
+              <>
+                <DropdownMenuLabel
+                  style={{ fontWeight: "normal", cursor: "pointer" }}
+                  onClick={() => setOpenDialogRegister(true)}
+                >
+                  {lang.text("RegisterFace")}
+                </DropdownMenuLabel>
+                <DropdownMenuLabel
+                  style={{ fontWeight: "normal", cursor: "pointer" }}
+                  onClick={() => setOpenProfile(true)}
+                >
+                  Profile
+                </DropdownMenuLabel>
+              </>
             )}
             {isRoleTeacher && (
               <>
@@ -234,6 +244,12 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                   onClick={generateQrCode}
                 >
                   {lang.text("generateQr")}
+                </DropdownMenuLabel>
+                <DropdownMenuLabel
+                  style={{ fontWeight: "normal", cursor: "pointer" }}
+                  onClick={() => setOpenProfile(true)}
+                >
+                  Profile
                 </DropdownMenuLabel>
               </>
             )}
@@ -250,6 +266,12 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                   onClick={generateQrCode}
                 >
                   {lang.text("generateQr")}
+                </DropdownMenuLabel>
+                <DropdownMenuLabel
+                  style={{ fontWeight: "normal", cursor: "pointer" }}
+                  onClick={() => setOpenProfile(true)}
+                >
+                  Profile
                 </DropdownMenuLabel>
               </>
             )}
@@ -284,7 +306,6 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
           </DropdownMenuContent>
         )}
       </DropdownMenu>
-
       <QrAttendanceDialog
         open={open}
         onClose={() => setOpen(false)}
@@ -358,108 +379,168 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
           </Box>
         </DialogContent>
       </Dialog>
+      {(isAdmin || isRoleTeacher || isRoleOrangTua) && (
+        <ProfileDialog
+          open={openProfile}
+          onClose={() => setOpenProfile(false)}
+          user={user}
+          loading={loading}
+          handleToggle={handleToggle}
+          profile={profile}
+        />
+      )}
 
-      {/* profile */}
-      <Dialog
-        open={openProfile}
-        onClose={() => setOpenProfile(false)}
-        fullWidth
-        maxWidth="sm"
-        disableAutoFocus
-        disableEnforceFocus
-      >
-        <DialogTitle
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
+      {isRoleSiswa && (
+        <Dialog
+          open={openProfile}
+          onClose={() => setOpenProfile(false)}
+          fullWidth
+          maxWidth="sm"
+          disableAutoFocus
+          disableEnforceFocus
         >
-          Profile
-          <IconButton onClick={() => setOpenProfile(false)}>
-            <XIcon />
-          </IconButton>
-        </DialogTitle>
+          <DialogTitle
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            Profile
+            <IconButton onClick={() => setOpenProfile(false)}>
+              <XIcon />
+            </IconButton>
+          </DialogTitle>
 
-        <DialogContent dividers>
-          {/* {user ? ( */}
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {/* Header Profile */}
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 2,
-                p: 2,
-                borderRadius: 2,
-                bgcolor: "background.default",
-              }}
-            >
-              <Avatar
-                style={{
-                  width: 56,
-                  height: 56,
+          <DialogContent dividers>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              {/* Header Profile */}
+              <Box
+                sx={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 18,
-                  fontWeight: 600,
-                  border: "1px solid #000",
+                  gap: 2,
+                  p: 2,
+                  borderRadius: 2,
+                  color: "#fff",
+                  bgcolor: "primary.main",
                 }}
               >
-                {user?.name?.charAt(0)?.toUpperCase() || ""}
-              </Avatar>
+                <Avatar
+                  style={{
+                    width: 56,
+                    height: 56,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 18,
+                    fontWeight: 600,
+                    border: "1px solid #fff",
+                  }}
+                >
+                  {user?.name?.charAt(0)?.toUpperCase() || ""}
+                </Avatar>
 
-              <Box>
-                <Typography variant="h6" className="capitalize">
-                  {user?.name}
-                </Typography>
-                {/* <Typography variant="body2" color="text.secondary" >
+                <Box>
+                  <Typography variant="h6" className="capitalize">
+                    {user?.name}
+                  </Typography>
+                  {/* <Typography variant="body2" color="text.secondary" >
                   {user?.role}
                 </Typography> */}
+                  <Typography>{user?.email}</Typography>
+                </Box>
               </Box>
+
+              {/* Detail Info */}
+              <Card variant="outlined">
+                <CardContent>
+                  <Stack spacing={1.5}>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        NIS
+                      </Typography>
+                      <Typography>{user?.nis || "-"}</Typography>
+                    </Box>
+
+                    <Divider />
+
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        NISN
+                      </Typography>
+                      <Typography>{user?.nisn || "-"}</Typography>
+                    </Box>
+
+                    <Divider />
+
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Jenis Kelamin
+                      </Typography>
+                      <Typography>{user?.jenisKelamin || "-"}</Typography>
+                    </Box>
+
+                    <Divider />
+
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Tanggal Lahir
+                      </Typography>
+                      <Typography>
+                        {user?.tanggalLahir
+                          ? dayjs(user.tanggalLahir).format("DD MMMM YYYY")
+                          : "-"}
+                      </Typography>
+                    </Box>
+
+                    <Divider />
+
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Alamat
+                      </Typography>
+                      <Typography>{user?.alamat || "-"}</Typography>
+                    </Box>
+
+                    <Divider />
+
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        No Telepon
+                      </Typography>
+                      <Typography>{user?.noTlp || "-"}</Typography>
+                    </Box>
+
+                    <Divider />
+
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Sekolah
+                      </Typography>
+                      <Typography>
+                        {user?.sekolah?.namaSekolah || "-"}
+                      </Typography>
+                    </Box>
+
+                    <Divider />
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Login Terakhir
+                      </Typography>
+                      <Typography>
+                        {user?.lastLogin
+                          ? dayjs(user.lastLogin).format("DD MMM YYYY HH:mm")
+                          : "-"}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </CardContent>
+              </Card>
             </Box>
-
-            {/* Detail Info */}
-            <Card variant="outlined">
-              <CardContent>
-                <Stack spacing={1.5}>
-                  <Box>
-                    <Typography variant="caption" color="text.secondary">
-                      Email
-                    </Typography>
-                    <Typography>{user?.email}</Typography>
-                  </Box>
-
-                  <Divider />
-
-                  <Box>
-                    <Typography variant="caption" color="text.secondary">
-                      No Telepon
-                    </Typography>
-                    <Typography>{user?.noTlp || "-"}</Typography>
-                  </Box>
-
-                  <Divider />
-                  <div className="flex items-center gap-2 ">
-                    <Typography variant="caption" color="text.secondary">
-                      {lang.text("notify")}
-                    </Typography>
-                    <Switch
-                      checked={user?.notifOrtuEnabled ?? false}
-                      disabled={loading}
-                      onChange={(e) => handleToggle(e.target.checked)}
-                    />
-                    {loading && (
-                      <span className="text-xs text-gray-400">Saving...</span>
-                    )}
-                  </div>
-                </Stack>
-              </CardContent>
-            </Card>
-          </Box>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 });

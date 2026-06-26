@@ -1,9 +1,11 @@
 import { DashboardLayout, useVokadashContext } from "@/features/_global";
+import { useLicenseGuard } from "@/features/attendance/utils/license-guard";
 import { useAuth } from "@/features/auth/hooks";
 import { useProfile } from "@/features/profile/hooks";
 import { Navigate, Outlet } from "react-router-dom";
 
 export const RootPage = () => {
+  useLicenseGuard();
   const appContext = useVokadashContext();
   const auth = useAuth();
   const profile = useProfile();

@@ -3,6 +3,7 @@ import { APP_CONFIG } from "@/core/configs/app";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { HomePage, RootPage } from "../dashboard";
 import LicenseLanding from "../license/license";
+import WaitingPage from "../auth/pages/WaitingPage";
 
 export const router = createBrowserRouter(
   [
@@ -618,6 +619,10 @@ export const router = createBrowserRouter(
     {
       path: "/license",
       element: <LicenseLanding />,
+    },
+    {
+      path: "/waiting-page",
+      element: <WaitingPage />,
     },
   ],
   {

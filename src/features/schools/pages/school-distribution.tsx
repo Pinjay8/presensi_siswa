@@ -1,4 +1,4 @@
-import { APP_CONFIG } from "@/core/configs";
+import { API_CONFIG, APP_CONFIG } from "@/core/configs";
 import { Button, Card, CardContent, CardHeader, lang } from "@/core/libs";
 import { DashboardPageLayout } from "@/features/_global";
 import { StudentDemographicsCharts } from "@/features/dashboard/containers";
@@ -15,7 +15,7 @@ import { ReportStudent } from "../containers/ReportStudent";
 import { AttedancesStudentReport } from "../containers/attedance-student-dashboard";
 import { AttedancesParentReport } from "../containers/attedance-parent-dashboard";
 import { ReportParent } from "../containers/ReportParent";
-import { Avatar, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import { CheckCircle } from "lucide-react";
 
 type AbsensiCount = {
@@ -146,6 +146,27 @@ export const SchoolDistribution = () => {
     totalTerlambat: attendanceParent.terlambat ?? 0,
   };
 
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [status, setStatus] = useState<any>(null);
+
+  // const fetchStatus = async () => {
+  //   try {
+  //     setLoading(true);
+
+  //     const response = await fetch(`${API_CONFIG.baseUrl}/license/status`);
+
+  //     const data = await response.json();
+  //     console.log("🚀 ~ data", data);
+  //     setStatus(data);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchStatus();
+  // }, []);
+
   return (
     <React.Fragment>
       <DashboardPageLayout
@@ -153,9 +174,20 @@ export const SchoolDistribution = () => {
         title={lang.text("intro") + "," + ` ${profile?.user?.name}` + "👋"}
         loadingTitle={profileLoading}
       >
-        <Typography color="text.secondary">
-          {lang.text("subTitleDashboard")}
-        </Typography>
+        {/* <Box display={"flex"} justifyContent={"space-between"} width="100%"> */}
+          <Typography color="text.secondary">
+            {lang.text("subTitleDashboard")}
+          </Typography>
+          {/* <Typography color="text.secondary">
+            Expired Date:{" "}
+            {status?.data.expiryDate
+              ? new Date(status.data.expiryDate).toLocaleString("id-ID", {
+                  dateStyle: "long",
+                  timeStyle: "medium",
+                })
+              : "-"}
+          </Typography>
+        </Box> */}
         {/* {ROLE === "superAdmin" ? (
           <>
             <div className="w-full mt-6 flex justify-between items-baseline">
