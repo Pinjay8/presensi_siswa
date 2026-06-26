@@ -461,7 +461,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                 <CardContent>
                   <Stack spacing={1.5}>
                     <Box>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="body1" color="text.secondary">
                         NIS
                       </Typography>
                       <Typography>{user?.nis || "-"}</Typography>
@@ -470,7 +470,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                     <Divider />
 
                     <Box>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="body1" color="text.secondary">
                         NISN
                       </Typography>
                       <Typography>{user?.nisn || "-"}</Typography>
@@ -479,7 +479,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                     <Divider />
 
                     <Box>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="body1" color="text.secondary">
                         Jenis Kelamin
                       </Typography>
                       <Typography>{user?.jenisKelamin || "-"}</Typography>
@@ -488,7 +488,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                     <Divider />
 
                     <Box>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="body1" color="text.secondary">
                         Tanggal Lahir
                       </Typography>
                       <Typography>
@@ -501,7 +501,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                     <Divider />
 
                     <Box>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="body1" color="text.secondary">
                         Alamat
                       </Typography>
                       <Typography>{user?.alamat || "-"}</Typography>
@@ -510,7 +510,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                     <Divider />
 
                     <Box>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="body1" color="text.secondary">
                         No Telepon
                       </Typography>
                       <Typography>{user?.noTlp || "-"}</Typography>
@@ -519,7 +519,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                     <Divider />
 
                     <Box>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="body1" color="text.secondary">
                         Sekolah
                       </Typography>
                       <Typography>
@@ -529,7 +529,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
 
                     <Divider />
                     <Box>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="body1" color="text.secondary">
                         Login Terakhir
                       </Typography>
                       <Typography>
