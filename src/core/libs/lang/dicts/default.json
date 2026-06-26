@@ -297,6 +297,10 @@
     "en": "Clear",
     "id": "Bersihkan"
   },
+  "license": {
+    "en": "License",
+    "id": "Lisensi"
+  },
 
   "logout": {
     "en": "Logout",
@@ -567,6 +571,10 @@
   "workPhone": {
     "id": "Nomor Kantor",
     "en": "Work Phone"
+  },
+  "numberPhone": {
+    "id": "Nomor Telepon",
+    "en": "Phone Number"
   },
   "division": {
     "id": "Division",

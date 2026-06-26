@@ -40,6 +40,7 @@ import { useStudents } from "./components/useStudents";
 import { FaceRegisterUploader } from "./components/FaceRegisterUploader";
 import { useProfileUser } from "@/features/parents/hooks/useProfileParent";
 import ProfileDialog from "./components/ProfileDialog";
+import { API_CONFIG } from "@/core/configs";
 
 export interface UserMenuItem {
   title?: string;
@@ -180,6 +181,8 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
       setLoading(false);
     }
   };
+
+
 
   return (
     <>
@@ -385,6 +388,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
           onClose={() => setOpenProfile(false)}
           user={user}
           loading={loading}
+          setLoading={setLoading}
           handleToggle={handleToggle}
           profile={profile}
         />

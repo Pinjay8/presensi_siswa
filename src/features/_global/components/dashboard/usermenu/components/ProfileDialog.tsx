@@ -1,3 +1,4 @@
+import { API_CONFIG } from "@/core/configs";
 import { lang } from "@/core/libs";
 import {
   Avatar,
@@ -14,12 +15,14 @@ import {
   Typography,
 } from "@mui/material";
 import { XIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface ProfileDialogProps {
   open: boolean;
   onClose: () => void;
   user: any;
   loading: boolean;
+  setLoading: (loading: boolean) => void;
   handleToggle: (checked: boolean) => void;
   profile: any;
 }
@@ -29,10 +32,32 @@ export default function ProfileDialog({
   onClose,
   user,
   loading,
+  setLoading,
   handleToggle,
   profile,
 }: ProfileDialogProps) {
   const isAdmin = profile?.user?.role === "admin";
+
+  //   const [loading, setLoading] = useState<boolean>(false);
+  const [status, setStatus] = useState<any>(null);
+
+  const fetchStatus = async () => {
+    try {
+      setLoading(true);
+
+      const response = await fetch(`${API_CONFIG.baseUrl}/license/status`);
+
+      const data = await response.json();
+      console.log("🚀 ~ data", data);
+      setStatus(data);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStatus();
+  }, []);
   return (
     <Dialog
       open={open}
@@ -104,7 +129,7 @@ export default function ProfileDialog({
 
                 <Box>
                   <Typography variant="body1" color="text.secondary">
-                    No Telepon
+                    {lang.text("numberPhone")}
                   </Typography>
                   <Typography>{user?.noTlp || "-"}</Typography>
                 </Box>
@@ -114,15 +139,30 @@ export default function ProfileDialog({
                   <>
                     <Box>
                       <Typography variant="body1" color="text.secondary">
+                        {lang.text("license")}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        {status?.data.expiryDate
+                          ? new Date(status.data.expiryDate).toLocaleString(
+                              "id-ID",
+                              {
+                                dateStyle: "long",
+                                timeStyle: "medium",
+                              },
+                            )
+                          : "-"}
+                      </Typography>
+                    </Box>
+                    <Divider />
+                    <Box>
+                      <Typography variant="body1" color="text.secondary">
                         Sekolah
                       </Typography>
                       <Typography>
                         {user?.sekolah?.namaSekolah || "-"}
                       </Typography>
                     </Box>
-
                     <Divider />
-
                     <div className="flex  flex-col gap-2">
                       <Typography variant="body1" color="text.secondary">
                         {lang.text("notify")}
