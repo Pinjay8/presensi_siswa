@@ -2,11 +2,22 @@ import { lang } from "@/core/libs";
 import { z } from "zod";
 
 export const courseCreateSchema = z.object({
-  courseName: z.string().min(1, {
-    message: lang.text("fieldIsRequired", { field: lang.text("course") }),
+  namaMataPelajaran: z.string().min(1, {
+    message: lang.text("fieldIsRequired", {
+      field: lang.text("course"),
+    }),
   }),
-  // classroom?: z.number(),
-  school: z.number(),
-  classroom: z.number(),
-  // tipe: z.string(),
+
+  kode: z.string().max(16).optional(),
+
+  kelompok: z.string().default("").optional(),
+
+  kelas: z
+    .array(
+      z.object({
+        kelasId: z.coerce.number().optional(),
+        guruId: z.coerce.number().optional(),
+      }),
+    )
+    .default([]),
 });

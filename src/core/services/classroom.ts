@@ -24,6 +24,7 @@ export const classroomService = {
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.classroom.classroom,
       getInitialOptions,
     )({ path: String(id) }),
+
   delete: (id: number) =>
     http.delete<BaseResponse<ClassroomDataModel>>(
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.classroom.classroom,

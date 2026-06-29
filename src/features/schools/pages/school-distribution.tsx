@@ -259,7 +259,7 @@ export const SchoolDistribution = () => {
                 isLoading={isLoading}
                 changes={changes}
               />
-              <SchoolMap />
+              {/* <SchoolMap /> */}
             </>
           ))}
         {/* {profile?.user?.role !== "superAdmin" && <StudentDemographicsCharts />} */}

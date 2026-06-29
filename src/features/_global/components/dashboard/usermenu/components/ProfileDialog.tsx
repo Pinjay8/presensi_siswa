@@ -48,7 +48,6 @@ export default function ProfileDialog({
       const response = await fetch(`${API_CONFIG.baseUrl}/license/status`);
 
       const data = await response.json();
-      console.log("🚀 ~ data", data);
       setStatus(data);
     } finally {
       setLoading(false);
@@ -156,7 +155,7 @@ export default function ProfileDialog({
                     <Divider />
                     <Box>
                       <Typography variant="body1" color="text.secondary">
-                        Sekolah
+                       {lang.text("school")}
                       </Typography>
                       <Typography>
                         {user?.sekolah?.namaSekolah || "-"}

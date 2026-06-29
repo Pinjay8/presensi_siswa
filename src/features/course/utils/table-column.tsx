@@ -110,10 +110,10 @@ export const courseColumns = ({
   onEdit,
   onDelete,
 }: any & {
-  onEdit?: (course: CourseDataModel) => void;
-  onDelete?: (course: CourseDataModel) => void;
-}): ColumnDef<CourseDataModel>[] => {
-  const columns: ColumnDef<CourseDataModel>[] = [
+  onEdit?: (course: any) => void;
+  onDelete?: (course: any) => void;
+}): ColumnDef<any>[] => {
+  const columns: ColumnDef<any>[] = [
     {
       accessorKey: "namaMataPelajaran",
       accessorFn: (row) => row.namaMataPelajaran,
@@ -127,29 +127,25 @@ export const courseColumns = ({
         );
       },
       cell: ({ row }) => {
-        return <span>{row.original.namaMataPelajaran}</span>;
+        return <span>{row.original.namaMataPelajaran || "-"}</span>;
       },
     },
-
-    // {
-    //   accessorKey: "kelas",
-    //   accessorFn: (row) => row.kelas?.namaKelas,
-    //   header: ({ column }) => {
-    //     return (
-    //       <BaseTableHeader
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         {lang.text("className")}
-    //       </BaseTableHeader>
-    //     );
-    //   },
-    //   // meta: {
-    //   //   filterLabel: lang.text("className"),
-    //   //   filterPlaceholder: lang.text("selectClassRoom"),
-    //   //   filterVariant: "select",
-    //   //   filterOptions: schoolOptions,
-    //   // },
-    // },
+    {
+      accessorKey: "kode",
+      accessorFn: (row) => row.kode,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("code")}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        return <span>{row.original.kode || "-"}</span>;
+      },
+    },
   ];
 
   if (isAdmin) {

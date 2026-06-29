@@ -31,6 +31,10 @@
     "en": "Third YouTube URL",
     "id": "URL Youtube 3"
   },
+  "code": {
+    "en": "Code",
+    "id": "Kode"
+  },
   "imageMessage": {
     "en": "Only PNG, JPG and JPEGd are supported",
     "id": "Hanya PNG, JPG dan JPEG yang didukung"
@@ -1815,6 +1819,10 @@
     "id": "Masukan nama mata pelajaran",
     "en": "Insert course name"
   },
+  "inputCode": {
+    "id": "Masukan kode mata pelajaran",
+    "en": "Insert course code"
+  },
   "inputEkstrakurikuler": {
     "id": "Masukan nama ekstrakurikuler",
     "en": "Insert extracurricular name"
@@ -1847,6 +1855,10 @@
   "selectClassroom": {
     "id": "Pilih kelas",
     "en": "Choose classroom"
+  },
+  "selectTeacher": {
+    "id": "Pilih guru",
+    "en": "Choose teacher"
   },
   "selectAdvisor": {
     "id": "Pilih Pembina",

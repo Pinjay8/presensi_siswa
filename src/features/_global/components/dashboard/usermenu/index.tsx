@@ -182,8 +182,6 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
     }
   };
 
-
-
   return (
     <>
       <DropdownMenu>
@@ -480,7 +478,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
 
                     <Box>
                       <Typography variant="body1" color="text.secondary">
-                        Jenis Kelamin
+                        {lang.text("gender")}
                       </Typography>
                       <Typography>{user?.jenisKelamin || "-"}</Typography>
                     </Box>
@@ -489,7 +487,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
 
                     <Box>
                       <Typography variant="body1" color="text.secondary">
-                        Tanggal Lahir
+                        {lang.text("dateOfBirth")}
                       </Typography>
                       <Typography>
                         {user?.tanggalLahir
@@ -502,7 +500,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
 
                     <Box>
                       <Typography variant="body1" color="text.secondary">
-                        Alamat
+                        {lang.text("address")}
                       </Typography>
                       <Typography>{user?.alamat || "-"}</Typography>
                     </Box>
@@ -511,7 +509,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
 
                     <Box>
                       <Typography variant="body1" color="text.secondary">
-                        No Telepon
+                        {lang.text("numberPhone")}
                       </Typography>
                       <Typography>{user?.noTlp || "-"}</Typography>
                     </Box>
@@ -520,7 +518,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
 
                     <Box>
                       <Typography variant="body1" color="text.secondary">
-                        Sekolah
+                        {lang.text("school")}
                       </Typography>
                       <Typography>
                         {user?.sekolah?.namaSekolah || "-"}

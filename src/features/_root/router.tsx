@@ -84,6 +84,14 @@ export const router = createBrowserRouter(
               Component: m.ScheduleLanding,
             })),
         },
+        //
+        {
+          path: "schedules/:id",
+          lazy: () =>
+            import("@/features/schedules").then((m) => ({
+              Component: m.ScheduleDetailLanding,
+            })),
+        },
         {
           path: "schedules-ekstrakurikuler",
           lazy: () =>

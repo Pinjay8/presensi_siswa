@@ -4,11 +4,11 @@ import { useMutation } from "@tanstack/react-query";
 
 export const useCourseCreation = () => {
   const createMutation = useMutation({
-    mutationFn: (vars: CourseCreationModel) => courseService.create(vars),
+    mutationFn: (vars: any) => courseService.create(vars),
   });
 
   const updateMutation = useMutation({
-    mutationFn: (vars: { id: number; payload: CourseCreationModel }) =>
+    mutationFn: (vars: { id: number; payload: any }) =>
       courseService.update(vars.id, vars.payload),
   });
 
@@ -16,10 +16,9 @@ export const useCourseCreation = () => {
     mutationFn: (vars: { id: number }) => courseService.delete(vars.id),
   });
 
-  const create = (form: CourseCreationModel) =>
-    createMutation.mutateAsync(form);
+  const create = (form: any) => createMutation.mutateAsync(form);
 
-  const update = (id: number, payload: CourseCreationModel) =>
+  const update = (id: number, payload: any) =>
     updateMutation.mutateAsync({ id, payload });
 
   const remove = (id: number) => deleteMutation.mutateAsync({ id });

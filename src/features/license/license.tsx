@@ -7,7 +7,7 @@ import {
   CardDescription,
   Button,
 } from "@/core/libs";
-import { AlertCircle, CheckCircle2, Upload } from "lucide-react";
+import { AlertCircle, CheckCircle2, Trash2, Upload } from "lucide-react";
 import { API_CONFIG } from "@/core/configs";
 import { authService } from "@/core/services";
 import { useNavigate } from "react-router-dom";
@@ -69,9 +69,13 @@ const LicenseLanding = () => {
         // navigate("/", { replace: true });
         window.location.href = "/";
         alert.success("Successfully activate license");
+      } else {
+        alert.error(res.message);
       }
 
       // await fetchStatus();
+    } catch (error: any) {
+      alert.error(error.message || "Failed to upload license");
     } finally {
       setUploading(false);
     }
@@ -162,6 +166,16 @@ const LicenseLanding = () => {
                     <div className="text-sm text-muted-foreground">
                       {(file.size / 1024).toFixed(2)} KB
                     </div>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="mt-3"
+                      onClick={() => setFile(null)}
+                      icon={<Trash2 className="mr-2 h-4 w-4" />}
+                    >
+                      Remove File
+                    </Button>
                   </div>
                 )}
 

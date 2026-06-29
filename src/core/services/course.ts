@@ -14,6 +14,17 @@ export const courseService = {
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.school.courses,
       getInitialOptions,
     )({ path: String(id) }),
+  getPaginated: (params?: { page?: number; limit?: number }) => {
+    const search = new URLSearchParams();
+
+    if (params?.page) search.append("page", String(params.page));
+    if (params?.limit) search.append("limit", String(params.limit));
+
+    return http.get<BaseResponse<any[]>>(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.school.courses}?${search.toString()}`,
+      getInitialOptions,
+    )();
+  },
   delete: (id: number) =>
     http.delete<BaseResponse<CourseDataModel>>(
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.school.courses,

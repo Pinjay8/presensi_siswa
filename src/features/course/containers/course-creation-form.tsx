@@ -23,7 +23,6 @@ import { useAlert } from "@/features/_global/hooks";
 import { useSchool } from "@/features/schools";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import * as XLSX from "xlsx";
 import { z } from "zod";
 import { useCourse, useCourseCreation } from "../hooks";
@@ -31,13 +30,18 @@ import { courseCreateSchema } from "../utils";
 import { useClassroom } from "@/features/classroom";
 import { useProfile } from "@/features/profile";
 import { FaFileExcel } from "react-icons/fa";
+import { useTeacherDetail } from "@/features/teacher/hooks";
+import { useBiodataGuru } from "@/features/user";
+import { useFieldArray, useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Interface for initial data
 interface CourseInitialData {
   id?: number;
   namaMataPelajaran?: string;
-  sekolahId?: number;
-  kelasId?: number;
+  kode?: string;
+  kelompok: string;
+  kelas?: any;
   // tipe?: string;
 }
 
@@ -63,6 +67,7 @@ export const CourseCreationForm = ({
   initialData?: CourseInitialData;
 }) => {
   const classroom = useClassroom();
+  const teacher = useBiodataGuru();
   const creation = useCourseCreation();
   const alert = useAlert();
   const profile = useProfile();
@@ -75,43 +80,58 @@ export const CourseCreationForm = ({
   const form = useForm<z.infer<typeof courseCreateSchema>>({
     resolver: zodResolver(courseCreateSchema),
     defaultValues: {
-      courseName: initialData?.namaMataPelajaran || "",
-      // school: initialData?.sekolahId || profile?.user?.sekolahId || 0,
-      // classroom: initialData?.kelasId || 0,
-      // tipe: initialData?.tipe || "",
+      namaMataPelajaran: initialData?.namaMataPelajaran || "",
+      kode: initialData?.kode || "",
+      kelompok: initialData?.kelompok || "",
+      kelas:
+        initialData?.kelas?.length > 0
+          ? initialData?.kelas
+          : [{ kelasId: 0, guruId: undefined }],
     },
   });
 
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "kelas",
+  });
+
+  const queryClient = useQueryClient();
+
   async function onSubmit(data: z.infer<typeof courseCreateSchema>) {
+    console.log("data", data);
     try {
       if (!isEdit) {
         const isDuplicate = resource.data?.some(
           (course) =>
             course.namaMataPelajaran.toLowerCase() ===
-            data.courseName.toLowerCase(),
+            data.namaMataPelajaran.toLowerCase(),
         );
 
         if (isDuplicate) {
           alert.error(
-            lang.text("errorDuplicateCourse", { context: data.courseName }),
+            lang.text("errorDuplicateCourse", {
+              context: data.namaMataPelajaran,
+            }),
           );
           return;
         }
       }
 
+      const kelas = data.kelas.filter(
+        (item) => item.kelasId && item.kelasId > 0,
+      );
+
+      const payload = {
+        namaMataPelajaran: data.namaMataPelajaran,
+        ...(data.kode && { kode: data.kode }),
+        ...(data.kelompok && { kelompok: data.kelompok }),
+        ...(kelas.length > 0 && { kelas }),
+      };
+
       if (isEdit) {
-        await creation.update(Number(initialData?.id), {
-          namaMataPelajaran: data.courseName,
-          // kelasId: Number(data.classroom), // Include kelasId in update
-          // tipe: data.tipe,
-        });
+        await creation.update(Number(initialData?.id), payload);
       } else {
-        await creation.create({
-          namaMataPelajaran: data.courseName,
-          // sekolahId: data.school,
-          // kelasId: Number(data.classroom),
-          // tipe: data.tipe,
-        });
+        await creation.create(payload);
       }
 
       alert.success(
@@ -120,7 +140,10 @@ export const CourseCreationForm = ({
           : lang.text("successCreate", { context: lang.text("course") }),
       );
 
-      resource.query.refetch();
+      await queryClient.invalidateQueries({
+        queryKey: ["courses"],
+      });
+
       onClose?.();
     } catch (err: any) {
       alert.error(
@@ -263,6 +286,7 @@ export const CourseCreationForm = ({
     }
   };
 
+
   return (
     <div>
       {!isEdit && (
@@ -285,7 +309,7 @@ export const CourseCreationForm = ({
       )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mb-8">
-          <div className="max-w-lg gap-6">
+          <div className="max-w-2xl gap-6">
             <div className="basis-1">
               {/* <div className="flex flex-col gap-4 mb-4">
                 <div className="basis-1">
@@ -322,7 +346,7 @@ export const CourseCreationForm = ({
                 <div className="w-full">
                   <FormField
                     control={form.control}
-                    name="courseName"
+                    name="namaMataPelajaran"
                     render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel>{lang.text("course")}</FormLabel>
@@ -341,11 +365,32 @@ export const CourseCreationForm = ({
                   />
                 </div>
               </div>
-              {/* <div className="flex flex-col sm:flex-row gap-4 mt-2">
+              <div className="w-full mt-2">
+                <FormField
+                  control={form.control}
+                  name="kode"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>{lang.text("code")}</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          placeholder={lang.text("inputCode")}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage style={{ marginBottom: "5px" }}>
+                        {fieldState.error?.message}
+                      </FormMessage>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4 mt-2">
                 <div className="w-full">
                   <FormField
                     control={form.control}
-                    name="tipe"
+                    name="kelompok"
                     render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel>{lang.text("type")}</FormLabel>
@@ -360,12 +405,18 @@ export const CourseCreationForm = ({
                           </FormControl>
 
                           <SelectContent>
-                            <SelectItem value="mata_pelajaran">
-                              Mata Pelajaran
+                            <SelectItem value="WAJIB_UMUM">Umum</SelectItem>
+                            <SelectItem value="PEMINATAN_IPA">
+                              Peminatan IPA
                             </SelectItem>
-                            <SelectItem value="ekstrakulikuler">
-                              Ekstrakurikuler
+                            <SelectItem value="PEMINATAN_IPS">
+                              Peminatan IPS
                             </SelectItem>
+                            <SelectItem value="PEMINATAN_BAHASA">
+                              Peminatan Bahasa
+                            </SelectItem>
+                            <SelectItem value="KEJURUAN">Kejuruan</SelectItem>
+                            <SelectItem value="MULOK">Mulok</SelectItem>
                           </SelectContent>
                         </Select>
 
@@ -374,40 +425,95 @@ export const CourseCreationForm = ({
                     )}
                   />
                 </div>
-              </div> */}
-              {/* <div className="flex flex-col gap-4 mt-2">
-                <div className="basis-1">
-                  <FormField
-                    control={form.control}
-                    name="classroom"
-                    render={({ field, fieldState }) => (
-                      <FormItem className="mb-2 w-[450px]">
-                        <FormLabel>{lang.text("classroom")}</FormLabel>
+              </div>
+              <div className="flex flex-col gap-4 mt-4 w-full">
+                <FormLabel>Kelas & Guru</FormLabel>
+
+                {fields.map((item, index) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center gap-2 lg:flex-nowrap "
+                  >
+                    <FormField
+                      control={form.control}
+                      name={`kelas.${index}.kelasId`}
+                      render={({ field }) => (
                         <Select
                           value={field.value ? String(field.value) : undefined}
                           onValueChange={(x) => field.onChange(Number(x))}
                         >
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue
-                                placeholder={lang.text("selectClassroom")}
-                              />
+                            <SelectTrigger className="w-[260px]">
+                              <SelectValue placeholder="Pilih Kelas" />
                             </SelectTrigger>
                           </FormControl>
+
                           <SelectContent>
-                            {classroom.data.map((option, i) => (
-                              <SelectItem key={i} value={String(option.id)}>
+                            {classroom.data.map((option) => (
+                              <SelectItem
+                                key={option.id}
+                                value={String(option.id)}
+                              >
                                 {option.namaKelas}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
-                        <FormMessage>{fieldState.error?.message}</FormMessage>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div> */}
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name={`kelas.${index}.guruId`}
+                      render={({ field }) => (
+                        <Select
+                          value={field.value ? String(field.value) : undefined}
+                          onValueChange={(x) => field.onChange(Number(x))}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-[260px]">
+                              <SelectValue placeholder="Pilih Guru" />
+                            </SelectTrigger>
+                          </FormControl>
+
+                          <SelectContent>
+                            {teacher.data.map((option) => (
+                              <SelectItem
+                                key={option.id}
+                                value={String(option.id)}
+                              >
+                                {option.namaGuru}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      onClick={() => remove(index)}
+                      // style={{ width: "100%" }}
+                    >
+                      Hapus
+                    </Button>
+                  </div>
+                ))}
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    append({
+                      kelasId: 0,
+                      guruId: undefined,
+                    })
+                  }
+                >
+                  Tambah Kelas
+                </Button>
+              </div>
               <div className="py-4">
                 <Button
                   // disabled={

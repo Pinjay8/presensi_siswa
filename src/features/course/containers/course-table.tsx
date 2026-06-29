@@ -21,6 +21,9 @@ import { FaPlus } from "react-icons/fa";
 import { useUserCreation } from "@/features/user";
 import { DeleteDialog } from "@/features/cards/components/DeleteCardDialog";
 import { Divider } from "@mui/material";
+import { useCoursePagination } from "../hooks/useCoursePagination";
+import { courseService } from "@/core/services";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const CourseTable = () => {
   const {
@@ -34,11 +37,22 @@ export const CourseTable = () => {
     defaultPageSize: 10,
   });
 
-  const resource = useCourse();
+  const params = {
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+  };
+
+  // const resource = useCourse();
+  const {
+    data: resource,
+    pagination: paginationInfo,
+    isLoading,
+    query,
+  } = useCoursePagination(params);
   const school = useSchool();
   const classroom = useClassroom();
   const [createCourse, setCreateCourse] = useState(false);
-  const [editCourse, setEditCourse] = useState<CourseDataModel | null>(null);
+  const [editCourse, setEditCourse] = useState<any | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [openDelete, setOpenDelete] = useState(false);
   const alert = useAlert();
@@ -57,11 +71,16 @@ export const CourseTable = () => {
   };
   const userDelete = useUserCreation();
 
+  const queryClient = useQueryClient();
+
   async function handleDelete() {
     try {
-      await userDelete.deleteUser(Number(selectedCourse?.id));
+      await courseService.delete(Number(selectedCourse?.id));
       alert.success(lang.text("successDelete"));
-      resource.query.refetch();
+      await queryClient.invalidateQueries({
+        queryKey: ["courses"],
+      });
+
       setOpenDelete(false);
       setSelectedCourse(null);
     } catch (error: any) {
@@ -73,15 +92,20 @@ export const CourseTable = () => {
     () =>
       courseColumns({
         isAdmin,
-        onEdit: (course: any) => setEditCourse(course),
+        onEdit: (course: any) => {
+          console.log("COURSE", course);
+          console.log("KELAS", course.kelas);
+
+          setEditCourse(course);
+        },
         onDelete: (course: any) => handleOpenDeleteDialog(course),
       }),
-    [school.data, classroom.data],
+    [resource],
   );
 
   const filteredCourseData = useMemo(
-    () => distinctObjectsByProperty(resource.data || [], "namaMataPelajaran"),
-    [resource.data],
+    () => distinctObjectsByProperty(resource || [], "namaMataPelajaran"),
+    [resource],
   );
 
   return (
@@ -91,9 +115,9 @@ export const CourseTable = () => {
         onClose={() => setCreateCourse(false)}
       />
       <Dialog open={!!editCourse} onOpenChange={() => setEditCourse(null)}>
-        <DialogContent>
+        <DialogContent className="max-w-2xl w-full pt-10">
           <DialogHeader>
-            <DialogTitle style={{ marginTop: "15px" }}>
+            <DialogTitle style={{ marginTop: "5px" }}>
               {lang.text("editCourse")}
             </DialogTitle>
           </DialogHeader>
@@ -104,7 +128,13 @@ export const CourseTable = () => {
               initialData={{
                 id: editCourse.id,
                 namaMataPelajaran: editCourse.namaMataPelajaran,
-                // kelasId: editCourse.kelas?.id,
+                kode: editCourse.kode,
+                kelompok: editCourse.kelompok,
+                kelas:
+                  editCourse.mapelKelas?.map((item: any) => ({
+                    kelasId: item.kelas?.id,
+                    guruId: item.guru?.id,
+                  })) ?? [],
               }}
             />
           )}
@@ -130,8 +160,11 @@ export const CourseTable = () => {
             : []),
         ]}
         searchParamPagination
+        rowCount={paginationInfo?.total ?? 0}
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
         searchPlaceholder={lang.text("search")}
-        isLoading={resource.query.isLoading}
+        isLoading={isLoading}
       />
       <DeleteDialog
         open={openDelete}
