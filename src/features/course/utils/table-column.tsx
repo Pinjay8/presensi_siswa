@@ -146,6 +146,22 @@ export const courseColumns = ({
         return <span>{row.original.kode || "-"}</span>;
       },
     },
+    {
+      accessorKey: "kelompok",
+      accessorFn: (row) => row.kelompok,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("group")}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        return <span>{row.original.kelompok || "-"}</span>;
+      },
+    },
   ];
 
   if (isAdmin) {

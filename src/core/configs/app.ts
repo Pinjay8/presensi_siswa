@@ -24,6 +24,9 @@ export const SERVICE_ENDPOINTS = {
   attedance: {
     createAttedance: "/api/absen-masuk-manual",
   },
+  excel: {
+    importExcel: "/api/upload-excel",
+  },
   auth: {
     login: "/login",
     logout: "/api/logout",
@@ -57,6 +60,7 @@ export const SERVICE_ENDPOINTS = {
     schools2: "/api/sekolah",
     classrooms: "/api/kelas",
     courses: "/api/mata-pelajaran",
+    mapelClassroom: "/api/mapel-kelas",
   },
   schedule: {
     create: "/api/jadwal-mata-pelajaran",

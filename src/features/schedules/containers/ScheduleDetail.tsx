@@ -157,7 +157,7 @@ export function ScheduleDetail(props: ScheduleDetailProps) {
     limit: pagination.pageSize,
     kelasId: props?.id,
   });
-  console.log("schedules", schedules);
+
 
   const courses = useCourse();
   const teachers = useBiodataGuru();
@@ -736,13 +736,13 @@ export function ScheduleDetail(props: ScheduleDetailProps) {
   };
 
   // Render loading state
-  //   if (!schedules?.data || schedules.isLoading) {
-  //     return (
-  //       <div className="w-full h-[400px] border-dashed border-black/10 rounded-md flex items-center justify-center text-center">
-  //         <p className="text-center">{lang.text("loadingScheduleMapel")}</p>
-  //       </div>
-  //     );
-  //   }
+    if (!schedules?.data || schedules.isLoading) {
+      return (
+        <div className="w-full h-[400px] border-dashed border-black/10 rounded-md flex items-center justify-center text-center">
+          <p className="text-center">{lang.text("loadingScheduleMapel")}</p>
+        </div>
+      );
+    }
 
   const isRoleSiswa = profile?.user?.role === "siswa";
   const isRoleGuru = profile?.user?.role === "guru";
@@ -839,23 +839,7 @@ export function ScheduleDetail(props: ScheduleDetailProps) {
           </div>
         </div>
         <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-7">
-            <BaseDataTable
-              columns={[]}
-              data={[]}
-              dataFallback={[]}
-              globalSearch
-              showFilterButton
-              searchParamPagination
-              searchPlaceholder={lang.text("search")}
-            //   isLoading={isLoading}
-              manualPagination
-            //   rowCount={paginationInfo?.total ?? 0}
-              pagination={pagination}
-              onPaginationChange={onPaginationChange}
-            />
-          </div>
-          <div className="col-span-5">
+          <div className="col-span-12">
             {Object.keys(groupedByClassAndDay).length > 0 &&
             selectedDays.length > 0 ? (
               Object.keys(groupedByClassAndDay)

@@ -35,6 +35,10 @@
     "en": "Code",
     "id": "Kode"
   },
+  "cardStudent": {
+    "en": "Student Card",
+    "id": "Kartu Siswa"
+  },
   "imageMessage": {
     "en": "Only PNG, JPG and JPEGd are supported",
     "id": "Hanya PNG, JPG dan JPEG yang didukung"
@@ -314,6 +318,11 @@
     "en": "Daily",
     "id": "Harian"
   },
+  "day": {
+    "en": "Day",
+    "id": "Hari"
+  },
+ 
 
   "weeks": {
     "en": "Weeks",
@@ -570,7 +579,7 @@
   },
   "startDate": {
     "id": "Tanggal Mulai",
-    "en": "Date Start"
+    "en": "Start Date"
   },
   "workPhone": {
     "id": "Nomor Kantor",
@@ -1341,6 +1350,10 @@
     "id": "Mata Pelajaran",
     "en": "Courses"
   },
+  "chooseCourse": {
+    "id": "Pilih Mata Pelajaran",
+    "en": "Choose Course"
+  },
   "createStudents": {
     "id": "Tambah Siswa",
     "en": "Add Students"
@@ -1863,6 +1876,10 @@
   "selectAdvisor": {
     "id": "Pilih Pembina",
     "en": "Choose advisor"
+  },
+  "group": {
+    "id": "Kelompok",
+    "en": "Group"
   },
   "addCourse": {
     "id": "Tambah Mata Pelajaran",

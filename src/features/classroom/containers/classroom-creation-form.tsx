@@ -20,7 +20,7 @@ import { useAlert } from "@/features/_global/hooks";
 import { useSchool } from "@/features/schools";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import {
   useClassroom,
@@ -40,6 +40,7 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
   const creation = useClassroomCreation();
   const alert = useAlert();
   const resource = useClassroom();
+  const navigate = useNavigate();
 
   const isEdit = Boolean(detail?.data?.id);
 
@@ -72,7 +73,9 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
           : lang.text("successCreate", { context: lang.text("classroom") }),
       );
 
-      resource.query.refetch();
+      await resource.query.refetch();
+
+      navigate("/classrooms");
     } catch (err: any) {
       alert.error(
         err?.message ||

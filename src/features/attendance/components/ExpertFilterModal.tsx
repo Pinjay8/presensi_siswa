@@ -87,7 +87,7 @@ const ExportFilterModal = ({
           <select
             value={selectedClass?.id ?? ""}
             onChange={(e) => {
-              const selected = classOptions?.find(
+              const selected = classOptions?.data.find(
                 (kelas: any) => kelas.id === Number(e.target.value),
               );
 
@@ -97,9 +97,9 @@ const ExportFilterModal = ({
           >
             <option value="">{lang.text("allClassRoom")}</option>
 
-            {classOptions?.map((kelas: any) => (
+            {classOptions?.data.map((kelas: any) => (
               <option key={kelas.id} value={kelas.id}>
-                {kelas.name}
+                {kelas.namaKelas}
               </option>
             ))}
           </select>

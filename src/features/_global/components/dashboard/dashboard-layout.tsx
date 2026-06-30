@@ -103,7 +103,8 @@ export const DashboardLayout = React.memo(
 
           if (
             (role === "admin" && data.title === "Scan Kehadiran Mapel") ||
-            data.title === "Scan Attendance Schedule"
+            data.title === "Scan Attendance Schedule" ||
+            data.title === lang.text("cardStudent")
           ) {
             return null;
           }

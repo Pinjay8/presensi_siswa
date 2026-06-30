@@ -20,6 +20,8 @@ import { io } from "socket.io-client";
 import ExportFilterModal from "../components/ExpertFilterModal";
 import { AttendanceFilter } from "../components/AttendanceFilter";
 import { attendanceService } from "@/core/services/pagination";
+import { useSchool } from "@/features/schools";
+import { useClassroom } from "@/features/classroom";
 
 // Konfigurasi dayjs untuk timezone
 dayjs.extend(utc);
@@ -39,8 +41,6 @@ export const StudentAttendance = () => {
   useEffect(() => {
     localStorage.setItem("attendanceTarget", "students");
   }, []);
-
-  const biodataAll = useBiodata();
 
   const [selectedStartMonth, setSelectedStartMonth] = useState<string>(
     dayjs().tz("Asia/Jakarta").startOf("month").format("YYYY-MM"),
@@ -112,17 +112,19 @@ export const StudentAttendance = () => {
     };
   }, [refetch]);
 
-  const classOptions = Array.from(
-    new Map(
-      (biodataAll.data ?? []).map((student: any) => [
-        student.kelas?.id,
-        {
-          id: student.kelas?.id,
-          name: student.kelas?.namaKelas,
-        },
-      ]),
-    ).values(),
-  );
+  const classroom = useClassroom();
+
+  // const classOptions = Array.from(
+  //   new Map(
+  //     (biodataAll.data ?? []).map((student: any) => [
+  //       student.kelas?.id,
+  //       {
+  //         id: student.kelas?.id,
+  //         name: student.kelas?.namaKelas,
+  //       },
+  //     ]),
+  //   ).values(),
+  // );
   const attendanceCount = filteredData.length;
 
   const handleExportExcel = async (params: any) => {
@@ -219,7 +221,7 @@ export const StudentAttendance = () => {
         selectedStartMonth={selectedStartMonth}
         selectedEndMonth={selectedEndMonth}
         selectedClass={selectedClass}
-        classOptions={classOptions}
+        classOptions={classroom}
         setSelectedClass={setSelectedClass}
         setSelectedStartMonth={setSelectedStartMonth}
         setSelectedEndMonth={setSelectedEndMonth}

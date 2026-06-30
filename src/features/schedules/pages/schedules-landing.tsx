@@ -13,7 +13,7 @@ export const ScheduleLanding = () => {
           url: "/schedules",
         },
       ]}
-      title={lang.text("scheduleMapel")}
+      title={lang.text("classroom")}
     >
       <ScheduleLandingContent />
       <div className="pb-16 sm:pb-0" />

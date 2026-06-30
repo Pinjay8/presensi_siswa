@@ -76,7 +76,7 @@ export function AddScheduleDialog({
         </DialogHeader>
         <Divider />
         <div className="grid gap-3 py-4 pt-0">
-          <div className="grid gap-2">
+          {/* <div className="grid gap-2">
             <label htmlFor="kelasId">Kelas</label>
             <Select
               onValueChange={(value) =>
@@ -99,16 +99,17 @@ export function AddScheduleDialog({
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
+
           <div className="grid gap-2">
-            <label htmlFor="hari">Hari</label>
+            <label htmlFor="hari">{lang.text("day")}</label>
             <Select
               onValueChange={(value) =>
                 setFormData({ ...formData, hari: value })
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="Pilih Hari" />
+                <SelectValue placeholder={lang.text("selectDays")} />
               </SelectTrigger>
               <SelectContent>
                 {daysOrder.map((day) => (
@@ -120,15 +121,14 @@ export function AddScheduleDialog({
             </Select>
           </div>
           <div className="grid gap-2">
-            <label htmlFor="mataPelajaranId">Mata Pelajaran</label>
+            <label htmlFor="mataPelajaranId">{lang.text("course")}</label>
             <Select
               onValueChange={(value) =>
-                setFormData({ ...formData, mataPelajaranId: parseInt(value) })
+                setFormData({ ...formData, mapelKelasId: parseInt(value) })
               }
-              // disabled={selectedKelasIdForAdd === 0}
             >
               <SelectTrigger>
-                <SelectValue placeholder={"Pilih Mata Pelajaran"} />
+                <SelectValue placeholder={lang.text("chooseCourse")} />
               </SelectTrigger>
               <SelectContent className="px-2">
                 <div className="py-1 mb-2">
@@ -141,15 +141,15 @@ export function AddScheduleDialog({
                     className="w-full"
                   />
                 </div>
-                {filteredCourses.map((course: any) => (
-                  <SelectItem key={course.id} value={course.id.toString()}>
-                    {course.namaMataPelajaran}
+                {filteredCourses.data?.map((course: any) => (
+                  <SelectItem key={course.id} value={course.mapelKelasId}>
+                    {course.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
-          <div className="grid gap-2">
+          {/* <div className="grid gap-2">
             <label htmlFor="guruId">Guru</label>
             <Select
               onValueChange={(value) =>
@@ -177,9 +177,9 @@ export function AddScheduleDialog({
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
           <div className="grid gap-2">
-            <label htmlFor="jamMulai">Jam Mulai</label>
+            <label htmlFor="jamMulai">{lang.text("startDate")}</label>
             <Input
               type="time"
               value={formData.jamMulai}
@@ -190,7 +190,7 @@ export function AddScheduleDialog({
             />
           </div>
           <div className="grid gap-2">
-            <label htmlFor="jamSelesai">Jam Selesai</label>
+            <label htmlFor="jamSelesai">{lang.text("endDate")}</label>
             <Input
               type="time"
               value={formData.jamSelesai}

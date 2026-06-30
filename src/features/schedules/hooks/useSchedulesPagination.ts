@@ -21,7 +21,7 @@ export const useSchedulesPagination = ({
   const enabled = auth.isAuthenticated() && Boolean(profile.user?.id);
 
   const query = useQuery({
-    enabled,
+    enabled: !!kelasId,
     queryKey: ["schedules", page, limit, kelasId],
     queryFn: () =>
       scheduleService.getPaginated({

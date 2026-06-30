@@ -101,6 +101,8 @@ export const TeacherCreationForm = ({ id }: any) => {
         : {}),
     };
 
+    console.time("update");
+
     try {
       if (decodeParams?.id) {
         await creation.update(Number(decodeParams.id), payload);
@@ -113,6 +115,8 @@ export const TeacherCreationForm = ({ id }: any) => {
           ? lang.text("successUpdate", { context: lang.text("teacher") })
           : lang.text("successCreate", { context: lang.text("teacher") }),
       );
+
+      console.timeEnd("update");
 
       navigate(-1);
     } catch (err: any) {

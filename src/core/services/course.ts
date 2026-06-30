@@ -25,6 +25,10 @@ export const courseService = {
       getInitialOptions,
     )();
   },
+  getMapelKelaas: http.get<BaseResponse<CourseDataModel[]>>(
+    API_CONFIG.baseUrl + SERVICE_ENDPOINTS.school.mapelClassroom,
+    getInitialOptions,
+  ),
   delete: (id: number) =>
     http.delete<BaseResponse<CourseDataModel>>(
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.school.courses,

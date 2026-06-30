@@ -92,7 +92,7 @@ export interface BaseDataTableProps {
   onPaginationChange?: any;
   rowCount?: number;
   manualPagination?: any;
-
+  onSelectionChange?: any;
   actions?: {
     title?: React.ReactNode;
     icon?: React.ReactNode;
@@ -118,6 +118,7 @@ export const BaseDataTable = ({
   showFilterButton,
   actions,
   pageSize,
+  onSelectionChange,
 }: BaseDataTableProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -157,7 +158,8 @@ export const BaseDataTable = ({
   const [sorting, setSorting] = React.useState<SortingState>(
     initialState?.sorting || [],
   );
-  const [rowSelection, setRowSelection] = React.useState({});
+  // const [rowSelection, setRowSelection] = React.useState({});
+  const [selectedRowId, setSelectedRowId] = React.useState<number | null>(null);
 
   const _data = useMemo(() => data || dataFallback, [data, dataFallback]);
 
@@ -169,11 +171,12 @@ export const BaseDataTable = ({
     filterFns: {},
     manualPagination: true,
     rowCount: rowCount,
+    // enableRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
     // getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    onRowSelectionChange: setRowSelection,
+    // onRowSelectionChange: setRowSelection,
     onPaginationChange: searchParamPagination ? () => {} : setPagination,
     enableGlobalFilter: globalSearch,
     onGlobalFilterChange: setGlobalFilter,
@@ -183,10 +186,14 @@ export const BaseDataTable = ({
     enableColumnFilters: true,
     state: {
       sorting,
-      rowSelection,
+      // rowSelection,
       columnFilters,
       pagination: searchParamPagination ? paginationSearchParams : pagination,
       ...(globalSearch && { globalFilter }),
+    },
+    meta: {
+      selectedRowId,
+      setSelectedRowId,
     },
 
     initialState,
@@ -240,9 +247,26 @@ export const BaseDataTable = ({
     table.lastPage();
   }, [table, searchParamPagination, searchParams, setSearchParams]);
 
-  // useEffect(() => {
+  // React.useEffect(() => {
+  //   const selectedIds = table
+  //     .getSelectedRowModel()
+  //     .rows.map((row: any) => row.original.id);
 
-  // }, [searchParams, setSearchParams, searchParamPagination]);
+  //   onSelectionChange?.(selectedIds);
+  // }, [rowSelection]);
+  // React.useEffect(() => {
+  //   const selectedRow = table.getSelectedRowModel().rows[0];
+
+  //   onSelectionChange?.(selectedRow?.original);
+  // }, [rowSelection, table, onSelectionChange]);
+
+  React.useEffect(() => {
+    const row = table
+      .getRowModel()
+      .rows.find((r) => r.original.id === selectedRowId);
+
+    onSelectionChange?.(row?.original ?? null);
+  }, [selectedRowId]);
 
   const renderTableHeader = () => {
     return (
@@ -301,7 +325,12 @@ export const BaseDataTable = ({
     return (
       <TableBody>
         {table.getRowModel().rows.map((row) => (
-          <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+          <TableRow
+            key={row.id}
+            data-state={
+              selectedRowId === row?.original.id ? "selected" : undefined
+            }
+          >
             {row.getVisibleCells().map((cell) => {
               const { filterColumnVisible } = cell.column.columnDef.meta || {};
 
@@ -487,7 +516,7 @@ export const BaseDataTable = ({
         )}
 
         <ScrollArea className="w-full rounded-md border">
-          <Table className="min-w-[1200px]">
+          <Table className="w-full">
             {renderTableHeader()}
             {renderTableBody()}
           </Table>

@@ -118,7 +118,7 @@ export const teacherColumnWithFilter = ({
   onDelete,
   onRegisterFace,
 }: {
-  schoolOptions: BaseDataTableFilterValueItem[];
+  schoolOptions?: BaseDataTableFilterValueItem[];
   onWaliKelas?: (teacher: any) => void;
   onAssignSchedule?: (teacher: any) => void;
   onDelete?: (teacher: any) => void;

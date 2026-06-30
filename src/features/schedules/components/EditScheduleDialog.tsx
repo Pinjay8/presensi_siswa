@@ -80,7 +80,7 @@ export function EditScheduleDialog({
 
         <Divider />
         <div className="grid gap-4 pb-4">
-          <div className="grid gap-2">
+          {/* <div className="grid gap-2">
             <label>Mata Pelajaran</label>
 
             <Select
@@ -114,8 +114,8 @@ export function EditScheduleDialog({
                 ))}
               </SelectContent>
             </Select>
-          </div>
-
+          </div> */}
+          {/* 
           <div className="grid gap-2">
             <label>Guru</label>
 
@@ -150,10 +150,77 @@ export function EditScheduleDialog({
                 ))}
               </SelectContent>
             </Select>
+          </div> */}
+
+          <div className="grid gap-2">
+            <label>{lang.text("day")}</label>
+
+            <Select
+              value={formData.hari}
+              onValueChange={(value) =>
+                setFormData((prev: any) => ({
+                  ...prev,
+                  hari: value,
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Pilih Hari" />
+              </SelectTrigger>
+
+              <SelectContent>
+                {["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"].map(
+                  (day) => (
+                    <SelectItem key={day} value={day}>
+                      {day}
+                    </SelectItem>
+                  ),
+                )}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid gap-2">
-            <label>Jam Mulai</label>
+            <label>Mata Pelajaran</label>
+
+            <Select
+              value={formData.mapelKelasId}
+              onValueChange={(value) =>
+                setFormData((prev: any) => ({
+                  ...prev,
+                  mapelKelasId: Number(value),
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Pilih Mata Pelajaran" />
+              </SelectTrigger>
+
+              <SelectContent className="px-2">
+                <div className="mb-2 py-1">
+                  <Input
+                    ref={searchInputRef}
+                    placeholder="Cari Mata Pelajaran..."
+                    value={searchCourse}
+                    onChange={(e) => setSearchCourse(e.target.value)}
+                    onKeyDown={handleSearchKeyDown}
+                  />
+                </div>
+
+                {filteredCourses.data?.map((course: any) => (
+                  <SelectItem
+                    key={course.mapelKelasId}
+                    value={course.mapelKelasId}
+                  >
+                    {course.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid gap-2">
+            <label>{lang.text("startDate")}</label>
 
             <Input
               type="time"
@@ -168,7 +235,7 @@ export function EditScheduleDialog({
           </div>
 
           <div className="grid gap-2">
-            <label>Jam Selesai</label>
+            <label>{lang.text("endDate")}</label>
 
             <Input
               type="time"
