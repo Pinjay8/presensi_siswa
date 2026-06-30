@@ -99,6 +99,7 @@ export interface BaseDataTableProps {
     onClick?: () => void;
     url?: string;
     variant?: ButtonProps["variant"];
+    className?: string;
   }[];
   onRowClick?: (rowData: any) => void; // Tambahkan properti ini
 }
@@ -463,7 +464,7 @@ export const BaseDataTable = ({
                   )}
                 </div>
               </div>
-              <div>
+              <div className="flex flex-row gap-2 order-2 sm:order-none">
                 {renderAction ||
                   actions?.map((action, i) => {
                     return action.url ? (
@@ -474,6 +475,7 @@ export const BaseDataTable = ({
                             variant: action?.variant || "default",
                           }),
                           "w-full sm:w-auto",
+                          action.className,
                         )}
                         to={action.url}
                       >
@@ -491,6 +493,7 @@ export const BaseDataTable = ({
                         key={i}
                         onClick={action.onClick}
                         variant={action.variant || "default"}
+                        className={action.className}
                       >
                         {action.icon ? (
                           <>

@@ -37,6 +37,7 @@ import { useSchools } from "@/features/classroom/hooks/useSchool";
 import { io } from "socket.io-client";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import StudentFormDialog from "../components/StudentFormDialog";
+import { useProfile } from "@/features/profile";
 
 export const StudentLandingTables = () => {
   const [openImport, setOpenImport] = useState(false);
@@ -69,49 +70,7 @@ export const StudentLandingTables = () => {
 
   const { data, isLoading, refetch } = useStudentPagination(studentParams);
 
-  // const profile = useProfile();
   const classRoom = useClassroom();
-  // const sekolahId =
-  //   filter.find((f: any) => f.id === "sekolahId")?.value ||
-  //   profile.user?.sekolahId ||
-  //   1;
-  // const { data: schoolData, isLoading: schoolIsLoading } = useSchoolDetail({
-  //   id: sekolahId,
-  // });
-
-  // useEffect(() => {
-  //   setProfileSchoolId(profile.user?.sekolahId || null);
-  // }, [profile.user]);
-
-  // const attedances =
-  //   profileSchoolId !== null
-  //     ? useAttedances({ id: profileSchoolId })
-  //     : useAttedances();
-
-  // const idKelas = filter.find((f: any) => f.id === "idKelas")?.value;
-
-  const [reloadKey, setReloadKey] = useState(0);
-
-  // useEffect(() => {
-  //   if (
-  //     attedances.isLoading ||
-  //     isLoading ||
-  //     !attedances.data ||
-  //     !data?.students
-  //   ) {
-  //     return;
-  //   }
-  //   const result = checkAttendance(attedances.data, data.students);
-  //   setAttendanceResult(result);
-  // }, [
-  //   attedances.isLoading,
-  //   attedances.data,
-  //   isLoading,
-  //   data?.students,
-  //   reloadKey,
-  // ]);
-
-  // console.log("attendanceResult", attendanceResult);
 
   const presentCount = useMemo(() => {
     return (
@@ -121,19 +80,11 @@ export const StudentLandingTables = () => {
     );
   }, [data?.students]);
 
-  const handleDownload = (type: string) => {
-    const fileUrl =
-      type === "excel"
-        ? "/Template-Pendaftaran-Siswa.xlsx"
-        : "/Template-Pendaftaran-Siswa-CSVFormat.csv";
+  const handleDownload = () => {
     const link = document.createElement("a");
-    link.href = fileUrl;
-    link.setAttribute(
-      "download",
-      type === "excel"
-        ? "Template-Pendaftaran-Siswa.xlsx"
-        : "Template-Pendaftaran-Siswa.csv",
-    );
+    link.href =
+      "https://docs.google.com/spreadsheets/d/1IoKbMSfnS0iyH3F-GCpEniJITWouHr-T/export?format=xlsx";
+    link.setAttribute("download", "Template-Pendaftaran-Siswa.xlsx");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -227,38 +178,6 @@ export const StudentLandingTables = () => {
     }
   };
 
-  // const handleDownloadPDF = async () => {
-  //   setGeneratingPDF(true);
-  //   try {
-  //     await generateAttendancePDF({
-  //       studentParams,
-  //       attendanceData: attendanceResult,
-  //       alert,
-  //       nameSchool: (profile.user?.sekolah?.namaSekolah || "") as string,
-  //       schoolData,
-  //       schoolIsLoading,
-  //     });
-  //   } finally {
-  //     setGeneratingPDF(false);
-  //   }
-  // };
-
-  // const handleDownloadMonthlyPDF = async () => {
-  //   setGeneratingPDF(true);
-  //   try {
-  //     await generateMonthlyAttendancePDF({
-  //       studentParams,
-  //       attendanceData: attendanceResult,
-  //       alert,
-  //       nameSchool: (profile.user?.sekolah?.namaSekolah || "") as string,
-  //       schoolData,
-  //       schoolIsLoading,
-  //     });
-  //   } finally {
-  //     setGeneratingPDF(false);
-  //   }
-  // };
-
   const handleAlert = () => {
     alert.error(lang.text("shouldClassroom"));
   };
@@ -300,7 +219,6 @@ export const StudentLandingTables = () => {
       await queryCLient.invalidateQueries({
         queryKey: ["students"],
       });
-      setReloadKey((prev) => prev + 1);
       setOpenFormSiswa(false);
       await alert.success(result.message || "Siswa berhasil dibuat");
       form.reset();
@@ -332,7 +250,6 @@ export const StudentLandingTables = () => {
           queryKey: ["attedances-new"],
         }),
       ]);
-      setReloadKey((prev) => prev + 1);
     });
 
     socket.on("absen-barcode", async (data) => {
@@ -354,6 +271,9 @@ export const StudentLandingTables = () => {
     };
   }, [refetch]);
 
+  const profile = useProfile();
+  const isAdmin = profile?.user?.role === "admin";
+
   const handleCloseFormSiswa = () => {
     form.reset(defaultValues);
     setOpenFormSiswa(false);
@@ -362,46 +282,55 @@ export const StudentLandingTables = () => {
   return (
     <>
       <div className="flex justify-between items-center pb-4">
-        <div className="w-full flex justify-between lg:flex-nowrap flex-wrap gap-2">
-          <div className="flex w-max gap-2 items-center">
-            <Button
-              className="hidden"
-              variant="outline"
-              onClick={() => handleDownloadExcel("csv")}
-              // icon
-              iconPosition="left"
-              icon={<FaFileExcel />}
-            >
-              {lang.text("download")} Template CSV
-            </Button>
-            <Button
-              className=""
-              variant="outline"
-              onClick={() => handleDownloadExcel("excel")}
-              iconPosition="left"
-              icon={<FaFileExcel />}
-            >
-              {lang.text("download")} Template Excel
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() =>
-                classRoom?.data.length > 0 ? setOpenImport(true) : handleAlert()
-              }
-              iconPosition="left"
-              icon={<Import />}
-            >
-              {lang.text("import")} Data
-            </Button>
-            <Button
-              variant="default"
-              onClick={() => setOpenFormSiswa(true)}
-              style={{ padding: "2px 4px" }}
-              icon={<FaPlus />}
-            >
-              {lang.text("createStudents")}
-            </Button>
-          </div>
+        <div
+          className={`w-full flex lg:flex-nowrap flex-wrap gap-2 mt-2 ${
+            isAdmin ? "justify-between" : "justify-end"
+          }`}
+        >
+          {isAdmin && (
+            <div className="flex w-max gap-2 items-center ">
+              <Button
+                className="hidden"
+                variant="outline"
+                onClick={() => handleDownloadExcel("csv")}
+                // icon
+                iconPosition="left"
+                icon={<FaFileExcel />}
+              >
+                {lang.text("download")} Template CSV
+              </Button>
+              <Button
+                // variant="outline"
+                onClick={() => handleDownloadExcel("excel")}
+                iconPosition="left"
+                icon={<FaFileExcel />}
+                className="bg-green-500 text-white"
+              >
+                {lang.text("download")} Template Excel
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() =>
+                  classRoom?.data.length > 0
+                    ? setOpenImport(true)
+                    : handleAlert()
+                }
+                iconPosition="left"
+                icon={<Import />}
+                className="bg-outline-green-500 text-black"
+              >
+                {lang.text("import")} Data
+              </Button>
+              <Button
+                variant="default"
+                onClick={() => setOpenFormSiswa(true)}
+                style={{ padding: "2px 4px" }}
+                icon={<FaPlus />}
+              >
+                {lang.text("createStudents")}
+              </Button>
+            </div>
+          )}
           <div className="flex items-center space-x-2">
             <div className="flex justify-between items-center pb-0 gap-4">
               <Button

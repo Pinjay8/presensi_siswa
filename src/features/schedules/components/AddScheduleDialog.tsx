@@ -76,31 +76,6 @@ export function AddScheduleDialog({
         </DialogHeader>
         <Divider />
         <div className="grid gap-3 py-4 pt-0">
-          {/* <div className="grid gap-2">
-            <label htmlFor="kelasId">Kelas</label>
-            <Select
-              onValueChange={(value) =>
-                setSelectedKelasIdForAdd(parseInt(value))
-              }
-              value={
-                selectedKelasIdForAdd === 0
-                  ? ""
-                  : selectedKelasIdForAdd.toString()
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Pilih Kelas" />
-              </SelectTrigger>
-              <SelectContent>
-                {classData.map((kelas: any) => (
-                  <SelectItem key={kelas.id} value={kelas.id.toString()}>
-                    {kelas.namaKelas}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div> */}
-
           <div className="grid gap-2">
             <label htmlFor="hari">{lang.text("day")}</label>
             <Select
@@ -134,7 +109,7 @@ export function AddScheduleDialog({
                 <div className="py-1 mb-2">
                   <Input
                     ref={searchInputRef}
-                    placeholder="Cari Mata Pelajaran..."
+                    placeholder={lang.text("searchCourses")}
                     value={searchCourse}
                     onChange={(e) => setSearchCourse(e.target.value)}
                     onKeyDown={handleSearchKeyDown}
@@ -179,7 +154,7 @@ export function AddScheduleDialog({
             </Select>
           </div> */}
           <div className="grid gap-2">
-            <label htmlFor="jamMulai">{lang.text("startDate")}</label>
+            <label htmlFor="jamMulai">{lang.text("startHour")}</label>
             <Input
               type="time"
               value={formData.jamMulai}
@@ -190,7 +165,7 @@ export function AddScheduleDialog({
             />
           </div>
           <div className="grid gap-2">
-            <label htmlFor="jamSelesai">{lang.text("endDate")}</label>
+            <label htmlFor="jamSelesai">{lang.text("endHour")}</label>
             <Input
               type="time"
               value={formData.jamSelesai}
@@ -202,7 +177,7 @@ export function AddScheduleDialog({
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={handleAddSchedule}>Simpan</Button>
+          <Button onClick={handleAddSchedule}>{lang.text("save")}</Button>
           <Button
             variant="outline"
             onClick={() => {

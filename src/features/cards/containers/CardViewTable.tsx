@@ -13,6 +13,9 @@ import { FaPlus } from "react-icons/fa";
 import { DeleteCardDialog, DeleteDialog } from "../components/DeleteCardDialog";
 import { useUserCreation } from "@/features/user";
 import { cardsService } from "@/core/services/cards";
+import { UploadScheduleDialog } from "@/features/schedules/components/UploadScheduleDialog";
+import { uploadExcelService } from "@/core/services/excel";
+import { Download, UploadCloud } from "lucide-react";
 
 export const CardViewTable = () => {
   //   const resource = useClassroom();
@@ -62,6 +65,53 @@ export const CardViewTable = () => {
     }
   }
 
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
+  const handleDownloadTemplate = () => {
+    try {
+      const link = document.createElement("a");
+      link.href =
+        "https://docs.google.com/spreadsheets/d/1NHf-NHTRAyq2f-Pky7YD-TjPKM6jkb-H/export?format=xlsx";
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      alert.success("Template Excel berhasil diunduh");
+    } catch (err: any) {
+      alert.error(
+        "Gagal mengunduh template Excel: " + (err.message || "Unknown error"),
+      );
+    }
+  };
+
+  const [excelFile, setExcelFile] = useState<File | null>(null);
+
+  const handleUploadExcel = async () => {
+    if (!excelFile) {
+      alert.error("Pilih file Excel terlebih dahulu");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+
+      formData.append("file", excelFile);
+      formData.append("type", "kartu");
+
+      await uploadExcelService.importExcel(formData);
+
+      alert.success("Import data kartu berhasil");
+
+      await resource.query.refetch();
+
+      setExcelFile(null);
+      setIsUploadModalOpen(false);
+    } catch (err: any) {
+      alert.error(err?.message ?? "Gagal mengunggah file Excel");
+    }
+  };
+
   return (
     <>
       {!isRole && (
@@ -77,6 +127,22 @@ export const CardViewTable = () => {
           ...(!isRole
             ? [
                 {
+                  title: "Unduh Template Excel",
+                  icon: <Download />,
+                  onClick: handleDownloadTemplate,
+                  variant: "default",
+                  className: "bg-green-500 text-white hover:bg-green-600",
+                },
+
+                {
+                  title: "Unggah Excel",
+                  icon: <UploadCloud />,
+                  onClick: () => setIsUploadModalOpen(true),
+                  variant: "outline",
+                  className:
+                    "border-green-500 text-green-500 hover:bg-green-50",
+                },
+                {
                   title: lang.text("addCards"),
                   icon: <FaPlus />,
                   onClick: () => setCards(!cards),
@@ -87,6 +153,18 @@ export const CardViewTable = () => {
         searchParamPagination
         searchPlaceholder={lang.text("search")}
         isLoading={resource.query.isLoading}
+      />
+      <UploadScheduleDialog
+        open={isUploadModalOpen}
+        onOpenChange={(open) => {
+          setIsUploadModalOpen(open);
+
+          if (!open) {
+            setExcelFile(null);
+          }
+        }}
+        setExcelFile={setExcelFile}
+        handleUploadExcel={handleUploadExcel}
       />
       <Dialog open={openEdit} onOpenChange={() => setOpenEdit(false)}>
         <DialogContent className=" pt-3.5 h-max w-[500px]">

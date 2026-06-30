@@ -32,8 +32,6 @@ import { ScheduleBoard } from "../components/ScheduleBoard";
 import { useMapel } from "../hooks/useMapel";
 import { useQueryClient } from "@tanstack/react-query";
 import { uploadExcelService } from "@/core/services/excel";
-import { API_CONFIG, SERVICE_ENDPOINTS } from "@/core/configs";
-import { getToken } from "@/features/auth";
 
 interface ScheduleItem {
   id: number;
@@ -165,6 +163,7 @@ export function ScheduleLandingContent() {
     profile?.user?.role === "siswa" ||
     profile?.user?.role === "orangTua";
   const isRoleAdmin = profile?.user?.role === "admin";
+  const isRoleOrangTua = profile?.user?.role === "orangTua";
 
   const [qrCode, setQrCode] = useState("");
 
@@ -488,10 +487,6 @@ export function ScheduleLandingContent() {
 
       formData.append("file", excelFile);
       formData.append("type", "jadwal");
-
-      for (const [key, value] of formData.entries()) {
-        console.log(key, value);
-      }
 
       await uploadExcelService.importExcel(formData);
 
@@ -817,6 +812,7 @@ export function ScheduleLandingContent() {
         <ScheduleToolbar
           isRoleAdmin={isRoleAdmin}
           isRoleSiswa={isRoleSiswa}
+          isRoleOrangTua={isRoleOrangTua}
           isRoleGuru={isRoleGuru}
           classData={classData}
           selectedClassId={selectedClassId}

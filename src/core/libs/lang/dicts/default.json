@@ -99,6 +99,10 @@
     "en": "Search Cards",
     "id": "Cari Kartu"
   },
+  "searchCourses": {
+    "en": "Search Courses",
+    "id": "Cari Mata Pelajaran"
+  },
   "unAssignCard": {
     "en": "Unassign Card",
     "id": "Kembalikan Kartu"
@@ -322,7 +326,6 @@
     "en": "Day",
     "id": "Hari"
   },
- 
 
   "weeks": {
     "en": "Weeks",
@@ -1426,6 +1429,10 @@
     "id": "Alfa",
     "en": "Alfa"
   },
+  "nikValidation": {
+    "id": "NIK harus 16 karakter",
+    "en": "NIK must be 16 characters long"
+  },
 
   "nipValidation": {
     "id": "NIP harus 18 karakter",
@@ -2514,6 +2521,14 @@
   "event": {
     "id": "Acara",
     "en": "Events"
+  },
+  "mustSelectClass": {
+    "id": "Silahkan pilih kelas terlebih dahulu",
+    "en": "Please select a class first"
+  },
+  "noScheduleForThisClass":{
+    "id": "Tidak ada jadwal untuk kelas ini",
+    "en": "No schedule for this class"
   },
   "filterByClass": {
     "id": "Filter kelas",

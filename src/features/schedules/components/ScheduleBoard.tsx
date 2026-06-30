@@ -59,9 +59,7 @@ export function ScheduleBoard({
   if (selectedClassId === 0) {
     return (
       <div className="flex h-[300px] items-center justify-center rounded-lg border">
-        <p className="text-muted-foreground">
-          Silakan pilih kelas terlebih dahulu.
-        </p>
+        <p className="text-muted-foreground">{lang.text("mustSelectClass")}</p>
       </div>
     );
   }
@@ -70,7 +68,7 @@ export function ScheduleBoard({
     return (
       <div className="flex h-[300px] items-center justify-center rounded-lg border">
         <p className="text-muted-foreground">
-          Tidak ada jadwal untuk kelas ini.
+          {lang.text("noScheduleForThisClass")}
         </p>
       </div>
     );

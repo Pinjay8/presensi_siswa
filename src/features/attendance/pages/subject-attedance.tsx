@@ -6,9 +6,6 @@ import {
   DashboardPageLayout,
   useDataTableController,
 } from "@/features/_global";
-import { useProfile } from "@/features/profile";
-import { useBiodataNew } from "@/features/user/hooks/use-biodata-new";
-import { useSchoolDetail } from "@/features/schools";
 import dayjs, { Dayjs } from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import timezone from "dayjs/plugin/timezone";
@@ -16,14 +13,6 @@ import utc from "dayjs/plugin/utc";
 
 import Papa from "papaparse";
 import { useEffect, useMemo, useState } from "react";
-import * as XLSX from "xlsx";
-import { StudentAttendanceTable } from "../containers";
-import { useBiodata } from "@/features/user";
-import { FaFilePdf } from "react-icons/fa";
-import { useStudentAttendance } from "../hooks/useStudentAttedance";
-import { useQueryClient } from "@tanstack/react-query";
-import { io } from "socket.io-client";
-
 import { attendanceService } from "@/core/services/pagination";
 import { SubjectAttendanceTable } from "../containers/subject-attendance-table";
 import { useMapelDaily } from "../hooks/useMapelDaily";

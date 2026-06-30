@@ -40,7 +40,11 @@ export const teacherEditSchema = z.object({
     .min(18, { message: lang.text("nipValidation") })
     .max(18, { message: lang.text("nipValidation") })
     .optional(),
-  nik: z.string().optional(),
+  nik: z
+    .string()
+    .min(18, { message: lang.text("nikValidation") })
+    .max(18, { message: lang.text("nikValidation") })
+    .optional(),
   noTlp: z.string().optional(),
   isVerified: z.boolean().optional(),
   isActive: z.number().optional(),

@@ -17,6 +17,7 @@ import {
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { attendanceService } from "@/core/services/attedance";
 import { useQueryClient } from "@tanstack/react-query";
+import { useProfile } from "@/features/profile";
 
 interface StudentAttendanceTableProps {
   data: BiodataSiswa[]; // Terima data yang difilter
@@ -35,6 +36,7 @@ export function SubjectAttendanceTable({
 }: StudentAttendanceTableProps) {
   const queryClient = useQueryClient();
   const alert = useAlert();
+  const profile = useProfile();
 
   const [loadingAttendance, setLoadingAttendance] = useState(false);
 
@@ -63,9 +65,12 @@ export function SubjectAttendanceTable({
     }
   };
 
+  const isRole =
+    profile?.user?.role === "admin" || profile?.user?.role === "guru";
+
   const columns = useMemo(
-    () => matpelColumns(handleSubmitAttendance),
-    [handleSubmitAttendance],
+    () => matpelColumns(handleSubmitAttendance, isRole),
+    [handleSubmitAttendance, isRole],
   );
 
   return (

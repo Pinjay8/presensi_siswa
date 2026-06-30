@@ -10,7 +10,7 @@ import {
   useDataTableController,
 } from "@/features/_global";
 import { useEkstrakurikulerDetail } from "../hooks";
-import { Divider, Typography } from "@mui/material";
+import { CircularProgress, Divider, Typography } from "@mui/material";
 import { useMemberEkstrakurikulerDetail } from "../hooks/useMemberEkstrakurikuler";
 import {
   absensiEkstrakurikulerColumns,
@@ -26,6 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/core/libs";
 import { useAbsensiEkskul } from "../hooks/useAbsensiEskul";
 import { ModalAssignAbsen } from "../components/modalAssignAbsen";
 import { useRekapBulanan } from "../hooks/useRekapBulanan";
+import { useProfile } from "@/features/profile";
 
 export const EkstrakurikulerDetail = () => {
   const params = useParams();
@@ -114,9 +115,16 @@ export const EkstrakurikulerDetail = () => {
 
   const [memberAssignDialog, setMemberAssignDialog] = useState(false);
   const [absensiAssingDialog, setAbsensiAssingDialog] = useState(false);
+  const profile = useProfile();
+  const isRole =
+    profile?.user?.role === "admin" || profile?.user?.role === "guru";
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <CircularProgress />
+      </div>
+    );
   }
 
   return (
@@ -245,13 +253,17 @@ export const EkstrakurikulerDetail = () => {
                 rowCount={memberResource?.pagination?.total ?? 0}
                 searchPlaceholder={lang.text("search")}
                 actions={[
-                  {
-                    title: lang.text("addMember"),
-                    icon: <FaPlus />,
-                    onClick: () => {
-                      setMemberAssignDialog(true);
-                    },
-                  },
+                  ...(isRole
+                    ? [
+                        {
+                          title: lang.text("addMember"),
+                          icon: <FaPlus />,
+                          onClick: () => {
+                            setMemberAssignDialog(true);
+                          },
+                        },
+                      ]
+                    : []),
                 ]}
               />
             </div>
@@ -278,13 +290,17 @@ export const EkstrakurikulerDetail = () => {
               // rowCount={absensiSource?.pagination?.total ?? 0}
               searchPlaceholder={lang.text("search")}
               actions={[
-                {
-                  title: lang.text("createAbsent"),
-                  icon: <FaPlus />,
-                  onClick: () => {
-                    setAbsensiAssingDialog(true);
-                  },
-                },
+                ...(isRole
+                  ? [
+                      {
+                        title: lang.text("createAbsent"),
+                        icon: <FaPlus />,
+                        onClick: () => {
+                          setAbsensiAssingDialog(true);
+                        },
+                      },
+                    ]
+                  : []),
               ]}
             />
           </TabsContent>
@@ -301,8 +317,6 @@ export const EkstrakurikulerDetail = () => {
             />
           </TabsContent> */}
         </Tabs>
-
-        {/* <Divider sx={{ my: 2 }} /> */}
       </div>
     </DashboardPageLayout>
   );

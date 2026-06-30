@@ -13,6 +13,7 @@ interface ScheduleToolbarProps {
   isRoleAdmin: boolean;
   isRoleSiswa: boolean;
   isRoleGuru: boolean;
+  isRoleOrangTua: boolean;
 
   classData: any[];
   selectedClassId: number;
@@ -31,6 +32,7 @@ export function ScheduleToolbar({
   isRoleAdmin,
   isRoleSiswa,
   isRoleGuru,
+  isRoleOrangTua,
   classData,
   selectedClassId,
   setSelectedClassId,
@@ -47,7 +49,7 @@ export function ScheduleToolbar({
         isRoleAdmin ? "justify-between" : "justify-end"
       }`}
     >
-      {!isRoleSiswa && !isRoleGuru && (
+      {!isRoleSiswa && !isRoleGuru && !isRoleOrangTua && (
         <div className="flex gap-2 flex-wrap xl:flex-nowrap">
           <Button variant="outline" onClick={openAddModal}>
             <Plus />

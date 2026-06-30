@@ -21,6 +21,9 @@ import {
 } from "@mui/material";
 import { FaPlus } from "react-icons/fa";
 import { useClassroomPaginated } from "../hooks/use-classroom-paginated";
+import { Download, UploadCloud } from "lucide-react";
+import { UploadScheduleDialog } from "@/features/schedules/components/UploadScheduleDialog";
+import { uploadExcelService } from "@/core/services/excel";
 
 export const ClassroomTable = () => {
   const {
@@ -46,6 +49,7 @@ export const ClassroomTable = () => {
     isLoading,
     query,
   } = useClassroomPaginated(params);
+  const [excelFile, setExcelFile] = useState<File | null>(null);
 
   const school = useSchool();
   const [classRoom, setCreateClassRoom] = useState(false);
@@ -104,13 +108,61 @@ export const ClassroomTable = () => {
     }
   }
 
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
+  const handleDownloadTemplate = () => {
+    try {
+      const link = document.createElement("a");
+      link.href =
+        "https://docs.google.com/spreadsheets/d/1OeZdlcFtt4SyVNIDY37txSC-35KoNuAQ/export?format=xlsx";
+      link.download = "template_kelas.xlsx";
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      alert.success("Template data kelas  berhasil diunduh");
+    } catch (err: any) {
+      alert.error(
+        "Gagal mengunduh template Excel: " + (err.message || "Unknown error"),
+      );
+    }
+  };
+
+  const handleUploadExcel = async () => {
+    if (!excelFile) {
+      alert.error("Pilih file Excel terlebih dahulu");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+
+      formData.append("file", excelFile);
+      formData.append("type", "kelas");
+
+      await uploadExcelService.importExcel(formData);
+
+      alert.success("Import data kelas berhasil");
+
+      await query.refetch();
+
+      setExcelFile(null);
+      setIsUploadModalOpen(false);
+    } catch (err: any) {
+      alert.error(err?.message ?? "Gagal mengunggah file Excel");
+    }
+  };
+
   return (
     <>
       {!isRole && (
-        <ModalCreateClass
-          show={classRoom}
-          onClose={() => setCreateClassRoom(!classRoom)}
-        />
+        <>
+          <ModalCreateClass
+            open={classRoom}
+            onClose={() => setCreateClassRoom(!classRoom)}
+          />
+        </>
       )}
       {!isRole && (
         <ModalAssignSchedule
@@ -129,8 +181,25 @@ export const ClassroomTable = () => {
           ...(!isRole
             ? [
                 {
+                  title: "Unduh Template Excel",
+                  icon: <Download />,
+                  onClick: handleDownloadTemplate,
+                  variant: "default",
+                  className: "bg-green-500 text-white hover:bg-green-600",
+                },
+
+                {
+                  title: "Unggah Excel",
+                  icon: <UploadCloud />,
+                  onClick: () => setIsUploadModalOpen(true),
+                  variant: "outline",
+                  className:
+                    "border-green-500 text-green-500 hover:bg-green-50",
+                },
+                {
                   title: lang.text("addClassroom"),
                   icon: <FaPlus />,
+                  variant: "default",
                   onClick: () => setCreateClassRoom(!classRoom),
                 },
               ]
@@ -143,6 +212,19 @@ export const ClassroomTable = () => {
         rowCount={paginationInfo?.total ?? 0}
         pagination={pagination}
         onPaginationChange={onPaginationChange}
+      />
+
+      <UploadScheduleDialog
+        open={isUploadModalOpen}
+        onOpenChange={(open) => {
+          setIsUploadModalOpen(open);
+
+          if (!open) {
+            setExcelFile(null);
+          }
+        }}
+        setExcelFile={setExcelFile}
+        handleUploadExcel={handleUploadExcel}
       />
 
       {/* Delete Dialog */}

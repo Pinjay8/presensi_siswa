@@ -5,8 +5,8 @@ import { z } from "zod";
 export const parentEditSchema = z.object({
   email: z
     .string()
-    .min(1, { message: lang.text("schoolCreationValidation5") })
-    .email({ message: lang.text("schoolCreationValidation6") }),
+    .min(1, { message: lang.text("emailValidation1") })
+    .email({ message: lang.text("emailValidation1") }),
   password: z.string().optional(),
   alamat: z.string().optional(),
   hobi: z.string().optional(),
@@ -22,7 +22,10 @@ export const parentEditSchema = z.object({
   image: z.string().optional(),
   nis: z.array(z.string()).optional(),
   nip: z.string().optional(),
-  nik: z.string().optional(),
+  nik: z
+    .string()
+    .min(16, { message: lang.text("nikValidation") })
+    .optional(),
   noTlp: z.string().optional(),
   isVerified: z.boolean().optional(),
   isActive: z.number().optional(),

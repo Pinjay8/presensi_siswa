@@ -28,7 +28,7 @@ export function UploadScheduleDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle style={{ marginTop: "18px", textAlign: "start" }}>
-            Unggah Jadwal dari Excel
+            Unggah File dari Excel
           </DialogTitle>
         </DialogHeader>
         <Divider />

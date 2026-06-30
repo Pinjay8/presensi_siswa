@@ -64,19 +64,26 @@ export const ParentCreationForm = () => {
     mode: "all",
     values: {
       name: detail.data?.name || "",
-      email: detail.data?.email || "", // Default value untuk "email"
+      email: detail.data?.email || "", 
       alamat: detail.data?.alamat || "",
       jenisKelamin: detail.data?.jenisKelamin || "",
       tanggalLahir: detail.data?.tanggalLahir || "",
       noTlp: detail.data?.noTlp || "",
       isActive: detail.data?.isActive || 0,
       nis: Array.isArray((detail.data as any)?.orangTua)
-        ? (detail.data as any).orangTua.map((o: any) => o.biodataSiswa?.user?.nis || o.biodataSiswa?.nis).filter(Boolean)
+        ? (detail.data as any).orangTua
+            .map((o: any) => o.biodataSiswa?.user?.nis || o.biodataSiswa?.nis)
+            .filter(Boolean)
         : typeof detail.data?.nis === "string"
-        ? detail.data.nis.split(",").map((s: string) => s.trim()).filter(Boolean)
-        : detail.data?.student?.user?.nis
-        ? [detail.data.student.user.nis]
-        : (detail.data as any)?.students?.map((s: any) => s.user?.nis || s.nis).filter(Boolean) || [],
+          ? detail.data.nis
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter(Boolean)
+          : detail.data?.student?.user?.nis
+            ? [detail.data.student.user.nis]
+            : (detail.data as any)?.students
+                ?.map((s: any) => s.user?.nis || s.nis)
+                .filter(Boolean) || [],
       nik: detail.data?.nik || "",
       password: detail.data?.password || "",
       usernameInstagram: detail.data?.usernameInstagram || "",
@@ -95,7 +102,7 @@ export const ParentCreationForm = () => {
       // sekolahId: detail.data?.sekolahId || 0,
     },
   });
-// console.log("Form: ", form.getValues("nis"))
+
   async function onSubmit(data: z.infer<typeof parentEditSchema>) {
     try {
       const payload = {
@@ -113,7 +120,6 @@ export const ParentCreationForm = () => {
         noTelegram: data.noTelegram || undefined,
         noWhatsApp: data.noWhatsApp || undefined,
       };
-      // console.log("payload", payload);
 
       if (decodeParams.id) {
         await creation.update(Number(decodeParams.id), payload);
@@ -257,10 +263,12 @@ export const ParentCreationForm = () => {
                       return optNis === valNis;
                     }}
                     value={biodataStudents.filter((s: any) =>
-                      field.value?.includes(s.user?.nis || s.nis)
+                      field.value?.includes(s.user?.nis || s.nis),
                     )}
                     onChange={(_, newValue) => {
-                      field.onChange(newValue.map((s: any) => s.user?.nis || s.nis));
+                      field.onChange(
+                        newValue.map((s: any) => s.user?.nis || s.nis),
+                      );
                     }}
                     loading={student.isLoading}
                     renderInput={(params) => (
@@ -477,45 +485,11 @@ export const ParentCreationForm = () => {
               </FormItem>
             )}
           />
-          {/* 
-          <FormField
-            control={form.control}
-            name="isActive"
-            render={({ field }) => (
-              <FormItem className="mb-6">
-                <FormLabel>{lang.text("status")}</FormLabel>
-                <Select
-                  value={String(field.value)}
-                  onValueChange={(v) => field.onChange(Number(v))}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder={lang.text("selectLevel")} />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {STATUS_OPTIONS.map((option, i) => {
-                      return (
-                        <SelectItem key={i} value={String(option.value)}>
-                          {option.label}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
         </div>
 
         <div className="py-4">
           <Button
-            disabled={
-              !form.formState.isDirty ||
-              !form.formState.isValid ||
-              creation.isLoading
-            }
+            disabled={!form.formState.isDirty || creation.isLoading}
             type="submit"
           >
             {creation.isLoading

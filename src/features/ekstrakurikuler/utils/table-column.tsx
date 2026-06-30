@@ -68,31 +68,29 @@ export const ekstrakurikulerColumns = ({
     },
   ];
 
-  if (isAdmin) {
-    columns.push({
-      accessorKey: "id",
-      accessorFn: (row) => row.id,
-      size: 50,
-      enableSorting: false,
-      header: () => lang.text("action"),
-      cell: ({ row }) => {
-        const encryptPayload = simpleEncode(
-          JSON.stringify({
-            id: row.original.id,
-            text: row.original.nama,
-          }),
-        );
+  columns.push({
+    accessorKey: "id",
+    accessorFn: (row) => row.id,
+    size: 50,
+    enableSorting: false,
+    header: () => lang.text("action"),
+    cell: ({ row }) => {
+      const encryptPayload = simpleEncode(
+        JSON.stringify({
+          id: row.original.id,
+          text: row.original.nama,
+        }),
+      );
 
-        return (
-          <BaseActionTable
-            detailPath={`/ekstrakurikuler/${encryptPayload}`}
-            onEdit={() => onEdit?.(row.original)}
-            onDelete={() => onDelete?.(row.original)}
-          />
-        );
-      },
-    });
-  }
+      return (
+        <BaseActionTable
+          detailPath={`/ekstrakurikuler/${encryptPayload}`}
+          onEdit={isAdmin ? () => onEdit?.(row.original) : undefined}
+          onDelete={isAdmin ? () => onDelete?.(row.original) : undefined}
+        />
+      );
+    },
+  });
 
   return columns;
 };

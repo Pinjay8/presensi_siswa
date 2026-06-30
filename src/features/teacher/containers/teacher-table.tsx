@@ -23,6 +23,9 @@ import {
 import { FaPlus } from "react-icons/fa";
 import RegisterFaceDialog from "@/features/_global/components/dashboard/usermenu/components/RegisterFaceDialog";
 import { userService } from "@/core/services";
+import { uploadExcelService } from "@/core/services/excel";
+import { Download, UploadCloud } from "lucide-react";
+import { UploadScheduleDialog } from "@/features/schedules/components/UploadScheduleDialog";
 
 export function TeacherTable() {
   const biodata = useBiodataGuru();
@@ -31,26 +34,26 @@ export function TeacherTable() {
   const [teacher, setTeacher] = useState(false);
   const [openWaliKelas, setOpenWaliKelas] = useState(false);
   const [openAssignSchedule, setOpenAssignSchedule] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false)
-    const [openRegisterFace, setOpenRegisterFace] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [openRegisterFace, setOpenRegisterFace] = useState(false);
 
   const [selectedTeacher, setSelectedTeacher] = useState<any | null>(null);
   const kelas = useClassroom();
   const alert = useAlert();
 
-    const handleOpenRegisterFace = (teacher: any) => {
+  const handleOpenRegisterFace = (teacher: any) => {
     setSelectedTeacher(teacher);
-    console.log("selected Teacher", selectedTeacher)
+    console.log("selected Teacher", selectedTeacher);
     setOpenRegisterFace(true);
   };
-  
+
   const handleSubmitRegisterFace = async (file: File) => {
     try {
       const formData = new FormData();
 
       formData.append("fotoTampakDepan", file);
       formData.append("userId", String(selectedTeacher.user?.id));
-      console.log("selected Teacher", selectedTeacher.user?.id)
+      console.log("selected Teacher", selectedTeacher.user?.id);
       await userService.registerFaceTeacher(formData);
 
       alert.success(lang.text("successRegister"));
@@ -122,6 +125,53 @@ export function TeacherTable() {
     }
   }
 
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
+  const handleDownloadTemplate = () => {
+    try {
+      const link = document.createElement("a");
+      link.href =
+        "https://docs.google.com/spreadsheets/d/19WBX0sRxX7kGm-Y2wXxCzvdKOVWqhFeg/export?format=xlsx";
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      alert.success("Template Excel berhasil diunduh");
+    } catch (err: any) {
+      alert.error(
+        "Gagal mengunduh template Excel: " + (err.message || "Unknown error"),
+      );
+    }
+  };
+
+  const [excelFile, setExcelFile] = useState<File | null>(null);
+
+  const handleUploadExcel = async () => {
+    if (!excelFile) {
+      alert.error("Pilih file Excel terlebih dahulu");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+
+      formData.append("file", excelFile);
+      formData.append("type", "guru");
+
+      await uploadExcelService.importExcel(formData);
+
+      alert.success("Import data guru berhasil");
+
+      await biodata.query.refetch();
+
+      setExcelFile(null);
+      setIsUploadModalOpen(false);
+    } catch (err: any) {
+      alert.error(err?.message ?? "Gagal mengunggah file Excel");
+    }
+  };
+
   return (
     <>
       {!isRole && (
@@ -172,6 +222,22 @@ export function TeacherTable() {
           ...(!isRole
             ? [
                 {
+                  title: "Unduh Template Excel",
+                  icon: <Download />,
+                  onClick: handleDownloadTemplate,
+                  variant: "default",
+                  className: "bg-green-500 text-white hover:bg-green-600",
+                },
+
+                {
+                  title: "Unggah Excel",
+                  icon: <UploadCloud />,
+                  onClick: () => setIsUploadModalOpen(true),
+                  variant: "outline",
+                  className:
+                    "border-green-500 text-green-500 hover:bg-green-50",
+                },
+                {
                   title: lang.text("addTeacher"),
                   icon: <FaPlus />,
                   onClick: () => navigate("/teachers/create"),
@@ -183,11 +249,24 @@ export function TeacherTable() {
         isLoading={biodata.query.isLoading}
       />
 
-            <RegisterFaceDialog
-              open={openRegisterFace}
-              onClose={() => setOpenRegisterFace(false)}
-              onSubmit={handleSubmitRegisterFace}
-            />
+      <RegisterFaceDialog
+        open={openRegisterFace}
+        onClose={() => setOpenRegisterFace(false)}
+        onSubmit={handleSubmitRegisterFace}
+      />
+
+      <UploadScheduleDialog
+        open={isUploadModalOpen}
+        onOpenChange={(open) => {
+          setIsUploadModalOpen(open);
+
+          if (!open) {
+            setExcelFile(null);
+          }
+        }}
+        setExcelFile={setExcelFile}
+        handleUploadExcel={handleUploadExcel}
+      />
 
       {/* Delete Dialog */}
       <Dialog

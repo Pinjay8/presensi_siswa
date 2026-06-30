@@ -27,6 +27,7 @@ export const matpelColumns = (
     row: any,
     status: "hadir" | "sakit" | "alfa" | "terlambat",
   ) => void,
+  isRole?: any,
 ): ColumnDef<any>[] => [
   {
     accessorKey: "namaSiswa",
@@ -74,32 +75,33 @@ export const matpelColumns = (
     cell: ({ row }: any) => {
       const status = row.original.statusKehadiran?.toLowerCase();
 
-  const statusConfig: Record<string, { label: string; className: string }> = {
-    hadir: {
-      label: "Hadir",
-      className: "bg-green-100 text-green-700 border border-green-200",
-    },
-    izin: {
-      label: "Izin",
-      className: "bg-yellow-100 text-yellow-700 border border-yellow-200",
-    },
-    alfa: {
-      label: "Alfa",
-      className: "bg-red-100 text-red-700 border border-red-200",
-    },
-    "belum hadir": {
-      label: "Belum Hadir",
-      className: "bg-slate-100 text-slate-700 border border-slate-200",
-    },
-    terlambat: {
-      label: "Terlambat",
-      className: "bg-orange-100 text-orange-700 border border-orange-200",
-    },
-    sakit: {
-      label: "Sakit",
-      className: "bg-blue-100 text-blue-700 border border-blue-200",
-    },
-  };
+      const statusConfig: Record<string, { label: string; className: string }> =
+        {
+          hadir: {
+            label: "Hadir",
+            className: "bg-green-100 text-green-700 border border-green-200",
+          },
+          izin: {
+            label: "Izin",
+            className: "bg-yellow-100 text-yellow-700 border border-yellow-200",
+          },
+          alfa: {
+            label: "Alfa",
+            className: "bg-red-100 text-red-700 border border-red-200",
+          },
+          "belum hadir": {
+            label: "Belum Hadir",
+            className: "bg-slate-100 text-slate-700 border border-slate-200",
+          },
+          terlambat: {
+            label: "Terlambat",
+            className: "bg-orange-100 text-orange-700 border border-orange-200",
+          },
+          sakit: {
+            label: "Sakit",
+            className: "bg-blue-100 text-blue-700 border border-blue-200",
+          },
+        };
 
       const config = statusConfig[status as keyof typeof statusConfig];
 
@@ -137,60 +139,73 @@ export const matpelColumns = (
         .format("DD MMM YYYY") || "N/A",
     enableSorting: true,
   },
-  {
-    accessorKey: "id",
-    header: lang.text("action"),
-    enableSorting: false,
-    cell: ({ row }) => {
-      const status =
-        row.original.statusKehadiran?.toLowerCase() || "belum hadir";
-      if (status !== "belum hadir") {
-        return null;
-      }
-      return (
-        <div className="flex gap-2 flex-wrap">
-          <Button
-            variant="contained"
-            // color="success"
+  ...(isRole
+    ? [
+        {
+          accessorKey: "id",
+          header: lang.text("action"),
+          enableSorting: false,
+          cell: ({ row }) => {
+            const status =
+              row.original.statusKehadiran?.toLowerCase() || "belum hadir";
+            if (status !== "belum hadir") {
+              return null;
+            }
+            return (
+              <div className="flex gap-2 flex-wrap">
+                <Button
+                  variant="contained"
+                  // color="success"
 
-            onClick={() => onSubmitAttendance(row.original, "hadir")}
-            sx={{ textTransform: "capitalize", backgroundColor: "#22C55E" }}
-          >
-            {lang.text("present")}
-          </Button>
+                  onClick={() => onSubmitAttendance(row.original, "hadir")}
+                  sx={{
+                    textTransform: "capitalize",
+                    backgroundColor: "#22C55E",
+                  }}
+                >
+                  {lang.text("present")}
+                </Button>
 
-          <Button
-            variant="contained"
-            // color="#0EA5E9"
+                <Button
+                  variant="contained"
+                  // color="#0EA5E9"
 
-            onClick={() => onSubmitAttendance(row.original, "sakit")}
-            sx={{ textTransform: "capitalize", backgroundColor: "#0EA5E9" }}
-          >
-            {lang.text("sick")}
-          </Button>
+                  onClick={() => onSubmitAttendance(row.original, "sakit")}
+                  sx={{
+                    textTransform: "capitalize",
+                    backgroundColor: "#0EA5E9",
+                  }}
+                >
+                  {lang.text("sick")}
+                </Button>
 
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => onSubmitAttendance(row.original, "alfa")}
-            sx={{ textTransform: "capitalize" }}
-          >
-            {lang.text("alfa")}
-          </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => onSubmitAttendance(row.original, "alfa")}
+                  sx={{ textTransform: "capitalize" }}
+                >
+                  {lang.text("alfa")}
+                </Button>
 
-          <Button
-            variant="contained"
-            // color="info"
+                <Button
+                  variant="contained"
+                  // color="info"
 
-            onClick={() => onSubmitAttendance(row.original, "terlambat")}
-            sx={{ textTransform: "capitalize", backgroundColor: "#64748B" }}
-          >
-            {lang.text("late")}
-          </Button>
-        </div>
-      );
-    },
-  },
+                  onClick={() => onSubmitAttendance(row.original, "terlambat")}
+                  sx={{
+                    textTransform: "capitalize",
+                    backgroundColor: "#64748B",
+                  }}
+                >
+                  {lang.text("late")}
+                </Button>
+              </div>
+            );
+          },
+        },
+      ]
+    : []),
   // {
   //   accessorKey: "attendance.jamMasuk",
   //   header: "Jam Masuk",

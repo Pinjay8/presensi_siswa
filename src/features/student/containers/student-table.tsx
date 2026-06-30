@@ -18,8 +18,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { cardsService } from "@/core/services/cards";
 import AssignCardDialog from "../components/AsssignCardDialog";
 import UnassignCardDialog from "../components/UnassignCardDialog";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
 import { useUserCreation } from "@/features/user/hooks";
+import { XIcon } from "lucide-react";
 
 interface StudentTableProps {
   data: any;
@@ -189,7 +198,7 @@ export function StudentTable({
 
   const userDelete = useUserCreation();
 
-    async function handleDelete() {
+  async function handleDelete() {
     try {
       await userDelete.deleteUser(Number(selectedStudent?.id));
       alert.success(lang.text("successDelete"));
@@ -248,19 +257,39 @@ export function StudentTable({
         isUnassigning={unassignMutation.isPending}
       />
 
-                  {/* Delete Dialog */}
-                  <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
-                    <DialogTitle>{lang.text("delete")}</DialogTitle>
-                    <DialogContent>
-                      <DialogContentText>
-                        {lang.text("deleteMessage", { context: selectedStudent?.nama_lengkap })}
-                      </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button onClick={() => setOpenDeleteDialog(false)}>{lang.text("cancel")}</Button>
-                      <Button onClick={handleDelete} disabled={userDelete.isLoading}>{lang.text("delete")}</Button>
-                    </DialogActions>
-                  </Dialog>
+      {/* Delete Dialog */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          {lang.text("delete")}
+          <IconButton onClick={() => setOpenDeleteDialog(false)}>
+            <XIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <DialogContentText>
+            {lang.text("deleteMessage", {
+              context: selectedStudent?.nama_lengkap,
+            })}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDeleteDialog(false)}>
+            {lang.text("cancel")}
+          </Button>
+          <Button
+            onClick={handleDelete}
+            disabled={userDelete.isLoading}
+            variant="contained"
+          >
+            {lang.text("delete")}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

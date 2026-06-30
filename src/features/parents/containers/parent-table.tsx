@@ -18,6 +18,9 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { FaPlus } from "react-icons/fa";
+import { Download, UploadCloud } from "lucide-react";
+import { UploadScheduleDialog } from "@/features/schedules/components/UploadScheduleDialog";
+import { uploadExcelService } from "@/core/services/excel";
 export function ParentTable() {
   const alert = useAlert();
   const parent = useParent();
@@ -49,7 +52,7 @@ export function ParentTable() {
       onDelete: handleOpenDeleteDialog,
     });
   }, [school.data]);
-// console.log("ORTU: ", parent.data)
+
   const biodataStudents = useMemo(() => {
     try {
       return typeof student.data === "string"
@@ -93,6 +96,53 @@ export function ParentTable() {
     }
   }
 
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
+  const handleDownloadTemplate = () => {
+    try {
+      const link = document.createElement("a");
+      link.href =
+        "https://docs.google.com/spreadsheets/d/1szWeOeeAxNlg0SF5FKoGH1ekHDa5amYT/export?format=xlsx";
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      alert.success("Template data orang tua berhasil diunduh");
+    } catch (err: any) {
+      alert.error(
+        "Gagal mengunduh template Excel: " + (err.message || "Unknown error"),
+      );
+    }
+  };
+
+  const [excelFile, setExcelFile] = useState<File | null>(null);
+
+  const handleUploadExcel = async () => {
+    if (!excelFile) {
+      alert.error("Pilih file Excel terlebih dahulu");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+
+      formData.append("file", excelFile);
+      formData.append("type", "orangTua");
+
+      await uploadExcelService.importExcel(formData);
+
+      alert.success("Import data orang tua berhasil");
+
+      await parent.query.refetch();
+
+      setExcelFile(null);
+      setIsUploadModalOpen(false);
+    } catch (err: any) {
+      alert.error(err?.message ?? "Gagal mengunggah file Excel");
+    }
+  };
+
   return (
     <>
       {
@@ -113,6 +163,22 @@ export function ParentTable() {
           ...(!isRole
             ? [
                 {
+                  title: "Unduh Template Excel",
+                  icon: <Download />,
+                  onClick: handleDownloadTemplate,
+                  variant: "default",
+                  className: "bg-green-500 text-white hover:bg-green-600",
+                },
+
+                {
+                  title: "Unggah Excel",
+                  icon: <UploadCloud />,
+                  onClick: () => setIsUploadModalOpen(true),
+                  variant: "outline",
+                  className:
+                    "border-green-500 text-green-500 hover:bg-green-50",
+                },
+                {
                   title: lang.text("createParent"),
                   icon: <FaPlus />,
                   onClick: () => navigate("/parents/create"),
@@ -126,6 +192,19 @@ export function ParentTable() {
         isLoading={
           parent.query.isLoading || student.isLoading || school.isLoading
         }
+      />
+
+      <UploadScheduleDialog
+        open={isUploadModalOpen}
+        onOpenChange={(open) => {
+          setIsUploadModalOpen(open);
+
+          if (!open) {
+            setExcelFile(null);
+          }
+        }}
+        setExcelFile={setExcelFile}
+        handleUploadExcel={handleUploadExcel}
       />
 
       {/* Delete Dialog */}

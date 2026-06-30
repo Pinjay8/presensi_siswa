@@ -165,7 +165,7 @@ export function EditScheduleDialog({
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="Pilih Hari" />
+                <SelectValue placeholder={lang.text("selectDay")} />
               </SelectTrigger>
 
               <SelectContent>
@@ -181,7 +181,7 @@ export function EditScheduleDialog({
           </div>
 
           <div className="grid gap-2">
-            <label>Mata Pelajaran</label>
+            <label>{lang.text("course")}</label>
 
             <Select
               value={formData.mapelKelasId}
@@ -193,14 +193,14 @@ export function EditScheduleDialog({
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="Pilih Mata Pelajaran" />
+                <SelectValue placeholder={lang.text("chooseCourse")} />
               </SelectTrigger>
 
               <SelectContent className="px-2">
                 <div className="mb-2 py-1">
                   <Input
                     ref={searchInputRef}
-                    placeholder="Cari Mata Pelajaran..."
+                    placeholder={lang.text("searchCourses")}
                     value={searchCourse}
                     onChange={(e) => setSearchCourse(e.target.value)}
                     onKeyDown={handleSearchKeyDown}
@@ -220,7 +220,7 @@ export function EditScheduleDialog({
           </div>
 
           <div className="grid gap-2">
-            <label>{lang.text("startDate")}</label>
+            <label>{lang.text("startHour")}</label>
 
             <Input
               type="time"
@@ -235,7 +235,7 @@ export function EditScheduleDialog({
           </div>
 
           <div className="grid gap-2">
-            <label>{lang.text("endDate")}</label>
+            <label>{lang.text("endHour")}</label>
 
             <Input
               type="time"
