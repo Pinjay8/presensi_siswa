@@ -16,8 +16,10 @@ export const settingsSchema = z.object({
 });
 
 export const settingsSchemaNew = z.object({
-    attendanceSiswa: z.coerce.boolean(),
-    attendanceOrangTua: z.coerce.boolean(),
-    attendanceMapelSiswa: z.coerce.boolean(),
-    attendanceMapelOrangTua: z.coerce.boolean(),
+  attendanceSiswa: z.coerce.boolean(),
+  attendanceOrangTua: z.coerce.boolean(),
+  attendanceMapelSiswa: z.coerce.boolean(),
+  attendanceMapelOrangTua: z.coerce.boolean(),
+  ekskulOrangTua: z.coerce.boolean(),
+  ekskulSiswa: z.coerce.boolean(),
 });

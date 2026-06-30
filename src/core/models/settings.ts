@@ -5,6 +5,8 @@ export interface SettingsDataModel {
   attendanceOrangTua: boolean;
   attendanceMapelSiswa: boolean;
   attendanceMapelOrangTua: boolean;
+  ekskulOrangTua: boolean;
+  ekskulSiswa: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -14,4 +16,4 @@ export interface SettingsUpdateModel {
   attendanceOrangTua: boolean;
   attendanceMapelSiswa: boolean;
   attendanceMapelOrangTua: boolean;
-}
+}
