@@ -148,8 +148,14 @@ export const teacherColumnWithFilter = ({
           <div className="flex flex-row items-center gap-2">
             <Avatar>
               <AvatarImage
-                src={getStaticFile(String(row.original?.user?.image))}
-                alt={row.original.user?.name}
+                className="h-full w-full object-cover"
+                src={
+                  row.original?.fotoTampakDepan ||
+                  (row.original?.user?.image
+                    ? getStaticFile(String(row.original.user.image))
+                    : "")
+                }
+                alt={row.original?.user?.name}
               />
               <AvatarFallback>{initialName}</AvatarFallback>
             </Avatar>

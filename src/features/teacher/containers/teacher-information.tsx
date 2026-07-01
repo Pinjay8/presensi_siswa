@@ -52,7 +52,7 @@ export const TeacherInformation = (props: TeacherInformationProps) => {
       <div>
         <ViewPhoto
           title={detail.data?.user?.name || "-"}
-          image={getStaticFile(String(detail.data?.user?.image))}
+          image={detail.data?.fotoTampakDepan}
         />
       </div>
       <div className="md:col-span-2 lg:col-span-3">
