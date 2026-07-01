@@ -110,14 +110,14 @@ export function FileUploader({
               )}
             </>
           )}
-          {showButton && (
+          {/* {showButton && (
             <Button
               onClick={() => inputRef.current?.click()}
               className="w-full"
             >
               {buttonPlaceholder || "Choose File"}
             </Button>
-          )}
+          )} */}
 
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
         </div>

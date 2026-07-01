@@ -10,7 +10,7 @@ import { useProfile } from "@/features/profile";
 import { ModalAssignWaliKelas } from "../components/ModalAssignWaliKelas";
 import { useClassroom } from "@/features/classroom";
 import { teacherService } from "@/core/services/teacher";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ModalAssignSchedule from "../components/modalAssignSchedule";
 import {
   Button,
@@ -37,7 +37,7 @@ export function TeacherTable() {
   const [openAssignSchedule, setOpenAssignSchedule] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openRegisterFace, setOpenRegisterFace] = useState(false);
-
+  const queryClient = useQueryClient();
   const [selectedTeacher, setSelectedTeacher] = useState<any | null>(null);
   const kelas = useClassroom();
   const alert = useAlert();
@@ -48,32 +48,36 @@ export function TeacherTable() {
     setOpenRegisterFace(true);
   };
 
-const handleSubmitRegisterFace = async (file: File) => {
-  try {
-    // Upload file ke CDN
-    const uploadFormData = new FormData();
+  const handleSubmitRegisterFace = async (file: File) => {
+    try {
+      // Upload file ke CDN
+      const uploadFormData = new FormData();
 
-    uploadFormData.append("file", file);
+      uploadFormData.append("file", file);
 
-    const uploadResponse = await cdnService.uploadFile(uploadFormData);
+      const uploadResponse = await cdnService.uploadFile(uploadFormData);
 
-    const fileUrl = uploadResponse?.collection?.data?.[0]?.fileUrl;
+      const fileUrl = uploadResponse?.collection?.data?.[0]?.fileUrl;
 
-    if (!fileUrl) {
-      throw new Error("Failed to upload image");
+      if (!fileUrl) {
+        throw new Error("Failed to upload image");
+      }
+
+      // Register face menggunakan URL hasil upload
+      await userService.registerFaceTeacher({
+        userId: selectedTeacher.user?.id,
+        fotoTampakDepan: fileUrl,
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["biodata-guru"],
+      });
+
+      alert.success(lang.text("successRegister"));
+    } catch (error: any) {
+      alert.error(error?.message || lang.text("failedRegisterFace"));
     }
-
-    // Register face menggunakan URL hasil upload
-    await userService.registerFaceTeacher({
-      userId: selectedTeacher.user?.id,
-      fotoTampakDepan: fileUrl,
-    });
-
-    alert.success(lang.text("successRegister"));
-  } catch (error: any) {
-    alert.error(error?.message || lang.text("failedRegisterFace"));
-  }
-};
+  };
   const columns = useMemo(
     () =>
       teacherColumnWithFilter({
@@ -150,14 +154,16 @@ const handleSubmitRegisterFace = async (file: File) => {
       link.click();
       document.body.removeChild(link);
 
-      alert.success(lang.text("successDownloadTemplateExcel", {
-        context: lang.text("teacher"),
-      }));
+      alert.success(
+        lang.text("successDownloadTemplateExcel", {
+          context: lang.text("teacher"),
+        }),
+      );
     } catch (err: any) {
       alert.error(
         lang.text("failedDownloadTemplateExcel", {
           context: lang.text("teacher"),
-        })
+        }),
       );
     }
   };
@@ -178,16 +184,21 @@ const handleSubmitRegisterFace = async (file: File) => {
 
       await uploadExcelService.importExcel(formData);
 
-      alert.success(lang.text("successImportData", {
-        context: lang.text("teacher"),
-      }));
+      alert.success(
+        lang.text("successImportData", {
+          context: lang.text("teacher"),
+        }),
+      );
 
       await biodata.query.refetch();
 
       setExcelFile(null);
       setIsUploadModalOpen(false);
     } catch (err: any) {
-      alert.error(err?.message ?? lang.text("failedImportData", { context: lang.text("teacher") }));
+      alert.error(
+        err?.message ??
+          lang.text("failedImportData", { context: lang.text("teacher") }),
+      );
     }
   };
 

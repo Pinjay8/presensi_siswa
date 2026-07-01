@@ -222,6 +222,13 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
         onClose={setOpenDialogRegister}
         fullWidth
         maxWidth="sm"
+        slotProps={{
+          backdrop: {
+            sx: {
+              pointerEvents: "auto",
+            },
+          },
+        }}
       >
         <DialogTitle
           sx={{
@@ -265,7 +272,7 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
               </Box>
             )}
             <div className="flex flex-col">
-              <label className="text-black text-md font-semibold mb-2 flex items-center gap-2 mb-2">
+              <label className="text-black text-md font-semibold flex items-center gap-2 mb-2">
                 {lang.text("UploadPicture")}
               </label>
               <div className="relative">
@@ -283,12 +290,15 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
                 />
 
                 <Box mt={2}>
-                  <Button
-                    onClick={() => fileRef.current?.click()}
+                  {/* <Button
+                    onClick={() => {
+                      console.log("fileRef.current");
+                      fileRef.current?.click();
+                    }}
                     style={{ width: "100%", marginBottom: "10px" }}
                   >
                     {lang.text("ChoosePicture")}
-                  </Button>
+                  </Button> */}
                   {previewImage && (
                     <Box mb={2}>
                       <img
