@@ -215,8 +215,10 @@ export const studentColumnWithFilter = ({
           <div className="flex flex-row items-center gap-2">
             <Avatar>
               <AvatarImage
+                className="h-full w-full object-cover"
                 src={
-                  `&${row.original.fotoTampakDepan || row.original?.user?.image}` ||
+                  row.original?.biodataSiswa?.[0]?.fotoTampakDepan ??
+                  row.original?.user?.image ??
                   ""
                 }
                 alt={
@@ -362,8 +364,7 @@ export const studentColumnWithFilter = ({
                 },
                 sakit: {
                   label: "Sakit",
-                  className:
-                    "bg-blue-100 text-blue-700 border border-blue-200",
+                  className: "bg-blue-100 text-blue-700 border border-blue-200",
                 },
               };
 
@@ -662,9 +663,7 @@ export const tableColumnSiswa: ColumnDef<BiodataSiswa>[] = [
   },
 ];
 
-export const studentDailyPresenceColumn: ColumnDef<
-  BiodataSiswa["absensis"][0]
->[] = [
+export const studentDailyPresenceColumn: ColumnDef<BiodataSiswa["absensis"][0]>[] = [
   {
     accessorKey: "createdAt",
     accessorFn: (row) => row.createdAt,
@@ -756,15 +755,58 @@ export const studentDailyPresenceColumn: ColumnDef<
         </BaseTableHeader>
       );
     },
-    cell: ({ row }) => (
-      <>
-        {row.original?.statusKehadiran ? (
-          <Badge>{row.original?.statusKehadiran?.toUpperCase()}</Badge>
-        ) : (
-          "-"
-        )}
-      </>
-    ),
+    // cell: ({ row }) => (
+    //   <>
+    //     {row.original?.statusKehadiran ? (
+    //       <Badge>{row.original?.statusKehadiran?.toUpperCase()}</Badge>
+    //     ) : (
+    //       "-"
+    //     )}
+    //   </>
+    // ),
+    cell: ({ row }: any) => {
+      const status = row.original.statusKehadiran?.toLowerCase();
+
+      const statusConfig = {
+        hadir: {
+          label: "Hadir",
+          className: "bg-green-100 text-green-700 border border-green-200",
+        },
+        izin: {
+          label: "Izin",
+          className: "bg-yellow-100 text-yellow-700 border border-yellow-200",
+        },
+        alfa: {
+          label: "Alfa",
+          className: "bg-red-100 text-red-700 border border-red-200",
+        },
+        "belum hadir": {
+          label: "Belum Hadir",
+          className: "bg-slate-100 text-slate-700 border border-slate-200",
+        },
+        terlambat: {
+          label: "Terlambat",
+          className: "bg-orange-100 text-orange-700 border border-orange-200",
+        },
+        sakit: {
+          label: "Sakit",
+          className: "bg-blue-100 text-blue-700 border border-blue-200",
+        },
+      };
+
+      const config = statusConfig[status as keyof typeof statusConfig];
+
+      return (
+        <div
+          className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${
+            config?.className ??
+            "bg-gray-100 text-gray-700 border border-gray-200"
+          }`}
+        >
+          {config?.label ?? "-"}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "id",

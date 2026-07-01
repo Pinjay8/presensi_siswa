@@ -862,9 +862,46 @@
     "id": "Simpan",
     "en": "Save"
   },
+  "searchStudent": {
+    "id": "Cari Siswa",
+    "en": "Search Student"
+  },
+  "successImportData": {
+    "id": "Berhasil mengimpor data {context}",
+    "en": "{context} imported successfully"
+  },
+  "failedImportData": {
+    "id": "Gagal mengimpor data {context}",
+    "en": "Failed to import data {context}"
+  },
+  "failedRegisterFace": {
+    "id": "Gagal mendaftarkan wajah",
+    "en": "Failed to register face"
+  },
+  "photoRequired": {
+    "id": "Foto tampak depan wajib diisi",
+    "en": "Front-facing photo is required"
+  },
+  "selectExcelFirst": {
+    "id": "Pilih file excel terlebih dahulu",
+    "en": "Please select excel file first"
+  },
   "passwordValidation1": {
     "id": "Kata sandi harus terdiri dari minimal 8 karakter",
     "en": "Password must be at least 8 characters long"
+  },
+  "successDownloadTemplateExcel": {
+    "id": "Berhasil mengunduh template Excel {context}",
+    "en": "Successfully downloaded {context} Excel template"
+  },
+  "failedDownloadTemplateExcel": {
+    "id": "Gagal mengunduh template Excel {context}",
+    "en": "Failed to download {context} Excel template"
+  },
+
+  "importCompletedWithSkipped": {
+    "en": "Import completed with {{count}} skipped data:",
+    "id": "Import selesai dengan {{count}} data dilewati:"
   },
   "passwordValidation2": {
     "id": "Kata sandi harus mengandung setidaknya satu huruf kecil",
@@ -1356,6 +1393,10 @@
   "chooseCourse": {
     "id": "Pilih Mata Pelajaran",
     "en": "Choose Course"
+  },
+  "chooseStudent": {
+    "id": "Pilih Siswa",
+    "en": "Choose Student"
   },
   "createStudents": {
     "id": "Tambah Siswa",
@@ -2526,7 +2567,7 @@
     "id": "Silahkan pilih kelas terlebih dahulu",
     "en": "Please select a class first"
   },
-  "noScheduleForThisClass":{
+  "noScheduleForThisClass": {
     "id": "Tidak ada jadwal untuk kelas ini",
     "en": "No schedule for this class"
   },
@@ -2678,6 +2719,19 @@
   "present": {
     "id": "Hadir",
     "en": "Present"
+  },
+
+  "uploadExcel": {
+    "id": "Unggah Excel",
+    "en": "Upload Excel"
+  },
+  "uploadExcelFromFile": {
+    "id": "Unggah Excel dari file",
+    "en": "Upload Excel from file"
+  },
+  "selectExcelFile": {
+    "id": "Pilih file Excel",
+    "en": "Select Excel file"
   },
   "scheduleName": {
     "id": "Nama Jadwal",

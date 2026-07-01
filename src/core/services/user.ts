@@ -126,27 +126,60 @@ export const userService = {
   //     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.registerFace,
   //     getInitialOptions(),
   //   )(payload),
-  registerFace: async (payload: FormData) => {
+  // registerFace: async (payload: FormData) => {
+  //   return await fetch(
+  //     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.registerFace,
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         Authorization: `Bearer ${getToken()}`,
+  //       },
+  //       body: payload,
+  //     },
+  //   ).then((res) => res.json());
+  // },
+  // registerFaceTeacher: async (payload: FormData) => {
+  //   return await fetch(
+  //     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.registerFaceTeacher,
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         Authorization: `Bearer ${getToken()}`,
+  //       },
+  //       body: payload,
+  //     },
+  //   ).then((res) => res.json());
+  // },
+  registerFace: async (payload: {
+    userId: number;
+    fotoTampakDepan: string;
+  }) => {
     return await fetch(
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.registerFace,
       {
         method: "POST",
         headers: {
           Authorization: `Bearer ${getToken()}`,
+          "Content-Type": "application/json",
         },
-        body: payload,
+        body: JSON.stringify(payload),
       },
     ).then((res) => res.json());
   },
-  registerFaceTeacher: async (payload: FormData) => {
+
+  registerFaceTeacher: async (payload: {
+    userId: number;
+    fotoTampakDepan: string;
+  }) => {
     return await fetch(
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.user.registerFaceTeacher,
       {
         method: "POST",
         headers: {
           Authorization: `Bearer ${getToken()}`,
+          "Content-Type": "application/json",
         },
-        body: payload,
+        body: JSON.stringify(payload),
       },
     ).then((res) => res.json());
   },

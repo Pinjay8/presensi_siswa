@@ -108,10 +108,14 @@ export function ParentTable() {
       link.click();
       document.body.removeChild(link);
 
-      alert.success("Template data orang tua berhasil diunduh");
+      alert.success(lang.text("successDownloadTemplateExcel", {
+        context: lang.text("parent"),
+      }));
     } catch (err: any) {
       alert.error(
-        "Gagal mengunduh template Excel: " + (err.message || "Unknown error"),
+        lang.text("failedDownloadTemplateExcel", {
+          context: lang.text("parent"),
+        })
       );
     }
   };
@@ -120,7 +124,7 @@ export function ParentTable() {
 
   const handleUploadExcel = async () => {
     if (!excelFile) {
-      alert.error("Pilih file Excel terlebih dahulu");
+      alert.error(lang.text("selectExcelFirst"));
       return;
     }
 
@@ -132,14 +136,16 @@ export function ParentTable() {
 
       await uploadExcelService.importExcel(formData);
 
-      alert.success("Import data orang tua berhasil");
+      alert.success(lang.text("successImportData", {
+        context: lang.text("parent"),
+      }));
 
       await parent.query.refetch();
 
       setExcelFile(null);
       setIsUploadModalOpen(false);
     } catch (err: any) {
-      alert.error(err?.message ?? "Gagal mengunggah file Excel");
+      alert.error(err?.message ?? lang.text("failedImportData", { context: lang.text("parent") }));
     }
   };
 

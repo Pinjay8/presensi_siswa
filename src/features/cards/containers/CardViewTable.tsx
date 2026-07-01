@@ -77,10 +77,14 @@ export const CardViewTable = () => {
       link.click();
       document.body.removeChild(link);
 
-      alert.success("Template Excel berhasil diunduh");
+      alert.success(lang.text("successDownloadTemplateExcel", {
+        context: lang.text("cards"),
+      }));
     } catch (err: any) {
       alert.error(
-        "Gagal mengunduh template Excel: " + (err.message || "Unknown error"),
+        lang.text("failedDownloadTemplateExcel", {
+          context: lang.text("cards"),
+        })
       );
     }
   };
@@ -89,7 +93,7 @@ export const CardViewTable = () => {
 
   const handleUploadExcel = async () => {
     if (!excelFile) {
-      alert.error("Pilih file Excel terlebih dahulu");
+      alert.error(lang.text("selectExcelFirst"));
       return;
     }
 
@@ -101,14 +105,16 @@ export const CardViewTable = () => {
 
       await uploadExcelService.importExcel(formData);
 
-      alert.success("Import data kartu berhasil");
+      alert.success(lang.text("successImportData", {
+        context: lang.text("cards"),
+      }));
 
       await resource.query.refetch();
 
       setExcelFile(null);
       setIsUploadModalOpen(false);
     } catch (err: any) {
-      alert.error(err?.message ?? "Gagal mengunggah file Excel");
+      alert.error(err?.message ?? lang.text("failedImportData", { context: lang.text("cards") }));
     }
   };
 

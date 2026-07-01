@@ -36,7 +36,6 @@ export const ClassroomTable = () => {
   } = useDataTableController({
     defaultPageSize: 10,
   });
-  // const resource = useClassroom();
 
   const params = {
     page: pagination.pageIndex + 1,
@@ -121,17 +120,24 @@ export const ClassroomTable = () => {
       link.click();
       document.body.removeChild(link);
 
-      alert.success("Template data kelas  berhasil diunduh");
+      alert.success(
+        lang.text("successDownloadTemplateExcel", {
+          context: lang.text("classroom"),
+        }),
+      );
     } catch (err: any) {
       alert.error(
-        "Gagal mengunduh template Excel: " + (err.message || "Unknown error"),
+        err.message ||
+          lang.text("failedDownloadTemplateExcel", {
+            context: lang.text("classroom"),
+          }),
       );
     }
   };
 
   const handleUploadExcel = async () => {
     if (!excelFile) {
-      alert.error("Pilih file Excel terlebih dahulu");
+      alert.error(lang.text("selectExcelFirst"));
       return;
     }
 
@@ -143,14 +149,18 @@ export const ClassroomTable = () => {
 
       await uploadExcelService.importExcel(formData);
 
-      alert.success("Import data kelas berhasil");
+      alert.success(lang.text("successImportData", {
+        context: lang.text("classroom"),
+      }));
 
       await query.refetch();
 
       setExcelFile(null);
       setIsUploadModalOpen(false);
     } catch (err: any) {
-      alert.error(err?.message ?? "Gagal mengunggah file Excel");
+      alert.error(
+        err?.message ?? lang.text("failedImportData", { context: lang.text("classroom") })
+      );
     }
   };
 
@@ -159,7 +169,7 @@ export const ClassroomTable = () => {
       {!isRole && (
         <>
           <ModalCreateClass
-            open={classRoom}
+            show={classRoom}
             onClose={() => setCreateClassRoom(!classRoom)}
           />
         </>

@@ -38,11 +38,10 @@ import { io } from "socket.io-client";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import StudentFormDialog from "../components/StudentFormDialog";
 import { useProfile } from "@/features/profile";
+import { uploadExcelService } from "@/core/services/excel";
+import { UploadScheduleDialog } from "@/features/schedules/components/UploadScheduleDialog";
 
 export const StudentLandingTables = () => {
-  const [openImport, setOpenImport] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
   const [isGeneratingPDF, setGeneratingPDF] = useState(false);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
@@ -70,8 +69,6 @@ export const StudentLandingTables = () => {
 
   const { data, isLoading, refetch } = useStudentPagination(studentParams);
 
-  const classRoom = useClassroom();
-
   const presentCount = useMemo(() => {
     return (
       data?.students?.filter(
@@ -79,108 +76,6 @@ export const StudentLandingTables = () => {
       ).length ?? 0
     );
   }, [data?.students]);
-
-  const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href =
-      "https://docs.google.com/spreadsheets/d/1IoKbMSfnS0iyH3F-GCpEniJITWouHr-T/export?format=xlsx";
-    link.setAttribute("download", "Template-Pendaftaran-Siswa.xlsx");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleDownloadExcel = (type: string) => {
-    handleDownload(type);
-  };
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    setSelectedFile(file);
-  };
-
-  const importData = async () => {
-    if (selectedFile) {
-      const fileExtension = selectedFile?.name?.split(".").pop()?.toLowerCase();
-
-      if (!["xlsx", "csv"].includes(fileExtension || "")) {
-        alert.error("Harap unggah file dengan format .xlsx atau .csv");
-        return;
-      }
-      // console.log("fileeees", selectedFile);
-
-      setIsUploading(true);
-
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          alert.error("Token tidak ditemukan, silakan login.");
-          setIsUploading(false);
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("file", selectedFile);
-
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/api/upload-excel`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-
-        if (!response.data) {
-          alert.error("Tidak ada data yang dikembalikan dari server");
-          setIsUploading(false);
-          return;
-        }
-
-        const { data } = response.data;
-
-        const formattedMessage = (
-          <div>
-            <p>✅ Berhasil diimport: {data?.success || 0}</p>
-            <p>⚠️ Data yang dilewati: {data?.skipped || 0}</p>
-            <p>❌ Data tidak valid: {data?.invalid || 0}</p>
-          </div>
-        );
-
-        if (response.data.success) {
-          setSelectedFile(null);
-          // await Promise.all([attedances.query.refetch(), refetch()]);
-          alert.success(
-            (formattedMessage && formattedMessage.toString()) ||
-              "Data berhasil diimport",
-          );
-        } else {
-          setSelectedFile(null);
-          // await Promise.all([attedances.query.refetch(), refetch()]);
-          alert.error(
-            (formattedMessage && formattedMessage.toString()) ||
-              "Data gagal diimport",
-          );
-        }
-
-        setOpenImport(false);
-      } catch (error: any) {
-        console.error("Error saat mengunggah file:", error);
-        alert.error("Terjadi kesalahan saat mengimpor data");
-      } finally {
-        setIsUploading(false);
-      }
-    } else {
-      alert.error("Tidak ada file yang dipilih!");
-    }
-  };
-
-  const handleAlert = () => {
-    alert.error(lang.text("shouldClassroom"));
-  };
 
   const [openFormSiswa, setOpenFormSiswa] = useState(false);
 
@@ -279,6 +174,77 @@ export const StudentLandingTables = () => {
     setOpenFormSiswa(false);
   };
 
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
+  const handleDownloadTemplate = () => {
+    try {
+      const link = document.createElement("a");
+      link.href =
+        "https://docs.google.com/spreadsheets/d/1IoKbMSfnS0iyH3F-GCpEniJITWouHr-T/export?format=xlsx";
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      alert.success(
+        lang.text("successDownloadTemplateExcel", {
+          context: lang.text("student"),
+        }),
+      );
+    } catch (err: any) {
+      alert.error(
+        err.message ||
+          lang.text("failedDownloadTemplateExcel", {
+            context: lang.text("student"),
+          }),
+      );
+    }
+  };
+
+  const [excelFile, setExcelFile] = useState<File | null>(null);
+
+  const handleUploadExcel = async () => {
+    if (!excelFile) {
+      alert.error(lang.text("selectExcelFirst"));
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+
+      formData.append("file", excelFile);
+      formData.append("type", "siswa");
+
+      const response = await uploadExcelService.importExcel(formData);
+
+      const result = response?.data;
+
+      if (result?.skippedReasons?.length) {
+        alert.error(
+          `${lang.text("importCompletedWithSkipped", {
+            count: result.skipped,
+          })}\n${result.skippedReasons.join("\n")}`,
+        );
+      } else {
+        alert.success(
+          lang.text("successImportData", { context: lang.text("student") }),
+        );
+      }
+
+      await queryCLient.invalidateQueries({
+        queryKey: ["students"],
+      });
+
+      setExcelFile(null);
+      setIsUploadModalOpen(false);
+    } catch (err: any) {
+      alert.error(
+        err?.message ??
+          lang.text("failedImportData", { context: lang.text("student") }),
+      );
+    }
+  };
+
   return (
     <>
       <div className="flex justify-between items-center pb-4">
@@ -289,7 +255,7 @@ export const StudentLandingTables = () => {
         >
           {isAdmin && (
             <div className="flex w-max gap-2 items-center ">
-              <Button
+              {/* <Button
                 className="hidden"
                 variant="outline"
                 onClick={() => handleDownloadExcel("csv")}
@@ -298,10 +264,10 @@ export const StudentLandingTables = () => {
                 icon={<FaFileExcel />}
               >
                 {lang.text("download")} Template CSV
-              </Button>
+              </Button> */}
               <Button
                 // variant="outline"
-                onClick={() => handleDownloadExcel("excel")}
+                onClick={handleDownloadTemplate}
                 iconPosition="left"
                 icon={<FaFileExcel />}
                 className="bg-green-500 text-white"
@@ -310,16 +276,13 @@ export const StudentLandingTables = () => {
               </Button>
               <Button
                 variant="outline"
-                onClick={() =>
-                  classRoom?.data.length > 0
-                    ? setOpenImport(true)
-                    : handleAlert()
-                }
+                onClick={() => setIsUploadModalOpen(true)}
                 iconPosition="left"
                 icon={<Import />}
-                className="bg-outline-green-500 text-black"
+                className="border-green-500 text-green-500 hover:bg-green-50"
               >
-                {lang.text("import")} Data
+                {/* {lang.text("import")} Data */}
+                {lang.text("uploadExcel")}
               </Button>
               <Button
                 variant="default"
@@ -338,7 +301,7 @@ export const StudentLandingTables = () => {
                 aria-label="presentCount"
                 className="hover:bg-transparent cursor-default"
               >
-                Hadir: {presentCount}
+                {lang.text("present")}: {presentCount}
               </Button>
               <div className="w-full flex justify-between">
                 <div className="flex items-center space-x-2">
@@ -396,6 +359,19 @@ export const StudentLandingTables = () => {
         schools={schools ?? []}
       />
 
+      <UploadScheduleDialog
+        open={isUploadModalOpen}
+        onOpenChange={(open) => {
+          setIsUploadModalOpen(open);
+
+          if (!open) {
+            setExcelFile(null);
+          }
+        }}
+        setExcelFile={setExcelFile}
+        handleUploadExcel={handleUploadExcel}
+      />
+      {/* 
       <ImportStudentDialog
         open={openImport}
         onOpenChange={setOpenImport}
@@ -403,7 +379,7 @@ export const StudentLandingTables = () => {
         isUploading={isUploading}
         onFileChange={handleFileUpload}
         onImport={importData}
-      />
+      /> */}
     </>
   );
 };

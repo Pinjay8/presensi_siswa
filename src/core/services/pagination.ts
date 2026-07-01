@@ -37,10 +37,9 @@ export const studentService = {
         "Content-Type": "application/json",
       },
     });
-    console.log("response", response);
+
 
     const json = await response.json();
-    console.log("json", json);
     return {
       students: json.data,
       pagination: json.pagination,

@@ -11,6 +11,7 @@ export const APP_CONFIG = {
 
 export const API_CONFIG = {
   baseUrl: import.meta.env.VITE_API_BASE_URL,
+  baseCDN: import.meta.env.VITE_CDN_BASE_URL,
 };
 
 export const QUERY_CONFIG = {
@@ -21,6 +22,10 @@ export const QUERY_CONFIG = {
 };
 
 export const SERVICE_ENDPOINTS = {
+  cdn: {
+    getFile: "/uploads/face-enrollment",
+    uploadFile: "/api/upload-face",
+  },
   attedance: {
     createAttedance: "/api/absen-masuk-manual",
   },

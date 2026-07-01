@@ -29,6 +29,7 @@ import {
 } from "@mui/material";
 import { useUserCreation } from "@/features/user/hooks";
 import { XIcon } from "lucide-react";
+import { cdnService } from "@/core/services/cdn";
 
 interface StudentTableProps {
   data: any;
@@ -99,16 +100,28 @@ export function StudentTable({
 
   const handleSubmitRegisterFace = async (file: File) => {
     try {
-      const formData = new FormData();
+      // Upload foto ke CDN
+      const uploadFormData = new FormData();
 
-      formData.append("fotoTampakDepan", file);
-      formData.append("userId", String(selectedStudent.id));
+      uploadFormData.append("file", file);
 
-      await userService.registerFace(formData);
+      const uploadResponse = await cdnService.uploadFile(uploadFormData);
+
+      const fileUrl = uploadResponse?.collection?.data?.[0]?.fileUrl;
+
+      // if (!fileUrl) {
+      //   throw new Error("Gagal mengunggah foto");
+      // }
+
+      // Register face menggunakan URL foto
+      await userService.registerFace({
+        userId: Number(selectedStudent.id),
+        fotoTampakDepan: fileUrl,
+      });
 
       alert.success(lang.text("successRegister"));
     } catch (error: any) {
-      alert.error(error?.message || "Gagal mendaftarkan wajah");
+      alert.error(error?.message || lang.text("failedRegisterFace"));
     }
   };
 
@@ -264,7 +277,13 @@ export function StudentTable({
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           {lang.text("delete")}
           <IconButton onClick={() => setOpenDeleteDialog(false)}>
             <XIcon />

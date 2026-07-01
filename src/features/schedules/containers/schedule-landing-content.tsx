@@ -197,17 +197,6 @@ export function ScheduleLandingContent() {
     }
   };
 
-  // Memoize filtered courses
-  // const filteredCourses = useMemo(() => {
-  //   let filtered =
-  //     courses?.data?.filter((course: any) =>
-  //       course.namaMataPelajaran
-  //         .toLowerCase()
-  //         .includes(searchCourse.toLowerCase()),
-  //     ) || [];
-
-  //   return filtered;
-  // }, [courses?.data, searchCourse, isAddModalOpen, selectedKelasIdForAdd]);
 
   const filteredCourses = useMapel();
 
@@ -230,10 +219,14 @@ export function ScheduleLandingContent() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      alert.success("Template Excel berhasil diunduh");
+      alert.success(lang.text("successDownloadTemplateExcel", {
+        context: lang.text("scheduleMapel"),
+      }));
     } catch (err: any) {
       alert.error(
-        "Gagal mengunduh template Excel: " + (err.message || "Unknown error"),
+        lang.text("failedDownloadTemplateExcel", {
+          context: lang.text("scheduleMapel"),
+        })
       );
     }
   };
@@ -478,7 +471,7 @@ export function ScheduleLandingContent() {
 
   const handleUploadExcel = async () => {
     if (!excelFile) {
-      alert.error("Pilih file Excel terlebih dahulu");
+      alert.error(lang.text("selectExcelFirst"));
       return;
     }
 
@@ -490,7 +483,9 @@ export function ScheduleLandingContent() {
 
       await uploadExcelService.importExcel(formData);
 
-      alert.success("Import jadwal berhasil");
+      alert.success(lang.text("successImportData", {
+        context: lang.text("scheduleMapel"),
+      }));
 
       await queryClient.invalidateQueries({
         queryKey: ["schedules"],
@@ -499,7 +494,7 @@ export function ScheduleLandingContent() {
       setExcelFile(null);
       setIsUploadModalOpen(false);
     } catch (err: any) {
-      alert.error(err?.message ?? "Gagal mengunggah file Excel");
+      alert.error(err?.message ?? lang.text("failedImportData", { context: lang.text("scheduleMapel") }));
     }
   };
 

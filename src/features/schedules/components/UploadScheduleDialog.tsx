@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   Input,
+  lang,
 } from "@/core/libs";
 import { Divider } from "@mui/material";
 
@@ -28,7 +29,7 @@ export function UploadScheduleDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle style={{ marginTop: "18px", textAlign: "start" }}>
-            Unggah File dari Excel
+            {lang.text("uploadExcelFromFile")}
           </DialogTitle>
         </DialogHeader>
         <Divider />
@@ -39,7 +40,7 @@ export function UploadScheduleDialog({
               htmlFor="excelFile"
               style={{ marginBottom: "10px", fontWeight: "semibold" }}
             >
-              Pilih File Excel
+              {lang.text("selectExcelFile")}
             </label>
             <Input
               id="excelFile"
@@ -52,10 +53,10 @@ export function UploadScheduleDialog({
         </div>
 
         <DialogFooter style={{ display: "flex", flexDirection: "row" }}>
-          <Button onClick={handleUploadExcel}>Unggah</Button>
+          <Button onClick={handleUploadExcel}>{lang.text("upload")}</Button>
 
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Batal
+            {lang.text("cancel")}
           </Button>
         </DialogFooter>
       </DialogContent>

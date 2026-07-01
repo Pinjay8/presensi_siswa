@@ -9,6 +9,7 @@ import {
 import { XIcon } from "lucide-react";
 import { Button, lang } from "@/core/libs";
 import { FileUploader } from "../../../file-uploader";
+import { useAlert } from "@/features/_global/hooks";
 
 interface RegisterFaceDialogProps {
   open: boolean;
@@ -24,9 +25,13 @@ export default function RegisterFaceDialog({
   const [fotoTampakDepan, setFotoTampakDepan] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState("");
   const [loading, setLoading] = useState(false);
+  const alert = useAlert();
 
   const handleSubmit = async () => {
-    if (!fotoTampakDepan) return;
+    if (!fotoTampakDepan) {
+      alert.error(lang.text("photoRequired"));
+      return;
+    }
 
     try {
       setLoading(true);

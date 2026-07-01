@@ -26,6 +26,7 @@ import { userService } from "@/core/services";
 import { uploadExcelService } from "@/core/services/excel";
 import { Download, UploadCloud } from "lucide-react";
 import { UploadScheduleDialog } from "@/features/schedules/components/UploadScheduleDialog";
+import { cdnService } from "@/core/services/cdn";
 
 export function TeacherTable() {
   const biodata = useBiodataGuru();
@@ -47,20 +48,32 @@ export function TeacherTable() {
     setOpenRegisterFace(true);
   };
 
-  const handleSubmitRegisterFace = async (file: File) => {
-    try {
-      const formData = new FormData();
+const handleSubmitRegisterFace = async (file: File) => {
+  try {
+    // Upload file ke CDN
+    const uploadFormData = new FormData();
 
-      formData.append("fotoTampakDepan", file);
-      formData.append("userId", String(selectedTeacher.user?.id));
-      console.log("selected Teacher", selectedTeacher.user?.id);
-      await userService.registerFaceTeacher(formData);
+    uploadFormData.append("file", file);
 
-      alert.success(lang.text("successRegister"));
-    } catch (error: any) {
-      alert.error(error?.message || "Gagal mendaftarkan wajah");
+    const uploadResponse = await cdnService.uploadFile(uploadFormData);
+
+    const fileUrl = uploadResponse?.collection?.data?.[0]?.fileUrl;
+
+    if (!fileUrl) {
+      throw new Error("Failed to upload image");
     }
-  };
+
+    // Register face menggunakan URL hasil upload
+    await userService.registerFaceTeacher({
+      userId: selectedTeacher.user?.id,
+      fotoTampakDepan: fileUrl,
+    });
+
+    alert.success(lang.text("successRegister"));
+  } catch (error: any) {
+    alert.error(error?.message || lang.text("failedRegisterFace"));
+  }
+};
   const columns = useMemo(
     () =>
       teacherColumnWithFilter({
@@ -137,10 +150,14 @@ export function TeacherTable() {
       link.click();
       document.body.removeChild(link);
 
-      alert.success("Template Excel berhasil diunduh");
+      alert.success(lang.text("successDownloadTemplateExcel", {
+        context: lang.text("teacher"),
+      }));
     } catch (err: any) {
       alert.error(
-        "Gagal mengunduh template Excel: " + (err.message || "Unknown error"),
+        lang.text("failedDownloadTemplateExcel", {
+          context: lang.text("teacher"),
+        })
       );
     }
   };
@@ -149,7 +166,7 @@ export function TeacherTable() {
 
   const handleUploadExcel = async () => {
     if (!excelFile) {
-      alert.error("Pilih file Excel terlebih dahulu");
+      alert.error(lang.text("selectExcelFirst"));
       return;
     }
 
@@ -161,14 +178,16 @@ export function TeacherTable() {
 
       await uploadExcelService.importExcel(formData);
 
-      alert.success("Import data guru berhasil");
+      alert.success(lang.text("successImportData", {
+        context: lang.text("teacher"),
+      }));
 
       await biodata.query.refetch();
 
       setExcelFile(null);
       setIsUploadModalOpen(false);
     } catch (err: any) {
-      alert.error(err?.message ?? "Gagal mengunggah file Excel");
+      alert.error(err?.message ?? lang.text("failedImportData", { context: lang.text("teacher") }));
     }
   };
 

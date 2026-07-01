@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { studentService } from "@/core/services/pagination";
 import { useStudents } from "./dashboard/usermenu/components/useStudents";
+import { cdnService } from "@/core/services/cdn";
 
 export interface BaseActionTableProps {
   editPath?: string;
@@ -69,22 +70,36 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
   const handleRegisterFace = async () => {
     try {
       if (!fotoTampakDepan) {
-        alert.error(lang.text("pictureValidation"));
+        alert.error(lang.text("photoRequired"));
         return;
       }
 
       setLoadingRegisterFace(true);
+
       const userIdToSend = isAdmin ? selectedStudent : profile?.user?.id;
 
-      const formData = new FormData();
+      // Upload ke CDN
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", fotoTampakDepan);
 
-      formData.append("fotoTampakDepan", fotoTampakDepan);
-      formData.append("userId", String(userIdToSend));
+      const uploadResponse = await cdnService.uploadFile(uploadFormData);
+
+      const fileUrl = uploadResponse?.collection?.data?.[0]?.fileUrl;
+
+      if (!fileUrl) {
+        throw new Error("Failed to upload image");
+      }
+
+      // Register face
+      const payload = {
+        userId: Number(userIdToSend),
+        fotoTampakDepan: fileUrl,
+      };
 
       if (!isRoleTeacher) {
-        await userService.registerFace(formData);
+        await userService.registerFace(payload);
       } else {
-        await userService.registerFaceTeacher(formData);
+        await userService.registerFaceTeacher(payload);
       }
 
       alert.success(lang.text("successRegister"));
@@ -93,17 +108,16 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
       setFotoTampakDepan(null);
       setPreviewImage("");
     } catch (error: any) {
-      alert.error(error?.message);
+      alert.error(error?.message || lang.text("failedRegisterFace"));
     } finally {
       setLoadingRegisterFace(false);
     }
   };
-  // const [students, setStudents] = useState<any[]>([]);
 
   const { data: students } = useStudents();
 
   const fileRef = React.useRef<HTMLInputElement>(null);
-  
+
   return (
     <>
       <DropdownMenu>

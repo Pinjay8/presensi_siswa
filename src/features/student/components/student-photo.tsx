@@ -14,7 +14,7 @@ export const StudentPhoto = ({ image, title }: StudentPhotoProps) => {
 
   return (
     <AspectRatio ratio={1 / 1}>
-      <Avatar className="w-full h-full rounded-none">
+      <Avatar className="w-full h-full rounded-full">
         <AvatarImage src={image} alt={title} />
         <AvatarFallback className="rounded-none text-7xl">
           {initialName}

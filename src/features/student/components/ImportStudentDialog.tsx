@@ -8,6 +8,7 @@ import {
   Input,
   lang,
 } from "@/core/libs";
+import { Divider } from "@mui/material";
 import { UploadIcon } from "lucide-react";
 
 interface ImportStudentDialogProps {
@@ -31,15 +32,18 @@ export const ImportStudentDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{lang.text("import")} Data Siswa</DialogTitle>
+          <DialogTitle style={{ marginTop: "18px" }}>
+            {lang.text("import")} Data Siswa
+          </DialogTitle>
         </DialogHeader>
+        <Divider />
 
         <div className="flex flex-col items-center space-y-4">
           <label
             htmlFor="file-upload"
             className="flex flex-col items-center justify-center w-full p-4 border-2 border-dashed border-gray-500 rounded-lg cursor-pointer hover:border-gray-300 transition"
           >
-            <UploadIcon className="w-10 h-10 text-gray-400 mb-2" />
+            <UploadIcon className="w-10 h-24 text-gray-400 mb-2" />
             <span className="text-gray-600 text-sm">
               {selectedFile ? selectedFile.name : "Pilih file CSV atau Excel"}
             </span>

@@ -10,12 +10,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  Input,
   lang,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Select,
 } from "@/core/libs";
 import { userService } from "@/core/services";
 import { getStaticFile } from "@/core/utils";
 import { useProfile } from "@/features/profile";
 import {
+  Autocomplete,
   Box,
   Card,
   CardContent,
@@ -26,9 +33,9 @@ import {
   Divider,
   IconButton,
   MenuItem,
-  Select,
   Stack,
   Switch,
+  TextField,
   Typography,
 } from "@mui/material";
 import { XIcon } from "lucide-react";
@@ -41,6 +48,7 @@ import { FaceRegisterUploader } from "./components/FaceRegisterUploader";
 import { useProfileUser } from "@/features/parents/hooks/useProfileParent";
 import ProfileDialog from "./components/ProfileDialog";
 import { API_CONFIG } from "@/core/configs";
+import { cdnService } from "@/core/services/cdn";
 
 export interface UserMenuItem {
   title?: string;
@@ -100,7 +108,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
     const img = new Image();
 
     img.onload = () => {
-      const scale = 5; // 🔥 makin besar makin HD
+      const scale = 5; 
 
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
@@ -131,22 +139,36 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
   const handleRegisterFace = async () => {
     try {
       if (!fotoTampakDepan) {
-        alert.error("Foto tampak depan wajib diisi");
+        alert.error(lang.text("photoRequired"));
         return;
       }
 
       setLoadingRegisterFace(true);
+
       const userIdToSend = isAdmin ? selectedStudent : profile?.user?.id;
 
-      const formData = new FormData();
+      // Upload ke CDN
+      const uploadFormData = new FormData();
 
-      formData.append("fotoTampakDepan", fotoTampakDepan);
-      formData.append("userId", String(userIdToSend));
+      uploadFormData.append("file", fotoTampakDepan);
+
+      const uploadResponse = await cdnService.uploadFile(uploadFormData);
+
+      const fileUrl = uploadResponse?.collection?.data?.[0]?.fileUrl;
+
+      if (!fileUrl) {
+        throw new Error("Gagal mengunggah foto");
+      }
+
+      const payload = {
+        userId: Number(userIdToSend),
+        fotoTampakDepan: fileUrl,
+      };
 
       if (!isRoleTeacher) {
-        await userService.registerFace(formData);
+        await userService.registerFace(payload);
       } else {
-        await userService.registerFaceTeacher(formData);
+        await userService.registerFaceTeacher(payload);
       }
 
       alert.success(lang.text("successRegister"));
@@ -155,7 +177,7 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
       setFotoTampakDepan(null);
       setPreviewImage("");
     } catch (error: any) {
-      alert.error(error?.message);
+      alert.error(error?.message || lang.text("failedRegisterFace"));
     } finally {
       setLoadingRegisterFace(false);
     }
@@ -192,7 +214,9 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                 src={getStaticFile(String(profile.user?.image))}
                 alt={profile.user?.name}
               />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>
+                {profile.user?.name?.[0]?.toUpperCase()}
+              </AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
@@ -205,7 +229,9 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                     src={getStaticFile(String(profile.user?.image))}
                     alt={profile.user?.name}
                   />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarFallback>
+                    {profile.user?.name?.[0]?.toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col gap flex-1">
                   <p className="font-bold">{profile.user?.name || "-"}</p>
@@ -345,10 +371,33 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
             {isAdmin && (
               <Box sx={{ mb: 2 }}>
                 <>
-                  <label className="text-black text-md font-semibold mb-2 flex items-center gap-2 mb-2">
-                    Siswa
+                  <label className="text-black text-md font-semibold flex items-center gap-2 mb-2">
+                    {lang.text("student")}
                   </label>
-                  <Select
+                  <Autocomplete
+                    size="small"
+                    options={students || []}
+                    getOptionLabel={(option: any) => option.name || ""}
+                    isOptionEqualToValue={(option: any, value: any) =>
+                      option.id === value.id
+                    }
+                    value={
+                      students?.find(
+                        (student: any) =>
+                          String(student.id) === selectedStudent,
+                      ) || null
+                    }
+                    onChange={(_, value) => {
+                      setSelectedStudent(value ? String(value.id) : "");
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder={lang.text("searchStudent")}
+                      />
+                    )}
+                  />
+                  {/* <Select
                     fullWidth
                     size="small"
                     value={selectedStudent}
@@ -359,7 +408,41 @@ export const UserMenu = React.memo(({ menus = [] }: UserMenuProps) => {
                         {student.name}
                       </MenuItem>
                     ))}
-                  </Select>
+                  </Select> */}
+                  {/* <Select
+                    value={selectedStudent}
+                    onValueChange={(value) => setSelectedStudent(value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={lang.text("chooseStudent")} />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      <div className="p-2">
+                        <Input
+                          placeholder={lang.text("searchStudent")}
+                          value={searchStudent}
+                          onChange={(e) => setSearchStudent(e.target.value)}
+                          onKeyDown={(e) => e.stopPropagation()}
+                        />
+                      </div>
+
+                      {students
+                        ?.filter((student: any) =>
+                          student.name
+                            ?.toLowerCase()
+                            .includes(searchStudent.toLowerCase()),
+                        )
+                        .map((student: any) => (
+                          <SelectItem
+                            key={student.id}
+                            value={String(student.id)}
+                          >
+                            {student.name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select> */}
                 </>
               </Box>
             )}
