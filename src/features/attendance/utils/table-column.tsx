@@ -18,6 +18,14 @@ export const studentAttendanceColumn = ({
 }: BaseTableFilter): ColumnDef<any>[] => {
   return [
     {
+      id: "no",
+      header: () => <div className="text-center">No</div>,
+      cell: ({ row }) => <div className="text-center">{row.index + 1}</div>,
+      enableSorting: false,
+      enableColumnFilter: false,
+      size: 60,
+    },
+    {
       accessorKey: "createdAt",
       accessorFn: (row) => row.createdAt,
       header: ({ column }) => {
@@ -99,9 +107,7 @@ export const studentAttendanceColumn = ({
       },
       enableGlobalFilter: true,
       cell: ({ row }) => {
-        console.log("SISWA", row.original)
         return (
-          
           <BaseUserItem
             image={row.original.siswa?.image}
             name={row.original.siswa?.nama}
@@ -251,32 +257,35 @@ export const studentAttendanceColumn = ({
       cell: ({ row }: any) => {
         const status = row.original.statusKehadiran?.toLowerCase();
 
-  const statusConfig: Record<string, { label: string; className: string }> = {
-    hadir: {
-      label: "Hadir",
-      className: "bg-green-100 text-green-700 border border-green-200",
-    },
-    izin: {
-      label: "Izin",
-      className: "bg-yellow-100 text-yellow-700 border border-yellow-200",
-    },
-    alfa: {
-      label: "Alfa",
-      className: "bg-red-100 text-red-700 border border-red-200",
-    },
-    "belum hadir": {
-      label: "Belum Hadir",
-      className: "bg-slate-100 text-slate-700 border border-slate-200",
-    },
-    terlambat: {
-      label: "Terlambat",
-      className: "bg-orange-100 text-orange-700 border border-orange-200",
-    },
-    sakit: {
-      label: "Sakit",
-      className: "bg-blue-100 text-blue-700 border border-blue-200",
-    },
-  };
+        const statusConfig: Record<
+          string,
+          { label: string; className: string }
+        > = {
+          hadir: {
+            label: "Hadir",
+            className: "bg-green-100 text-green-700 border border-green-200",
+          },
+          izin: {
+            label: "Izin",
+            className: "bg-yellow-100 text-yellow-700 border border-yellow-200",
+          },
+          alfa: {
+            label: "Alfa",
+            className: "bg-red-100 text-red-700 border border-red-200",
+          },
+          "belum hadir": {
+            label: "Belum Hadir",
+            className: "bg-slate-100 text-slate-700 border border-slate-200",
+          },
+          terlambat: {
+            label: "Terlambat",
+            className: "bg-orange-100 text-orange-700 border border-orange-200",
+          },
+          sakit: {
+            label: "Sakit",
+            className: "bg-blue-100 text-blue-700 border border-blue-200",
+          },
+        };
 
         const config = statusConfig[status as keyof typeof statusConfig];
 
@@ -344,6 +353,14 @@ export const teacherAttendanceColumn = ({
   schoolOptions: BaseDataTableFilterValueItem[];
 }): ColumnDef<any>[] => {
   return [
+    {
+      id: "no",
+      header: () => <div className="text-center">No</div>,
+      cell: ({ row }) => <div className="text-center">{row.index + 1}</div>,
+      enableSorting: false,
+      enableColumnFilter: false,
+      size: 60,
+    },
     {
       accessorKey: "created_at",
       accessorFn: (row) => row.createdAt,
@@ -524,32 +541,35 @@ export const teacherAttendanceColumn = ({
       cell: ({ row }: any) => {
         const status = row.original.statusKehadiran?.toLowerCase();
 
-  const statusConfig: Record<string, { label: string; className: string }> = {
-    hadir: {
-      label: "Hadir",
-      className: "bg-green-100 text-green-700 border border-green-200",
-    },
-    izin: {
-      label: "Izin",
-      className: "bg-yellow-100 text-yellow-700 border border-yellow-200",
-    },
-    alfa: {
-      label: "Alfa",
-      className: "bg-red-100 text-red-700 border border-red-200",
-    },
-    "belum hadir": {
-      label: "Belum Hadir",
-      className: "bg-slate-100 text-slate-700 border border-slate-200",
-    },
-    terlambat: {
-      label: "Terlambat",
-      className: "bg-orange-100 text-orange-700 border border-orange-200",
-    },
-    sakit: {
-      label: "Sakit",
-      className: "bg-blue-100 text-blue-700 border border-blue-200",
-    },
-  };
+        const statusConfig: Record<
+          string,
+          { label: string; className: string }
+        > = {
+          hadir: {
+            label: "Hadir",
+            className: "bg-green-100 text-green-700 border border-green-200",
+          },
+          izin: {
+            label: "Izin",
+            className: "bg-yellow-100 text-yellow-700 border border-yellow-200",
+          },
+          alfa: {
+            label: "Alfa",
+            className: "bg-red-100 text-red-700 border border-red-200",
+          },
+          "belum hadir": {
+            label: "Belum Hadir",
+            className: "bg-slate-100 text-slate-700 border border-slate-200",
+          },
+          terlambat: {
+            label: "Terlambat",
+            className: "bg-orange-100 text-orange-700 border border-orange-200",
+          },
+          sakit: {
+            label: "Sakit",
+            className: "bg-blue-100 text-blue-700 border border-blue-200",
+          },
+        };
 
         const config = statusConfig[status as keyof typeof statusConfig];
 

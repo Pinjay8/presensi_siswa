@@ -54,8 +54,6 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
     // },
   });
 
-  // console.log("SchoolInformation props:", props);
-
   const student = useBiodata();
   const classroom = useClassroom();
   const teacher = useBiodataGuru();
@@ -76,7 +74,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
   const students = biodataStudents.filter(
     (d: any) => Number(d?.user?.sekolah?.id) === Number(props.id),
   );
-  console.log("Filtered students:", students);
+
   const teachers = teacher.data?.filter(
     (d) => Number(d?.user?.sekolah?.id) === Number(props.id),
   );
@@ -140,30 +138,11 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
     return true;
   };
 
-  // Check for hook errors
-  // useEffect(() => {
-  //   console.log("useSchoolDetail status:", { isFetching: detail.isFetching, data: detail.data });
-  //   if (detail.error) console.error("useSchoolDetail error:", detail.error);
-  //   if (student.error) console.error("useBiodata error:", student.error);
-  //   if (teacher.error) console.error("useBiodataGuru error:", teacher.error);
-  //   if (classroom.error) console.error("useClassroom error:", classroom.error);
-  //   if (course.error) console.error("useCourse error:", course.error);
-  //   if (province.error) console.error("useProvinces error:", province.error);
-  // }, [
-  //   detail.error,
-  //   detail.isFetching,
-  //   detail.data,
-  //   student.error,
-  //   teacher.error,
-  //   classroom.error,
-  //   course.error,
-  //   province.error,
-  // ]);
+
 
   // Populate form and store initial values
   useEffect(() => {
     if (detail.data) {
-      console.log("Resetting form with detail.data:", detail.data);
       const newValues = {
         provinceId: String(detail.data?.provinceId) || "",
         schoolName: detail.data?.namaSekolah || "",
@@ -551,7 +530,6 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                       size="sm"
                       disabled={isSubmitting}
                       onClick={() => {
-                        console.log("Tombol Batal diklik");
                         form.reset();
                         setIsEditMode(false);
                         setIsIntentionalSubmit(false);

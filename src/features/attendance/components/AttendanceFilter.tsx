@@ -23,7 +23,7 @@ export const AttendanceFilter = ({
 }: AttendanceFilterProps) => {
   return (
     <div className="flex justify-between items-center mb-4 space-x-4">
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 mt-2">
         <Button
           variant="outline"
           onClick={() => setIsModalOpen(true)}

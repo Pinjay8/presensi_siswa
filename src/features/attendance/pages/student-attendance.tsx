@@ -20,10 +20,9 @@ import { io } from "socket.io-client";
 import ExportFilterModal from "../components/ExpertFilterModal";
 import { AttendanceFilter } from "../components/AttendanceFilter";
 import { attendanceService } from "@/core/services/pagination";
-import { useSchool } from "@/features/schools";
 import { useClassroom } from "@/features/classroom";
 
-// Konfigurasi dayjs untuk timezone
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(isBetween);
@@ -113,18 +112,6 @@ export const StudentAttendance = () => {
   }, [refetch]);
 
   const classroom = useClassroom();
-
-  // const classOptions = Array.from(
-  //   new Map(
-  //     (biodataAll.data ?? []).map((student: any) => [
-  //       student.kelas?.id,
-  //       {
-  //         id: student.kelas?.id,
-  //         name: student.kelas?.namaKelas,
-  //       },
-  //     ]),
-  //   ).values(),
-  // );
   const attendanceCount = filteredData.length;
 
   const handleExportExcel = async (params: any) => {

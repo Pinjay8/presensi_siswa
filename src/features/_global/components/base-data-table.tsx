@@ -441,6 +441,13 @@ export const BaseDataTable = ({
     );
   }, [columnFilters, setSearchParams, table, searchParams]);
 
+  const { pageIndex: currentPageIndex, pageSize: currentPageSize } =
+    table.getState().pagination;
+  const total = rowCount ?? data.length;
+
+  const start = total === 0 ? 0 : currentPageIndex * currentPageSize + 1;
+
+  const end = Math.min((currentPageIndex + 1) * currentPageSize, total);
   return (
     <>
       <div className="w-full">
@@ -528,9 +535,11 @@ export const BaseDataTable = ({
         </ScrollArea>
         <div className="flex items-center justify-end space-x-2 py-4">
           <div className="flex-1 text-sm text-muted-foreground">
-            {`${table.getFilteredRowModel().rows.length} / ${
+            {/* {lang.text("show")} */}
+            {/* {`${table.getFilteredRowModel().rows.length} - ${
               data.length
-            } ${lang.text("data")}`}
+            } ${lang.text("data")}`} */}
+            {`${start} - ${end} dari ${total} data`}
           </div>
           <div className="flex flex-row gap-2">
             <Button

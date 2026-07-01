@@ -862,6 +862,10 @@
     "id": "Simpan",
     "en": "Save"
   },
+  "show": {
+    "id": "Menampilkan",
+    "en": "Show"
+  },
   "searchStudent": {
     "id": "Cari Siswa",
     "en": "Search Student"
