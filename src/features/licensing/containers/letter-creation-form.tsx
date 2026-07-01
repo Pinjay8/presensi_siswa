@@ -67,8 +67,6 @@ export const LincensingCreationForm = () => {
       alasan: undefined,
       dari: "",
       sampai: "",
-      // jamMulai: "",
-      // jamSelesai: "",
       siswaId: 0,
     },
   });
@@ -80,8 +78,6 @@ export const LincensingCreationForm = () => {
         alasan: undefined, // Explicitly reset alasan to undefined
         dari: "",
         sampai: "",
-        // jamMulai: "",
-        // jamSelesai: "",
         siswaId: 0,
       });
     }
@@ -93,6 +89,7 @@ export const LincensingCreationForm = () => {
       const formData = new FormData();
       const token = localStorage.getItem("token");
 
+      formData.append("siswaId", String(data.siswaId));
       formData.append("alasan", data.alasan);
       formData.append("dari", data.dari);
       formData.append("sampai", data.sampai);
@@ -103,7 +100,12 @@ export const LincensingCreationForm = () => {
       // formData.append("jamMulai", jamMulai);
       // formData.append("jamSelesai", jamSelesai);
 
-      await dispensasiService.create(formData);
+      const result = await dispensasiService.create(formData);
+
+      if (result?.message) {
+        alert.error(result.message);
+        return;
+      }
 
       alert.success(lang.text("licensingSuccessCreate"));
       school.query.refetch();
