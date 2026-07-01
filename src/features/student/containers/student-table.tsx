@@ -75,7 +75,6 @@ export function StudentTable({
   const [openUnassignCard, setOpenUnassignCard] = useState(false);
   const queryClient = useQueryClient();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-
   const userCards = selectedUser?.kartus || [];
 
   const handleOpenRegisterFace = (student: any) => {
@@ -117,6 +116,10 @@ export function StudentTable({
       await userService.registerFace({
         userId: Number(selectedStudent.id),
         fotoTampakDepan: fileUrl,
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["students"],
       });
 
       alert.success(lang.text("successRegister"));
