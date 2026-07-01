@@ -2462,6 +2462,10 @@
     "id": "Unggah Foto",
     "en": "Upload Photo"
   },
+  "codeTeacher": {
+    "id": "Kode Guru",
+    "en": "Teacher Code"
+  },
   "attendanceDescription": {
     "id": "Kelola dan pantau kehadiran siswa, guru, dan staf dengan mudah dan efisien.",
     "en": "Easily and efficiently manage and monitor attendance for students, teachers, and staff."

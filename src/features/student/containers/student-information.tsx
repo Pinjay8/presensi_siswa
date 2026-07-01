@@ -185,11 +185,9 @@ export const StudentInformation = () => {
     if (detail.data && userDetail.data && classroom.data && !isEditMode) {
       const validKelasId =
         detail.data?.idKelas &&
-        classroom.data.some((kelas) => kelas.id === detail?.data.idKelas)
+        classroom.data.some((kelas) => kelas.id === detail.data.idKelas)
           ? String(detail.data.idKelas)
-          : classroom.data.length > 0
-            ? String(classroom.data[0].id)
-            : "";
+          : "";
 
       const newValues = {
         kelasId: validKelasId,
@@ -548,14 +546,14 @@ export const StudentInformation = () => {
                   name="noTlp"
                   isEditMode={isEditMode}
                 />
-                <EditableInfoItem
+                {/* <EditableInfoItem
                   control={form.control}
                   icon={<IdCard size={24} />}
                   label="RFID"
                   value={userDetail.data?.rfid}
                   name="rfid"
                   isEditMode={isEditMode}
-                />
+                /> */}
                 <EditableInfoItem
                   control={form.control}
                   icon={<CalendarIcon size={24} />}

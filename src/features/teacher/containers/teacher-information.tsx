@@ -90,7 +90,7 @@ export const TeacherInformation = (props: TeacherInformationProps) => {
               />
               <InfoItem
                 icon={<Table size={24} />}
-                label={lang.text("classroom")}
+                label={lang.text("codeTeacher")}
                 value={detail.data?.kode_guru || "-"}
               />
               <InfoItem
