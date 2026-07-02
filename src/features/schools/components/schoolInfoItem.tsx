@@ -1,15 +1,15 @@
 import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Input,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/core/libs";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -50,9 +50,9 @@ export const EditableInfoItem = <T extends FieldValues>({
     </ol>
     <p><strong>MISI:</strong></p>
     <ol>
-        <li>Misi pertama</li>
-        <li>Misi kedua</li>
-        <li>Misi ketiga</li>
+        <li> Misi pertama</li>
+        <li> Misi kedua</li>
+        <li> Misi ketiga</li>
         <p>dst...</p>
     </ol>
   `;
@@ -108,6 +108,7 @@ export const EditableInfoItem = <T extends FieldValues>({
                       console.error("CKEditor error:", error);
                       setCkEditorError?.("Gagal memuat CKEditor");
                     }}
+                    style={{ padding: "10px important" }}
                   />
                 )}
                 {ckEditorError && (

@@ -32,12 +32,6 @@ export const SignatureDisplay = ({ signature }: { signature?: string }) => {
           `schoolSignature_${userID}_${schoolId}`,
           safeSignature
         );
-        // console.log(
-        //   "✅ Signature disimpan di localStorage untuk user:",
-        //   userID,
-        //   "dan schoolId:",
-        //   schoolId
-        // );
       }
     }
   }, [safeSignature, userID, schoolId]);
@@ -48,14 +42,14 @@ export const SignatureDisplay = ({ signature }: { signature?: string }) => {
   // console.log('safe', safeSignature)
   return (
     // <div className="border border-gray-400 rounded-md bg-transparent w-full sm:w-1/3 h-[300px] flex justify-center items-center">
-    <div className="border border-white/10 rounded-[14px] border-gray-400 rounded-md bg-transparent w-full h-[300px] flex justify-center items-center">
+    <div className="border border-white/10  border-gray-400 rounded-md bg-transparent w-full h-[300px] flex justify-center items-center">
       {isSignatureValid ? (
         <img
           src={getStaticFile(safeSignature)}
           alt="Signature"
           className="object-contain"
           style={{
-            backgroundColor: "#f5f5f5", // Latar belakang gambar
+            backgroundColor: "#f5f5f5", 
             maxWidth: "90%",
             height: "auto",
             margin: "auto",

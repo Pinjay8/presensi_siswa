@@ -53,7 +53,6 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
     //   refetchOnWindowFocus: false,
     // },
   });
-
   const student = useBiodata();
   const classroom = useClassroom();
   const teacher = useBiodataGuru();
@@ -138,8 +137,6 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
     return true;
   };
 
-
-
   // Populate form and store initial values
   useEffect(() => {
     if (detail.data) {
@@ -186,14 +183,8 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
     }
   }, [form, initialValues]);
 
-  // Debug isEditMode
-  useEffect(() => {
-    console.log("isEditMode changed:", isEditMode);
-  }, [isEditMode]);
-
   // Submit form function
   async function onSubmit(data: z.infer<typeof schoolUpdateFormSchema>) {
-    console.log("onSubmit called with data:", data);
     setIsSubmitting(true);
     try {
       const formData = new FormData();
@@ -381,7 +372,6 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
         onSubmit={(e) => {
           e.preventDefault();
           if (isEditMode && isIntentionalSubmit) {
-            console.log("Form submitted");
             form.handleSubmit(onSubmit)();
           } else {
             console.log("Form submission blocked");
@@ -401,12 +391,10 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                     <FileUploader
                       value={field.value}
                       onChange={(v) => {
-                        console.log("FileUploader onChange:", v);
                         field.onChange(v);
                       }}
                       buttonPlaceholder="Upload logo sekolah"
                       onError={(e) => {
-                        console.log("FileUploader error:", e);
                         form.setError("file", { message: e });
                       }}
                       showButton={false}
@@ -415,7 +403,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                     {detail.data?.file && (
                       <div className="border-b border-white/10 mt-2 w-full flex justify-center items-center pt-8 pb-10">
                         <img
-                          src={getStaticFile(String(detail.data?.file))}
+                          src={detail.data?.file}
                           alt="Current logo"
                           className="w-32 h-32 object-contain"
                         />
@@ -430,7 +418,6 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                   <SignatureInput
                     sigCanvas={sigCanvas}
                     onSignatureChange={() => {
-                      console.log("SignatureInput changed");
                       form.setValue(
                         "ttdKepalaSekolah",
                         sigCanvas.current?.toDataURL() || null,
@@ -449,7 +436,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                 <div className="border border-white/10 rounded-[14px] p-4 w-full justify-center items-center">
                   <SchoolLogo
                     title={detail.data?.namaSekolah}
-                    image={getStaticFile(String(detail.data?.file))}
+                    image={detail.data?.file}
                   />
                 </div>
                 {detail.data?.ttdKepalaSekolah && (
@@ -745,9 +732,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                     />
                   </div>
                 )}
-                <div className="w-full border border-white/10 p-6 rounded-lg lg:col-start-1 lg:col-end-3">
-                  <div dangerouslySetInnerHTML={{ __html: safeHTML }} />
-                </div>
+            
                 {isEditMode && (
                   <EditableInfoItem
                     control={form.control}
@@ -787,7 +772,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                     />
                   ) : (
                     detail.data?.id && (
-                      <div className="rounded-lg mt-6">
+                      <div className="rounded-lg mt-2">
                         <ViewMap
                           position={{
                             lat: detail.data?.latitude,

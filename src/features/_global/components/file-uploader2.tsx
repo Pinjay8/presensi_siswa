@@ -49,14 +49,14 @@ export function FileUploader2({
         
         
         console.log('lbear:', img.width)
-        if (img.width < 3000) {
-          onChange?.(null);
-          const errorMessage = `Lebar minimal (3000px). Lebar gambar yang diupload: (${img.width}px).`;
-          alert.error(errorMessage); // Tampilkan di UI
-          onError?.(errorMessage); // Kirim ke handler error
-          URL.revokeObjectURL(objectUrl);
-          return;
-        }
+        // if (img.width < 3000) {
+        //   onChange?.(null);
+        //   const errorMessage = `Lebar minimal (3000px). Lebar gambar yang diupload: (${img.width}px).`;
+        //   alert.error(errorMessage); // Tampilkan di UI
+        //   onError?.(errorMessage); // Kirim ke handler error
+        //   URL.revokeObjectURL(objectUrl);
+        //   return;
+        // }
 
         URL.revokeObjectURL(objectUrl);
 
@@ -121,7 +121,7 @@ export function FileUploader2({
           </div>
           {value && (
             <div className="flex items-center space-x-2 text-sm">
-              {getFileIcon(value.name)}
+              {/* {getFileIcon(value.name)} */}
               <span className="font-medium">{value.name}</span>
             </div>
           )}

@@ -1,5 +1,5 @@
 import { getToken } from "@/features/auth/utils";
-import { APP_CONFIG } from "../configs/app";
+import { API_CONFIG, APP_CONFIG } from "../configs/app";
 
 export const getInitialOptions = () => {
   return {
@@ -10,7 +10,7 @@ export const getInitialOptions = () => {
 export const getStaticFile = (path: string, context?: string) => {
   // console.log("ada", path);
   if (path?.includes("static")) {
-    return `${APP_CONFIG.staticUrl}/${path}`;
+    return `${API_CONFIG.baseUrl}/${path}`;
   }
 
   const oldStatic = "https://hris.sanivokasi.com/storage";

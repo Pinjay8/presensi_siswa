@@ -39,6 +39,9 @@ body {
 .ck-editor-wrapper .ck-content {
   color: #000 !important;
 }
+.ck.ck-editor__editable_inline {
+  padding: 10px 20px !important;
+}
 /*  */
 
 @layer base {

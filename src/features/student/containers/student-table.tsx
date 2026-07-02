@@ -99,7 +99,6 @@ export function StudentTable({
 
   const handleSubmitRegisterFace = async (file: File) => {
     try {
-      // Upload foto ke CDN
       const uploadFormData = new FormData();
 
       uploadFormData.append("file", file);
@@ -108,11 +107,6 @@ export function StudentTable({
 
       const fileUrl = uploadResponse?.collection?.data?.[0]?.fileUrl;
 
-      // if (!fileUrl) {
-      //   throw new Error("Gagal mengunggah foto");
-      // }
-
-      // Register face menggunakan URL foto
       await userService.registerFace({
         userId: Number(selectedStudent.id),
         fotoTampakDepan: fileUrl,

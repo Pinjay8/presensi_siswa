@@ -30,7 +30,7 @@ export function SchoolTeacherTable(props: SchoolTeacherTableProps) {
     [props.id, biodata.data],
   );
 
-  console.log("datas ==>", datas);
+
 
   return (
     <BaseDataTable

@@ -46,6 +46,9 @@ export const StudentLandingTables = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const alert = useAlert();
+  const profile = useProfile();
+  const isAdmin = profile?.user?.role === "admin";
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const {
     global,
@@ -60,9 +63,6 @@ export const StudentLandingTables = () => {
     () => ({
       page: pagination.pageIndex + 1,
       size: pagination.pageSize,
-      // sekolahId: sekolahId ? +sekolahId : undefined,
-      // idKelas: idKelas ? +idKelas : undefined,
-      // keyword: global,
     }),
     [pagination.pageIndex, pagination.pageSize],
   );
@@ -166,15 +166,10 @@ export const StudentLandingTables = () => {
     };
   }, [refetch]);
 
-  const profile = useProfile();
-  const isAdmin = profile?.user?.role === "admin";
-
   const handleCloseFormSiswa = () => {
     form.reset(defaultValues);
     setOpenFormSiswa(false);
   };
-
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const handleDownloadTemplate = () => {
     try {

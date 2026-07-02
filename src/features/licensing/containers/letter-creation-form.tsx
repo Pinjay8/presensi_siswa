@@ -35,6 +35,7 @@ import { FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useDispenStudent } from "../hooks/useDispenStudent";
+import { cdnService } from "@/core/services/cdn";
 
 // Zod schema for the updated form
 const letterUpdateFormSchema = z.object({
@@ -75,7 +76,7 @@ export const LincensingCreationForm = () => {
     if (school.data) {
       form.reset({
         buktiSurat: form.getValues().buktiSurat,
-        alasan: undefined, // Explicitly reset alasan to undefined
+        alasan: undefined,
         dari: "",
         sampai: "",
         siswaId: 0,
@@ -85,24 +86,34 @@ export const LincensingCreationForm = () => {
 
   async function onSubmit(data: z.infer<typeof letterUpdateFormSchema>) {
     setIsLoading(true);
+
     try {
-      const formData = new FormData();
-      const token = localStorage.getItem("token");
+      // Upload file ke CDN
+      const uploadFormData = new FormData();
 
-      formData.append("siswaId", String(data.siswaId));
-      formData.append("alasan", data.alasan);
-      formData.append("dari", data.dari);
-      formData.append("sampai", data.sampai);
-      formData.append("buktiSurat", data.buktiSurat);
-      // const jamMulai = data?.jamMulai?.replace(":", ".") || "";
-      // const jamSelesai = data?.jamSelesai?.replace(":", ".") || "";
+      if (data.buktiSurat) {
+        uploadFormData.append("file", data.buktiSurat);
+      }
 
-      // formData.append("jamMulai", jamMulai);
-      // formData.append("jamSelesai", jamSelesai);
+      const uploadResponse = await cdnService.uploadIzin(uploadFormData);
 
-      const result = await dispensasiService.create(formData);
+      const fileUrl = uploadResponse?.collection?.data?.[0]?.fileUrl;
 
-      if (result?.message) {
+      if (!fileUrl) {
+        alert.error("Upload bukti surat gagal.");
+        return;
+      }
+
+      // Simpan dispensasi menggunakan JSON
+      const result = await dispensasiService.create({
+        siswaId: data.siswaId,
+        alasan: data.alasan,
+        dari: data.dari,
+        sampai: data.sampai,
+        buktiSurat: fileUrl,
+      });
+
+      if (!result.success) {
         alert.error(result.message);
         return;
       }
@@ -115,22 +126,18 @@ export const LincensingCreationForm = () => {
         alasan: undefined,
         dari: "",
         sampai: "",
-        // jamMulai: "",
-        // jamSelesai: "",
         siswaId: 0,
       });
+
       navigate("/licensing", { replace: true });
     } catch (err: any) {
       console.error("Error saat submit:", err);
+
       if (err.response) {
-        console.log("error", err.response.data?.message);
         alert.error(
           err.response.data?.message || lang.text("licensingFailCreate"),
         );
-      } else if (err.request) {
-        alert.error(lang.text("licensingFailCreate"));
       } else {
-        console.log("error", err.message);
         alert.error(err?.message || lang.text("licensingFailCreate"));
       }
     } finally {

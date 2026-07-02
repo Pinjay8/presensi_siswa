@@ -20,7 +20,6 @@ import {
   Document,
   Image,
   Page,
-  pdf,
   PDFViewer,
   StyleSheet,
   Text,
@@ -141,6 +140,8 @@ interface LetterData {
 }
 
 const LetterPDF: React.FC<{ data: LetterData }> = ({ data }) => {
+  console.log("data", data);
+
   return (
     <Document>
       <Page size="A4" style={pdfStyles.page}>
@@ -165,52 +166,13 @@ const LetterPDF: React.FC<{ data: LetterData }> = ({ data }) => {
             <Text style={pdfStyles.letterNumber}>Nomor: {data.nomorSurat}</Text>
           )}
           <View style={pdfStyles.content}>
-            {/* <Text>
+            <Text>
               {data.pembukaan.replace("{namaSekolah}", data.namaSekolah)}
-            </Text> */}
-            {/* <Text style={pdfStyles.studentName}>Ahmad Fauzi</Text>
-            <Text style={pdfStyles.studentNIS}>NIS: 1234567890</Text> */}
-            <Text style={{ textAlign: "justify", lineHeight: 1.8 }}>
-              Yang bertanda tangan di bawah ini menerangkan bahwa:
             </Text>
-            <View style={{ marginTop: 5 }}>
-              <Text>Nama Siswa : </Text>
-              <Text>NIS : </Text>
-              <Text>Kelas : </Text>
-            </View>
-            <Text
-              style={{
-                marginTop: 20,
-                textAlign: "justify",
-                lineHeight: 1.8,
-              }}
-            >
-             {data.pernyataanLulus}
-            </Text>
-            {/* <Text style={{ marginTop: 10 }}>{data.pernyataanLulus}</Text> */}
-            {/* <Text style={{ marginTop: 10 }}>{data.penutupan}</Text>
-             */}
-            <Text style={{ marginTop: 15 }}>Alasan:</Text>
-
-            {/* <View
-              style={{
-                border: "1 solid #999",
-                borderRadius: 4,
-                padding: 10,
-                marginTop: 5,
-              }}
-            >
-              <Text>{data.alasan}</Text>
-            </View> */}
-            <Text
-              style={{
-                marginTop: 20,
-                textAlign: "justify",
-                lineHeight: 1.8,
-              }}
-            >
-              {data.penutupan}
-            </Text>
+            <Text style={pdfStyles.studentName}>Ahmad Fauzi</Text>
+            <Text style={pdfStyles.studentNIS}>NIS: 1234567890</Text>
+            <Text style={{ marginTop: 10 }}>{data.pernyataanLulus}</Text>
+            <Text style={{ marginTop: 10 }}>{data.penutupan}</Text>
           </View>
           <View style={pdfStyles.signature}>
             <Text style={pdfStyles.signatureText}>Kepala Sekolah,</Text>
@@ -234,6 +196,7 @@ export const LetterCreationForm = () => {
   const sigCanvas = useRef<SignatureCanvas | null>(null);
   const profile = useProfile();
   const school = useSchoolDetail({ id: profile?.user?.sekolahId || 1 });
+  // console.log("school", school);
   const [signatureDataUrl, setSignatureDataUrl] = useState<string | undefined>(
     school.data?.ttdKepalaSekolah,
   );
@@ -244,33 +207,6 @@ export const LetterCreationForm = () => {
 
   const handleSignatureChange = () => {
     setIsSignatureDirty(true);
-  };
-
-  const handleDownload = async () => {
-    const blob = await pdf(
-      <LetterPDF
-        data={{
-          namaSekolah: school?.data?.namaSekolah,
-          kopSurat: school?.data?.kopSurat,
-          judulSurat: school?.data?.judulSurat,
-          nomorSurat: form.watch("nomorSurat"),
-          namaKepalaSekolah: school?.data?.namaKepalaSekolah,
-          ttdKepalaSekolah: signatureDataUrl,
-          pembukaan: form.watch("pembukaan"),
-          pernyataanLulus: form.watch("pernyataanLulus"),
-          penutupan: form.watch("penutupan"),
-        }}
-      />,
-    ).toBlob();
-
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `Surat-${form.watch("nomorSurat") || "Sekolah"}.pdf`;
-    a.click();
-
-    URL.revokeObjectURL(url);
   };
 
   const form = useForm<z.infer<typeof letterUpdateFormSchema>>({
@@ -495,7 +431,7 @@ export const LetterCreationForm = () => {
                     name="pernyataanLulus"
                     render={({ field, fieldState }) => (
                       <FormItem>
-                        <FormLabel>Pernyataan</FormLabel>
+                        <FormLabel>Pernyataan Lulus</FormLabel>
                         <FormControl>
                           <Textarea
                             placeholder="Masukkan teks pernyataan lulus"
@@ -619,10 +555,6 @@ export const LetterCreationForm = () => {
         </Form>
       </div>
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <h5 className="text-lg font-semibold">Preview PDF</h5>
-          <Button onClick={handleDownload}>Download PDF</Button>
-        </div>
         <PDFViewer style={pdfStyles.viewer}>
           <LetterPDF
             data={{

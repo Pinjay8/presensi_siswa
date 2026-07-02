@@ -1,33 +1,33 @@
-import { buttonVariants, cn, lang, simpleDecode } from '@/core/libs';
-import { APP_CONFIG } from '@/core/configs';
-import { NavLink, Outlet, useParams } from 'react-router-dom';
-import { SchoolInformation } from '@/features/schools';
-import { DashboardPageLayout } from '@/features/_global';
-import { useMemo } from 'react';
+import { buttonVariants, cn, lang, simpleDecode } from "@/core/libs";
+import { APP_CONFIG } from "@/core/configs";
+import { NavLink, Outlet, useParams } from "react-router-dom";
+import { SchoolInformation } from "@/features/schools";
+import { DashboardPageLayout } from "@/features/_global";
+import { useMemo } from "react";
 
 export const SchoolDetail = () => {
   const params = useParams();
   const decodeParams: { id: string; text: string } = JSON.parse(
-    simpleDecode(params.id || ''),
+    simpleDecode(params.id || ""),
   );
 
   const submenus = useMemo(
     () => [
       {
-        title: lang.text('student'),
-        path: '',
+        title: lang.text("student"),
+        path: "",
       },
       {
-        title: lang.text('teacher'),
-        path: 'teachers',
+        title: lang.text("teacher"),
+        path: "teachers",
       },
       {
-        title: lang.text('classroom'),
-        path: 'classrooms',
+        title: lang.text("classroom"),
+        path: "classrooms",
       },
       {
-        title: lang.text('course'),
-        path: 'courses',
+        title: lang.text("course"),
+        path: "courses",
       },
     ],
     [],
@@ -38,7 +38,7 @@ export const SchoolDetail = () => {
       siteTitle={`${decodeParams?.text} | ${APP_CONFIG.appName}`}
       breadcrumbs={[
         {
-          label: lang.text('school'),
+          label: lang.text("school"),
           url: `/schools`,
         },
         {
@@ -46,7 +46,7 @@ export const SchoolDetail = () => {
           url: `/schools/${params?.id}`,
         },
       ]}
-      title={lang.text('schoolDetail')}
+      title={lang.text("schoolDetail")}
     >
       <div className="mb-4" />
       <SchoolInformation id={decodeParams?.id} />
@@ -54,12 +54,13 @@ export const SchoolDetail = () => {
         {submenus.map((submenu) => {
           return (
             <NavLink
+              key={submenu.path}
               to={submenu.path}
               end
               className={({ isActive }) => {
                 return cn(
-                  buttonVariants({ variant: isActive ? 'default' : 'outline' }),
-                  'mr-2 mr-4',
+                  buttonVariants({ variant: isActive ? "default" : "outline" }),
+                  "mr-4",
                 );
               }}
             >

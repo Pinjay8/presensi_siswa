@@ -8,10 +8,11 @@
   padding: 30px;
 }
 
+
 .card {
   width: 380px;
   min-height: 500px;
-  background: url('/defaultFrame.png') no-repeat center center;
+  background: url("/defaultFrame.png") no-repeat center center;
   background-size: cover;
   border-radius: 20px;
   padding: 25px;

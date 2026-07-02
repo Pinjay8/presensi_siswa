@@ -1,3 +1,4 @@
+import { API_CONFIG } from "@/core/configs";
 import { lang } from "@/core/libs";
 import { getStaticFile } from "@/core/utils";
 import { useProfile } from "@/features/profile"; // Asumsi useProfile diimpor dari folder yang sesuai
@@ -25,19 +26,13 @@ export const SignatureDisplay = ({ signature }: { signature?: string }) => {
     if (safeSignature && userID && schoolId) {
       // Simpan signature ke localStorage untuk user yang sesuai
       const existingSignature = localStorage.getItem(
-        `schoolSignature_${userID}_${schoolId}`
+        `schoolSignature_${userID}_${schoolId}`,
       );
       if (existingSignature !== safeSignature) {
         localStorage.setItem(
           `schoolSignature_${userID}_${schoolId}`,
-          safeSignature
+          safeSignature,
         );
-        // console.log(
-        //   "✅ Signature disimpan di localStorage untuk user:",
-        //   userID,
-        //   "dan schoolId:",
-        //   schoolId
-        // );
       }
     }
   }, [safeSignature, userID, schoolId]);
@@ -46,17 +41,14 @@ export const SignatureDisplay = ({ signature }: { signature?: string }) => {
   const isSignatureValid = schoolId && safeSignature;
 
   return (
-    <div className="border border-gray-400 rounded-md bg-transparent w-full h-[300px] flex justify-center items-center">
+    <div className="border border-gray-400 rounded-md w-full h-[300px] overflow-hidden flex items-center justify-center">
       {isSignatureValid ? (
         <img
-          src={getStaticFile(safeSignature)}
+          src={`${API_CONFIG.baseUrl}${safeSignature}`}
           alt="Signature"
-          className="object-contain"
+          className="w-full h-full object-contain"
           style={{
-            backgroundColor: "#f5f5f5", // Latar belakang gambar
-            maxWidth: "80%",
-            height: "auto",
-            margin: "auto",
+            backgroundColor: "#f5f5f5",
             display: "block",
           }}
         />
@@ -64,7 +56,7 @@ export const SignatureDisplay = ({ signature }: { signature?: string }) => {
         <span
           className="text-gray-500"
           style={{
-            backgroundColor: "#f5f5f5", // Latar belakang fallback text
+            backgroundColor: "#f5f5f5",
             padding: "10px",
             borderRadius: "5px",
             display: "inline-block",

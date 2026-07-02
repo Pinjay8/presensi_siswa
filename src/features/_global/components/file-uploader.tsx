@@ -65,8 +65,6 @@ export function FileUploader({
     }
   };
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
   return (
     <Card className="w-full mx-auto mt-0">
       <CardContent className="pt-6">
@@ -94,7 +92,7 @@ export function FileUploader({
               />
             </Label>
           </div>
-          {value && (
+          {/* {value && (
             <>
               {value.type.startsWith("image/") ? (
                 <img
@@ -105,6 +103,22 @@ export function FileUploader({
               ) : (
                 <div className="flex items-center space-x-2 text-sm">
                   {getFileIcon(value.name)}
+                  <span className="font-medium">{value.name}</span>
+                </div>
+              )}
+            </>
+          )} */}
+          {value && (
+            <>
+              {value.type?.startsWith("image/") ? (
+                <img
+                  src={URL.createObjectURL(value)}
+                  alt="Preview"
+                  className="w-full max-h-72 object-contain rounded-lg border"
+                />
+              ) : (
+                <div className="flex items-center space-x-2 text-sm">
+                  {/* {getFileIcon(value.name)} */}
                   <span className="font-medium">{value.name}</span>
                 </div>
               )}

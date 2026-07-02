@@ -25,6 +25,7 @@ export const SERVICE_ENDPOINTS = {
   cdn: {
     getFile: "/uploads/face-enrollment",
     uploadFile: "/api/upload-face",
+    uploadIzin: "/api/upload-local",
   },
   attedance: {
     createAttedance: "/api/absen-masuk-manual",
