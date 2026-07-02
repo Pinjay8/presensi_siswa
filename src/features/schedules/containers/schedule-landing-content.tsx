@@ -197,8 +197,11 @@ export function ScheduleLandingContent() {
     }
   };
 
-
-  const filteredCourses = useMapel();
+  const { data: mapel, isLoading: isLoadingMapel } = useMapel({
+    kelasId: selectedClassId,
+  });
+  console.log("selectedClassId", selectedClassId);
+  console.log("MAPEL DATA", mapel);
 
   // Memoize filtered teachers
   const filteredTeachers = useMemo(() => {
@@ -219,14 +222,16 @@ export function ScheduleLandingContent() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      alert.success(lang.text("successDownloadTemplateExcel", {
-        context: lang.text("scheduleMapel"),
-      }));
+      alert.success(
+        lang.text("successDownloadTemplateExcel", {
+          context: lang.text("scheduleMapel"),
+        }),
+      );
     } catch (err: any) {
       alert.error(
         lang.text("failedDownloadTemplateExcel", {
           context: lang.text("scheduleMapel"),
-        })
+        }),
       );
     }
   };
@@ -483,9 +488,11 @@ export function ScheduleLandingContent() {
 
       await uploadExcelService.importExcel(formData);
 
-      alert.success(lang.text("successImportData", {
-        context: lang.text("scheduleMapel"),
-      }));
+      alert.success(
+        lang.text("successImportData", {
+          context: lang.text("scheduleMapel"),
+        }),
+      );
 
       await queryClient.invalidateQueries({
         queryKey: ["schedules"],
@@ -494,7 +501,12 @@ export function ScheduleLandingContent() {
       setExcelFile(null);
       setIsUploadModalOpen(false);
     } catch (err: any) {
-      alert.error(err?.message ?? lang.text("failedImportData", { context: lang.text("scheduleMapel") }));
+      alert.error(
+        err?.message ??
+          lang.text("failedImportData", {
+            context: lang.text("scheduleMapel"),
+          }),
+      );
     }
   };
 
@@ -861,7 +873,7 @@ export function ScheduleLandingContent() {
         setSearchCourse={setSearchCourse}
         searchTeacher={searchTeacher}
         setSearchTeacher={setSearchTeacher}
-        filteredCourses={filteredCourses}
+        filteredCourses={mapel}
         filteredTeachers={filteredTeachers}
         searchInputRef={searchInputRef}
         teacherSearchInputRef={teacherSearchInputRef}
@@ -876,7 +888,7 @@ export function ScheduleLandingContent() {
         selectedDay={selectedDay}
         formData={formData}
         setFormData={setFormData}
-        filteredCourses={filteredCourses}
+        filteredCourses={mapel}
         filteredTeachers={filteredTeachers}
         searchCourse={searchCourse}
         setSearchCourse={setSearchCourse}

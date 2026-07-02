@@ -116,7 +116,7 @@ export function AddScheduleDialog({
                     className="w-full"
                   />
                 </div>
-                {filteredCourses.data?.map((course: any) => (
+                {filteredCourses.map((course: any) => (
                   <SelectItem key={course.id} value={course.mapelKelasId}>
                     {course.label}
                   </SelectItem>

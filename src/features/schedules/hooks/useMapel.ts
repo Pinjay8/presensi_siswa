@@ -4,31 +4,33 @@ import { useProfile } from "@/features/profile";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 
-export const useMapel = () => {
+interface UseMapelProps {
+  kelasId?: number;
+  search?: string;
+}
+
+export const useMapel = ({ kelasId, search }: UseMapelProps = {}) => {
   const auth = useAuth();
   const profile = useProfile();
-  const queryClient = useQueryClient();
-  const enabled = auth.isAuthenticated() && Boolean(profile.user?.id);
 
   const query = useQuery({
-    enabled: true,
-    queryKey: ["mapel-kelas"],
+    enabled: auth.isAuthenticated() && Boolean(profile.user?.id),
+    queryKey: ["mapel-kelas", kelasId, search],
     queryFn: async () => {
-      const res = await courseService.getMapelKelaas();
+      const res = await courseService.getMapelKelaas({
+        kelasId,
+        search,
+      });
+
       return res;
     },
-    staleTime: 1 * 60 * 1000, // 5 minutes
-    gcTime: 1 * 60 * 1000, // 10 minutes
+    staleTime: 60 * 1000,
+    gcTime: 60 * 1000,
   });
-
-  const data = useMemo(() => {
-    return query.data?.data;
-  }, [query.data?.data]);
-  const isLoading = query.isLoading;
 
   return {
     query,
-    data,
-    isLoading,
+    data: query.data?.data ?? [],
+    isLoading: query.isLoading,
   };
 };

@@ -207,7 +207,7 @@ export function EditScheduleDialog({
                   />
                 </div>
 
-                {filteredCourses.data?.map((course: any) => (
+                {filteredCourses.map((course: any) => (
                   <SelectItem
                     key={course.mapelKelasId}
                     value={course.mapelKelasId}
