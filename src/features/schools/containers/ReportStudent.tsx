@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader } from "@/core/libs"; // Import Card comp
 import { DashboardPageLayout } from "@/features/_global";
 import { useBiodata } from "@/features/user";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
   ResponsiveContainer,
@@ -95,8 +95,6 @@ export const ReportStudent = ({
     return list;
   }, [hariIniTerlambat, riwayatTerlambat]);
 
-  console.log("dashboard", dashboard);
-
   const statusConfig: Record<string, { label: string; className: string }> = {
     hadir: {
       label: "Hadir",
@@ -140,7 +138,6 @@ export const ReportStudent = ({
       label: "Ditolak",
       className: "bg-red-100 text-red-700 border border-red-200",
     },
-
   };
   const attendanceConfig = statusConfig?.[todayAbsen?.statusKehadiran] ?? {
     className: "bg-gray-100 text-gray-700 border border-gray-200",
@@ -233,7 +230,7 @@ export const ReportStudent = ({
                             {item.jamMulai} - {item.jamSelesai}
                           </p>
                           <p
-                            className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 mt-1 text-xs font-medium ${
+                            className={`inline-flex min-w-[110px] capitalize justify-center rounded-full px-3 py-1 mt-1 text-xs font-medium ${
                               config?.className ??
                               "bg-gray-100 text-gray-700 border border-gray-200"
                             }`}
@@ -252,7 +249,7 @@ export const ReportStudent = ({
 
         <Card className="lg:col-span-3 bg-theme-color-primary/5">
           <CardHeader>
-            <h3 className="text-lg font-semibold">Jam Masuk</h3>
+            <h3 className="text-lg font-semibold">{lang.text("clockIn")}</h3>
           </CardHeader>
 
           <CardContent className="flex flex-col items-center justify-center min-h-[220px]">
@@ -272,7 +269,7 @@ export const ReportStudent = ({
 
         <Card className="lg:col-span-3 bg-theme-color-primary/5">
           <CardHeader>
-            <h3 className="text-lg font-semibold">Jam Pulang</h3>
+            <h3 className="text-lg font-semibold">{lang.text("clockOut")}</h3>
           </CardHeader>
 
           <CardContent className="flex items-center justify-center min-h-[220px]">
@@ -379,17 +376,27 @@ export const ReportStudent = ({
                                   )}
                             </p>
                             <p className="text-xs text-muted-foreground mt-1">
-                              Batas Masuk: {item.batasMasuk ?? "-"}
+                              {lang.text("limitEntry")}:{" "}
+                              {item.batasMasuk ?? "-"}
                             </p>
                           </div>
 
-                          <div className="text-right flex flex-col items-end gap-1">
-                            <span className="inline-flex min-w-[90px] justify-center rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase bg-red-100 text-red-700 border border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900/50">
-                              TERLAMBAT
-                            </span>
-                            <span className="text-xs font-medium text-slate-600 dark:text-zinc-400">
-                              Masuk: {item.jamMasuk ?? "-"}
-                            </span>
+                          <div className="flex items-center gap-3">
+                            <div className="text-right flex flex-col items-end gap-1">
+                              <span className="inline-flex min-w-[90px] justify-center rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide capitalize bg-orange-100 text-orange-700 border border-orange-200">
+                                {lang.text("late")}
+                              </span>
+
+                              <span className="text-xs font-medium text-slate-600 dark:text-zinc-400">
+                                {lang.text("in")}: {item.jamMasuk ?? "-"}
+                              </span>
+                            </div>
+
+                            <ChevronDown
+                              className={`h-5 w-5 text-slate-500 transition-transform duration-200 ${
+                                isExpanded ? "rotate-180" : ""
+                              }`}
+                            />
                           </div>
                         </div>
 

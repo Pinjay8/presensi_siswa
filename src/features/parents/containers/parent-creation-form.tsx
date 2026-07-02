@@ -36,6 +36,9 @@ import {
 import { CalendarIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { parentEditSchema } from "../utils";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 
 export const ParentCreationForm = () => {
   const { decodeParams } = useParamDecode();
@@ -64,7 +67,7 @@ export const ParentCreationForm = () => {
     mode: "all",
     values: {
       name: detail.data?.name || "",
-      email: detail.data?.email || "", 
+      email: detail.data?.email || "",
       alamat: detail.data?.alamat || "",
       jenisKelamin: detail.data?.jenisKelamin || "",
       tanggalLahir: detail.data?.tanggalLahir || "",
@@ -445,7 +448,7 @@ export const ParentCreationForm = () => {
             )}
           />
 
-          <FormField
+          {/* <FormField
             control={form.control}
             name="tanggalLahir"
             render={({ field, fieldState }) => (
@@ -479,6 +482,70 @@ export const ParentCreationForm = () => {
                       // disabled={forwardDateDisabled}
                       initialFocus
                     />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage>{fieldState.error?.message}</FormMessage>
+              </FormItem>
+            )}
+          /> */}
+
+          <FormField
+            control={form.control}
+            name="tanggalLahir"
+            render={({ field, fieldState }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>{lang.text("dateOfBirth")}</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        // disabled
+                        variant={"outline"}
+                        className=" pl-3 text-left font-normal"
+                      >
+                        {field.value ? (
+                          dayjs(field.value).format("DD MMMM YYYY")
+                        ) : (
+                          <span>{lang.text("selectDate")}</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DateCalendar
+                        value={field.value ? dayjs(field.value) : null}
+                        onChange={(newValue) =>
+                          field.onChange(
+                            newValue ? newValue.format("YYYY-MM-DD") : "",
+                          )
+                        }
+                        sx={{
+                          backgroundColor: "#ffffff", // Background putih
+                          color: "#000000", // Teks hitam untuk kontras
+                          "& .MuiPickersDay-root": {
+                            color: "#000000", // Teks hari
+                            "&:hover": {
+                              backgroundColor: "#e0e0e0", // Hover effect
+                            },
+                            "&.Mui-selected": {
+                              backgroundColor: "#1976d2", // Warna saat dipilih
+                              color: "#ffffff", // Teks putih saat dipilih
+                            },
+                          },
+                          "& .MuiPickersCalendarHeader-label": {
+                            color: "#000000", // Teks bulan/tahun
+                          },
+                          "& .MuiPickersArrowSwitcher-root": {
+                            color: "#000000", // Panah navigasi
+                          },
+                          "& .MuiDayCalendar-weekDayLabel": {
+                            color: "#000000", // Label hari (Sen, Sel, dst)
+                          },
+                        }}
+                      />
+                    </LocalizationProvider>
                   </PopoverContent>
                 </Popover>
                 <FormMessage>{fieldState.error?.message}</FormMessage>

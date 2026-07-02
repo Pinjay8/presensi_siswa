@@ -27,7 +27,7 @@ export const Brand = React.memo(() => {
         {schoolDetail?.file ? (
           <>
             <AvatarImage
-              src={getStaticFile(String(schoolDetail?.file))}
+              src={imgLogo}
               alt={schoolDetail?.namaSekolah}
               className="object-cover object-center bg-white"
             />

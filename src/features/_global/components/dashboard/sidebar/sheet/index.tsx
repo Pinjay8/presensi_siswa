@@ -5,6 +5,7 @@ import { Trigger } from "./_components/Trigger";
 import { SidebarProps } from "../types";
 import { Nav } from "../_components/Nav";
 import { useSidebarContext } from "@/features/_global/hooks";
+import { Divider } from "@mui/material";
 
 export const SheetSidebar = React.memo((props: SidebarProps) => {
   const sidebarContext = useSidebarContext();
@@ -14,10 +15,11 @@ export const SheetSidebar = React.memo((props: SidebarProps) => {
       <SheetContent
         onPressClose={sidebarContext.setVisible}
         side="left"
-        className=" sidebar sidebar-sheet sidebar-sheet-content flex flex-col"
+        className=" sidebar sidebar-sheet sidebar-sheet-content flex flex-col "
       >
-        <nav className=" sidebar-content-wrapper grid gap-2 text-lg font-medium">
+        <nav className=" sidebar-content-wrapper grid gap-2 text-lg font-medium ">
           <Brand />
+          <Divider />
           <Nav items={props.menus} mobile />
         </nav>
         {/* <Footer /> */}

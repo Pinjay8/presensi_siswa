@@ -28,9 +28,9 @@ export const getStaticFile = (path: string, context?: string) => {
     }
   }
 
-  if (!path.includes("base64")) {
-    return `data:image/jpeg;base64,${path}`; // Menampilkan gambar base64
-  }
+  // if (!path.includes("base64")) {
+  //   return `data:image/jpeg;base64,${path}`; // Menampilkan gambar base64
+  // }
 
   if (path.includes("base64")) {
     return path;

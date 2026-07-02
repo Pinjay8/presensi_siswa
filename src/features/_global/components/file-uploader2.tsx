@@ -17,7 +17,7 @@ export function FileUploader2({
   value,
   onError,
   error,
-  maxSize = 10 * 1024 * 1024,
+  maxSize = 1 * 1024 * 1024,
   buttonPlaceholder,
   showButton = true,
 }: FileUploaderProps) {

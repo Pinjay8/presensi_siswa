@@ -53,11 +53,6 @@ export const DashboardLayout = React.memo(
     const [classRoom, setCreateClassRoom] = useState(false);
     const [events, setEvents] = useState([]);
     const [isChatbotVisible, setIsChatbotVisible] = useState(false);
-    const allowedMenusStudent = [
-      "dashboard",
-      "scanAttendanceMapel",
-      "dataManagement",
-    ];
 
     const loadEvents = async () => {
       try {
@@ -85,7 +80,7 @@ export const DashboardLayout = React.memo(
         .map((data) => {
           if (
             role === "superAdmin" &&
-            data.title === "Manajemen Perpustakaan"
+            data.title === "LilibraryManagementbrar"
           ) {
             return null;
           }
@@ -104,7 +99,10 @@ export const DashboardLayout = React.memo(
           if (
             (role === "admin" && data.title === "Scan Kehadiran Mapel") ||
             data.title === "Scan Attendance Schedule" ||
-            data.title === lang.text("cardStudent")
+            data.title === lang.text("cardStudent") ||
+            data.title === lang.text("libraryManagement") ||
+            data.title === lang.text("locationDistribution")
+            // data.title === lang.text("scanAttendanceMapel")
           ) {
             return null;
           }
@@ -162,9 +160,14 @@ export const DashboardLayout = React.memo(
 
               if (
                 role === "admin" &&
-                ["Riwayat", "History", "Pengguna Admin", "Admin User"].includes(
-                  item.title ?? "",
-                )
+                [
+                  // "Riwayat",
+                  lang.text("history"),
+                  "Pengguna Admin",
+                  "Admin User",
+                  "Event",
+                  "Acara",
+                ].includes(item.title ?? "")
               ) {
                 return false;
               }
@@ -226,7 +229,7 @@ export const DashboardLayout = React.memo(
               props.headerClassName,
             )}
           >
-            <div className="hidden lg:block relative z-[99] border border-white/10 overflow-hidden rounded-full">
+            <div className="hidden lg:block relative  border border-white/10 overflow-hidden rounded-full">
               <Button
                 variant="ghost"
                 size="icon"
@@ -242,24 +245,6 @@ export const DashboardLayout = React.memo(
                 <p>{visible ? "Hide Sidebar" : "Show Sidebar"}</p>
               </Button>
             </div>
-            {/* <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setSidebarVisible((v) => !v)}
-              className="md:hidden"
-            >
-              <Menu className="h-6 w-6" />
-              <span className="sr-only">Toggle sidebar</span>
-            </Button> */}
-            {/* <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => sidebarContext.setVisible(true)}
-              className="md:hidden"
-            >
-              <Menu className="h-6 w-6" />
-              <span className="sr-only">Toggle sidebar</span>
-            </Button> */}
             <SidebarContext.Provider
               value={{
                 visible: sidebarVisible,
@@ -271,16 +256,14 @@ export const DashboardLayout = React.memo(
                 menus={filteredMenus}
               />
             </SidebarContext.Provider>
-            <div className="w-full flex-1">
-              {/* Search form (jika diaktifkan) */}
-            </div>
+            <div className="w-full flex-1"></div>
 
             <div>
               <Typography
                 className="lg:mr-1 "
                 sx={{ fontSize: "14px", marginRight: "5px", marginBottom: "0" }}
               >
-                {profile?.user?.sekolah?.namaSekolah ?? "-"}
+                {profile?.user?.sekolah?.namaSekolah ?? ""}
               </Typography>
             </div>
             <Notification />

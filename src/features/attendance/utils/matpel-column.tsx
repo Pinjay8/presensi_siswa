@@ -31,49 +31,34 @@ export const matpelColumns = (
 ): ColumnDef<any>[] => [
   {
     accessorKey: "namaSiswa",
-    header: "Nama Siswa",
+    header: lang.text("studentName"),
     cell: ({ row }) => row.original.namaSiswa || "N/A",
     enableSorting: true,
   },
   {
     accessorKey: "guru",
-    header: " Guru",
+    header: lang.text("teacher"),
     cell: ({ row }) => row.original.namaGuru || "-",
     enableSorting: true,
   },
   {
     accessorKey: "namaKelas",
-    header: "Kelas",
+    header: lang.text("classroom"),
     cell: ({ row }) => row.original.namaKelas || "N/A",
     enableSorting: true,
   },
   {
     accessorKey: "namaMataPelajaran",
-    header: "Mata Pelajaran",
+    header: lang.text("course"),
     cell: ({ row }) => row.original.namaMataPelajaran || "N/A",
     enableSorting: true,
   },
   {
     accessorKey: "attendance.statusKehadiran",
     header: "Status",
-    // cell: ({ row }) => {
-    //   const status = row.original.statusKehadiran || "N/A";
-    //   let variant;
-
-    //   if (status === "Hadir" || status === "hadir") {
-    //     variant = "bg-green-600 text-white"; // Hijau untuk hadir
-    //   } else if (status === "Alfa" || status === "alfa") {
-    //     variant = "bg-red-600 text-white"; // Merah untuk alfa
-    //   } else if (status === "izin") {
-    //     variant = "bg-yellow-600 text-white"; // Kuning untuk izin
-    //   }
-
-    //   return (
-    //     <Badge className={`px-6 py-2 ${variant} capitalize`}>{status}</Badge>
-    //   );
-    // },
     cell: ({ row }: any) => {
       const status = row.original.statusKehadiran?.toLowerCase();
+      console.log("Status:", status); // Debugging: Log the status value
 
       const statusConfig: Record<string, { label: string; className: string }> =
         {
@@ -206,24 +191,4 @@ export const matpelColumns = (
         },
       ]
     : []),
-  // {
-  //   accessorKey: "attendance.jamMasuk",
-  //   header: "Jam Masuk",
-  //   cell: ({ row }) =>
-  //     dayjs(row.original.attendance.jamMasuk, "DD MMM YYYY, HH:mm:ss")
-  //       .tz("Asia/Jakarta")
-  //       .format("HH:mm:ss") || "N/A",
-  //   enableSorting: true,
-  //   meta: { width: "10%" },
-  // },
-  // {
-  //   accessorKey: "attendance.jamPulang",
-  //   header: "Jam Pulang",
-  //   cell: ({ row }) =>
-  //     dayjs(row.original.attendance.jamPulang, "DD MMM YYYY, HH:mm:ss")
-  //       .tz("Asia/Jakarta")
-  //       .format("HH:mm:ss") || "N/A",
-  //   enableSorting: true,
-  //   meta: { width: "10%" },
-  // },
 ];

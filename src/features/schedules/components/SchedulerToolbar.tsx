@@ -51,13 +51,13 @@ export function ScheduleToolbar({
     >
       {!isRoleSiswa && !isRoleGuru && !isRoleOrangTua && (
         <div className="flex gap-2 flex-wrap xl:flex-nowrap">
-          <Button variant="outline" onClick={openAddModal}>
+          <Button variant="default" onClick={openAddModal}>
             <Plus />
             {lang.text("addNewSchedule")}
           </Button>
 
           <div className="mx-2 flex h-[36px] items-center justify-center py-1">
-            <p>atau</p>
+            <p>{lang.text("or")}</p>
           </div>
 
           <Button
@@ -65,16 +65,16 @@ export function ScheduleToolbar({
             onClick={handleDownloadTemplate}
           >
             <Download />
-            Unduh Template Excel
+            {lang.text("downloadTemplateExcel")}
           </Button>
 
           <Button
             variant="outline"
-            className="border-green-500"
+            className="border-green-500 text-green-500"
             onClick={() => setIsUploadModalOpen(true)}
           >
             <UploadCloud />
-            Unggah Excel
+            {lang.text("uploadExcelCourse")}
           </Button>
         </div>
       )}
@@ -86,11 +86,11 @@ export function ScheduleToolbar({
             onValueChange={(value) => setSelectedClassId(Number(value))}
           >
             <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Pilih Kelas" />
+              <SelectValue placeholder={lang.text("selectClassRoom")} />
             </SelectTrigger>
 
             <SelectContent>
-              <SelectItem value="0">Semua Kelas</SelectItem>
+              <SelectItem value="0">{lang.text("allClasses")}</SelectItem>
 
               {classData.map((kelas: any) => (
                 <SelectItem key={kelas.id} value={kelas.id.toString()}>
@@ -103,7 +103,7 @@ export function ScheduleToolbar({
 
         <Button
           variant="outline"
-          className="w-[200px] justify-between"
+          className="lg:w-[200px] justify-between"
           onClick={() => setIsDayFilterOpen(true)}
         >
           {selectedDays.length === daysOrder.length

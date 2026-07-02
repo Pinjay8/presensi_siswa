@@ -41,7 +41,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowLeft, ArrowRight, Filter } from "lucide-react";
+import { ArrowLeft, ArrowRight, Filter, Search } from "lucide-react";
 import { useCallback, useMemo } from "react";
 import { Link, URLSearchParamsInit, useSearchParams } from "react-router-dom";
 import { useVokadialog } from "../hooks/use-vokadialog";
@@ -89,6 +89,7 @@ export interface BaseDataTableProps {
   rowClassName?: string; // Styling tambahan untuk setiap row
   cellClassName?: string;
   pagination?: PaginationState;
+  enableRowSelection?: boolean;
   onPaginationChange?: any;
   rowCount?: number;
   manualPagination?: any;
@@ -115,6 +116,7 @@ export const BaseDataTable = ({
   isLoading = false,
   renderAction,
   manualPagination,
+  enableRowSelection,
   searchParamPagination,
   showFilterButton,
   actions,
@@ -172,7 +174,7 @@ export const BaseDataTable = ({
     filterFns: {},
     manualPagination: true,
     rowCount: rowCount,
-    // enableRowSelection: true,
+    enableRowSelection: false,
     getCoreRowModel: getCoreRowModel(),
     // getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -326,10 +328,17 @@ export const BaseDataTable = ({
     return (
       <TableBody>
         {table.getRowModel().rows.map((row) => (
+          // <TableRow
+          //   key={row.id}
+          //   data-state={
+          //     selectedRowId === row?.original.id ? "selected" : undefined
+          //   }
+          // >
           <TableRow
-            key={row.id}
             data-state={
-              selectedRowId === row?.original.id ? "selected" : undefined
+              enableRowSelection && selectedRowId === row.original.id
+                ? "selected"
+                : undefined
             }
           >
             {row.getVisibleCells().map((cell) => {
@@ -456,14 +465,16 @@ export const BaseDataTable = ({
             <div className="flex flex-col sm:flex-row mb-4 gap-2 sm:items-center sm:justify-between">
               <div className="flex-1 order-1 sm:order-none">
                 <div className="flex flex-row gap-2">
-                  <Input
-                    placeholder={searchPlaceholder}
-                    value={globalFilter || ""}
-                    onChange={(e) => {
-                      setGlobalFilter(String(e.target?.value));
-                    }}
-                    className="sm:max-w-[300px] flex-1"
-                  />
+                  <div className="relative sm:max-w-[300px] flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+
+                    <Input
+                      placeholder={searchPlaceholder}
+                      value={globalFilter || ""}
+                      onChange={(e) => setGlobalFilter(String(e.target.value))}
+                      className="pl-10"
+                    />
+                  </div>
                   {showFilterButton && (
                     <Button onClick={filterDialog.open} size="icon">
                       <Filter size={16} />
@@ -471,7 +482,7 @@ export const BaseDataTable = ({
                   )}
                 </div>
               </div>
-              <div className="flex flex-row gap-2 order-2 sm:order-none">
+              <div className="flex flex-row gap-2 order-2 sm:order-none flex-wrap">
                 {renderAction ||
                   actions?.map((action, i) => {
                     return action.url ? (

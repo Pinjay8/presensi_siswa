@@ -157,7 +157,7 @@ export const LincensingCreationForm = () => {
                   name="siswaId"
                   render={({ field, fieldState }) => (
                     <FormItem>
-                      <FormLabel>Siswa</FormLabel>
+                      <FormLabel>{lang.text("student")}</FormLabel>
 
                       <FormControl>
                         <Select
@@ -165,7 +165,9 @@ export const LincensingCreationForm = () => {
                           onValueChange={(val) => field.onChange(Number(val))}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Pilih siswa" />
+                            <SelectValue
+                              placeholder={lang.text("chooseStudent")}
+                            />
                           </SelectTrigger>
 
                           <SelectContent>
@@ -192,14 +194,16 @@ export const LincensingCreationForm = () => {
                   name="alasan"
                   render={({ field, fieldState }) => (
                     <FormItem>
-                      <FormLabel>Alasan Izin</FormLabel>
+                      <FormLabel>{lang.text("reason")}</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         value={field.value ?? ""}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Pilih alasan izin" />
+                            <SelectValue
+                              placeholder={lang.text("chooseReason")}
+                            />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -420,12 +424,12 @@ export const LincensingCreationForm = () => {
                   disabled={isLoading}
                   className="w-full py-6 active:scale-[0.97]"
                 >
+                  <SaveIcon />
                   {isLoading ? (
                     <FaSpinner className="animate animate-spin duration-600" />
                   ) : (
                     lang.text("upload")
                   )}
-                  <SaveIcon />
                 </Button>
               </div>
             </div>

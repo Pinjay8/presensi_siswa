@@ -82,6 +82,7 @@ export function SubjectAttendanceTable({
         globalSearch
         searchParamPagination
         showFilterButton
+        enableRowSelection={false}
         manualPagination
         pagination={pagination}
         onPaginationChange={onPaginationChange}

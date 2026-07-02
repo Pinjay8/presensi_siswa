@@ -115,7 +115,9 @@ const NavItem = React.memo(
           className={(p) =>
             cn(
               "sidebar-nav-item flex gap-3 px-3 py-2 mb-2 items-center rounded-lg border-none hover:bg-muted-foreground/15 justify-between text-sm",
-              p.isActive && "bg-muted-foreground/15",
+              // p.isActive && "bg-muted-foreground/15",
+              p.isActive &&
+                "bg-primary text-primary-foreground border-l-primary-foreground hover:bg-primary/90 hover:text-primary-foreground",
               isCollapsed && "justify-center px-2",
             )
           }

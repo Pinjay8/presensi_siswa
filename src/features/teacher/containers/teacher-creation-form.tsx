@@ -42,7 +42,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 export const TeacherCreationForm = ({ id }: any) => {
   const { decodeParams } = useParamDecode();
 
-  const school = useSchool();
+  // const school = useSchool();
   const detail = useUserDetail(Number(decodeParams?.id));
   const creation = useUserCreation();
   const navigate = useNavigate();

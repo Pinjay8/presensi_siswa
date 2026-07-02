@@ -29,7 +29,7 @@ import {
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FaSave, FaSpinner } from "react-icons/fa";
+import { FaFilePdf, FaFileWord, FaSave, FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import SignatureCanvas from "react-signature-canvas";
 import { z } from "zod";
@@ -38,16 +38,6 @@ import { SaveIcon } from "lucide-react";
 import { API_CONFIG } from "@/core/configs";
 
 // Updated Zod schema
-const letterUpdateFormSchema = z.object({
-  kopSurat: z.any().nullable(),
-  ttdKepalaSekolah: z.any().nullable(),
-  namaKepalaSekolah: z.string().min(1, "Nama kepala sekolah wajib diisi"),
-  judulSurat: z.string().min(1, "Judul surat wajib diisi"),
-  nomorSurat: z.string().optional(), // Make nomorSurat optional
-  pembukaan: z.string().min(1, "Pembukaan wajib diisi"),
-  pernyataanLulus: z.string().min(1, "Pernyataan lulus wajib diisi"),
-  penutupan: z.string().min(1, "Penutupan wajib diisi"),
-});
 
 // Styles untuk PDF
 const pdfStyles = StyleSheet.create({
@@ -178,19 +168,19 @@ const LetterPDF: React.FC<{ data: LetterData }> = ({ data }) => {
               <Text>NIS : </Text>
               <Text>Kelas : </Text>
             </View>
-            <Text
+            {/* <Text
               style={{
                 marginTop: 20,
                 textAlign: "justify",
                 lineHeight: 1.8,
               }}
             >
-             {data.pernyataanLulus}
-            </Text>
+              {data.pernyataanLulus}
+            </Text> */}
             {/* <Text style={{ marginTop: 10 }}>{data.pernyataanLulus}</Text> */}
             {/* <Text style={{ marginTop: 10 }}>{data.penutupan}</Text>
              */}
-            <Text style={{ marginTop: 15 }}>Alasan:</Text>
+            {/* <Text style={{ marginTop: 15 }}>Alasan:</Text> */}
 
             {/* <View
               style={{
@@ -229,6 +219,10 @@ const LetterPDF: React.FC<{ data: LetterData }> = ({ data }) => {
     </Document>
   );
 };
+
+import { Packer, Paragraph, TextRun } from "docx";
+import { saveAs } from "file-saver";
+import { letterUpdateFormSchema } from "../utils";
 
 export const LetterCreationForm = () => {
   const sigCanvas = useRef<SignatureCanvas | null>(null);
@@ -621,7 +615,19 @@ export const LetterCreationForm = () => {
       <div>
         <div className="flex items-center justify-between mb-4">
           <h5 className="text-lg font-semibold">Preview PDF</h5>
-          <Button onClick={handleDownload}>Download PDF</Button>
+
+          <div className="flex gap-2">
+            {/* <Button variant="default" onClick={() => {}} icon={<FaFileWord />}>
+              Download Word
+            </Button> */}
+            <Button
+              variant={"destructive"}
+              onClick={handleDownload}
+              icon={<FaFilePdf />}
+            >
+              Download PDF
+            </Button>
+          </div>
         </div>
         <PDFViewer style={pdfStyles.viewer}>
           <LetterPDF

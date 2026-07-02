@@ -23,7 +23,7 @@ export const useLicenseGuard = () => {
         return response;
       }
 
-      if (response.status === 402 || response.status === 403) {
+      if (response.status === 402) {
         const role = localStorage.getItem("role");
 
         // Sudah berada di halaman tujuan? Jangan navigate lagi.

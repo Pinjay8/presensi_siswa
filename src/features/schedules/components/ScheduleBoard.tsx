@@ -75,8 +75,8 @@ export function ScheduleBoard({
   }
 
   return (
-    <div className="border rounded-lg p-6 shadow-md">
-      <h1 className="mb-6 flex items-center gap-3 text-2xl font-bold">
+    <div className="border rounded-lg lg:p-6 shadow-md">
+      <h1 className="lg:mb-6 flex items-center gap-3  p-3 lg:p-0 text-2xl font-bold">
         <School2 />
         {classroom.find((c: any) => c.id === selectedClassId)?.namaKelas ??
           "Kelas tidak ditemukan"}

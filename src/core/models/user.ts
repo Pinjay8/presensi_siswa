@@ -1,3 +1,4 @@
+import { lang } from "../libs";
 import { BiodataSiswa, Kelas } from "./biodata";
 import { SchoolDataModel } from "./schools";
 
@@ -81,14 +82,17 @@ export interface UserCreationModel {
 import { z } from "zod";
 
 export const createSiswaSchema = z.object({
-  name: z.string().min(1, "Nama wajib diisi"),
-  email: z.string().min(1, "Email wajib diisi").email("Email tidak valid"),
-  nis: z.string().min(1, "NIS wajib diisi"),
-  nisn: z.string().min(1, "NISN wajib diisi"),
-  noTlp: z.string().min(1, "No Telepon wajib diisi"),
-  noTlpOrtu: z.string().optional(),
-  alamat: z.string().min(1, "Alamat wajib diisi"),
-  password: z.string().optional(),
+  name: z.string().min(1, lang.text("nameValidation")),
+  email: z.string().min(1, lang.text("emailValidation")).email(lang.text("emailValidation2")),
+  nis: z.string().min(1, lang.text("nisValidation")),
+  nisn: z
+    .string()
+    .min(1, lang.text("nisnValidation2"))
+    .length(10, lang.text("nisnValidation")),
+  noTlp: z.string().min(1, lang.text("numberPhoneValidation")),
+  noTlpOrtu: z.string().min(1, lang.text("numberPhoneOrtuValidation")),
+  alamat: z.string().min(1, lang.text("addressValidation")),
+  password: z.string().min(1, lang.text("passwordValidation")),
   // sekolahId: z.number(),
   jenisKelamin: z.enum(["Male", "Female"]),
   tanggalLahir: z.string(),

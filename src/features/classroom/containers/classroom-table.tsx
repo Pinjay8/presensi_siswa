@@ -216,7 +216,7 @@ export const ClassroomTable = () => {
             : []),
         ]}
         searchParamPagination
-        searchPlaceholder={lang.text("search")}
+        searchPlaceholder={lang.text("searchClass")}
         isLoading={isLoading}
         manualPagination
         rowCount={paginationInfo?.total ?? 0}

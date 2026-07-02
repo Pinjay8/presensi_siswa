@@ -249,7 +249,7 @@ export const StudentLandingTables = () => {
           }`}
         >
           {isAdmin && (
-            <div className="flex w-max gap-2 items-center ">
+            <div className="flex w-max gap-2 items-center flex-wrap">
               {/* <Button
                 className="hidden"
                 variant="outline"

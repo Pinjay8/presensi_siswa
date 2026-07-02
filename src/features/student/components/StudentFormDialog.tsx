@@ -23,7 +23,17 @@ import {
 } from "@/core/libs";
 import { XIcon, CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
-import { Dialog, DialogContent, DialogTitle, IconButton, Box } from "@mui/material";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Box,
+  Divider,
+} from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 
 interface StudentFormDialogProps {
   open: boolean;
@@ -66,9 +76,12 @@ export default function StudentFormDialog({
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nama</FormLabel>
+                      <FormLabel>{lang.text("studentName")}</FormLabel>
                       <FormControl>
-                        <Input placeholder="Nama siswa" {...field} />
+                        <Input
+                          placeholder={lang.text("inputStudentName")}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -136,7 +149,7 @@ export default function StudentFormDialog({
                   name="noTlp"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>No Telepon</FormLabel>
+                      <FormLabel>{lang.text("noHP")}</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -178,7 +191,7 @@ export default function StudentFormDialog({
                   name="jenisKelamin"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Jenis Kelamin</FormLabel>
+                      <FormLabel>{lang.text("gender")}</FormLabel>
 
                       <Select
                         value={field.value}
@@ -191,8 +204,12 @@ export default function StudentFormDialog({
                         </FormControl>
 
                         <SelectContent className="z-[9999]">
-                          <SelectItem value="Male">Laki-Laki</SelectItem>
-                          <SelectItem value="Female">Perempuan</SelectItem>
+                          <SelectItem value="Male">
+                            {lang.text("male")}
+                          </SelectItem>
+                          <SelectItem value="Female">
+                            {lang.text("female")}
+                          </SelectItem>
                         </SelectContent>
                       </Select>
 
@@ -201,7 +218,7 @@ export default function StudentFormDialog({
                   )}
                 />
 
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="tanggalLahir"
                   render={({ field }) => (
@@ -238,6 +255,75 @@ export default function StudentFormDialog({
                       </Popover>
 
                       <FormMessage />
+                    </FormItem>
+                  )}
+                /> */}
+                <FormField
+                  control={form.control}
+                  name="tanggalLahir"
+                  render={({ field, fieldState }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel style={{ marginTop: "10px" }}>
+                        {lang.text("dateOfBirth")}
+                      </FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              // disabled
+                              variant={"outline"}
+                              className=" pl-3 text-left font-normal"
+                            >
+                              {field.value ? (
+                                dayjs(field.value).format("DD MMMM YYYY")
+                              ) : (
+                                <span>{lang.text("selectDate")}</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-auto p-0 z-[9999]"
+                          align="start"
+                          sideOffset={4}
+                        >
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DateCalendar
+                              value={field.value ? dayjs(field.value) : null}
+                              onChange={(newValue) =>
+                                field.onChange(
+                                  newValue ? newValue.format("YYYY-MM-DD") : "",
+                                )
+                              }
+                              sx={{
+                                backgroundColor: "#ffffff", // Background putih
+                                color: "#000000", // Teks hitam untuk kontras
+                                "& .MuiPickersDay-root": {
+                                  color: "#000000", // Teks hari
+                                  "&:hover": {
+                                    backgroundColor: "#e0e0e0", // Hover effect
+                                  },
+                                  "&.Mui-selected": {
+                                    backgroundColor: "#1976d2", // Warna saat dipilih
+                                    color: "#ffffff", // Teks putih saat dipilih
+                                  },
+                                },
+                                "& .MuiPickersCalendarHeader-label": {
+                                  color: "#000000", // Teks bulan/tahun
+                                },
+                                "& .MuiPickersArrowSwitcher-root": {
+                                  color: "#000000", // Panah navigasi
+                                },
+                                "& .MuiDayCalendar-weekDayLabel": {
+                                  color: "#000000", // Label hari (Sen, Sel, dst)
+                                },
+                              }}
+                            />
+                          </LocalizationProvider>
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage>{fieldState.error?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -277,8 +363,9 @@ export default function StudentFormDialog({
                 /> */}
               </div>
 
-              <div className="mt-6">
-                <Button type="submit" >{lang.text("saveChanges")}</Button>
+              <Divider sx={{ my: 2 }} />
+              <div className="mt-2">
+                <Button type="submit">{lang.text("saveChanges")}</Button>
               </div>
             </form>
           </Form>

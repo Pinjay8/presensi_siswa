@@ -1,5 +1,4 @@
 import { Badge, dayjs, lang, simpleEncode } from "@/core/libs";
-import { BiodataSiswa } from "@/core/models/biodata";
 import { getStaticFile } from "@/core/utils";
 import {
   BaseActionTable,

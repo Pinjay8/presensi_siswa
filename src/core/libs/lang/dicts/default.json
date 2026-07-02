@@ -159,6 +159,10 @@
     "en": "Download template",
     "id": "Unduh template mata pelajaran"
   },
+  "downloadTemplateExcel": {
+    "en": "Download template excel",
+    "id": "Unduh template excel"
+  },
   "uploadExcelCourse": {
     "en": "Import file excel",
     "id": "Unggah file excel"
@@ -1351,6 +1355,10 @@
     "id": "Pilih Kelas",
     "en": "Select Classroom"
   },
+  "or": {
+    "id": "Atau",
+    "en": "Or"
+  },
 
   "jadwalKelasHariIni": {
     "id": "Jadwal Kelas Hari Ini",
@@ -1394,6 +1402,7 @@
     "id": "Mata Pelajaran",
     "en": "Courses"
   },
+
   "chooseCourse": {
     "id": "Pilih Mata Pelajaran",
     "en": "Choose Course"
@@ -1445,6 +1454,46 @@
   "schoolCreationValidation5": {
     "id": "Email admin sekolah harus diisi",
     "en": "School admin email is required"
+  },
+  "numberPhoneOrtuValidation": {
+    "id": "Nomor telepon orang tua harus diisi",
+    "en": "Parent phone number is required"
+  },
+  "numberPhoneValidation": {
+    "id": "Nomor telepon harus diisi",
+    "en": "Phone number is required"
+  },
+  "nisValidation": {
+    "id": "NIS harus diisi",
+    "en": "NIS is required"
+  },
+  "nameValidation": {
+    "id": "Nama harus diisi",
+    "en": "Name is required"
+  },
+  "emailNotValid": {
+    "id": "Format email tidak valid",
+    "en": "Invalid email format"
+  },
+  "emailValidation": {
+    "id": "Email harus diisi",
+    "en": "Email is required"
+  },
+  "nisnValidation": {
+    "id": "NISN harus 10 karakter",
+    "en": "NISN must be 10 characters long"
+  },
+  "nisnValidation2": {
+    "id": "NISN harus diisi",
+    "en": "NISN is required"
+  },
+  "addressValidation": {
+    "id": "Alamat harus diisi",
+    "en": "Address is required"
+  },
+  "passwordValidation": {
+    "id": "Kata sandi harus diisi",
+    "en": "Password is required"
   },
   "emailVerif": {
     "id": "Email wajib diisi",
@@ -1599,6 +1648,10 @@
     "id": "Pilih Berkas",
     "en": "Choose File"
   },
+  "chooseReason": {
+    "id": "Pilih Alasan Izin",
+    "en": "Choose Reason for Leave"
+  },
   "registerYourSchool": {
     "id": "Registrasi Sekolah",
     "en": "School Registration"
@@ -1667,6 +1720,7 @@
     "id": "Barat",
     "en": "West"
   },
+
   "east": {
     "id": "Timur",
     "en": "East"
@@ -1880,6 +1934,35 @@
     "id": "Berhasil perbarui acara",
     "en": "Event updated successfully"
   },
+
+  "monday": {
+    "id": "Senin",
+    "en": "Monday"
+  },
+  "tuesday": {
+    "id": "Selasa",
+    "en": "Tuesday"
+  },
+  "wednesday": {
+    "id": "Rabu",
+    "en": "Wednesday"
+  },
+  "thursday": {
+    "id": "Kamis",
+    "en": "Thursday"
+  },
+  "friday": {
+    "id": "Jumat",
+    "en": "Friday"
+  },
+  "saturday": {
+    "id": "Sabtu",
+    "en": "Saturday"
+  },
+  "sunday": {
+    "id": "Minggu",
+    "en": "Sunday"
+  },
   "inputCourse": {
     "id": "Masukan nama mata pelajaran",
     "en": "Insert course name"
@@ -1891,6 +1974,14 @@
   "inputEkstrakurikuler": {
     "id": "Masukan nama ekstrakurikuler",
     "en": "Insert extracurricular name"
+  },
+  "extracurricular": {
+    "id": "Ekstrakurikuler",
+    "en": "Extracurricular"
+  },
+  "addExtracurricularSchedule": {
+    "id": "Tambah Jadwal Ekstrakurikuler",
+    "en": "Add Extracurricular Schedule"
   },
   "inputType": {
     "id": "Masukan tipe",
@@ -2137,6 +2228,14 @@
     "id": "Tutup",
     "en": "Close"
   },
+  "in": {
+    "id": "Masuk",
+    "en": "In"
+  },
+  "limitEntry": {
+    "id": "Batas Masuk",
+    "en": "Limit Entry"
+  },
   "clockOut": {
     "id": "Jam Pulang",
     "en": "Clock Out"
@@ -2372,6 +2471,14 @@
   "totalteachers": {
     "id": "Jumlah Guru",
     "en": "Total Teachers"
+  },
+  "totalSchedules": {
+    "id": "Jumlah Jadwal",
+    "en": "Total Schedules"
+  },
+  "noScheduleForDay": {
+    "id": "Tidak ada jadwal untuk hari ini",
+    "en": "No schedule for today"
   },
   "totalData": {
     "id": "Total Data",

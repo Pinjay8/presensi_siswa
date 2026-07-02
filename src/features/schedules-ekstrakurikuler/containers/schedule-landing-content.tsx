@@ -1,18 +1,7 @@
 import {
   Badge,
   Button,
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  Input,
   lang,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   Table,
   TableBody,
   TableCell,
@@ -23,36 +12,14 @@ import {
   cn,
 } from "@/core/libs";
 import { useAlert, useVokadialog, Vokadialog } from "@/features/_global";
-import { useCourse } from "@/features/course";
-import { useBiodataGuru } from "@/features/user";
 import { useRef, useState, useEffect, useMemo } from "react";
-import {
-  useScheduleCreation,
-  useSchedules,
-  useSchedulesEkstrakurikuler,
-} from "../hooks";
-import {
-  CircleSlashIcon,
-  Divide,
-  Download,
-  Pen,
-  Plus,
-  School,
-  School2,
-  Trash,
-  Upload,
-  UploadCloud,
-} from "lucide-react";
-import { FaFileExcel, FaRestroom } from "react-icons/fa";
-import * as XLSX from "xlsx";
-import { useClassroom } from "@/features/classroom";
-import { CircularProgress, Divider } from "@mui/material";
-import { teacherService } from "@/core/services/teacher";
-import QRCode from "react-qr-code";
+import { useScheduleCreation, useSchedulesEkstrakurikuler } from "../hooks";
+import { Pen, Plus, Trash } from "lucide-react";
 import { QrAttendanceDialog } from "../components/QrAttendanceDialog";
 import { useProfile } from "@/features/profile";
 import { useEkstrakurikuler } from "@/features/ekstrakurikuler";
 import { useGetAllEkstrakurikuler } from "@/features/ekstrakurikuler/hooks/useGetAllEkestrakurikuler";
+import { ScheduleEkstrakurikulerFormDialog } from "../components/ScheduleEkstrakurikulerForm";
 
 interface ScheduleItem {
   id: number;
@@ -68,24 +35,6 @@ interface ScheduleItem {
   guru: { id: number; namaGuru: string };
   createdAt: string;
   updatedAt: string;
-}
-
-interface NewScheduleForm {
-  mataPelajaranId: number;
-  kelasId: number;
-  guruId: number;
-  hari: string;
-  jamMulai: string;
-  jamSelesai: string;
-}
-
-interface BulkSchedule {
-  namaKelas: string;
-  namaMataPelajaran: string;
-  namaGuru: string;
-  hari: string;
-  jamMulai: string;
-  jamSelesai: string;
 }
 
 interface ScheduleItem {
@@ -391,6 +340,19 @@ export function ScheduleLandingContent() {
     }
   };
 
+  const handleCancel = () => {
+    setIsAddModalOpen(false);
+
+    setFormData({
+      dayOfWeek: 0,
+      jamMulai: "",
+      jamSelesai: "",
+    });
+
+    setSelectedEkskulId(0);
+    setSelectedKelasIdForAdd(0);
+  };
+
   // Render loading state
   if (!schedules?.data || schedules.isLoading) {
     return (
@@ -420,190 +382,30 @@ export function ScheduleLandingContent() {
           </div>
         }
       />
-      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle style={{ marginTop: "20px" }}>
-              {lang.text("addSchedule")}
-            </DialogTitle>
-          </DialogHeader>
-          <Divider />
-          <div className="grid gap-3 py-4 pt-0">
-            <div className="grid gap-2">
-              <label>Ekstrakurikuler</label>
 
-              <Select
-                value={
-                  selectedEkskulId === 0 ? "" : selectedEkskulId.toString()
-                }
-                onValueChange={(value) => setSelectedEkskulId(Number(value))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Ekstrakurikuler" />
-                </SelectTrigger>
+      <ScheduleEkstrakurikulerFormDialog
+        open={isAddModalOpen}
+        onOpenChange={setIsAddModalOpen}
+        title="Tambah Jadwal"
+        formData={formData}
+        setFormData={setFormData}
+        onSubmit={handleAddSchedule}
+        onCancel={handleCancel}
+        showEkskul
+        selectedEkskulId={selectedEkskulId}
+        setSelectedEkskulId={setSelectedEkskulId}
+        ekskulData={ekskulData}
+      />
 
-                <SelectContent>
-                  {ekskulData?.data?.map((item: any) => (
-                    <SelectItem key={item.id} value={item.id.toString()}>
-                      {item.nama}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <label>Hari</label>
-
-              <Select
-                value={formData.dayOfWeek.toString()}
-                onValueChange={(value) =>
-                  setFormData({
-                    ...formData,
-                    dayOfWeek: parseInt(value),
-                  })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Hari" />
-                </SelectTrigger>
-
-                <SelectContent>
-                  <SelectItem value="1">Senin</SelectItem>
-                  <SelectItem value="2">Selasa</SelectItem>
-                  <SelectItem value="3">Rabu</SelectItem>
-                  <SelectItem value="4">Kamis</SelectItem>
-                  <SelectItem value="5">Jumat</SelectItem>
-                  <SelectItem value="6">Sabtu</SelectItem>
-                  <SelectItem value="7">Minggu</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid gap-2">
-              <label>Jam Mulai</label>
-
-              <Input
-                type="time"
-                value={formData.jamMulai}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    jamMulai: e.target.value,
-                  })
-                }
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <label>Jam Selesai</label>
-
-              <Input
-                type="time"
-                value={formData.jamSelesai}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    jamSelesai: e.target.value,
-                  })
-                }
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={handleAddSchedule}>Simpan</Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsAddModalOpen(false);
-                setFormData({
-                  dayOfWeek: 0,
-                  jamMulai: "",
-                  jamSelesai: "",
-                });
-                setSelectedKelasIdForAdd(0);
-              }}
-            >
-              Batal
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Jadwal</DialogTitle>
-          </DialogHeader>
-
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <label>Hari</label>
-
-              <Select
-                value={formData.dayOfWeek.toString()}
-                onValueChange={(value) =>
-                  setFormData({
-                    ...formData,
-                    dayOfWeek: parseInt(value),
-                  })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Hari" />
-                </SelectTrigger>
-
-                <SelectContent>
-                  <SelectItem value="1">Senin</SelectItem>
-                  <SelectItem value="2">Selasa</SelectItem>
-                  <SelectItem value="3">Rabu</SelectItem>
-                  <SelectItem value="4">Kamis</SelectItem>
-                  <SelectItem value="5">Jumat</SelectItem>
-                  <SelectItem value="6">Sabtu</SelectItem>
-                  {/* <SelectItem value="7">Minggu</SelectItem> */}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid gap-2">
-              <label>Jam Mulai</label>
-
-              <Input
-                type="time"
-                value={formData.jamMulai}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    jamMulai: e.target.value,
-                  })
-                }
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <label>Jam Selesai</label>
-
-              <Input
-                type="time"
-                value={formData.jamSelesai}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    jamSelesai: e.target.value,
-                  })
-                }
-              />
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button onClick={handleEditSchedule}>Simpan</Button>
-
-            <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
-              Batal
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ScheduleEkstrakurikulerFormDialog
+        open={isEditModalOpen}
+        onOpenChange={setIsEditModalOpen}
+        title="Edit Jadwal"
+        formData={formData}
+        setFormData={setFormData}
+        onSubmit={handleEditSchedule}
+        onCancel={() => setIsEditModalOpen(false)}
+      />
 
       <div className="mt-5 mb-8">
         <div
@@ -614,20 +416,20 @@ export function ScheduleLandingContent() {
         >
           {isAdmin && (
             <div className="flex gap-2">
-              <Button variant="outline" onClick={openAddModal}>
-                Tambah Jadwal Ekstrakurikuler <Plus />
+              <Button variant="default" onClick={openAddModal}>
+                <Plus /> {lang.text("addExtracurricularSchedule")}
               </Button>
             </div>
           )}
           <div className="flex items-center gap-4">
             <Badge variant="outline" className="py-2.5">
-              <span>Jumlah Jadwal:</span>
+              <span>{lang.text("totalSchedules")}:</span>
               <span className="ml-2">{schedules.data.length}</span>
             </Badge>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid lg:grid-cols-2 gap-4">
           {daysOrder
             .filter((day) => selectedDays.includes(day))
             .map((day) => (
@@ -638,10 +440,12 @@ export function ScheduleLandingContent() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Jam</TableHead>
-                        <TableHead>Ekskul</TableHead>
-                        <TableHead>Jenis</TableHead>
-                        {isAdmin && <TableHead>Aksi</TableHead>}
+                        <TableHead>{lang.text("time")}</TableHead>
+                        <TableHead>{lang.text("extracurricular")}</TableHead>
+                        <TableHead>{lang.text("type")}</TableHead>
+                        {isAdmin && (
+                          <TableHead>{lang.text("actions")}</TableHead>
+                        )}
                       </TableRow>
                     </TableHeader>
 
@@ -687,7 +491,9 @@ export function ScheduleLandingContent() {
                     </TableBody>
                   </Table>
                 ) : (
-                  <p className="text-gray-500">No schedule for {day}</p>
+                  <p className="text-gray-500">
+                    {lang.text("noScheduleForDay", { day })}
+                  </p>
                 )}
               </div>
             ))}

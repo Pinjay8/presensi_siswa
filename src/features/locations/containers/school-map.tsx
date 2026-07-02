@@ -52,7 +52,7 @@ export const SchoolMap = () => {
   const schools = useSchool();
   const provinces = useProvinces();
 
-  console.log('sttt', students);
+
 
   // Create studentData from useBiodata, filtering out null locations
   // const studentData = useMemo(() => {

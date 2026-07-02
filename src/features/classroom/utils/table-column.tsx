@@ -196,46 +196,7 @@ export const classroomScheduleColumns = ({
         </BaseTableHeader>
       ),
     },
-    // {
-    //   accessorKey: "Sekolah.namaSekolah",
-    //   accessorFn: (row) => row.Sekolah?.namaSekolah,
-    //   header: ({ column }) => (
-    //     <BaseTableHeader
-    //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //     >
-    //       Sekolah
-    //     </BaseTableHeader>
-    //   ),
-    //   meta: {
-    //     filterLabel: lang.text("school"),
-    //     filterPlaceholder: lang.text("selectSchool"),
-    //     filterVariant: "select",
-    //     filterOptions: columnFilter?.schoolOptions || [],
-    //   },
-    // },
-    // {
-    //   accessorKey: "Schedule.name",
-    //   size: 100,
-    //   accessorFn: (row) => row.attendanceSchedule?.name,
-    //   header: ({ column }) => {
-    //     return (
-    //       <BaseTableHeader
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         {lang.text("scheduler")}
-    //       </BaseTableHeader>
-    //     );
-    //   },
-    //   cell: ({ row }) => {
-    //     return (
-    //       <div className="flex items-center gap-2">
-    //         <div className="text-sm ">
-    //           {row.original.attendanceSchedule?.name || "-"}
-    //         </div>
-    //       </div>
-    //     );
-    //   },
-    // },
+    
   ];
 
   // if (isAdmin) {

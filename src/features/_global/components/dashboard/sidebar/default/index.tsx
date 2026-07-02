@@ -30,6 +30,7 @@ import React from "react";
 import { Nav } from "../_components/Nav";
 import { SidebarProps } from "../types";
 import { Brand } from "./_components/Brand";
+import { Divider } from "@mui/material";
 // import { SidebarContext } from "@/features/_global";
 
 export const DefaultSidebar = React.memo((props: SidebarProps) => {
@@ -46,12 +47,14 @@ export const DefaultSidebar = React.memo((props: SidebarProps) => {
         props.className,
       )}
     >
-      <div className="sidebar-content flex h-full max-h-screen items-center flex-col gap-2">
+      <div className="sidebar-content flex h-full max-h-screen items-center flex-col gap-2 z-9999">
         <Brand isCollapsed={!props.visible} />
+  
         <div
           className="px-1 overflow-y-auto py-2 w-full"
           style={{ width: "100% important" }}
         >
+          
           <Nav items={props.menus} isCollapsed={!props.visible} />
         </div>
       </div>

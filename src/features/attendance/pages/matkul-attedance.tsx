@@ -21,15 +21,6 @@ import { useCourse } from "@/features/course";
 import { useProfile } from "@/features/profile";
 import { useSchoolDetail } from "@/features/schools";
 import { useBiodata } from "@/features/user/hooks";
-import {
-  Document,
-  Image,
-  Page,
-  pdf,
-  StyleSheet,
-  Text,
-  View,
-} from "@react-pdf/renderer";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
@@ -68,11 +59,6 @@ export const MatkulAttendance = () => {
 
   const classRoom = useClassroom();
   const profile = useProfile();
-  const school = useSchoolDetail({ id: profile?.user?.sekolahId || "" });
-
-  useEffect(() => {
-    localStorage.setItem("attendanceTarget", "students");
-  }, []);
 
   useMemo(() => {
     setListClassRoom(classRoom?.data || []);
