@@ -22,6 +22,7 @@ import { DeleteDialog } from "@/features/cards/components/DeleteCardDialog";
 import { useEkstrakurikuler } from "../hooks";
 import { ekstrakurikulerColumns } from "../utils";
 import { EkstrakurikulerForm } from "./EkstrakurikulerForm";
+import { ekstrakurikulerService } from "@/core/services/ekstrakurikuler";
 
 export const EkstrakurikulerTable = () => {
   const {
@@ -66,7 +67,7 @@ export const EkstrakurikulerTable = () => {
 
   async function handleDelete() {
     try {
-      await userDelete.deleteUser(Number(selectedCourse?.id));
+      await ekstrakurikulerService.delete(Number(selectedCourse?.id));
       alert.success(lang.text("successDelete"));
       resource.query.refetch();
       setOpenDelete(false);
