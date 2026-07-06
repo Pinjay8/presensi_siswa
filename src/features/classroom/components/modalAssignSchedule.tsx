@@ -11,6 +11,7 @@ import { Divider, Autocomplete, TextField } from "@mui/material";
 import { useState } from "react";
 import { useScheduler } from "../hooks/use-scheduler";
 import { useAlert } from "@/features/_global";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface modalAssignScheduleProps {
   open: boolean;
@@ -37,6 +38,7 @@ export default function ModalAssignSchedule({
     }));
 
   const [selectedSchedule, setSelectedSchedule] = useState<any>(null);
+  const queryClient = useQueryClient();
 
   async function handleSubmit() {
     if (!selectedSchedule) return;
@@ -46,6 +48,7 @@ export default function ModalAssignSchedule({
         kelas_id: Number(selectedClass.id),
         id: Number(selectedSchedule.value),
       });
+      queryClient.invalidateQueries({ queryKey: ["classrooms-paginated"] });
       alert.success("Assign schedule berhasil");
     } catch (error: any) {
       alert.error(error?.message);

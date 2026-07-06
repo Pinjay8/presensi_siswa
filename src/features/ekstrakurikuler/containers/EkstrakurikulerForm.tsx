@@ -85,9 +85,9 @@ export const EkstrakurikulerForm = ({
       jenis: initialData?.jenis || "",
       pembinaId: initialData?.pembinaId || 0,
       deskripsi: initialData?.deskripsi || "",
-      lokasi: initialData?.lokasi || "",
+      // lokasi: initialData?.lokasi || "",
       thumbnail: initialData?.thumbnail || "",
-      kontak: initialData?.kontak || "",
+      // kontak: initialData?.kontak || "",
     },
   });
 
@@ -114,9 +114,9 @@ export const EkstrakurikulerForm = ({
           jenis: data.jenis,
           pembinaId: data.pembinaId,
           deskripsi: data.deskripsi,
-          lokasi: data.lokasi,
+          // lokasi: data.lokasi,
           thumbnail: data.thumbnail,
-          kontak: data.kontak,
+          // kontak: data.kontak,
         });
       } else {
         await creation.create({
@@ -124,9 +124,9 @@ export const EkstrakurikulerForm = ({
           jenis: data.jenis,
           pembinaId: data.pembinaId,
           deskripsi: data.deskripsi,
-          lokasi: data.lokasi,
+          // lokasi: data.lokasi,
           thumbnail: data.thumbnail,
-          kontak: data.kontak,
+          // kontak: data.kontak,
         });
       }
 
@@ -282,7 +282,7 @@ export const EkstrakurikulerForm = ({
   return (
     <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="mb-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="mb-0">
           <div className="max-w-lg gap-6">
             <div className="basis-1">
               {/* <div className="flex flex-col gap-4 mb-4">
@@ -427,7 +427,7 @@ export const EkstrakurikulerForm = ({
                   />
                 </div>
               </div>
-              {/* lokasi */}
+              {/* lokasi
               <div className="flex flex-col sm:flex-row gap-4 mt-2">
                 <div className="w-full">
                   <FormField
@@ -473,8 +473,8 @@ export const EkstrakurikulerForm = ({
                     )}
                   />
                 </div>
-              </div>
-              <div className="py-4">
+              </div> */}
+              <div className="pt-4">
                 <Button
                   // disabled={
                   //   !form.formState.isDirty ||
