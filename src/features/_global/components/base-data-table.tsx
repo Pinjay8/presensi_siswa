@@ -102,7 +102,8 @@ export interface BaseDataTableProps {
     variant?: ButtonProps["variant"];
     className?: string;
   }[];
-  onRowClick?: (rowData: any) => void; // Tambahkan properti ini
+  onRowClick?: (rowData: any) => void;
+  actionContent?: React.ReactNode;
 }
 
 export const BaseDataTable = ({
@@ -122,6 +123,7 @@ export const BaseDataTable = ({
   actions,
   pageSize,
   onSelectionChange,
+  actionContent,
 }: BaseDataTableProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -482,7 +484,8 @@ export const BaseDataTable = ({
                   )}
                 </div>
               </div>
-              <div className="flex flex-row gap-2 order-2 sm:order-none flex-wrap">
+              <div className="flex flex-row gap-2 order-2 sm:order-none flex-wrap items-center">
+                {actionContent}
                 {renderAction ||
                   actions?.map((action, i) => {
                     return action.url ? (

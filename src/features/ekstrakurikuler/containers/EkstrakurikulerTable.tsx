@@ -1,4 +1,12 @@
-import { distinctObjectsByProperty, lang } from "@/core/libs";
+import {
+  distinctObjectsByProperty,
+  lang,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/core/libs";
 import {
   BaseDataTable,
   useAlert,
@@ -36,9 +44,12 @@ export const EkstrakurikulerTable = () => {
     defaultPageSize: 10,
   });
 
+  const [jenis, setJenis] = useState<string>("ALL");
+
   const params = {
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
+    ...(jenis !== "ALL" && { jenis }),
   };
 
   const resource = useEkstrakurikuler(params);
@@ -148,6 +159,31 @@ export const EkstrakurikulerTable = () => {
         rowCount={resource?.pagination?.total ?? 0}
         searchPlaceholder={lang.text("search")}
         isLoading={resource.query.isLoading}
+        actionContent={
+          <Select
+            value={jenis}
+            onValueChange={(value) => {
+              setJenis(value);
+              onPaginationChange({
+                pageIndex: 0,
+                pageSize: pagination.pageSize,
+              });
+            }}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Jenis" />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="ALL">Semua</SelectItem>
+              <SelectItem value="OLAHRAGA">Olahraga</SelectItem>
+              <SelectItem value="SENI">Seni</SelectItem>
+              <SelectItem value="AKADEMIK">Akademik</SelectItem>
+              <SelectItem value="KEAGAMAAN">Keagamaan</SelectItem>
+              <SelectItem value="LAINNYA">Lainnya</SelectItem>
+            </SelectContent>
+          </Select>
+        }
       />
       <DeleteDialog
         open={openDelete}

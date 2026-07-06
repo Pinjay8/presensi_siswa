@@ -16,6 +16,7 @@ export const ekstrakurikulerService = {
     const query = {
       page: params.page,
       limit: params.limit,
+      ...(params.jenis && { jenis: params.jenis }),
     };
 
     const url = withQuery(

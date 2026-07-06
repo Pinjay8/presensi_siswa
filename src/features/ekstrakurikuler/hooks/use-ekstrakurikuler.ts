@@ -12,7 +12,7 @@ export const useEkstrakurikuler = (params: any) => {
 
   const query = useQuery({
     enabled,
-    queryKey: ["ekstrakurikuler"],
+    queryKey: ["ekstrakurikuler", params.page, params.limit, params.jenis],
     queryFn: () => ekstrakurikulerService.getPaginated(params),
   });
 
