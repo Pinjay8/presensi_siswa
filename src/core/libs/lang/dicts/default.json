@@ -375,6 +375,10 @@
     "en": "Choose Classroom",
     "id": "Pilih Kelas"
   },
+  "chooseTeacher": {
+    "en": "Choose Teacher",
+    "id": "Pilih Guru"
+  },
   "allClassRoom": {
     "en": "All Classroom",
     "id": "Semua Kelas"

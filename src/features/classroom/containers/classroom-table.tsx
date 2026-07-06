@@ -149,9 +149,11 @@ export const ClassroomTable = () => {
 
       await uploadExcelService.importExcel(formData);
 
-      alert.success(lang.text("successImportData", {
-        context: lang.text("classroom"),
-      }));
+      alert.success(
+        lang.text("successImportData", {
+          context: lang.text("classroom"),
+        }),
+      );
 
       await query.refetch();
 
@@ -159,7 +161,8 @@ export const ClassroomTable = () => {
       setIsUploadModalOpen(false);
     } catch (err: any) {
       alert.error(
-        err?.message ?? lang.text("failedImportData", { context: lang.text("classroom") })
+        err?.message ??
+          lang.text("failedImportData", { context: lang.text("classroom") }),
       );
     }
   };

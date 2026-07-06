@@ -83,10 +83,11 @@ export const CourseCreationForm = ({
       namaMataPelajaran: initialData?.namaMataPelajaran || "",
       kode: initialData?.kode || "",
       kelompok: initialData?.kelompok || "",
-      kelas:
-        initialData?.kelas?.length > 0
-          ? initialData?.kelas
-          : [{ kelasId: 0, guruId: undefined }],
+      // kelas:
+      //   initialData?.kelas?.length > 0
+      //     ? initialData?.kelas
+      //     : [{ kelasId: 0, guruId: undefined }],
+      kelas: initialData?.kelas ?? [],
     },
   });
 
@@ -98,7 +99,6 @@ export const CourseCreationForm = ({
   const queryClient = useQueryClient();
 
   async function onSubmit(data: z.infer<typeof courseCreateSchema>) {
-    console.log("data", data);
     try {
       if (!isEdit) {
         const isDuplicate = resource.data?.some(
@@ -125,7 +125,7 @@ export const CourseCreationForm = ({
         namaMataPelajaran: data.namaMataPelajaran,
         ...(data.kode && { kode: data.kode }),
         ...(data.kelompok && { kelompok: data.kelompok }),
-        ...(kelas.length > 0 && { kelas }),
+        ...(isEdit ? { kelas } : kelas.length > 0 ? { kelas } : {}),
       };
 
       if (isEdit) {
@@ -286,7 +286,6 @@ export const CourseCreationForm = ({
     }
   };
 
-
   return (
     <div>
       {!isEdit && (
@@ -427,7 +426,9 @@ export const CourseCreationForm = ({
                 </div>
               </div>
               <div className="flex flex-col gap-4 mt-4 w-full">
-                <FormLabel>Kelas & Guru</FormLabel>
+                <FormLabel>
+                  {lang.text("classRoom")} & {lang.text("teacher")}
+                </FormLabel>
 
                 {fields.map((item, index) => (
                   <div
@@ -444,7 +445,9 @@ export const CourseCreationForm = ({
                         >
                           <FormControl>
                             <SelectTrigger className="w-[260px]">
-                              <SelectValue placeholder="Pilih Kelas" />
+                              <SelectValue
+                                placeholder={lang.text("chooseClassroom")}
+                              />
                             </SelectTrigger>
                           </FormControl>
 
@@ -472,7 +475,9 @@ export const CourseCreationForm = ({
                         >
                           <FormControl>
                             <SelectTrigger className="w-[260px]">
-                              <SelectValue placeholder="Pilih Guru" />
+                              <SelectValue
+                                placeholder={lang.text("chooseTeacher")}
+                              />
                             </SelectTrigger>
                           </FormControl>
 
