@@ -24,6 +24,17 @@ export const licensingColumns = ({
 }: LicensingColumnsProps): any[] => {
   return [
     {
+      id: "no",
+      header: "No",
+      size: 60,
+      enableSorting: false,
+      cell: ({ row, table }: any) => {
+        const { pageIndex, pageSize } = table.getState().pagination;
+
+        return pageIndex * pageSize + row.index + 1;
+      },
+    },
+    {
       accessorKey: "alasan",
       accessorFn: (row: any) => row.alasan,
       header: ({ column }: any) => {

@@ -32,6 +32,17 @@ export const cardColumns = (
   };
   return [
     {
+      id: "no",
+      header: "No",
+      size: 60,
+      enableSorting: false,
+      cell: ({ row, table }) => {
+        const { pageIndex, pageSize } = table.getState().pagination;
+
+        return pageIndex * pageSize + row.index + 1;
+      },
+    },
+    {
       accessorKey: "nomorKartu",
       accessorFn: (row) => row.nomorKartu,
       header: ({ column }) => {

@@ -99,7 +99,6 @@ export const StudentLandingTables = () => {
     defaultValues,
   });
 
-  // const { students, loading, refetch: refetchStudents } = useStudents();
   const queryCLient = useQueryClient();
 
   const onSubmit = async (values: CreateSiswaFormValues) => {
@@ -250,16 +249,6 @@ export const StudentLandingTables = () => {
         >
           {isAdmin && (
             <div className="flex w-max gap-2 items-center flex-wrap">
-              {/* <Button
-                className="hidden"
-                variant="outline"
-                onClick={() => handleDownloadExcel("csv")}
-                // icon
-                iconPosition="left"
-                icon={<FaFileExcel />}
-              >
-                {lang.text("download")} Template CSV
-              </Button> */}
               <Button
                 // variant="outline"
                 onClick={handleDownloadTemplate}

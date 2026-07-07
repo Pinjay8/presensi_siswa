@@ -4,6 +4,7 @@ import { NavLink, Outlet, useParams } from "react-router-dom";
 import { SchoolInformation } from "@/features/schools";
 import { DashboardPageLayout } from "@/features/_global";
 import { useMemo } from "react";
+import { Divider } from "@mui/material";
 
 export const SchoolDetail = () => {
   const params = useParams();
@@ -50,7 +51,9 @@ export const SchoolDetail = () => {
     >
       <div className="mb-4" />
       <SchoolInformation id={decodeParams?.id} />
-      <div className="py-6 mt-10 border-t border-white/10">
+
+      <div className="py-6 mt-2 border-t border-white/10">
+        <Divider sx={{ mb: 2 }} />
         {submenus.map((submenu) => {
           return (
             <NavLink
@@ -60,7 +63,7 @@ export const SchoolDetail = () => {
               className={({ isActive }) => {
                 return cn(
                   buttonVariants({ variant: isActive ? "default" : "outline" }),
-                  "mr-4",
+                  "mr-2",
                 );
               }}
             >

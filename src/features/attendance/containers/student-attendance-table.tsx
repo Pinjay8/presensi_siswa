@@ -8,6 +8,7 @@ import { studentAttendanceColumn } from "../utils";
 
 interface StudentAttendanceTableProps {
   data: BiodataSiswa[]; // Terima data yang difilter
+  isLoading?: boolean;
   totalAttedance?: boolean;
   pagination: any;
   onPaginationChange: any;
@@ -17,6 +18,7 @@ interface StudentAttendanceTableProps {
 export function StudentAttendanceTable({
   data,
   totalAttedance,
+  isLoading,
   // pagination,
   // sorting,
   // onSortingChange,
@@ -53,7 +55,7 @@ export function StudentAttendanceTable({
       <BaseDataTable
         columns={columns}
         data={data}
-        dataFallback={[]}
+        dataFallback={columns}
         globalSearch
         searchParamPagination
         // initialState={{ sorting }}
@@ -76,7 +78,7 @@ export function StudentAttendanceTable({
           ],
         }}
         searchPlaceholder={lang.text("search")}
-        isLoading={data.length > 0 ? false : true}
+        isLoading={isLoading}
       />
     </div>
   );

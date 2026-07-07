@@ -1,9 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge, lang, simpleEncode } from "@/core/libs"; // Impor dari Shadcn UI
 import dayjs from "dayjs";
-import { BaseActionTable } from "@/features/_global";
-
-
 export interface Attendance {
   user: {
     image: string;
@@ -23,14 +20,17 @@ export interface Attendance {
 }
 
 export const columns: ColumnDef<any>[] = [
-  // {
-  //   id: "no",
-  //   header: () => <div className="text-center">No</div>,
-  //   cell: ({ row }) => <div className="text-center">{row.index + 1}</div>,
-  //   enableSorting: false,
-  //   enableColumnFilter: false,
-  //   size: 60,
-  // },
+  {
+    id: "no",
+    header: "No",
+    size: 60,
+    enableSorting: false,
+    cell: ({ row, table }) => {
+      const { pageIndex, pageSize } = table.getState().pagination;
+
+      return pageIndex * pageSize + row.index + 1;
+    },
+  },
   {
     accessorKey: "namaSiswa",
     header: lang.text("studentName"),

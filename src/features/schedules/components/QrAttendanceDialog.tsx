@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Button, CircularProgress, Divider } from "@mui/material";
+import { Button, CircularProgress, Divider, Typography } from "@mui/material";
 import {
   Badge,
   Dialog,
@@ -17,6 +17,10 @@ interface QrAttendanceDialogProps {
   selectedQr?: {
     namaKelas?: string;
     namaMapel?: string;
+    namaGuru?: string;
+    jamMulai?: string;
+    jamSelesai?: string;
+    hari?: string;
   } | null;
 }
 
@@ -85,7 +89,7 @@ export function QrAttendanceDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle style={{ marginTop: "20px", marginBottom: '10px' }}>
+          <DialogTitle style={{ marginTop: "20px", marginBottom: "10px" }}>
             QR Code Presensi Mata Pelajaran
           </DialogTitle>
         </DialogHeader>
@@ -93,17 +97,21 @@ export function QrAttendanceDialog({
         <Divider />
 
         <div className="space-y-4">
-          <div>
-            <p>
-              <b>Kelas :</b> {selectedQr?.namaKelas}
-            </p>
+          <h3 style={{ fontSize: "20px" }}>
+            <b>{selectedQr?.namaKelas}</b> - <b>{selectedQr?.namaMapel}</b>
+          </h3>
 
-            <p>
-              <b>Mata Pelajaran :</b> {selectedQr?.namaMapel}
-            </p>
-          </div>
+          <h3 style={{ fontSize: "15px", fontWeight: "normal" }}>
+            {selectedQr?.namaGuru}
+          </h3>
 
-          <Divider />
+          <h3 style={{ fontSize: "15px", fontWeight: "normal" }}>
+            <span style={{ textTransform: "capitalize" }}>
+              {" "}
+              {selectedQr?.hari}
+            </span>
+            , {selectedQr?.jamMulai} - {selectedQr?.jamSelesai}
+          </h3>
 
           <div className="flex flex-col items-center">
             {qrCode ? (
@@ -111,9 +119,12 @@ export function QrAttendanceDialog({
                 <div ref={qrRef}>
                   <QRCode value={qrCode} size={300} />
                 </div>
+                <Typography sx={{ mt: 2 }}>
+                  Scan QR Code untuk presensi
+                </Typography>
 
                 <Button
-                  sx={{ mt: 4 }}
+                  sx={{ mt: 2 }}
                   onClick={handleDownloadQr}
                   // variant="default"
                   variant="contained"

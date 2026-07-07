@@ -19,6 +19,17 @@ export const ekstrakurikulerColumns = ({
 }): ColumnDef<any>[] => {
   const columns: ColumnDef<any>[] = [
     {
+      id: "no",
+      header: "No",
+      size: 60,
+      enableSorting: false,
+      cell: ({ row, table }) => {
+        const { pageIndex, pageSize } = table.getState().pagination;
+
+        return pageIndex * pageSize + row.index + 1;
+      },
+    },
+    {
       accessorKey: "nama",
       accessorFn: (row) => row.nama,
       header: ({ column }) => (

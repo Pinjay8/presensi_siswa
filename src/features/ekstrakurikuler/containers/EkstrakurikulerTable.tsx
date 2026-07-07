@@ -12,14 +12,10 @@ import {
   useAlert,
   useDataTableController,
 } from "@/features/_global";
-import { useClassroom } from "@/features/classroom";
 import {
-  courseColumns,
-  CourseCreationForm,
   courseDataFallback,
   useCourse,
 } from "@/features/course";
-import { useSchool } from "@/features/schools";
 import { useMemo, useState } from "react";
 import { ModalEkstrakurikuler } from "../components";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/core/libs";
@@ -104,7 +100,7 @@ export const EkstrakurikulerTable = () => {
   );
 
   return (
-    <>
+    <div>
       <ModalEkstrakurikuler
         show={createCourse}
         onClose={() => setCreateCourse(false)}
@@ -191,6 +187,6 @@ export const EkstrakurikulerTable = () => {
         onConfirm={handleDelete}
         loading={userDelete.isLoading}
       />
-    </>
+    </div>
   );
 };

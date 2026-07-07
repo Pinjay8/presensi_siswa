@@ -78,7 +78,7 @@ export function SubjectAttendanceTable({
       <BaseDataTable
         columns={columns}
         data={data}
-        dataFallback={[]}
+        dataFallback={columns}
         globalSearch
         searchParamPagination
         showFilterButton

@@ -782,6 +782,14 @@
     "id": "Sedang memuat data...",
     "en": "Is now loading..."
   },
+  "noScheduleForToday": {
+    "id": "Tidak ada jadwal untuk hari [context]",
+    "en": "No schedule for [context]"
+  },
+  "showQrCode": {
+    "id": "Tampilkan QR",
+    "en": "Show QR"
+  },
   "approveAttendance": {
     "id": "Pengajuan berhasil disetujui",
     "en": "Request has been approved"
@@ -2881,8 +2889,8 @@
     "en": "Assign Schedule"
   },
   "deleteMessage": {
-    "id": "Apakah anda ingin menghapus data ini?",
-    "en": "Are you sure to delete this data?"
+    "id": "Apakah anda ingin menghapus [context]?",
+    "en": "Are you sure you want to delete [context]?"
   },
   "successDelete": {
     "id": "Data berhasil dihapus",

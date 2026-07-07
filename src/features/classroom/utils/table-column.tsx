@@ -27,6 +27,17 @@ export const classroomColumns = ({
 }: classroomColumnsProps = {}): ColumnDef<any>[] => {
   const columns: ColumnDef<any>[] = [
     {
+      id: "no",
+      header: "No",
+      size: 60,
+      enableSorting: false,
+      cell: ({ row, table }) => {
+        const { pageIndex, pageSize } = table.getState().pagination;
+
+        return pageIndex * pageSize + row.index + 1;
+      },
+    },
+    {
       accessorKey: "namaKelas",
       accessorFn: (row) => row.namaKelas,
       header: ({ column }) => (
@@ -123,9 +134,6 @@ export const classroomColumns = ({
 export const classroomDataFallback: ClassroomDataModel[] = [];
 
 export const classroomScheduleColumns = ({
-  columnFilter,
-  onAssignSchedule,
-  onDelete,
   isAdmin,
   selectedClassId,
   onSelectClass,
@@ -172,6 +180,17 @@ export const classroomScheduleColumns = ({
       ),
     },
     {
+      id: "no",
+      header: "No",
+      size: 60,
+      enableSorting: false,
+      cell: ({ row, table }) => {
+        const { pageIndex, pageSize } = table.getState().pagination;
+
+        return pageIndex * pageSize + row.index + 1;
+      },
+    },
+    {
       accessorKey: "namaKelas",
       accessorFn: (row) => row.namaKelas,
       size: 100,
@@ -196,7 +215,6 @@ export const classroomScheduleColumns = ({
         </BaseTableHeader>
       ),
     },
-    
   ];
 
   // if (isAdmin) {

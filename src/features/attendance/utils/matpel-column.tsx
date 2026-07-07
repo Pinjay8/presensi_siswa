@@ -30,6 +30,17 @@ export const matpelColumns = (
   isRole?: any,
 ): ColumnDef<any>[] => [
   {
+    id: "no",
+    header: "No",
+    size: 60,
+    enableSorting: false,
+    cell: ({ row, table }) => {
+      const { pageIndex, pageSize } = table.getState().pagination;
+
+      return pageIndex * pageSize + row.index + 1;
+    },
+  },
+  {
     accessorKey: "namaSiswa",
     header: lang.text("studentName"),
     cell: ({ row }) => row.original.namaSiswa || "N/A",
@@ -130,7 +141,7 @@ export const matpelColumns = (
           accessorKey: "id",
           header: lang.text("action"),
           enableSorting: false,
-          cell: ({ row }) => {
+          cell: ({ row }: any) => {
             const status =
               row.original.statusKehadiran?.toLowerCase() || "belum hadir";
             if (status !== "belum hadir") {

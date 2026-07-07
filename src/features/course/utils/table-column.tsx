@@ -115,6 +115,21 @@ export const courseColumns = ({
 }): ColumnDef<any>[] => {
   const columns: ColumnDef<any>[] = [
     {
+      id: "no",
+      header: () => <div className="text-start">No</div>,
+      size: 20,
+      enableSorting: false,
+      cell: ({ row, table }) => {
+        const { pageIndex, pageSize } = table.getState().pagination;
+
+        return (
+          <div className="text-start">
+            {pageIndex * pageSize + row.index + 1}
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "namaMataPelajaran",
       accessorFn: (row) => row.namaMataPelajaran,
       header: ({ column }) => {

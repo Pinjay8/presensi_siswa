@@ -176,7 +176,6 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
     if (initialValues) {
       const subscription = form.watch((currentValues) => {
         const hasFormChanges = !deepEqual(currentValues, initialValues);
-        console.log("Form values changed:", { currentValues, hasFormChanges });
         setHasChanges(hasFormChanges);
       });
       return () => subscription.unsubscribe();
@@ -364,8 +363,6 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
     }
   }
 
-  const safeHTML = DOMPurify.sanitize(detail.data?.visiMisi || "");
-
   return (
     <Form {...form}>
       <form
@@ -412,7 +409,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                   </FormItem>
                 )}
               />
-              <div className="py-4 w-full">
+              {/* <div className="py-4 w-full">
                 <FormLabel>{lang.text("signature")}</FormLabel>
                 <div className="w-full flex flex-col mt-6 gap-4 items-center">
                   <SignatureInput
@@ -428,7 +425,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                     signature={detail.data?.ttdKepalaSekolah ?? undefined}
                   />
                 </div>
-              </div>
+              </div> */}
             </>
           ) : (
             <>
@@ -439,7 +436,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                     image={detail.data?.file}
                   />
                 </div>
-                {detail.data?.ttdKepalaSekolah && (
+                {/* {detail.data?.ttdKepalaSekolah && (
                   <div className="mt-10">
                     <p className="text-sm my-6 font-medium">
                       {lang.text("signature")}
@@ -450,7 +447,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                       />
                     </div>
                   </div>
-                )}
+                )} */}
               </div>
             </>
           )}
@@ -732,7 +729,7 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                     />
                   </div>
                 )}
-            
+
                 {isEditMode && (
                   <EditableInfoItem
                     control={form.control}
@@ -763,7 +760,6 @@ export const SchoolInformation = (props: UseSchoolDetailProps) => {
                         <InputMap
                           label="Pilih Lokasi Peta"
                           onChange={(v) => {
-                            console.log("InputMap onChange:", v);
                             field.onChange(v);
                           }}
                           value={field.value}

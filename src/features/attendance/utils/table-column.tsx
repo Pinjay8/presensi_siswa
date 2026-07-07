@@ -18,11 +18,14 @@ export const studentAttendanceColumn = ({
   return [
     {
       id: "no",
-      header: () => <div className="text-center">No</div>,
-      cell: ({ row }) => <div className="text-center">{row.index + 1}</div>,
-      enableSorting: false,
-      enableColumnFilter: false,
+      header: "No",
       size: 60,
+      enableSorting: false,
+      cell: ({ row, table }) => {
+        const { pageIndex, pageSize } = table.getState().pagination;
+
+        return pageIndex * pageSize + row.index + 1;
+      },
     },
     {
       accessorKey: "createdAt",
@@ -354,11 +357,14 @@ export const teacherAttendanceColumn = ({
   return [
     {
       id: "no",
-      header: () => <div className="text-center">No</div>,
-      cell: ({ row }) => <div className="text-center">{row.index + 1}</div>,
-      enableSorting: false,
-      enableColumnFilter: false,
+      header: "No",
       size: 60,
+      enableSorting: false,
+      cell: ({ row, table }) => {
+        const { pageIndex, pageSize } = table.getState().pagination;
+
+        return pageIndex * pageSize + row.index + 1;
+      },
     },
     {
       accessorKey: "created_at",

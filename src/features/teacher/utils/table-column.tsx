@@ -126,6 +126,17 @@ export const teacherColumnWithFilter = ({
 }): ColumnDef<BiodataGuru>[] => {
   return [
     {
+      id: "no",
+      header: "No",
+      size: 60,
+      enableSorting: false,
+      cell: ({ row, table }) => {
+        const { pageIndex, pageSize } = table.getState().pagination;
+
+        return pageIndex * pageSize + row.index + 1;
+      },
+    },
+    {
       accessorKey: "user.name",
       accessorFn: (row) => row.user?.name,
       header: ({ column }) => {

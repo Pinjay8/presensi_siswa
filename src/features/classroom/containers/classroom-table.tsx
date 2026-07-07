@@ -1,4 +1,4 @@
-import { distinctObjectsByProperty, lang } from "@/core/libs";
+import { lang } from "@/core/libs";
 import {
   BaseDataTable,
   useAlert,
@@ -11,19 +11,12 @@ import { useClassroom, useClassroomCreation } from "../hooks";
 import { classroomColumns, classroomDataFallback } from "../utils";
 import { useProfile } from "@/features/profile";
 import ModalAssignSchedule from "../components/modalAssignSchedule";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
 import { FaPlus } from "react-icons/fa";
 import { useClassroomPaginated } from "../hooks/use-classroom-paginated";
 import { Download, UploadCloud } from "lucide-react";
 import { UploadScheduleDialog } from "@/features/schedules/components/UploadScheduleDialog";
 import { uploadExcelService } from "@/core/services/excel";
+import ModalDeleteClass from "../components/ModalDeleteClass";
 
 export const ClassroomTable = () => {
   const {
@@ -78,15 +71,6 @@ export const ClassroomTable = () => {
   const columns = useMemo(
     () =>
       classroomColumns({
-        // columnFilter: {
-        //   schoolOptions: distinctObjectsByProperty(
-        //     school.data?.map((d) => ({
-        //       label: d.namaSekolah,
-        //       value: d.namaSekolah,
-        //     })) || [],
-        //     "value",
-        //   ),
-        // },
         onAssignSchedule: handleOpenAssignSchedule,
         onDelete: handleOpenDeleteDialog,
         isAdmin,
@@ -168,7 +152,7 @@ export const ClassroomTable = () => {
   };
 
   return (
-    <>
+    <div className="classroom">
       {!isRole && (
         <>
           <ModalCreateClass
@@ -240,37 +224,18 @@ export const ClassroomTable = () => {
         handleUploadExcel={handleUploadExcel}
       />
 
-      {/* Delete Dialog */}
-      <Dialog
+      <ModalDeleteClass
         open={openDeleteDialog}
+        title={lang.text("delete")}
+        message={lang.text("deleteMessage", {
+          context: selectedClass?.namaKelas,
+        })}
+        loading={classDelete.isLoading}
         onClose={() => setOpenDeleteDialog(false)}
-        fullWidth
-        maxWidth="sm"
-      >
-        <DialogTitle>{lang.text("delete")}</DialogTitle>
-        <DialogContent dividers>
-          <DialogContentText>
-            {lang.text("deleteMessage", { context: selectedClass?.user_name })}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setOpenDeleteDialog(false)}
-            color="primary"
-            variant="outlined"
-          >
-            {lang.text("cancel")}
-          </Button>
-          <Button
-            onClick={handleDelete}
-            disabled={classDelete.isLoading}
-            variant="contained"
-            color="primary"
-          >
-            {lang.text("delete")}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+        onConfirm={handleDelete}
+        cancelText={lang.text("cancel")}
+        confirmText={lang.text("delete")}
+      />
+    </div>
   );
 };

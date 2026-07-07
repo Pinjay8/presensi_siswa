@@ -24,12 +24,12 @@ export const SchoolClassroomTable = (props: SchoolClassroomTableProps) => {
       data={datas}
       dataFallback={classroomDataFallback}
       globalSearch
-      actions={[
-        {
-          title: lang.text("addClassroom"),
-          url: "/classrooms/create",
-        },
-      ]}
+      // actions={[
+      //   {
+      //     title: lang.text("addClassroom"),
+      //     url: "/classrooms/create",
+      //   },
+      // ]}
       searchParamPagination
       searchPlaceholder={lang.text("search")}
       isLoading={resource.query.isLoading}

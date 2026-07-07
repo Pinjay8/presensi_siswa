@@ -8,7 +8,7 @@ import {
   TableRow,
   lang,
 } from "@/core/libs";
-import { School2, Pen, Trash } from "lucide-react";
+import { School2, Pen, Trash, QrCode } from "lucide-react";
 
 interface ScheduleItem {
   id: number;
@@ -123,8 +123,9 @@ export function ScheduleBoard({
                                 variant="default"
                                 size="sm"
                                 onClick={() => handleShowQr(item)}
+                                icon={<QrCode />}
                               >
-                                Show QR
+                                {lang.text("showQrCode")}
                               </Button>
                             )}
 
@@ -155,7 +156,8 @@ export function ScheduleBoard({
                 </Table>
               ) : (
                 <p className="py-8 text-center text-muted-foreground">
-                  Tidak ada jadwal untuk hari {day}.
+                  {/* Tidak ada jadwal untuk hari {day}. */}
+                  {lang.text("noScheduleForToday", { context: day })}
                 </p>
               )}
             </div>

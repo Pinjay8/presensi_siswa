@@ -25,7 +25,7 @@ import {
   Card,
 } from "@/core/libs";
 import {
-    BaseDataTable,
+  BaseDataTable,
   useAlert,
   useDataTableController,
   useVokadialog,
@@ -48,7 +48,6 @@ import {
   Upload,
   UploadCloud,
 } from "lucide-react";
-import { FaFileExcel, FaRestroom } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import { useClassroom } from "@/features/classroom";
 import { teacherService } from "@/core/services/teacher";
@@ -59,7 +58,6 @@ import { EditScheduleDialog } from "../components/EditScheduleDialog";
 import { DayFilterDialog } from "../components/DayFilterDialog";
 import { UploadScheduleDialog } from "../components/UploadScheduleDialog";
 import { useSchedulesPagination } from "../hooks/useSchedulesPagination";
-import { useParams } from "react-router-dom";
 
 interface ScheduleItem {
   id: number;
@@ -158,7 +156,6 @@ export function ScheduleDetail(props: ScheduleDetailProps) {
     kelasId: props?.id,
   });
 
-
   const courses = useCourse();
   const teachers = useBiodataGuru();
   //   const schedules = useSchedules();
@@ -171,6 +168,7 @@ export function ScheduleDetail(props: ScheduleDetailProps) {
     mataPelajaranId: number;
     namaKelas: string;
     namaMapel: string;
+    namaGuru: string;
   } | null>(null);
 
   const profile = useProfile();
@@ -185,28 +183,24 @@ export function ScheduleDetail(props: ScheduleDetailProps) {
 
   const handleShowQr = async (item: any) => {
     try {
-      // console.log("QR ITEM", item);
+      console.log("QR ITEM", item);
 
       const payload = {
         kelasId: item.kelasId,
         mataPelajaranId: item.mataPelajaranId,
+        guruId: item.guruId,
       };
-
-      // console.log("QR PAYLOAD", payload);
-
       setSelectedQr({
         kelasId: item.kelasId,
         mataPelajaranId: item.mataPelajaranId,
         namaKelas: item.kelas?.namaKelas ?? "-",
         namaMapel: item.mataPelajaran.namaMataPelajaran,
+        namaGuru: item.guru?.namaGuru ?? "-",
       });
+      console.log("QR PAYLOAD", payload);
 
       setIsQrModalOpen(true);
-
       const result = await teacherService.qrCodeGenerate(payload);
-
-      // console.log("QR RESULT", result);
-
       setQrCode(result?.data?.qrCodeData ?? result?.collection?.qrCode ?? "");
     } catch (err: any) {
       alert.error(err?.message);
@@ -736,13 +730,13 @@ export function ScheduleDetail(props: ScheduleDetailProps) {
   };
 
   // Render loading state
-    if (!schedules?.data || schedules.isLoading) {
-      return (
-        <div className="w-full h-[400px] border-dashed border-black/10 rounded-md flex items-center justify-center text-center">
-          <p className="text-center">{lang.text("loadingScheduleMapel")}</p>
-        </div>
-      );
-    }
+  if (!schedules?.data || schedules.isLoading) {
+    return (
+      <div className="w-full h-[400px] border-dashed border-black/10 rounded-md flex items-center justify-center text-center">
+        <p className="text-center">{lang.text("loadingScheduleMapel")}</p>
+      </div>
+    );
+  }
 
   const isRoleSiswa = profile?.user?.role === "siswa";
   const isRoleGuru = profile?.user?.role === "guru";

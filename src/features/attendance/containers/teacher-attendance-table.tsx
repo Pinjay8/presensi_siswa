@@ -35,7 +35,6 @@ interface attedanceProps {
 
 export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [selectedClass, setSelectedClass] = useState<string>('');
   const [selectedStartMonth, setSelectedStartMonth] = useState<string>(
     dayjs().tz("Asia/Jakarta").startOf("month").format("YYYY-MM"),
   );

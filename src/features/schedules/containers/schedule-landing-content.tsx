@@ -152,6 +152,10 @@ export function ScheduleLandingContent() {
     mataPelajaranId: number;
     namaKelas: string;
     namaMapel: string;
+    namaGuru: string;
+    jamMulai: string;
+    jamSelesai: string;
+    hari: string;
   } | null>(null);
 
   const isRole =
@@ -170,13 +174,20 @@ export function ScheduleLandingContent() {
         kelasId: item.kelasId,
         mataPelajaranId: item.mataPelajaranId,
       };
+      console.log("QR ITEM", item);
 
       setSelectedQr({
         kelasId: item.kelasId,
         mataPelajaranId: item.mataPelajaranId,
         namaKelas: item.kelas?.namaKelas ?? "-",
         namaMapel: item.mataPelajaran.namaMataPelajaran,
+        namaGuru: item.guru?.namaGuru ?? "-",
+        jamMulai: item.jamMulai,
+        jamSelesai: item.jamSelesai,
+        hari: item.hari,
       });
+
+      console.log("QR PAYLOAD", payload);
 
       setIsQrModalOpen(true);
 
@@ -496,14 +507,6 @@ export function ScheduleLandingContent() {
     setSelectedKelasIdForAdd(0);
   };
 
-  // Render loading state
-  // if (!schedules?.data || schedules.isLoading) {
-  //   return (
-  //     <div className="w-full h-[400px] border-dashed border-black/10 rounded-md flex items-center justify-center text-center">
-  //       <p className="text-center">{lang.text("loadingScheduleMapel")}</p>
-  //     </div>
-  //   );
-  // }
 
   const isRoleSiswa = profile?.user?.role === "siswa";
   const isRoleGuru = profile?.user?.role === "guru";

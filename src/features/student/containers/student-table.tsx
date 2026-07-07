@@ -125,8 +125,6 @@ export function StudentTable({
   const columns = useMemo(
     () =>
       studentColumnWithFilter({
-        // schoolOptions,
-        // classroomOptions,
         handleAttend,
         onRegisterFace: handleOpenRegisterFace,
         onAssignCard: handleOpenAssignCard,
@@ -226,8 +224,9 @@ export function StudentTable({
         columns={columns}
         data={data}
         globalSearch
-        dataFallback={[]}
+        dataFallback={columns}
         // searchParamPagination
+        searchPlaceholder={lang.text("search") + " " + lang.text("student")}
         searchParamPagination
         showFilterButton
         isLoading={isLoading}
@@ -235,8 +234,6 @@ export function StudentTable({
         pagination={pagination}
         onPaginationChange={onPaginationChange}
         rowCount={rowCount}
-        // schoolOptions={schoolOptions}
-        // classroomOptions={classroomOptions}
       />
 
       <RegisterFaceDialog

@@ -26,12 +26,12 @@ export const SchoolCourseTable = (props: SchoolCourseTableProps) => {
       data={datas}
       dataFallback={courseDataFallback}
       globalSearch
-      actions={[
-        {
-          title: lang.text("addWithContext", { context: lang.text("course") }),
-          url: "/courses/create",
-        },
-      ]}
+      // actions={[
+      //   {
+      //     title: lang.text("addWithContext", { context: lang.text("course") }),
+      //     url: "/courses/create",
+      //   },
+      // ]}
       searchParamPagination
       searchPlaceholder={lang.text("search")}
       isLoading={resource.query.isLoading}

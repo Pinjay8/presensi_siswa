@@ -275,7 +275,7 @@ export const BaseDataTable = ({
 
   const renderTableHeader = () => {
     return (
-      <TableHeader>
+      <TableHeader className="bg-gray-100">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => {
@@ -286,7 +286,10 @@ export const BaseDataTable = ({
               }
 
               return (
-                <TableHead key={header.id}>
+                <TableHead
+                  key={header.id}
+                  className="font-semibold text-gray-700"
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -337,6 +340,7 @@ export const BaseDataTable = ({
           //   }
           // >
           <TableRow
+            key={row.id}
             data-state={
               enableRowSelection && selectedRowId === row.original.id
                 ? "selected"
@@ -466,7 +470,7 @@ export const BaseDataTable = ({
           <>
             <div className="flex flex-col sm:flex-row mb-4 gap-2 sm:items-center sm:justify-between">
               <div className="flex-1 order-1 sm:order-none">
-                <div className="flex flex-row gap-2">
+                <div className="flex flex-row gap-2 mt-2">
                   <div className="relative sm:max-w-[300px] flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 

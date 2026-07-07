@@ -28,7 +28,7 @@ export function CustomBreadcrumbs({ items = [] }: CustomBreadcrumbsProps) {
           </Link>
         </li>
         {items.map((item, index) => (
-          <li key={item.url} className="flex items-center">
+          <li key={`${item.url}-${index}`} className="flex items-center">
             <ChevronRight className="h-4 w-4 mx-1" aria-hidden="true" />
             {index === items.length - 1 ? (
               <span className="text-foreground font-medium" aria-current="page">

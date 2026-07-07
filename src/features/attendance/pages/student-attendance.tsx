@@ -6,22 +6,18 @@ import {
   DashboardPageLayout,
   useDataTableController,
 } from "@/features/_global";
-import { useProfile } from "@/features/profile";
-import { useBiodataNew } from "@/features/user/hooks/use-biodata-new";
 import dayjs, { Dayjs } from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useEffect, useMemo, useState } from "react";
 import { StudentAttendanceTable } from "../containers";
-import { useBiodata } from "@/features/user";
 import { useStudentAttendance } from "../hooks/useStudentAttedance";
 import { io } from "socket.io-client";
 import ExportFilterModal from "../components/ExpertFilterModal";
 import { AttendanceFilter } from "../components/AttendanceFilter";
 import { attendanceService } from "@/core/services/pagination";
 import { useClassroom } from "@/features/classroom";
-
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -197,6 +193,7 @@ export const StudentAttendance = () => {
       <StudentAttendanceTable
         totalAttedance={true}
         data={filteredData}
+        isLoading={isLoading || isFetching}
         pagination={pagination}
         onPaginationChange={onPaginationChange}
         rowCount={attendanceData?.pagination?.total ?? 0}
