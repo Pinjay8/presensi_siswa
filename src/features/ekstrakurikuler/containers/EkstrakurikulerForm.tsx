@@ -29,9 +29,6 @@ import { z } from "zod";
 import { useEkstrakurikuler, useEkstrakurikulerCreation } from "../hooks";
 import { ekstrakurikulerCreateSchema } from "../utils";
 import { useBiodataGuru } from "@/features/user";
-import { useGetAllEkstrakurikuler } from "../hooks/useGetAllEkestrakurikuler";
-
-// Interface for initial data
 interface EkstrakurikulerInitialData {
   id?: number;
   // namaMataPelajaran?: string;
@@ -70,7 +67,7 @@ export const EkstrakurikulerForm = ({
 }) => {
   const creation = useEkstrakurikulerCreation();
   const alert = useAlert();
-  const resource = useGetAllEkstrakurikuler();
+  // const resource = useGetAllEkstrakurikuler();
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
 
@@ -135,15 +132,13 @@ export const EkstrakurikulerForm = ({
           ? lang.text("successUpdate", { context: lang.text("course") })
           : lang.text("successCreate", { context: lang.text("course") }),
       );
-
-      resource.query.refetch();
       onClose?.();
     } catch (err: any) {
       alert.error(
         err?.message ||
-          (isEdit
-            ? lang.text("failUpdate", { context: lang.text("course") })
-            : lang.text("failCreate", { context: lang.text("course") })),
+        (isEdit
+          ? lang.text("failUpdate", { context: lang.text("course") })
+          : lang.text("failCreate", { context: lang.text("course") })),
       );
     }
   }

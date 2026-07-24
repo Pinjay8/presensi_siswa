@@ -36,7 +36,7 @@ export const DeleteDialog = ({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} variant="outlined" color="primary">
+        <Button onClick={onClose} variant="outlined" color="primary" style={{ textTransform: 'capitalize' }}>
           {lang.text("cancel")}
         </Button>
 
@@ -45,6 +45,7 @@ export const DeleteDialog = ({
           disabled={loading}
           variant="contained"
           color="primary"
+          style={{ textTransform: 'capitalize' }}
         >
           {lang.text("delete")}
         </Button>

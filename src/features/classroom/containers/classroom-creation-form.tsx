@@ -74,11 +74,7 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
           ? lang.text("successUpdate", { context: lang.text("classroom") })
           : lang.text("successCreate", { context: lang.text("classroom") }),
       );
-
-      await resource.query.refetch();
-
       await queryClient.invalidateQueries({ queryKey: ["classrooms-paginated"] });
-
       navigate("/classrooms");
     } catch (err: any) {
       alert.error(

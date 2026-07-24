@@ -139,14 +139,14 @@ export const EkstrakurikulerTable = () => {
         actions={[
           ...(!isRole
             ? [
-                {
-                  title: lang.text("addWithContext", {
-                    context: lang.text("ekstrakurikuler"),
-                  }),
-                  icon: <FaPlus />,
-                  onClick: () => setCreateCourse(true),
-                },
-              ]
+              {
+                title: lang.text("addWithContext", {
+                  context: lang.text("ekstrakurikuler"),
+                }),
+                icon: <FaPlus />,
+                onClick: () => setCreateCourse(true),
+              },
+            ]
             : []),
         ]}
         searchParamPagination
@@ -186,6 +186,9 @@ export const EkstrakurikulerTable = () => {
         onClose={() => setOpenDelete(false)}
         onConfirm={handleDelete}
         loading={userDelete.isLoading}
+        message={lang.text("deleteMessage", {
+          context: lang.text("ekstrakurikuler"),
+        })}
       />
     </div>
   );

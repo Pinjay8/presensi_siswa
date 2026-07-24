@@ -112,9 +112,9 @@ export const ClassroomTable = () => {
     } catch (err: any) {
       alert.error(
         err.message ||
-          lang.text("failedDownloadTemplateExcel", {
-            context: lang.text("classroom"),
-          }),
+        lang.text("failedDownloadTemplateExcel", {
+          context: lang.text("classroom"),
+        }),
       );
     }
   };
@@ -146,7 +146,7 @@ export const ClassroomTable = () => {
     } catch (err: any) {
       alert.error(
         err?.message ??
-          lang.text("failedImportData", { context: lang.text("classroom") }),
+        lang.text("failedImportData", { context: lang.text("classroom") }),
       );
     }
   };
@@ -173,33 +173,33 @@ export const ClassroomTable = () => {
         data={classroom}
         dataFallback={classroomDataFallback}
         globalSearch
-        showFilterButton
+        // showFilterButton
         actions={[
           ...(!isRole
             ? [
-                {
-                  title: "Unduh Template Excel",
-                  icon: <Download />,
-                  onClick: handleDownloadTemplate,
-                  variant: "default",
-                  className: "bg-green-500 text-white hover:bg-green-600",
-                },
+              {
+                title: "Unduh Template Excel",
+                icon: <Download />,
+                onClick: handleDownloadTemplate,
+                variant: "default",
+                className: "bg-green-500 text-white hover:bg-green-600",
+              },
 
-                {
-                  title: "Unggah Excel",
-                  icon: <UploadCloud />,
-                  onClick: () => setIsUploadModalOpen(true),
-                  variant: "outline",
-                  className:
-                    "border-green-500 text-green-500 hover:bg-green-50",
-                },
-                {
-                  title: lang.text("addClassroom"),
-                  icon: <FaPlus />,
-                  variant: "default",
-                  onClick: () => setCreateClassRoom(!classRoom),
-                },
-              ]
+              {
+                title: "Unggah Excel",
+                icon: <UploadCloud />,
+                onClick: () => setIsUploadModalOpen(true),
+                variant: "outline",
+                className:
+                  "border-green-500 text-green-500 hover:bg-green-50",
+              },
+              {
+                title: lang.text("addClassroom"),
+                icon: <FaPlus />,
+                variant: "default",
+                onClick: () => setCreateClassRoom(!classRoom),
+              },
+            ]
             : []),
         ]}
         searchParamPagination

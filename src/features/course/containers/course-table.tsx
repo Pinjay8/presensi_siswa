@@ -93,9 +93,6 @@ export const CourseTable = () => {
       courseColumns({
         isAdmin,
         onEdit: (course: any) => {
-          console.log("COURSE", course);
-          console.log("KELAS", course.kelas);
-
           setEditCourse(course);
         },
         onDelete: (course: any) => handleOpenDeleteDialog(course),
@@ -149,14 +146,14 @@ export const CourseTable = () => {
         actions={[
           ...(!isRole
             ? [
-                {
-                  title: lang.text("addWithContext", {
-                    context: lang.text("course"),
-                  }),
-                  icon: <FaPlus />,
-                  onClick: () => setCreateCourse(true),
-                },
-              ]
+              {
+                title: lang.text("addWithContext", {
+                  context: lang.text("course"),
+                }),
+                icon: <FaPlus />,
+                onClick: () => setCreateCourse(true),
+              },
+            ]
             : []),
         ]}
         searchParamPagination
@@ -171,6 +168,7 @@ export const CourseTable = () => {
         onClose={() => setOpenDelete(false)}
         onConfirm={handleDelete}
         loading={userDelete.isLoading}
+        message={lang.text("deleteMessage", { context: lang.text("course") })}
       />
     </>
   );
