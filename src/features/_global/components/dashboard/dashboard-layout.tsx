@@ -30,7 +30,6 @@ import { SidebarProps } from "./sidebar/types";
 import { UserMenu, UserMenuProps } from "./usermenu";
 import Notification from "../Notification";
 import { Typography } from "@mui/material";
-import { useSidebarContext } from "../../hooks";
 import { SidebarContext } from "../../context";
 import { Chatbot } from "./Chatbot";
 
@@ -43,8 +42,8 @@ export interface DashboardLayoutProps extends PropsWithChildren {
 
 export const DashboardLayout = React.memo(
   ({ menus = [], usermenus, children, ...props }: DashboardLayoutProps) => {
-    const [sidebarVisible, setSidebarVisible] = useState(false); // Ubah default ke true agar sidebar terlihat saat pertama load
-    const [visible, setVisible] = useState(true); // Ubah default ke true agar sidebar terlihat saat pertama load
+    const [sidebarVisible, setSidebarVisible] = useState(false); 
+    const [visible, setVisible] = useState(true); 
     const profile = useProfile();
     const resource = useClassroom();
     const school = useSchool();
@@ -80,7 +79,7 @@ export const DashboardLayout = React.memo(
         .map((data) => {
           if (
             role === "superAdmin" &&
-            data.title === "LilibraryManagementbrar"
+            data.title === "LibraryManagement"
           ) {
             return null;
           }
@@ -98,7 +97,7 @@ export const DashboardLayout = React.memo(
 
           if (
             (role === "admin" && data.title === "Scan Kehadiran Mapel") ||
-            data.title === "Scan Attendance Schedule" ||
+            data.title === "Scan Schedule" ||
             data.title === lang.text("cardStudent") ||
             data.title === lang.text("libraryManagement") ||
             data.title === lang.text("locationDistribution")

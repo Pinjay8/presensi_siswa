@@ -1,6 +1,5 @@
 import { APP_CONFIG } from "@/core/configs";
 import { Button, lang } from "@/core/libs";
-import { getStaticFile } from "@/core/utils";
 import {
   useAlert,
   DashboardPageLayout,
@@ -10,8 +9,6 @@ import dayjs, { Dayjs } from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-
-import Papa from "papaparse";
 import { useEffect, useMemo, useState } from "react";
 import { attendanceService } from "@/core/services/pagination";
 import { SubjectAttendanceTable } from "../containers/subject-attendance-table";
@@ -27,7 +24,6 @@ export const SubjectAttendance = () => {
     id: number;
     name: string;
   } | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [dataMode, setDataMode] = useState<
     "harian" | "mingguan" | "bulanan" | "tahunan"
   >("harian");
@@ -35,12 +31,6 @@ export const SubjectAttendance = () => {
   useEffect(() => {
     localStorage.setItem("attendanceTarget", "students");
   }, []);
-
-  // const profile = useProfile();
-  // const alert = useAlert();
-  // const biodata = useBiodataNew(profile?.user?.sekolahId || 1);
-
-  // const biodataAll = useBiodata();
 
   const [selectedStartMonth, setSelectedStartMonth] = useState<string>(
     dayjs().tz("Asia/Jakarta").startOf("month").format("YYYY-MM"),

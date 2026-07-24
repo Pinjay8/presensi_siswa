@@ -10,7 +10,7 @@ import { CardsForm } from "./CardsForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/core/libs";
 import { Divider } from "@mui/material";
 import { FaPlus } from "react-icons/fa";
-import { DeleteCardDialog, DeleteDialog } from "../components/DeleteCardDialog";
+import { DeleteDialog } from "../components/DeleteCardDialog";
 import { useUserCreation } from "@/features/user";
 import { cardsService } from "@/core/services/cards";
 import { UploadScheduleDialog } from "@/features/schedules/components/UploadScheduleDialog";

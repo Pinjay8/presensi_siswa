@@ -1,4 +1,5 @@
 import { userService } from "@/core/services/user";
+// import { getToken } from "@/features/auth";
 import { useAuth } from "@/features/auth/hooks";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
@@ -7,6 +8,9 @@ interface MutationVars {
   type: "change-password" | "update-profile" | "update-photo";
   data?: unknown;
 }
+export const getToken = () => {
+  return localStorage.getItem("token");
+};
 
 export const useProfile = () => {
   const auth = useAuth();
@@ -16,9 +20,10 @@ export const useProfile = () => {
   const query = useQuery({
     queryKey: ["profile"],
     queryFn: () => userService.getProfile(),
-    enabled: auth.isAuthenticated(),
+    // enabled: auth.isAuthenticated(),
+    enabled: !!getToken(),
     staleTime: 1000 * 60 * 30, // 30 minutes
-    gcTime: 1000 * 60 * 60, // 1 hour
+    gcTime: 1000 * 60 * 10, // 10 Minutes
     refetchOnWindowFocus: false,
   });
 

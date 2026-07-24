@@ -41,7 +41,6 @@ export function HistoryAttendance() {
 
   // ✅ Inisialisasi WebSocket
   useEffect(() => {
-    console.log("📡 Menghubungkan ke WebSocket...");
     const socket = io(WEBSOCKET_URL, {
       transports: ["websocket"],
       reconnection: true,
@@ -50,17 +49,14 @@ export function HistoryAttendance() {
     });
 
     socket.on("connect", () => {
-      console.log("✅ WebSocket Connected:", WEBSOCKET_URL);
       setError(null); // Reset error saat koneksi berhasil
     });
 
     socket.on("connect_error", (error) => {
-      console.error("❌ WebSocket Connection Error:", error.message);
       setError("Gagal terhubung ke server. Silakan periksa koneksi Anda.");
     });
 
     socket.on("disconnect", (reason) => {
-      console.log("🔌 WebSocket Disconnected:", reason);
       setError("Koneksi terputus. Mencoba menyambung kembali...");
       if (reason === "io server disconnect") {
         socket.connect();
@@ -68,7 +64,6 @@ export function HistoryAttendance() {
     });
 
     socket.on("absen-barcode", (data) => {
-      console.log("📩 Data Absensi Bar/Baru:", data);
       setAttendanceData((prevData) => {
         const existingIndex = prevData.findIndex(
           (item) => item.user.nisn === data.user.nisn
@@ -86,7 +81,6 @@ export function HistoryAttendance() {
     });
 
     return () => {
-      console.log("❌ Menutup koneksi WebSocket...");
       socket.disconnect();
     };
   }, []);
@@ -94,7 +88,6 @@ export function HistoryAttendance() {
   // ✅ Fetch Data Kelas
   const fetchClasses = useCallback(async () => {
     try {
-      console.log("📥 Mengambil data kelas...");
       setError(null); // Reset error
       const classes = await fetchClassesApi();
       if (!classes || classes.length === 0) {
@@ -104,7 +97,6 @@ export function HistoryAttendance() {
         setClassOptions(classes);
       }
     } catch (error) {
-      console.error("❌ Error fetching classes:", error);
       setError("Gagal memuat data kelas. Silakan periksa koneksi Anda.");
       setClassOptions([]);
     }
@@ -112,7 +104,6 @@ export function HistoryAttendance() {
 
   const fetchBiodata = useCallback(async () => {
     try {
-      console.log(`📥 Mengambil biodata untuk kelas: ${selectedClass}`);
       setError(null); // Reset error
       const biodata = await fetchBiodataApi(selectedClass);
       if (!biodata || biodata.length === 0) {
@@ -123,7 +114,6 @@ export function HistoryAttendance() {
         setAttendanceData(biodata);
       }
     } catch (error) {
-      console.error("❌ Error fetching biodata:", error);
       setError("Gagal memuat data absensi. Silakan periksa koneksi Anda.");
       setAttendanceData([]);
     }
@@ -139,7 +129,6 @@ export function HistoryAttendance() {
     setIsQrDisabled(true);
 
     try {
-      console.log("🔄 Generating QR Code...");
       setError(null); // Reset error
       const qrCode = await generateQrCodeApi();
       if (!qrCode) {
@@ -147,12 +136,10 @@ export function HistoryAttendance() {
         setIsQrDisabled(false);
       } else {
         setQrCodeData(qrCode);
-        console.log("✅ QR Code berhasil dibuat:", qrCode);
         localStorage.setItem("qrCodeData", qrCode);
         localStorage.setItem("qrGeneratedDate", new Date().toISOString());
       }
     } catch (error) {
-      console.error("❌ Error generating QR Code:", error);
       setError("Gagal menghasilkan QR Code. Silakan periksa koneksi Anda.");
       setIsQrDisabled(false);
     } finally {
@@ -173,11 +160,7 @@ export function HistoryAttendance() {
       resetTime.setDate(resetTime.getDate() + 1);
       resetTime.setHours(6, 0, 0, 0);
 
-      console.log("📅 QR Code dibuat pada:", lastGeneratedDate);
-      console.log("⏰ QR Code akan reset pada:", resetTime);
-
       if (now >= resetTime) {
-        console.log("🔄 Sudah melewati jam 6 pagi, reset QR Code!");
         localStorage.removeItem("qrCodeData");
         localStorage.removeItem("qrGeneratedDate");
         setQrCodeData(null);

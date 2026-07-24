@@ -1,6 +1,5 @@
 import { APP_CONFIG } from "@/core/configs";
 import { Button, lang } from "@/core/libs";
-import { getStaticFile } from "@/core/utils";
 import {
   useAlert,
   DashboardPageLayout,

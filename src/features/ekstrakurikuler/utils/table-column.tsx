@@ -113,6 +113,17 @@ export const memberEkstrakurikulerColumns = ({
 }: any & {}): ColumnDef<any>[] => {
   const columns: ColumnDef<any>[] = [
     {
+      id: "no",
+      header: "No",
+      size: 60,
+      enableSorting: false,
+      cell: ({ row, table }) => {
+        const { pageIndex, pageSize } = table.getState().pagination;
+
+        return pageIndex * pageSize + row.index + 1;
+      },
+    },
+    {
       accessorKey: "nama",
       accessorFn: (row) => row.biodataSiswa.user.name,
       header: ({ column }) => (
@@ -167,6 +178,17 @@ export const memberEkstrakurikulerColumns = ({
 export const absensiEkstrakurikulerColumns =
   ({}: any & {}): ColumnDef<any>[] => {
     const columns: ColumnDef<any>[] = [
+      {
+        id: "no",
+        header: "No",
+        size: 60,
+        enableSorting: false,
+        cell: ({ row, table }) => {
+          const { pageIndex, pageSize } = table.getState().pagination;
+
+          return pageIndex * pageSize + row.index + 1;
+        },
+      },
       {
         accessorKey: "nama",
         accessorFn: (row) => row.anggotaEkskul.biodataSiswa.user.name,

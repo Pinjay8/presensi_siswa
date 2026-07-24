@@ -28,6 +28,7 @@ import {
   useClassroomDetail,
 } from "../hooks";
 import { CLASSROOM_LEVEL, classroomCreateSchema } from "../utils";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
   const params = useParams();
@@ -41,6 +42,7 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
   const alert = useAlert();
   const resource = useClassroom();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const isEdit = Boolean(detail?.data?.id);
 
@@ -75,13 +77,15 @@ export const ClassroomCreationForm = ({ onClose }: { onClose: () => void }) => {
 
       await resource.query.refetch();
 
+      await queryClient.invalidateQueries({ queryKey: ["classrooms-paginated"] });
+
       navigate("/classrooms");
     } catch (err: any) {
       alert.error(
         err?.message ||
-          (isEdit
-            ? lang.text("failUpdate", { context: lang.text("classroom") })
-            : lang.text("failCreate", { context: lang.text("classroom") })),
+        (isEdit
+          ? lang.text("failUpdate", { context: lang.text("classroom") })
+          : lang.text("failCreate", { context: lang.text("classroom") })),
       );
     } finally {
       onClose();

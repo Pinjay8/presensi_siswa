@@ -37,16 +37,12 @@ export default function ProfileDialog({
   profile,
 }: ProfileDialogProps) {
   const isAdmin = profile?.user?.role === "admin";
-
   //   const [loading, setLoading] = useState<boolean>(false);
   const [status, setStatus] = useState<any>(null);
-
   const fetchStatus = async () => {
     try {
       setLoading(true);
-
       const response = await fetch(`${API_CONFIG.baseUrl}/license/status`);
-
       const data = await response.json();
       setStatus(data);
     } finally {

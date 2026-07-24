@@ -26,7 +26,8 @@ ChartJS.register(
 
 export interface CardCounterProps {
   label?: string;
-  icon?: IconProps["lucideIcon"];
+  // icon?: IconProps["lucideIcon"];
+  icon?: any;
   infoText?: string;
   value?: string | number; // String yang mengandung angka
 }
@@ -104,10 +105,18 @@ export const CardCounter = React.memo((props: CardCounterProps) => {
       {/* <Card className="bg-theme-color-primary/5"> */}
       <CardHeader className="bg-theme-color-primary/5 flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{props.label}</CardTitle>
-        <Icon
-          lucideIcon={props.icon}
-          className="h-4 w-4 text-muted-foreground"
-        />
+        {/* {props.icon && (
+          <Icon
+            lucideIcon={props.icon}
+            // size={20}
+            className="text-muted-foreground"
+          />
+        )} */}
+        {props.icon &&
+          React.createElement(props.icon, {
+            size: 20,
+            className: "text-muted-foreground",
+          })}
       </CardHeader>
       <CardContent className="bg-theme-color-primary/5">
         <div className="text-2xl font-bold mb-4">{props.value}</div>

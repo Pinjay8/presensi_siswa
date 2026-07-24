@@ -1,7 +1,15 @@
 import { APP_CONFIG } from "@/core/configs";
 import { Alert, AlertDescription, AlertTitle, lang } from "@/core/libs";
 import { CardCounter, DashboardPageLayout } from "@/features/_global";
-import { CircleAlert } from "lucide-react";
+import {
+  BookOpen,
+  Building2,
+  CircleAlert,
+  GraduationCap,
+  School,
+  UserRound,
+  Users,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDashboard } from "../hooks/use-dashboard";
 import { dashboardService } from "@/core/services/dashboard";
@@ -24,53 +32,45 @@ export const SummaryHeaderSection = React.memo(() => {
     fetchData();
   }, []);
 
-  // const renderError = () => {
-  //   if (dashboard.isError) {
-  //     return (
-  //       <Alert variant="destructive" className="mb-4">
-  //         <CircleAlert className="h-4 w-4" />
-  //         <AlertTitle>{lang.text("errorTitle")}</AlertTitle>
-  //         <AlertDescription>{lang.text("errorDescription")}</AlertDescription>
-  //       </Alert>
-  //     );
-  //   }
-
-  //   return null;
-  // };
-
   const renderContent = () => {
     if (!dashboard) return null;
 
     const cards = [
       {
-        label: "Total Siswa",
+        label: "Total " + lang.text("student"),
         value: dashboard.totalSiswa,
         infoText: "Siswa terdaftar",
+        icon: GraduationCap,
       },
       {
-        label: "Total Guru",
+        label: "Total " + lang.text("teacher"),
         value: dashboard.totalGuru,
         infoText: "Guru aktif",
+        icon: Users,
       },
       {
-        label: "Total Orang Tua",
+        label: "Total " + lang.text("parent"),
         value: dashboard.totalOrangTua,
-        infoText: "Orang tua terhubung",
+        infoText: "Orang tua",
+        icon: UserRound,
       },
       {
-        label: "Total Kelas",
+        label: "Total " + lang.text("classroom"),
         value: dashboard.totalKelas,
         infoText: "Kelas tersedia",
+        icon: School,
       },
       {
-        label: "Total Mata Pelajaran",
+        label: "Total " + lang.text("course"),
         value: dashboard.totalMataPelajaran,
         infoText: "Mapel aktif",
+        icon: BookOpen,
       },
       {
-        label: "Total Sekolah",
+        label: "Total " + lang.text("school"),
         value: dashboard.totalSekolah,
         infoText: "Sekolah terdaftar",
+        icon: Building2,
       },
     ];
 
@@ -80,6 +80,7 @@ export const SummaryHeaderSection = React.memo(() => {
         label={item.label}
         value={item.value}
         infoText={item.infoText}
+        icon={item.icon}
       />
     ));
   };
@@ -106,6 +107,7 @@ export const SummaryHeaderSection = React.memo(() => {
         label={item.label}
         value={item.value}
         infoText={item.infoText}
+    
       />
     ));
   };

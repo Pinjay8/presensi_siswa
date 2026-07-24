@@ -6,10 +6,6 @@ import { TeacherAttendanceTable } from "../containers";
 
 export const TeacherAttendance = () => {
 
-   useEffect(() => {
-      localStorage.setItem("attendanceTarget", "teachers");
-  }, []);
-
   return (
     <DashboardPageLayout
       siteTitle={`${lang.text("teacherAttendance")} | ${APP_CONFIG.appName}`}
