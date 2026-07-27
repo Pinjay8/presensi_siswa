@@ -29,9 +29,16 @@ export const licensingColumns = ({
       size: 60,
       enableSorting: false,
       cell: ({ row, table }: any) => {
+        // const { pageIndex, pageSize } = table.getState().pagination;
+
+        // return pageIndex * pageSize + row.index + 1;
         const { pageIndex, pageSize } = table.getState().pagination;
 
-        return pageIndex * pageSize + row.index + 1;
+        const visibleIndex = table
+          .getRowModel()
+          .rows.findIndex((r) => r.id === row.id);
+
+        return pageIndex * pageSize + visibleIndex + 1;
       },
     },
     {
@@ -118,10 +125,9 @@ export const licensingColumns = ({
 
         return (
           <span
-            className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
-              config?.className ??
+            className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${config?.className ??
               "bg-gray-100 text-gray-700 border border-gray-200"
-            }`}
+              }`}
           >
             {config?.label ?? status}
           </span>
@@ -188,20 +194,20 @@ export const licensingColumns = ({
     // },
     ...(isRoleTeacher
       ? [
-          {
-            accessorKey: "id",
-            accessorFn: (row: any) => row.id,
-            size: 50,
-            enableSorting: false,
-            header: () => null,
-            cell: ({ row }: any) => (
-              <BaseActionTable
-                onApprove={() => onApprove?.(row.original.id)}
-                onReject={() => onReject?.(row.original.id)}
-              />
-            ),
-          },
-        ]
+        {
+          accessorKey: "id",
+          accessorFn: (row: any) => row.id,
+          size: 50,
+          enableSorting: false,
+          header: () => null,
+          cell: ({ row }: any) => (
+            <BaseActionTable
+              onApprove={() => onApprove?.(row.original.id)}
+              onReject={() => onReject?.(row.original.id)}
+            />
+          ),
+        },
+      ]
       : []),
   ];
 };

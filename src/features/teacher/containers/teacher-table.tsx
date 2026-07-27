@@ -27,6 +27,7 @@ import { uploadExcelService } from "@/core/services/excel";
 import { Download, UploadCloud } from "lucide-react";
 import { UploadScheduleDialog } from "@/features/schedules/components/UploadScheduleDialog";
 import { cdnService } from "@/core/services/cdn";
+import { DeleteDialog } from "@/features/cards/components/DeleteCardDialog";
 
 export function TeacherTable() {
   const biodata = useBiodataGuru();
@@ -197,7 +198,7 @@ export function TeacherTable() {
     } catch (err: any) {
       alert.error(
         err?.message ??
-          lang.text("failedImportData", { context: lang.text("teacher") }),
+        lang.text("failedImportData", { context: lang.text("teacher") }),
       );
     }
   };
@@ -251,31 +252,31 @@ export function TeacherTable() {
         actions={[
           ...(!isRole
             ? [
-                {
-                  title: "Unduh Template Excel",
-                  icon: <Download />,
-                  onClick: handleDownloadTemplate,
-                  variant: "default",
-                  className: "bg-green-500 text-white hover:bg-green-600",
-                },
+              {
+                title: "Unduh Template Excel",
+                icon: <Download />,
+                onClick: handleDownloadTemplate,
+                variant: "default",
+                className: "bg-green-500 text-white hover:bg-green-600",
+              },
 
-                {
-                  title: "Unggah Excel",
-                  icon: <UploadCloud />,
-                  onClick: () => setIsUploadModalOpen(true),
-                  variant: "outline",
-                  className:
-                    "border-green-500 text-green-500 hover:bg-green-50",
-                },
-                {
-                  title: lang.text("addTeacher"),
-                  icon: <FaPlus />,
-                  onClick: () => navigate("/teachers/create"),
-                },
-              ]
+              {
+                title: "Unggah Excel",
+                icon: <UploadCloud />,
+                onClick: () => setIsUploadModalOpen(true),
+                variant: "outline",
+                className:
+                  "border-green-500 text-green-500 hover:bg-green-50",
+              },
+              {
+                title: lang.text("addTeacher"),
+                icon: <FaPlus />,
+                onClick: () => navigate("/teachers/create"),
+              },
+            ]
             : []),
         ]}
-        searchPlaceholder={lang.text("search")}
+        searchPlaceholder={lang.text("search") + " " + lang.text("teacher")}
         isLoading={biodata.query.isLoading}
       />
 
@@ -298,39 +299,14 @@ export function TeacherTable() {
         handleUploadExcel={handleUploadExcel}
       />
 
-      {/* Delete Dialog */}
-      <Dialog
+      <DeleteDialog
         open={openDelete}
         onClose={() => setOpenDelete(false)}
-        fullWidth
-        maxWidth="sm"
-      >
-        <DialogTitle>{lang.text("delete")}</DialogTitle>
-        <DialogContent dividers>
-          <DialogContentText>
-            {lang.text("deleteMessage", {
-              context: selectedTeacher?.user_name,
-            })}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setOpenDelete(false)}
-            variant="outlined"
-            color="primary"
-          >
-            {lang.text("cancel")}
-          </Button>
-          <Button
-            onClick={handleDelete}
-            disabled={userDelete.isLoading}
-            variant="contained"
-            color="primary"
-          >
-            {lang.text("delete")}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        onConfirm={handleDelete}
+        loading={userDelete.isLoading}
+        message={lang.text("deleteMessage", { context: lang.text("teacher") })}
+      />
+
     </>
   );
 }

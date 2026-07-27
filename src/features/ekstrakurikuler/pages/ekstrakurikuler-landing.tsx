@@ -1,6 +1,5 @@
 import { lang } from "@/core/libs";
 import { APP_CONFIG } from "@/core/configs";
-import { CourseTable } from "@/features/course";
 import { DashboardPageLayout } from "@/features/_global";
 import { EkstrakurikulerTable } from "@/features/ekstrakurikuler";
 

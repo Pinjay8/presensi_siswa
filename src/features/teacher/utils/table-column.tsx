@@ -102,8 +102,8 @@ export const tableColumnGuru: ColumnDef<BiodataGuru>[] = [
           <BaseActionTable
             detailPath={`/teachers/${encryptPayload}`}
             editPath={`/teachers/edit/${encryptPayload}`}
-            // waliKelasPath={`/teachers/wali-kelas/${encryptPayload}`}
-            // deletePath={`/students/delete/${encryptPayload}`}
+          // waliKelasPath={`/teachers/wali-kelas/${encryptPayload}`}
+          // deletePath={`/students/delete/${encryptPayload}`}
           />
         </div>
       );
@@ -133,7 +133,11 @@ export const teacherColumnWithFilter = ({
       cell: ({ row, table }) => {
         const { pageIndex, pageSize } = table.getState().pagination;
 
-        return pageIndex * pageSize + row.index + 1;
+        const visibleIndex = table
+          .getRowModel()
+          .rows.findIndex((r) => r.id === row.id);
+
+        return pageIndex * pageSize + visibleIndex + 1;
       },
     },
     {
@@ -214,19 +218,6 @@ export const teacherColumnWithFilter = ({
         );
       },
     },
-    // {
-    //   accessorKey: "user.nikki",
-    //   accessorFn: (row) => row.user?.nikki,
-    //   header: ({ column }) => {
-    //     return (
-    //       <BaseTableHeader
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         {`NIKKI`}
-    //       </BaseTableHeader>
-    //     );
-    //   },
-    // },
     {
       accessorKey: "user.sekolah.namaSekolah",
       accessorFn: (row) => row.user?.sekolah?.namaSekolah,
@@ -301,147 +292,147 @@ export const tableDataGuruFallback: BiodataGuru[] = [];
 export const teacherDailyPresenceColumn: ColumnDef<
   BiodataGuru["absensis"][0]
 >[] = [
-  {
-    accessorKey: "createdAt",
-    accessorFn: (row) => row.createdAt,
-    header: ({ column }) => {
-      return (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("date")}
-        </BaseTableHeader>
-      );
+    {
+      accessorKey: "createdAt",
+      accessorFn: (row) => row.createdAt,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("date")}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div>
+            {row.original.createdAt
+              ? dayjs(row.original.createdAt).format("DD MMM YYYY")
+              : "-"}
+          </div>
+        );
+      },
     },
-    cell: ({ row }) => {
-      return (
-        <div>
-          {row.original.createdAt
-            ? dayjs(row.original.createdAt).format("DD MMM YYYY")
-            : "-"}
-        </div>
-      );
+    {
+      accessorKey: "jamMasuk",
+      accessorFn: (row) => row.jamMasuk,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("clockIn")}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div>
+            {row.original.jamMasuk
+              ? dayjs(row.original.jamMasuk).format("HH:mm")
+              : "-"}
+          </div>
+        );
+      },
     },
-  },
-  {
-    accessorKey: "jamMasuk",
-    accessorFn: (row) => row.jamMasuk,
-    header: ({ column }) => {
-      return (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("clockIn")}
-        </BaseTableHeader>
-      );
+    {
+      accessorKey: "jamPulang",
+      accessorFn: (row) => row.jamPulang,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("clockOut")}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div>
+            {row.original.jamPulang
+              ? dayjs(row.original.jamPulang).format("HH:mm")
+              : "-"}
+          </div>
+        );
+      },
     },
-    cell: ({ row }) => {
-      return (
-        <div>
-          {row.original.jamMasuk
-            ? dayjs(row.original.jamMasuk).format("HH:mm")
-            : "-"}
-        </div>
-      );
+    {
+      accessorKey: "tipeAbsenMasuk",
+      accessorFn: (row) => row.tipeAbsenMasuk,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("presenceType")}
+          </BaseTableHeader>
+        );
+      },
     },
-  },
-  {
-    accessorKey: "jamPulang",
-    accessorFn: (row) => row.jamPulang,
-    header: ({ column }) => {
-      return (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("clockOut")}
-        </BaseTableHeader>
-      );
+    {
+      accessorKey: "statusKehadiran",
+      accessorFn: (row) => row.statusKehadiran,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("presenceStatus")}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => (
+        <>
+          {row.original?.statusKehadiran ? (
+            <Badge>{row.original?.statusKehadiran?.toUpperCase()}</Badge>
+          ) : (
+            "-"
+          )}
+        </>
+      ),
     },
-    cell: ({ row }) => {
-      return (
-        <div>
-          {row.original.jamPulang
-            ? dayjs(row.original.jamPulang).format("HH:mm")
-            : "-"}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "tipeAbsenMasuk",
-    accessorFn: (row) => row.tipeAbsenMasuk,
-    header: ({ column }) => {
-      return (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("presenceType")}
-        </BaseTableHeader>
-      );
-    },
-  },
-  {
-    accessorKey: "statusKehadiran",
-    accessorFn: (row) => row.statusKehadiran,
-    header: ({ column }) => {
-      return (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("presenceStatus")}
-        </BaseTableHeader>
-      );
-    },
-    cell: ({ row }) => (
-      <>
-        {row.original?.statusKehadiran ? (
-          <Badge>{row.original?.statusKehadiran?.toUpperCase()}</Badge>
-        ) : (
-          "-"
-        )}
-      </>
-    ),
-  },
-  {
-    accessorKey: "id",
-    accessorFn: (row) => row.id,
-    header: ({ column }) => {
-      return (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("evidence")}
-        </BaseTableHeader>
-      );
-    },
-    cell: ({ row }) => {
-      const items: EvidenceItem[] = [];
+    {
+      accessorKey: "id",
+      accessorFn: (row) => row.id,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("evidence")}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        const items: EvidenceItem[] = [];
 
-      if (row.original?.fotoAbsen) {
-        items.push({
-          title: lang.text("attendanceInPhoto"),
-          image: getStaticFile(row.original?.fotoAbsen),
-          status: row.original?.statusKehadiran,
-        });
-      }
+        if (row.original?.fotoAbsen) {
+          items.push({
+            title: lang.text("attendanceInPhoto"),
+            image: getStaticFile(row.original?.fotoAbsen),
+            status: row.original?.statusKehadiran,
+          });
+        }
 
-      if (row.original?.fotoAbsenPulang) {
-        items.push({
-          title: lang.text("attendanceOutPhoto"),
-          image: getStaticFile(row.original?.fotoAbsenPulang),
-          status: row.original?.statusKehadiran,
-        });
-      }
+        if (row.original?.fotoAbsenPulang) {
+          items.push({
+            title: lang.text("attendanceOutPhoto"),
+            image: getStaticFile(row.original?.fotoAbsenPulang),
+            status: row.original?.statusKehadiran,
+          });
+        }
 
-      if (row.original?.dispensasi?.buktiSurat) {
-        items.push({
-          title: lang.text("evidence"),
-          image: getStaticFile(row.original?.dispensasi?.buktiSurat),
-          status: row.original?.statusKehadiran,
-        });
-      }
+        if (row.original?.dispensasi?.buktiSurat) {
+          items.push({
+            title: lang.text("evidence"),
+            image: getStaticFile(row.original?.dispensasi?.buktiSurat),
+            status: row.original?.statusKehadiran,
+          });
+        }
 
-      return <EvidencePreview items={items} />;
+        return <EvidencePreview items={items} />;
+      },
     },
-  },
-];
+  ];

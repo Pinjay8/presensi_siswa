@@ -24,7 +24,11 @@ export const studentAttendanceColumn = ({
       cell: ({ row, table }) => {
         const { pageIndex, pageSize } = table.getState().pagination;
 
-        return pageIndex * pageSize + row.index + 1;
+        const visibleIndex = table
+          .getRowModel()
+          .rows.findIndex((r) => r.id === row.id);
+
+        return pageIndex * pageSize + visibleIndex + 1;
       },
     },
     {
@@ -113,12 +117,10 @@ export const studentAttendanceColumn = ({
           <BaseUserItem
             image={row.original.siswa?.image}
             name={row.original.siswa?.nama}
-            text1={`${row.original.siswa.kelas || "-"} / ${
-              row.original.siswa.sekolah || "-"
-            }`}
-            text2={`NIS: ${row.original.siswa?.nis || "-"} / NISN: ${
-              row.original.siswa?.nisn || "-"
-            }`}
+            text1={`${row.original.siswa.kelas || "-"} / ${row.original.siswa.sekolah || "-"
+              }`}
+            text2={`NIS: ${row.original.siswa?.nis || "-"} / NISN: ${row.original.siswa?.nisn || "-"
+              }`}
           />
         );
       },
@@ -293,10 +295,9 @@ export const studentAttendanceColumn = ({
 
         return (
           <div
-            className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${
-              config?.className ??
+            className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${config?.className ??
               "bg-gray-100 text-gray-700 border border-gray-200"
-            }`}
+              }`}
           >
             {config?.label ?? "-"}
           </div>
@@ -363,7 +364,11 @@ export const teacherAttendanceColumn = ({
       cell: ({ row, table }) => {
         const { pageIndex, pageSize } = table.getState().pagination;
 
-        return pageIndex * pageSize + row.index + 1;
+        const visibleIndex = table
+          .getRowModel()
+          .rows.findIndex((r) => r.id === row.id);
+
+        return pageIndex * pageSize + visibleIndex + 1;
       },
     },
     {
@@ -452,9 +457,8 @@ export const teacherAttendanceColumn = ({
             name={row.original.guru?.namaGuru}
             text1={`NIP: ${row.original.guru?.nip || "-"} 
             `}
-            text2={`NRK: ${row.original.guru?.nrk || "-"} / NIKKI: ${
-              row.original.guru?.nikki || "-"
-            }`}
+            text2={`NRK: ${row.original.guru?.nrk || "-"} / NIKKI: ${row.original.guru?.nikki || "-"
+              }`}
           />
         );
       },
@@ -580,10 +584,9 @@ export const teacherAttendanceColumn = ({
 
         return (
           <div
-            className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${
-              config?.className ??
+            className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${config?.className ??
               "bg-gray-100 text-gray-700 border border-gray-200"
-            }`}
+              }`}
           >
             {config?.label ?? "-"}
           </div>

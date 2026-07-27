@@ -42,8 +42,8 @@ export interface DashboardLayoutProps extends PropsWithChildren {
 
 export const DashboardLayout = React.memo(
   ({ menus = [], usermenus, children, ...props }: DashboardLayoutProps) => {
-    const [sidebarVisible, setSidebarVisible] = useState(false); 
-    const [visible, setVisible] = useState(true); 
+    const [sidebarVisible, setSidebarVisible] = useState(false);
+    const [visible, setVisible] = useState(true);
     const profile = useProfile();
     const resource = useClassroom();
     const school = useSchool();
@@ -100,7 +100,7 @@ export const DashboardLayout = React.memo(
             data.title === "Scan Schedule" ||
             data.title === lang.text("cardStudent") ||
             data.title === lang.text("libraryManagement") ||
-            data.title === lang.text("locationDistribution")
+            data.title === lang.text("locationDistribution") 
             // data.title === lang.text("scanAttendanceMapel")
           ) {
             return null;
@@ -166,6 +166,7 @@ export const DashboardLayout = React.memo(
                   "Admin User",
                   "Event",
                   "Acara",
+                  lang.text("graduation")
                 ].includes(item.title ?? "")
               ) {
                 return false;

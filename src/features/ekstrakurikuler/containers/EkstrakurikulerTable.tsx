@@ -31,6 +31,7 @@ import { ekstrakurikulerService } from "@/core/services/ekstrakurikuler";
 export const EkstrakurikulerTable = () => {
   const {
     global,
+    setGlobal,
     sorting,
     filter,
     pagination,
@@ -38,6 +39,12 @@ export const EkstrakurikulerTable = () => {
     onPaginationChange,
   } = useDataTableController({
     defaultPageSize: 10,
+    defaultSorting: [
+      {
+        id: "updatedAt",
+        desc: true,
+      },
+    ],
   });
 
   const [jenis, setJenis] = useState<string>("ALL");
@@ -45,6 +52,9 @@ export const EkstrakurikulerTable = () => {
   const params = {
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
+    search: global,
+    sortBy: sorting?.[0]?.id,
+    sortOrder: sorting?.[0]?.desc ? "desc" : "asc",
     ...(jenis !== "ALL" && { jenis }),
   };
 
@@ -135,7 +145,9 @@ export const EkstrakurikulerTable = () => {
         data={filteredCourseData}
         dataFallback={courseDataFallback}
         globalSearch
-        showFilterButton
+        // showFilterButton
+        sorting={sorting}
+        onSortingChange={onSortingChange}
         actions={[
           ...(!isRole
             ? [
@@ -151,6 +163,8 @@ export const EkstrakurikulerTable = () => {
         ]}
         searchParamPagination
         pagination={pagination}
+        globalFilter={global}
+        onGlobalFilterChange={setGlobal}
         onPaginationChange={onPaginationChange}
         rowCount={resource?.pagination?.total ?? 0}
         searchPlaceholder={lang.text("search")}

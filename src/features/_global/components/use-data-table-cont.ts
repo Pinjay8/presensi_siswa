@@ -4,13 +4,17 @@ import { jsonHelper, searchParamsToObject } from "@/core/libs";
 
 interface UseDataTableControllerProps {
   defaultPageSize?: number;
+  defaultSorting?: {
+    id: string;
+    desc: boolean;
+  }[];
 }
 
-export function useDataTableController({ defaultPageSize = 10 }: UseDataTableControllerProps) {
+export function useDataTableController({ defaultPageSize = 10, defaultSorting }: UseDataTableControllerProps) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // ✅ Global Search
-  const global = searchParams.get("keyword") ?? "";
+  const global = searchParams.get("search") ?? "";
 
   // ✅ Filter
   const filterParam = searchParams.get("filter");
@@ -20,14 +24,14 @@ export function useDataTableController({ defaultPageSize = 10 }: UseDataTableCon
 
   // ✅ Sorting
   const sortParam = searchParams.get("sort");
-  const sorting = useMemo(() => {
-    return sortParam
-      ? [{
-          id: sortParam.split(".")[0],
-          desc: sortParam.split(".")[1] === "desc",
-        }]
-      : [];
-  }, [sortParam]);
+  // const sorting = useMemo(() => {
+  //   return sortParam
+  //     ? [{
+  //       id: sortParam.split(".")[0],
+  //       desc: sortParam.split(".")[1] === "desc",
+  //     }]
+  //     : [];
+  // }, [sortParam]);
 
   // ✅ Pagination from URL
   const paginationSearchParams = useMemo(() => ({
@@ -53,25 +57,76 @@ export function useDataTableController({ defaultPageSize = 10 }: UseDataTableCon
   }, [paginationSearchParams.pageIndex, paginationSearchParams.pageSize]);
 
   // ✅ Update helpers
+  // const updateSearchParams = useCallback(
+  //   (next: Record<string, string | undefined>) => {
+  //     setSearchParams({
+  //       ...searchParamsToObject(searchParams.toString()),
+  //       ...next,
+  //     });
+  //   },
+  //   [searchParams, setSearchParams]
+  // );
+
   const updateSearchParams = useCallback(
     (next: Record<string, string | undefined>) => {
-      setSearchParams({
+      const params = {
         ...searchParamsToObject(searchParams.toString()),
         ...next,
+      };
+
+      Object.keys(params).forEach((key) => {
+        if (
+          params[key] === undefined ||
+          params[key] === null ||
+          params[key] === ""
+        ) {
+          delete params[key];
+        }
       });
+
+      setSearchParams(params);
     },
     [searchParams, setSearchParams]
   );
 
-  const onSortingChange = useCallback(
-    (updater: any) => {
-      const nextSort = typeof updater === "function" ? updater(sorting) : updater;
-      const next = nextSort?.[0];
+  const setGlobal = useCallback(
+    (value: string) => {
       updateSearchParams({
-        sort: next ? `${next.id}.${next.desc ? "desc" : "asc"}` : undefined,
+        "search": value || undefined,
+        // pageIndex: "0",
       });
     },
-    [sorting, updateSearchParams]
+    [updateSearchParams]
+  );
+
+  // const onSortingChange = useCallback(
+  //   (updater: any) => {
+  //     const nextSort = typeof updater === "function" ? updater(sorting) : updater;
+  //     const next = nextSort?.[0];
+  //     updateSearchParams({
+  //       sort: next ? `${next.id}.${next.desc ? "desc" : "asc"}` : undefined,
+  //     });
+  //   },
+  //   [sorting, updateSearchParams]
+  // );
+
+  // const [sorting, setSorting] = useState([
+  //   {
+  //     id: "namaKelas",
+  //     desc: true,
+  //   },
+  // ]);
+
+  const [sorting, setSorting] = useState(defaultSorting);
+
+  const onSortingChange = useCallback(
+    (updater: any) => {
+      const nextSort =
+        typeof updater === "function" ? updater(sorting) : updater;
+
+      setSorting(nextSort);
+    },
+    [sorting]
   );
 
   const onPaginationChange = useCallback(
@@ -88,6 +143,7 @@ export function useDataTableController({ defaultPageSize = 10 }: UseDataTableCon
 
   return {
     global,
+    setGlobal,
     sorting,
     filter: parsedFilter,
     pagination,

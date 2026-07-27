@@ -538,7 +538,7 @@ export function ScheduleLandingContent() {
           data={classroom}
           dataFallback={classroomDataFallback}
           globalSearch
-          showFilterButton
+          // showFilterButton
           searchParamPagination
           searchPlaceholder={lang.text("search")}
           isLoading={isLoading}

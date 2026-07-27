@@ -26,7 +26,11 @@ export const ekstrakurikulerColumns = ({
       cell: ({ row, table }) => {
         const { pageIndex, pageSize } = table.getState().pagination;
 
-        return pageIndex * pageSize + row.index + 1;
+        const visibleIndex = table
+          .getRowModel()
+          .rows.findIndex((r) => r.id === row.id);
+
+        return pageIndex * pageSize + visibleIndex + 1;
       },
     },
     {
@@ -51,14 +55,17 @@ export const ekstrakurikulerColumns = ({
           {lang.text("jenis")}
         </BaseTableHeader>
       ),
-      cell: ({ row }) => row.original.jenis,
+      cell: ({ row }) =>
+        row.original.jenis?.charAt(0).toUpperCase() +
+        row.original.jenis?.slice(1).toLowerCase(),
     },
     {
       accessorKey: "lokasi",
       accessorFn: (row) => row.lokasi,
+      enableSorting: false,
       header: ({ column }) => (
         <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           {lang.text("location")}
         </BaseTableHeader>
@@ -67,10 +74,11 @@ export const ekstrakurikulerColumns = ({
     },
     {
       accessorKey: "pembina",
+      enableSorting: false,
       accessorFn: (row) => row.pembina.namaGuru,
       header: ({ column }) => (
         <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           {lang.text("advisor")}
         </BaseTableHeader>
@@ -120,7 +128,11 @@ export const memberEkstrakurikulerColumns = ({
       cell: ({ row, table }) => {
         const { pageIndex, pageSize } = table.getState().pagination;
 
-        return pageIndex * pageSize + row.index + 1;
+        const visibleIndex = table
+          .getRowModel()
+          .rows.findIndex((r) => r.id === row.id);
+
+        return pageIndex * pageSize + visibleIndex + 1;
       },
     },
     {
@@ -176,7 +188,7 @@ export const memberEkstrakurikulerColumns = ({
 };
 
 export const absensiEkstrakurikulerColumns =
-  ({}: any & {}): ColumnDef<any>[] => {
+  ({ }: any & {}): ColumnDef<any>[] => {
     const columns: ColumnDef<any>[] = [
       {
         id: "no",
@@ -265,7 +277,7 @@ export const absensiEkstrakurikulerColumns =
     return columns;
   };
 
-export const rekapBulananColumns = ({}: any & {}): ColumnDef<any>[] => {
+export const rekapBulananColumns = ({ }: any & {}): ColumnDef<any>[] => {
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "nama",

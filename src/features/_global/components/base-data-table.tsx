@@ -34,8 +34,9 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  getSortedRowModel,
+  // getSortedRowModel,
   InitialTableState,
+  OnChangeFn,
   PaginationState,
   RowData,
   SortingState,
@@ -46,6 +47,7 @@ import { useCallback, useMemo } from "react";
 import { Link, URLSearchParamsInit, useSearchParams } from "react-router-dom";
 import { useVokadialog } from "../hooks/use-vokadialog";
 import { Vokadialog } from "./dialog";
+import { useDebounce } from "../hooks";
 
 declare module "@tanstack/react-table" {
   //allows us to define custom properties for our columns
@@ -85,8 +87,8 @@ export interface BaseDataTableProps {
   searchParamPagination?: boolean;
   showFilterButton?: boolean;
   pageSize?: number;
-  className?: string; // Styling tambahan untuk tabel
-  rowClassName?: string; // Styling tambahan untuk setiap row
+  className?: string;
+  rowClassName?: string;
   cellClassName?: string;
   pagination?: PaginationState;
   enableRowSelection?: boolean;
@@ -104,10 +106,15 @@ export interface BaseDataTableProps {
   }[];
   onRowClick?: (rowData: any) => void;
   actionContent?: React.ReactNode;
+  sorting?: any;
+  onSortingChange?: OnChangeFn<SortingState>;
+  globalFilter?: string;
+  onGlobalFilterChange?: any;
 }
 
 export const BaseDataTable = ({
   searchPlaceholder = "Search something...",
+
   columns,
   data,
   dataFallback,
@@ -124,8 +131,29 @@ export const BaseDataTable = ({
   pageSize,
   onSelectionChange,
   actionContent,
+  sorting,
+  onSortingChange,
+  globalFilter,
+  onGlobalFilterChange,
 }: BaseDataTableProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [keyword, setKeyword] = React.useState(globalFilter ?? "");
+  const isFirstRender = React.useRef(true);
+
+  React.useEffect(() => {
+    setKeyword(globalFilter ?? "");
+  }, [globalFilter]);
+
+  const debouncedKeyword = useDebounce(keyword, 500);
+
+  React.useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    onGlobalFilterChange?.(debouncedKeyword);
+  }, [debouncedKeyword, onGlobalFilterChange]);
 
   const filterSearchParams = useMemo(
     () => searchParams.get("filter"),
@@ -139,7 +167,7 @@ export const BaseDataTable = ({
     [filterSearchParams],
   );
 
-  const [globalFilter, setGlobalFilter] = React.useState("");
+  // const [globalFilter, setGlobalFilter] = React.useState("");
 
   const paginationSearchParams = useMemo(
     () => ({
@@ -153,6 +181,8 @@ export const BaseDataTable = ({
     [searchParams],
   );
 
+  const [pendingFilters, setPendingFilters] = React.useState<ColFilterState>([]);
+
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: searchParamPagination ? paginationSearchParams.pageIndex : 0,
     pageSize: searchParamPagination
@@ -160,9 +190,9 @@ export const BaseDataTable = ({
       : pageSize || 10,
   });
 
-  const [sorting, setSorting] = React.useState<SortingState>(
-    initialState?.sorting || [],
-  );
+  // const [sorting, setSorting] = React.useState<SortingState>(
+  //   initialState?.sorting || [],
+  // );
   // const [rowSelection, setRowSelection] = React.useState({});
   const [selectedRowId, setSelectedRowId] = React.useState<number | null>(null);
 
@@ -171,27 +201,32 @@ export const BaseDataTable = ({
   const table = useReactTable({
     data: _data,
     columns: columns as ColumnDef<RowData, any>[],
-    onSortingChange: setSorting,
+    // onSortingChange: setSorting,
+    onSortingChange,
     globalFilterFn: "auto",
     filterFns: {},
     manualPagination: true,
+    manualSorting: true,
     rowCount: rowCount,
     enableRowSelection: false,
     getCoreRowModel: getCoreRowModel(),
     // getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    // getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     // onRowSelectionChange: setRowSelection,
-    onPaginationChange: searchParamPagination ? () => {} : setPagination,
+    onPaginationChange: searchParamPagination ? () => { } : setPagination,
     enableGlobalFilter: globalSearch,
-    onGlobalFilterChange: setGlobalFilter,
-    onColumnFiltersChange: () => {},
+    // onGlobalFilterChange: setGlobalFilter,
+    onGlobalFilterChange,
+    onColumnFiltersChange: () => { },
     // debugAll: true,
     enableHiding: true,
     enableColumnFilters: true,
     state: {
-      sorting,
+      // sorting,
       // rowSelection,
+      globalFilter,
+      sorting,
       columnFilters,
       pagination: searchParamPagination ? paginationSearchParams : pagination,
       ...(globalSearch && { globalFilter }),
@@ -252,23 +287,11 @@ export const BaseDataTable = ({
     table.lastPage();
   }, [table, searchParamPagination, searchParams, setSearchParams]);
 
-  // React.useEffect(() => {
-  //   const selectedIds = table
-  //     .getSelectedRowModel()
-  //     .rows.map((row: any) => row.original.id);
-
-  //   onSelectionChange?.(selectedIds);
-  // }, [rowSelection]);
-  // React.useEffect(() => {
-  //   const selectedRow = table.getSelectedRowModel().rows[0];
-
-  //   onSelectionChange?.(selectedRow?.original);
-  // }, [rowSelection, table, onSelectionChange]);
 
   React.useEffect(() => {
     const row = table
       .getRowModel()
-      .rows.find((r) => r.original.id === selectedRowId);
+      .rows.find((r) => r?.original.id === selectedRowId);
 
     onSelectionChange?.(row?.original ?? null);
   }, [selectedRowId]);
@@ -293,9 +316,9 @@ export const BaseDataTable = ({
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
                 </TableHead>
               );
             })}
@@ -409,28 +432,57 @@ export const BaseDataTable = ({
                             : undefined
                         }
                         onValueChange={(v) => {
+                          // const k = header.column.id;
+                          // const _v = !Number.isNaN(Number(v)) ? Number(v) : v;
+                          // let newFilter = [...columnFilters];
+
+                          // if (newFilter.find((d) => d.id === k)) {
+                          //   newFilter = newFilter.filter((d) => d.id !== k);
+                          //   newFilter = [
+                          //     ...newFilter,
+                          //     { id: k, value: _v, label: filterLabel || "" },
+                          //   ];
+                          // } else {
+                          //   newFilter = [
+                          //     ...newFilter,
+                          //     { id: k, value: _v, label: filterLabel || "" },
+                          //   ];
+                          // }
+
+                          // setSearchParams({
+                          //   ...searchParamsToObject(searchParams.toString()),
+                          //   filter: jsonHelper.string(newFilter),
+                          // } as URLSearchParamsInit);
+
+                          // const params = searchParamsToObject(searchParams.toString());
+
+                          // // hapus filter lama
+                          // delete params.filter;
+
+                          // // masukkan filter satu-satu
+                          // newFilter.forEach((item) => {
+                          //   params[item.id] = String(item.value);
+                          // });
+
+                          // setSearchParams(params as URLSearchParamsInit);
                           const k = header.column.id;
                           const _v = !Number.isNaN(Number(v)) ? Number(v) : v;
-                          let newFilter = [...columnFilters];
+
+                          let newFilter = [...pendingFilters];
 
                           if (newFilter.find((d) => d.id === k)) {
                             newFilter = newFilter.filter((d) => d.id !== k);
-                            newFilter = [
-                              ...newFilter,
-                              { id: k, value: _v, label: filterLabel || "" },
-                            ];
-                          } else {
-                            newFilter = [
-                              ...newFilter,
-                              { id: k, value: _v, label: filterLabel || "" },
-                            ];
                           }
 
-                          setSearchParams({
-                            ...searchParamsToObject(searchParams.toString()),
-                            filter: jsonHelper.string(newFilter),
-                          } as URLSearchParamsInit);
+                          newFilter.push({
+                            id: k,
+                            value: _v,
+                            label: filterLabel || "",
+                          });
+
+                          setPendingFilters(newFilter);
                         }}
+
                       >
                         <SelectTrigger>
                           <SelectValue placeholder={filterPlaceholder} />
@@ -446,13 +498,15 @@ export const BaseDataTable = ({
                         </SelectContent>
                       </Select>
                     </>
-                  )}
+                  )
+                  }
                 </FormItem>
               );
             })}
           </React.Fragment>
-        ))}
-      </div>
+        ))
+        }
+      </div >
     );
   }, [columnFilters, setSearchParams, table, searchParams]);
 
@@ -476,8 +530,11 @@ export const BaseDataTable = ({
 
                     <Input
                       placeholder={searchPlaceholder}
-                      value={globalFilter || ""}
-                      onChange={(e) => setGlobalFilter(String(e.target.value))}
+                      // value={globalFilter || ""}
+                      // onChange={(e) => setGlobalFilter(String(e.target.value))}
+                      // onChange={(e) => onGlobalFilterChange?.(e.target.value)}
+                      value={keyword || ""}
+                      onChange={(e) => setKeyword(e.target.value)}
                       className="pl-10"
                     />
                   </div>
@@ -602,16 +659,40 @@ export const BaseDataTable = ({
         content={renderContentFilterDialog()}
         footer={
           <div className="flex flex-col gap-2 sm:flex-row">
-            <Button onClick={filterDialog.close} className="w-full">
+            <Button onClick={() => {
+              const params = searchParamsToObject(searchParams.toString());
+
+              table.getAllColumns().forEach((column) => {
+                delete params[column.id];
+              });
+
+              pendingFilters.forEach((item) => {
+                params[item.id] = String(item.value);
+              });
+
+              setSearchParams(params as URLSearchParamsInit);
+              filterDialog.close();
+            }}
+              className="w-full">
               {lang.text("apply")}
             </Button>
             <Button
               variant="outline"
               onClick={() => {
-                setSearchParams({
-                  ...searchParamsToObject(searchParams.toString()),
-                  filter: jsonHelper.string([]),
-                } as URLSearchParamsInit);
+                // setSearchParams({
+                //   ...searchParamsToObject(searchParams.toString()),
+                //   filter: jsonHelper.string([]),
+                // } as URLSearchParamsInit);
+                // const params = searchParamsToObject(searchParams.toString());
+
+                // table.getAllColumns().forEach((column) => {
+                //   delete params[column.id];
+                // });
+
+                // setSearchParams(params as URLSearchParamsInit);
+                setSearchParams({});
+                setPendingFilters([]);
+                // columnFilters([]);
                 filterDialog.close();
               }}
               className="w-full"

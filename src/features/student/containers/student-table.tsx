@@ -1,4 +1,4 @@
-import { BaseDataTables } from "@/features/_global/components/base-data-tables";
+
 import {
   useAttendanceActions,
   useStudentDetail,
@@ -18,18 +18,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { cardsService } from "@/core/services/cards";
 import AssignCardDialog from "../components/AsssignCardDialog";
 import UnassignCardDialog from "../components/UnassignCardDialog";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-} from "@mui/material";
 import { useUserCreation } from "@/features/user/hooks";
-import { XIcon } from "lucide-react";
 import { cdnService } from "@/core/services/cdn";
+import { DeleteDialog } from "@/features/cards/components/DeleteCardDialog";
 
 interface StudentTableProps {
   data: any;
@@ -130,6 +121,8 @@ export function StudentTable({
         onAssignCard: handleOpenAssignCard,
         unAssignCard: handleOpenUnassignCard,
         onDelete: handleOpenDeleteDialog,
+        schoolOptions: schoolOptions,
+        classroomOptions: classroomOptions,
       }),
     [schoolOptions, classroomOptions],
   );
@@ -264,45 +257,13 @@ export function StudentTable({
         isUnassigning={unassignMutation.isPending}
       />
 
-      {/* Delete Dialog */}
-      <Dialog
+      <DeleteDialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          {lang.text("delete")}
-          <IconButton onClick={() => setOpenDeleteDialog(false)}>
-            <XIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent dividers>
-          <DialogContentText>
-            {lang.text("deleteMessage", {
-              context: selectedStudent?.nama_lengkap,
-            })}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDeleteDialog(false)}>
-            {lang.text("cancel")}
-          </Button>
-          <Button
-            onClick={handleDelete}
-            disabled={userDelete.isLoading}
-            variant="contained"
-          >
-            {lang.text("delete")}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        onConfirm={handleDelete}
+        loading={userDelete.isLoading}
+        message={lang.text("deleteMessage", { context: lang.text("student") })}
+      />
     </>
   );
 }

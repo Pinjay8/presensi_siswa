@@ -142,7 +142,7 @@ export const CourseTable = () => {
         data={filteredCourseData}
         dataFallback={courseDataFallback}
         globalSearch
-        showFilterButton
+        // showFilterButton
         actions={[
           ...(!isRole
             ? [

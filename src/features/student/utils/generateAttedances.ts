@@ -56,8 +56,6 @@ export const generateAttendancePDF = async ({
       size: 999,
     };
 
-    console.log("Mengambil data PDF dengan parameter:", pdfParams);
-
     // Ambil data dari /api/user-siswa
     const response = await axios.get(
       `${import.meta.env.VITE_API_BASE_URL}/api/user-siswa`,

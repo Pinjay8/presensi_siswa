@@ -9,7 +9,7 @@ export interface GetPaginatedStudentParams {
   page: number;
   size: number;
   sekolahId?: number;
-  idKelas?: number;
+  kelasId?: number;
   keyword?: string;
 }
 export const studentService = {
@@ -19,8 +19,8 @@ export const studentService = {
     const query = {
       page: params.page,
       size: params.size,
-      // ...(params.sekolahId && { sekolahId: params.sekolahId }),
-      // ...(params.idKelas !== undefined && { idKelas: params.idKelas }),
+      ...(params.sekolahId && { sekolahId: params.sekolahId }),
+      ...(params.kelasId !== undefined && { kelasId: params.kelasId }),
       // ...(params.keyword && { keyword: params.keyword }),
     };
 

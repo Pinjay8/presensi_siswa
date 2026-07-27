@@ -6,7 +6,7 @@ import {
   lang,
 } from "@/core/libs";
 import { getStaticFile } from "@/core/utils";
-import { useAlert, useDataTableController } from "@/features/_global";
+import { useAlert, useDataTableController, useParamDecode } from "@/features/_global";
 import { useClassroom } from "@/features/classroom";
 import {
   checkAttendance,
@@ -40,6 +40,7 @@ import StudentFormDialog from "../components/StudentFormDialog";
 import { useProfile } from "@/features/profile";
 import { uploadExcelService } from "@/core/services/excel";
 import { UploadScheduleDialog } from "@/features/schedules/components/UploadScheduleDialog";
+import { useSearchParams } from "react-router-dom";
 
 export const StudentLandingTables = () => {
   const [isGeneratingPDF, setGeneratingPDF] = useState(false);
@@ -59,13 +60,43 @@ export const StudentLandingTables = () => {
     onPaginationChange,
   } = useDataTableController({ defaultPageSize: 10 });
 
-  const studentParams = useMemo(
-    () => ({
+  // const studentParams = useMemo(
+  //   () => ({
+  //     page: pagination.pageIndex + 1,
+  //     size: pagination.pageSize,
+  //   }),
+  //   [pagination.pageIndex, pagination.pageSize],
+  // );
+
+  const [searchParams] = useSearchParams();
+
+  const filters = useMemo(() => {
+    const filter = searchParams.get("filter");
+    return filter ? JSON.parse(filter) : [];
+  }, [searchParams]);
+
+  // const studentParams = useMemo(() => {
+  //   const filterParams = Object.fromEntries(
+  //     filters.map((item: any) => [item.id, item.value])
+  //   );
+
+  //   return {
+  //     page: pagination.pageIndex + 1,
+  //     size: pagination.pageSize,
+  //     ...filterParams,
+  //   };
+  // }, [pagination.pageIndex, pagination.pageSize, filters]);
+
+
+  const studentParams = useMemo(() => {
+    const params = Object.fromEntries(searchParams.entries());
+
+    return {
       page: pagination.pageIndex + 1,
       size: pagination.pageSize,
-    }),
-    [pagination.pageIndex, pagination.pageSize],
-  );
+      ...params,
+    };
+  }, [pagination.pageIndex, pagination.pageSize, searchParams]);
 
   const { data, isLoading, refetch } = useStudentPagination(studentParams);
 
@@ -188,9 +219,9 @@ export const StudentLandingTables = () => {
     } catch (err: any) {
       alert.error(
         err.message ||
-          lang.text("failedDownloadTemplateExcel", {
-            context: lang.text("student"),
-          }),
+        lang.text("failedDownloadTemplateExcel", {
+          context: lang.text("student"),
+        }),
       );
     }
   };
@@ -234,7 +265,7 @@ export const StudentLandingTables = () => {
     } catch (err: any) {
       alert.error(
         err?.message ??
-          lang.text("failedImportData", { context: lang.text("student") }),
+        lang.text("failedImportData", { context: lang.text("student") }),
       );
     }
   };
@@ -243,9 +274,8 @@ export const StudentLandingTables = () => {
     <>
       <div className="flex justify-between items-center pb-4">
         <div
-          className={`w-full flex lg:flex-nowrap flex-wrap gap-2 mt-2 ${
-            isAdmin ? "justify-between" : "justify-end"
-          }`}
+          className={`w-full flex lg:flex-nowrap flex-wrap gap-2 mt-2 ${isAdmin ? "justify-between" : "justify-end"
+            }`}
         >
           {isAdmin && (
             <div className="flex w-max gap-2 items-center flex-wrap">

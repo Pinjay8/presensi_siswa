@@ -32,9 +32,16 @@ export const classroomColumns = ({
       size: 60,
       enableSorting: false,
       cell: ({ row, table }) => {
+        // const { pageIndex, pageSize } = table.getState().pagination;
+
+        // return pageIndex * pageSize + row.index + 1;
         const { pageIndex, pageSize } = table.getState().pagination;
 
-        return pageIndex * pageSize + row.index + 1;
+        const visibleIndex = table
+          .getRowModel()
+          .rows.findIndex((r) => r.id === row.id);
+
+        return pageIndex * pageSize + visibleIndex + 1;
       },
     },
     {
@@ -60,30 +67,14 @@ export const classroomColumns = ({
         </BaseTableHeader>
       ),
     },
-    // {
-    //   accessorKey: "Sekolah.namaSekolah",
-    //   accessorFn: (row) => row.Sekolah?.namaSekolah,
-    //   header: ({ column }) => (
-    //     <BaseTableHeader
-    //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //     >
-    //       Sekolah
-    //     </BaseTableHeader>
-    //   ),
-    //   meta: {
-    //     filterLabel: lang.text("school"),
-    //     filterPlaceholder: lang.text("selectSchool"),
-    //     filterVariant: "select",
-    //     filterOptions: columnFilter?.schoolOptions || [],
-    //   },
-    // },
     {
       accessorKey: "Schedule.name",
       accessorFn: (row) => row.attendanceSchedule?.name,
+      enableSorting: false,
       header: ({ column }) => {
         return (
           <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {lang.text("scheduler")}
           </BaseTableHeader>
@@ -187,7 +178,11 @@ export const classroomScheduleColumns = ({
       cell: ({ row, table }) => {
         const { pageIndex, pageSize } = table.getState().pagination;
 
-        return pageIndex * pageSize + row.index + 1;
+        const visibleIndex = table
+          .getRowModel()
+          .rows.findIndex((r) => r.id === row.id);
+
+        return pageIndex * pageSize + visibleIndex + 1;
       },
     },
     {

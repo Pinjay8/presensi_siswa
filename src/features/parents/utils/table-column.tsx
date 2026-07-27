@@ -34,7 +34,11 @@ export const parentColumnWithFilter = ({
       cell: ({ row, table }) => {
         const { pageIndex, pageSize } = table.getState().pagination;
 
-        return pageIndex * pageSize + row.index + 1;
+        const visibleIndex = table
+          .getRowModel()
+          .rows.findIndex((r) => r.id === row.id);
+
+        return pageIndex * pageSize + visibleIndex + 1;
       },
     },
     {
@@ -114,13 +118,13 @@ export const parentColumnWithFilter = ({
       accessorFn: (row) => row.school?.namaSekolah,
       ...(columnFilter?.schoolOptions &&
         columnFilter.schoolOptions.length > 0 && {
-          meta: {
-            filterLabel: lang.text("school"),
-            filterPlaceholder: lang.text("selectSchool"),
-            filterVariant: "select",
-            filterOptions: columnFilter?.schoolOptions,
-          },
-        }),
+        meta: {
+          filterLabel: lang.text("school"),
+          filterPlaceholder: lang.text("selectSchool"),
+          filterVariant: "select",
+          filterOptions: columnFilter?.schoolOptions,
+        },
+      }),
       header: ({ column }) => {
         return (
           <BaseTableHeader

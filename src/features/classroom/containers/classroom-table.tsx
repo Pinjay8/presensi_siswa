@@ -21,18 +21,29 @@ import ModalDeleteClass from "../components/ModalDeleteClass";
 export const ClassroomTable = () => {
   const {
     global,
-    sorting,
+    setGlobal,
+    sorting = [],
     filter,
     pagination,
     onSortingChange,
     onPaginationChange,
   } = useDataTableController({
     defaultPageSize: 10,
+    defaultSorting: [
+      {
+        id: "updatedAt",
+        desc: true,
+      },
+    ],
   });
 
-  const params = {
+
+  const params: any = {
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
+    search: global,
+    sortBy: sorting[0]?.id,
+    sortOrder: sorting[0]?.desc ? "desc" : "asc",
   };
 
   const {
@@ -41,6 +52,8 @@ export const ClassroomTable = () => {
     isLoading,
     query,
   } = useClassroomPaginated(params);
+
+
   const [excelFile, setExcelFile] = useState<File | null>(null);
 
   const school = useSchool();
@@ -174,29 +187,33 @@ export const ClassroomTable = () => {
         dataFallback={classroomDataFallback}
         globalSearch
         // showFilterButton
+        sorting={sorting}
+        onSortingChange={onSortingChange}
+        globalFilter={global}
+        onGlobalFilterChange={setGlobal}
         actions={[
           ...(!isRole
             ? [
               {
-                title: "Unduh Template Excel",
+                title: lang.text("downloadTemplateExcel"),
                 icon: <Download />,
                 onClick: handleDownloadTemplate,
-                variant: "default",
+                variant: "default" as const,
                 className: "bg-green-500 text-white hover:bg-green-600",
               },
 
               {
-                title: "Unggah Excel",
+                title: lang.text("uploadExcel"),
                 icon: <UploadCloud />,
                 onClick: () => setIsUploadModalOpen(true),
-                variant: "outline",
+                variant: "outline" as const,
                 className:
                   "border-green-500 text-green-500 hover:bg-green-50",
               },
               {
                 title: lang.text("addClassroom"),
                 icon: <FaPlus />,
-                variant: "default",
+                variant: "default" as const,
                 onClick: () => setCreateClassRoom(!classRoom),
               },
             ]

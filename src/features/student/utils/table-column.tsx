@@ -114,7 +114,7 @@ export const studentColumn = (): ColumnDef<any>[] => [
   },
 ];
 
-export const studentClassroomColumn = ({}: {}): ColumnDef<any>[] => {
+export const studentClassroomColumn = ({ }: {}): ColumnDef<any>[] => {
   return [
     {
       accessorKey: "name",
@@ -186,6 +186,8 @@ export const studentColumnWithFilter = ({
   onAssignCard,
   unAssignCard,
   onDelete,
+  schoolOptions = [],
+  classroomOptions = [],
 }: {
   noStatus?: boolean;
   handleAttend?: (row: any) => void;
@@ -193,6 +195,8 @@ export const studentColumnWithFilter = ({
   onAssignCard?: any;
   unAssignCard?: any;
   onDelete?: (row: any) => void;
+  schoolOptions?: any;
+  classroomOptions?: any;
 }): ColumnDef<any>[] => {
   return [
     {
@@ -203,7 +207,11 @@ export const studentColumnWithFilter = ({
       cell: ({ row, table }) => {
         const { pageIndex, pageSize } = table.getState().pagination;
 
-        return pageIndex * pageSize + row.index + 1;
+        const visibleIndex = table
+          .getRowModel()
+          .rows.findIndex((r) => r.id === row.id);
+
+        return pageIndex * pageSize + visibleIndex + 1;
       },
     },
     {
@@ -283,136 +291,113 @@ export const studentColumnWithFilter = ({
         );
       },
     },
-    // {
-    //   accessorKey: "rfid",
-    //   header: () => <BaseTableHeader>RFID</BaseTableHeader>,
-    //   cell: ({ row }) => {
-    //     const rfid = row.original.rfid;
-    //     const userId = row.original.id;
 
-    //     return (
-    //       <div className="w-[150px] h-[50px] m-auto">
-    //       {!rfid ? (
-    //             <MemoizedFormRfid
-    //               userId={userId}
-    //               onSuccess={onRfidSuccess}
-    //             />
-    //       ) : (
-    //         <span className="text-sm text-muted-foreground">{rfid}</span>
-    //       )}
-    //     </div>
-    //     );
-    //   },
-    // },
-    // {
-    //   ...classroomFilterMeta,
-    //   accessorFn: (row) =>
-    //     row.biodataSiswa?.[0]?.kelas?.namaKelas ||
-    //     row.original?.namaKelas ||
-    //     "-",
-    //   header: () => <BaseTableHeader>{lang.text("classroom")}</BaseTableHeader>,
-    //   cell: ({ row }) => (
-    //     <span>
-    //       {row.original.biodataSiswa?.[0]?.kelas?.namaKelas ||
-    //         row.original.kelas?.namaKelas ||
-    //         row.original.namaKelas ||
-    //         "-"}
-    //     </span>
-    //   ),
-    //   meta: {
-    //     filterLabel: lang.text("classroom"),
-    //     filterPlaceholder: lang.text("selectClassroom"),
-    //     filterVariant: "select",
-    //     filterOptions: classroomOptions,
-    //   },
-    //   id: "idKelas",
-    // },
-    // {
-    //   accessorKey: "sekolah.namaSekolah",
-    //   accessorFn: (row) => row.sekolah?.namaSekolah || "-",
-    //   header: () => <BaseTableHeader>{lang.text("school")}</BaseTableHeader>,
-    //   cell: ({ row }) => <span>{(row.original?.sekolah?.namaSekolah || row.original?.user?.sekolah?.namaSekolah) || "-"}</span>,
-    //   meta: {
-    //     filterLabel: lang.text("school"),
-    //     filterPlaceholder: lang.text("selectSchool"),
-    //     filterVariant: "select",
-    //     filterOptions: schoolOptions,
-    //   },
-    //   id: "sekolahId", // ⬅️ Tambahin id custom untuk filter tracking
-    // },
+    {
+      accessorFn: (row) =>
+        row.biodataSiswa?.[0]?.kelas?.namaKelas ||
+        row.original?.namaKelas ||
+        "-",
+      header: () => <BaseTableHeader>{lang.text("classroom")}</BaseTableHeader>,
+      cell: ({ row }) => (
+        <span>
+          {
+            row.original.namaKelas ||
+            "-"}
+        </span>
+      ),
+      meta: {
+        filterLabel: lang.text("classroom"),
+        filterPlaceholder: lang.text("selectClassroom"),
+        filterVariant: "select",
+        filterOptions: classroomOptions,
+      },
+      id: "kelasId",
+    },
+    {
+      accessorKey: "sekolah.namaSekolah",
+      accessorFn: (row) => row.sekolah?.namaSekolah || "-",
+      header: () => <BaseTableHeader>{lang.text("school")}</BaseTableHeader>,
+      cell: ({ row }) => <span>{(row.original?.namaSekolah) || "-"}</span>,
+      meta: {
+        filterLabel: lang.text("school"),
+        filterPlaceholder: lang.text("selectSchool"),
+        filterVariant: "select",
+        filterOptions: schoolOptions,
+      },
+      id: "sekolahId",
+    },
     ...(noStatus === false || noStatus === undefined
       ? [
-          {
-            accessorKey: "status",
-            header: () => "Status",
-            cell: ({ row }: any) => {
-              const status = row.original.statusKehadiranHariIni?.toLowerCase();
+        {
+          accessorKey: "status",
+          header: () => "Status",
+          cell: ({ row }: any) => {
+            const status = row.original.statusKehadiranHariIni?.toLowerCase();
 
-              const statusConfig = {
-                hadir: {
-                  label: "Hadir",
-                  className:
-                    "bg-green-100 text-green-700 border border-green-200",
-                },
-                izin: {
-                  label: "Izin",
-                  className:
-                    "bg-yellow-100 text-yellow-700 border border-yellow-200",
-                },
-                alfa: {
-                  label: "Alfa",
-                  className: "bg-red-100 text-red-700 border border-red-200",
-                },
-                "belum hadir": {
-                  label: "Belum Hadir",
-                  className:
-                    "bg-slate-100 text-slate-700 border border-slate-200",
-                },
-                terlambat: {
-                  label: "Terlambat",
-                  className:
-                    "bg-orange-100 text-orange-700 border border-orange-200",
-                },
-                sakit: {
-                  label: "Sakit",
-                  className: "bg-blue-100 text-blue-700 border border-blue-200",
-                },
-              };
+            const statusConfig = {
+              hadir: {
+                label: "Hadir",
+                className:
+                  "bg-green-100 text-green-700 border border-green-200",
+              },
+              izin: {
+                label: "Izin",
+                className:
+                  "bg-yellow-100 text-yellow-700 border border-yellow-200",
+              },
+              alfa: {
+                label: "Alfa",
+                className: "bg-red-100 text-red-700 border border-red-200",
+              },
+              "belum hadir": {
+                label: "Belum Hadir",
+                className:
+                  "bg-slate-100 text-slate-700 border border-slate-200",
+              },
+              terlambat: {
+                label: "Terlambat",
+                className:
+                  "bg-orange-100 text-orange-700 border border-orange-200",
+              },
+              sakit: {
+                label: "Sakit",
+                className: "bg-blue-100 text-blue-700 border border-blue-200",
+              },
+            };
 
-              const config = statusConfig[status as keyof typeof statusConfig];
+            const config = statusConfig[status as keyof typeof statusConfig];
 
-              return (
-                <div
-                  className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${
-                    config?.className ??
-                    "bg-gray-100 text-gray-700 border border-gray-200"
+            return (
+              <div
+                className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${config?.className ??
+                  "bg-gray-100 text-gray-700 border border-gray-200"
                   }`}
-                >
-                  {config?.label ?? "-"}
-                </div>
-              );
-            },
-          },
-          {
-            accessorKey: "absen",
-            header: () => <BaseTableHeader>Absen</BaseTableHeader>,
-            cell: ({ row }: any) => (
-              <Button
-                onClick={() => {
-                  if (handleAttend) {
-                    handleAttend(row.original?.id);
-                  }
-                }}
-                disabled={
-                  row.original.statusKehadiranHariIni !== "belum hadir" &&
-                  row.original.statusKehadiranHariIni !== "Belum Hadir"
-                }
               >
-                {lang.text("attend")}
-              </Button>
-            ),
+                {config?.label ?? "-"}
+              </div>
+            );
           },
-        ]
+        },
+        {
+          accessorKey: "absen",
+          header: () => <BaseTableHeader>Absen</BaseTableHeader>,
+          cell: ({ row }: any) => (
+            <Button
+              onClick={() => {
+                if (handleAttend) {
+                  handleAttend(row.original?.id);
+                }
+              }}
+              disabled={
+                row.original.statusKehadiranHariIni !== "belum hadir" &&
+                row.original.statusKehadiranHariIni !== "Belum Hadir"
+              }
+            >
+              {lang.text("attend")}
+            </Button>
+          ),
+        },
+      ]
       : []),
     {
       accessorKey: "id",
@@ -526,9 +511,9 @@ export const studentLibraryColumnWithFilter = ({
                 src={getStaticFile(
                   String(
                     row.original.image ||
-                      row.original.name ||
-                      row.original.user.image ||
-                      row.original.user?.name,
+                    row.original.name ||
+                    row.original.user.image ||
+                    row.original.user?.name,
                   ),
                 )}
                 alt={
@@ -666,7 +651,7 @@ export const tableColumnSiswa: ColumnDef<BiodataSiswa>[] = [
           <BaseActionTable
             detailPath={`/students/${encryptPayload}`}
             editPath={`/students/edit/${encryptPayload}`}
-            // deletePath={`/students/delete/${encryptPayload}`}
+          // deletePath={`/students/delete/${encryptPayload}`}
           />
         </div>
       );
@@ -677,193 +662,192 @@ export const tableColumnSiswa: ColumnDef<BiodataSiswa>[] = [
 export const studentDailyPresenceColumn: ColumnDef<
   BiodataSiswa["absensis"][0]
 >[] = [
-  {
-    accessorKey: "createdAt",
-    accessorFn: (row) => row.createdAt,
-    header: ({ column }) => {
-      return (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("date")}
-        </BaseTableHeader>
-      );
+    {
+      accessorKey: "createdAt",
+      accessorFn: (row) => row.createdAt,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("date")}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div>
+            {row.original.createdAt
+              ? dayjs(row.original.createdAt).format("DD MMM YYYY")
+              : "-"}
+          </div>
+        );
+      },
     },
-    cell: ({ row }) => {
-      return (
-        <div>
-          {row.original.createdAt
-            ? dayjs(row.original.createdAt).format("DD MMM YYYY")
-            : "-"}
-        </div>
-      );
+    {
+      accessorKey: "jamMasuk",
+      accessorFn: (row) => row.jamMasuk,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("clockIn")}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div>
+            {row.original.jamMasuk
+              ? dayjs(row.original.jamMasuk).format("HH:mm")
+              : "-"}
+          </div>
+        );
+      },
     },
-  },
-  {
-    accessorKey: "jamMasuk",
-    accessorFn: (row) => row.jamMasuk,
-    header: ({ column }) => {
-      return (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("clockIn")}
-        </BaseTableHeader>
-      );
+    {
+      accessorKey: "jamPulang",
+      accessorFn: (row) => row.jamPulang,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("clockOut")}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div>
+            {row.original.jamPulang
+              ? dayjs(row.original.jamPulang).format("HH:mm")
+              : "-"}
+          </div>
+        );
+      },
     },
-    cell: ({ row }) => {
-      return (
-        <div>
-          {row.original.jamMasuk
-            ? dayjs(row.original.jamMasuk).format("HH:mm")
-            : "-"}
-        </div>
-      );
+    {
+      accessorKey: "tipeAbsenMasuk",
+      accessorFn: (row) => row.tipeAbsenMasuk,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("presenceType")}
+          </BaseTableHeader>
+        );
+      },
     },
-  },
-  {
-    accessorKey: "jamPulang",
-    accessorFn: (row) => row.jamPulang,
-    header: ({ column }) => {
-      return (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("clockOut")}
-        </BaseTableHeader>
-      );
-    },
-    cell: ({ row }) => {
-      return (
-        <div>
-          {row.original.jamPulang
-            ? dayjs(row.original.jamPulang).format("HH:mm")
-            : "-"}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "tipeAbsenMasuk",
-    accessorFn: (row) => row.tipeAbsenMasuk,
-    header: ({ column }) => {
-      return (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("presenceType")}
-        </BaseTableHeader>
-      );
-    },
-  },
-  {
-    accessorKey: "statusKehadiran",
-    accessorFn: (row) => row.statusKehadiran,
-    header: ({ column }) => {
-      return (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("presenceStatus")}
-        </BaseTableHeader>
-      );
-    },
-    // cell: ({ row }) => (
-    //   <>
-    //     {row.original?.statusKehadiran ? (
-    //       <Badge>{row.original?.statusKehadiran?.toUpperCase()}</Badge>
-    //     ) : (
-    //       "-"
-    //     )}
-    //   </>
-    // ),
-    cell: ({ row }: any) => {
-      const status = row.original.statusKehadiran?.toLowerCase();
+    {
+      accessorKey: "statusKehadiran",
+      accessorFn: (row) => row.statusKehadiran,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("presenceStatus")}
+          </BaseTableHeader>
+        );
+      },
+      // cell: ({ row }) => (
+      //   <>
+      //     {row.original?.statusKehadiran ? (
+      //       <Badge>{row.original?.statusKehadiran?.toUpperCase()}</Badge>
+      //     ) : (
+      //       "-"
+      //     )}
+      //   </>
+      // ),
+      cell: ({ row }: any) => {
+        const status = row.original.statusKehadiran?.toLowerCase();
 
-      const statusConfig = {
-        hadir: {
-          label: "Hadir",
-          className: "bg-green-100 text-green-700 border border-green-200",
-        },
-        izin: {
-          label: "Izin",
-          className: "bg-yellow-100 text-yellow-700 border border-yellow-200",
-        },
-        alfa: {
-          label: "Alfa",
-          className: "bg-red-100 text-red-700 border border-red-200",
-        },
-        "belum hadir": {
-          label: "Belum Hadir",
-          className: "bg-slate-100 text-slate-700 border border-slate-200",
-        },
-        terlambat: {
-          label: "Terlambat",
-          className: "bg-orange-100 text-orange-700 border border-orange-200",
-        },
-        sakit: {
-          label: "Sakit",
-          className: "bg-blue-100 text-blue-700 border border-blue-200",
-        },
-      };
+        const statusConfig = {
+          hadir: {
+            label: "Hadir",
+            className: "bg-green-100 text-green-700 border border-green-200",
+          },
+          izin: {
+            label: "Izin",
+            className: "bg-yellow-100 text-yellow-700 border border-yellow-200",
+          },
+          alfa: {
+            label: "Alfa",
+            className: "bg-red-100 text-red-700 border border-red-200",
+          },
+          "belum hadir": {
+            label: "Belum Hadir",
+            className: "bg-slate-100 text-slate-700 border border-slate-200",
+          },
+          terlambat: {
+            label: "Terlambat",
+            className: "bg-orange-100 text-orange-700 border border-orange-200",
+          },
+          sakit: {
+            label: "Sakit",
+            className: "bg-blue-100 text-blue-700 border border-blue-200",
+          },
+        };
 
-      const config = statusConfig[status as keyof typeof statusConfig];
+        const config = statusConfig[status as keyof typeof statusConfig];
 
-      return (
-        <div
-          className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${
-            config?.className ??
-            "bg-gray-100 text-gray-700 border border-gray-200"
-          }`}
-        >
-          {config?.label ?? "-"}
-        </div>
-      );
+        return (
+          <div
+            className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${config?.className ??
+              "bg-gray-100 text-gray-700 border border-gray-200"
+              }`}
+          >
+            {config?.label ?? "-"}
+          </div>
+        );
+      },
     },
-  },
-  {
-    accessorKey: "id",
-    accessorFn: (row) => row.id,
-    header: ({ column }) => {
-      return (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("evidence")}
-        </BaseTableHeader>
-      );
+    {
+      accessorKey: "id",
+      accessorFn: (row) => row.id,
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {lang.text("evidence")}
+          </BaseTableHeader>
+        );
+      },
+      cell: ({ row }) => {
+        const items: EvidenceItem[] = [];
+
+        if (row.original?.fotoAbsen) {
+          items.push({
+            title: lang.text("attendanceInPhoto"),
+            image: getStaticFile(row.original?.fotoAbsen),
+            status: row.original?.statusKehadiran,
+          });
+        }
+
+        if (row.original?.fotoAbsenPulang) {
+          items.push({
+            title: lang.text("attendanceOutPhoto"),
+            image: getStaticFile(row.original?.fotoAbsenPulang),
+            status: row.original?.statusKehadiran,
+          });
+        }
+
+        if (row.original?.dispensasi?.buktiSurat) {
+          items.push({
+            title: lang.text("evidence"),
+            image: getStaticFile(row.original?.dispensasi?.buktiSurat),
+            status: row.original?.statusKehadiran,
+          });
+        }
+
+        return <EvidencePreview items={items} />;
+      },
     },
-    cell: ({ row }) => {
-      const items: EvidenceItem[] = [];
-
-      if (row.original?.fotoAbsen) {
-        items.push({
-          title: lang.text("attendanceInPhoto"),
-          image: getStaticFile(row.original?.fotoAbsen),
-          status: row.original?.statusKehadiran,
-        });
-      }
-
-      if (row.original?.fotoAbsenPulang) {
-        items.push({
-          title: lang.text("attendanceOutPhoto"),
-          image: getStaticFile(row.original?.fotoAbsenPulang),
-          status: row.original?.statusKehadiran,
-        });
-      }
-
-      if (row.original?.dispensasi?.buktiSurat) {
-        items.push({
-          title: lang.text("evidence"),
-          image: getStaticFile(row.original?.dispensasi?.buktiSurat),
-          status: row.original?.statusKehadiran,
-        });
-      }
-
-      return <EvidencePreview items={items} />;
-    },
-  },
-];
+  ];
 
 export const studentCoursePresenceColumn: ColumnDef<StudentCoursePresenceDataModel>[] =
   [
@@ -1055,77 +1039,76 @@ export const studentColumnSchool = ({
 
     ...(noStatus === false || noStatus === undefined
       ? [
-          {
-            accessorKey: "status",
-            header: () => "Status",
-            cell: ({ row }: any) => {
-              const status = row.original.statusKehadiranHariIni?.toLowerCase();
+        {
+          accessorKey: "status",
+          header: () => "Status",
+          cell: ({ row }: any) => {
+            const status = row.original.statusKehadiranHariIni?.toLowerCase();
 
-              const statusConfig = {
-                hadir: {
-                  label: "Hadir",
-                  className:
-                    "bg-green-100 text-green-700 border border-green-200",
-                },
-                izin: {
-                  label: "Izin",
-                  className:
-                    "bg-yellow-100 text-yellow-700 border border-yellow-200",
-                },
-                alfa: {
-                  label: "Alfa",
-                  className: "bg-red-100 text-red-700 border border-red-200",
-                },
-                "belum hadir": {
-                  label: "Belum Hadir",
-                  className:
-                    "bg-slate-100 text-slate-700 border border-slate-200",
-                },
-                terlambat: {
-                  label: "Terlambat",
-                  className:
-                    "bg-orange-100 text-orange-700 border border-orange-200",
-                },
-                sakit: {
-                  label: "Sakit",
-                  className: "bg-blue-100 text-blue-700 border border-blue-200",
-                },
-              };
+            const statusConfig = {
+              hadir: {
+                label: "Hadir",
+                className:
+                  "bg-green-100 text-green-700 border border-green-200",
+              },
+              izin: {
+                label: "Izin",
+                className:
+                  "bg-yellow-100 text-yellow-700 border border-yellow-200",
+              },
+              alfa: {
+                label: "Alfa",
+                className: "bg-red-100 text-red-700 border border-red-200",
+              },
+              "belum hadir": {
+                label: "Belum Hadir",
+                className:
+                  "bg-slate-100 text-slate-700 border border-slate-200",
+              },
+              terlambat: {
+                label: "Terlambat",
+                className:
+                  "bg-orange-100 text-orange-700 border border-orange-200",
+              },
+              sakit: {
+                label: "Sakit",
+                className: "bg-blue-100 text-blue-700 border border-blue-200",
+              },
+            };
 
-              const config = statusConfig[status as keyof typeof statusConfig];
+            const config = statusConfig[status as keyof typeof statusConfig];
 
-              return (
-                <div
-                  className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${
-                    config?.className ??
-                    "bg-gray-100 text-gray-700 border border-gray-200"
+            return (
+              <div
+                className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 text-xs font-medium ${config?.className ??
+                  "bg-gray-100 text-gray-700 border border-gray-200"
                   }`}
-                >
-                  {config?.label ?? "-"}
-                </div>
-              );
-            },
-          },
-          {
-            accessorKey: "absen",
-            header: () => <BaseTableHeader>Absen</BaseTableHeader>,
-            cell: ({ row }: any) => (
-              <Button
-                onClick={() => {
-                  if (handleAttend) {
-                    handleAttend(row.original?.id);
-                  }
-                }}
-                disabled={
-                  row.original.statusKehadiranHariIni !== "belum hadir" &&
-                  row.original.statusKehadiranHariIni !== "Belum Hadir"
-                }
               >
-                {lang.text("attend")}
-              </Button>
-            ),
+                {config?.label ?? "-"}
+              </div>
+            );
           },
-        ]
+        },
+        {
+          accessorKey: "absen",
+          header: () => <BaseTableHeader>Absen</BaseTableHeader>,
+          cell: ({ row }: any) => (
+            <Button
+              onClick={() => {
+                if (handleAttend) {
+                  handleAttend(row.original?.id);
+                }
+              }}
+              disabled={
+                row.original.statusKehadiranHariIni !== "belum hadir" &&
+                row.original.statusKehadiranHariIni !== "Belum Hadir"
+              }
+            >
+              {lang.text("attend")}
+            </Button>
+          ),
+        },
+      ]
       : []),
   ];
 };

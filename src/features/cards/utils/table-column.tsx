@@ -39,7 +39,11 @@ export const cardColumns = (
       cell: ({ row, table }) => {
         const { pageIndex, pageSize } = table.getState().pagination;
 
-        return pageIndex * pageSize + row.index + 1;
+        const visibleIndex = table
+          .getRowModel()
+          .rows.findIndex((r) => r.id === row.id);
+
+        return pageIndex * pageSize + visibleIndex + 1;
       },
     },
     {
@@ -89,7 +93,7 @@ export const cardColumns = (
       cell: ({ row }) => {
         const status =
           availabilityConfig[
-            row.original.ketersediaan as keyof typeof availabilityConfig
+          row.original.ketersediaan as keyof typeof availabilityConfig
           ];
 
         if (!status) {

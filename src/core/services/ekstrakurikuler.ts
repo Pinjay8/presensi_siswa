@@ -16,6 +16,9 @@ export const ekstrakurikulerService = {
     const query = {
       page: params.page,
       limit: params.limit,
+      ...(params.search && { search: params.search }),
+      ...(params.sortBy && { sortBy: params.sortBy }),
+      ...(params.sortOrder && { sortOrder: params.sortOrder }),
       ...(params.jenis && { jenis: params.jenis }),
     };
 

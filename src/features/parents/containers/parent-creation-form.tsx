@@ -24,7 +24,7 @@ import { useAlert, useParamDecode } from "@/features/_global/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 // import { useSchool } from "@/features/schools";
 import {
@@ -62,6 +62,7 @@ export const ParentCreationForm = () => {
   const alert = useAlert();
   const navigate = useNavigate();
 
+
   const form = useForm<z.infer<typeof parentEditSchema>>({
     resolver: zodResolver(parentEditSchema),
     mode: "all",
@@ -75,18 +76,18 @@ export const ParentCreationForm = () => {
       isActive: detail.data?.isActive || 0,
       nis: Array.isArray((detail.data as any)?.orangTua)
         ? (detail.data as any).orangTua
-            .map((o: any) => o.biodataSiswa?.user?.nis || o.biodataSiswa?.nis)
-            .filter(Boolean)
+          .map((o: any) => o.biodataSiswa?.user?.nis || o.biodataSiswa?.nis)
+          .filter(Boolean)
         : typeof detail.data?.nis === "string"
           ? detail.data.nis
-              .split(",")
-              .map((s: string) => s.trim())
-              .filter(Boolean)
+            .split(",")
+            .map((s: string) => s.trim())
+            .filter(Boolean)
           : detail.data?.student?.user?.nis
             ? [detail.data.student.user.nis]
             : (detail.data as any)?.students
-                ?.map((s: any) => s.user?.nis || s.nis)
-                .filter(Boolean) || [],
+              ?.map((s: any) => s.user?.nis || s.nis)
+              .filter(Boolean) || [],
       nik: detail.data?.nik || "",
       password: detail.data?.password || "",
       usernameInstagram: detail.data?.usernameInstagram || "",
@@ -146,9 +147,9 @@ export const ParentCreationForm = () => {
     } catch (err: any) {
       alert.error(
         err?.message ||
-          (decodeParams.id
-            ? lang.text("failUpdate", { context: lang.text("parent") })
-            : lang.text("failCreate", { context: lang.text("parent") })),
+        (decodeParams.id
+          ? lang.text("failUpdate", { context: lang.text("parent") })
+          : lang.text("failCreate", { context: lang.text("parent") })),
       );
     }
   }
@@ -384,7 +385,7 @@ export const ParentCreationForm = () => {
             name="alamat"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel>Alamat</FormLabel>
+                <FormLabel>{lang.text("address")}</FormLabel>
                 <FormControl>
                   <Input
                     type="text"

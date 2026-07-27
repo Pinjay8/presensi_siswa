@@ -168,28 +168,28 @@ export function ParentTable() {
         actions={[
           ...(!isRole
             ? [
-                {
-                  title: "Unduh Template Excel",
-                  icon: <Download />,
-                  onClick: handleDownloadTemplate,
-                  variant: "default",
-                  className: "bg-green-500 text-white hover:bg-green-600",
-                },
+              {
+                title: "Unduh Template Excel",
+                icon: <Download />,
+                onClick: handleDownloadTemplate,
+                variant: "default" as const,
+                className: "bg-green-500 text-white hover:bg-green-600",
+              },
 
-                {
-                  title: "Unggah Excel",
-                  icon: <UploadCloud />,
-                  onClick: () => setIsUploadModalOpen(true),
-                  variant: "outline",
-                  className:
-                    "border-green-500 text-green-500 hover:bg-green-50",
-                },
-                {
-                  title: lang.text("createParent"),
-                  icon: <FaPlus />,
-                  onClick: () => navigate("/parents/create"),
-                },
-              ]
+              {
+                title: "Unggah Excel",
+                icon: <UploadCloud />,
+                onClick: () => setIsUploadModalOpen(true),
+                variant: "outline" as const,
+                className:
+                  "border-green-500 text-green-500 hover:bg-green-50",
+              },
+              {
+                title: lang.text("createParent"),
+                icon: <FaPlus />,
+                onClick: () => navigate("/parents/create"),
+              },
+            ]
             : []),
         ]}
         searchParamPagination
@@ -223,7 +223,9 @@ export function ParentTable() {
         <DialogTitle>{lang.text("delete")}</DialogTitle>
         <DialogContent dividers>
           <DialogContentText>
-            {lang.text("deleteMessage", { context: selectedParent?.user_name })}
+            {lang.text("deleteMessage", {
+              context: selectedParent?.name,
+            })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

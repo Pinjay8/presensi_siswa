@@ -3,17 +3,38 @@ import { useAuth } from "@/features/auth";
 import { useProfile } from "@/features/profile";
 import { useQuery } from "@tanstack/react-query";
 
-export const useClassroomPaginated = ({ page = 1, limit = 10 }: Props) => {
+type Props = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+};
+
+export const useClassroomPaginated = ({
+  page = 1,
+  limit = 10,
+  search,
+  sortBy,
+  sortOrder,
+}: Props) => {
   const auth = useAuth();
   const profile = useProfile();
 
   const query = useQuery({
     enabled: auth.isAuthenticated() && Boolean(profile.user?.id),
-    queryKey: ["classrooms-paginated", page, limit],
+    queryKey: ["classrooms-paginated", page,
+      limit,
+      search,
+      sortBy,
+      sortOrder],
     queryFn: () =>
       classroomService.getPaginated({
         page,
         limit,
+        search,
+        sortBy,
+        sortOrder,
       }),
   });
 

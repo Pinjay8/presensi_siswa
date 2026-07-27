@@ -14,11 +14,26 @@ export const classroomService = {
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.classroom.classroom,
       getInitialOptions,
     )({ query: params }),
-  getPaginated: (params?: { page?: number; limit?: number }) =>
-    http.get(
-      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.classroom.classroom}?page=${params?.page}&limit=${params?.limit}`,
+  getPaginated: (params?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  }) => {
+    const query = new URLSearchParams();
+
+    if (params?.page) query.set("page", String(params.page));
+    if (params?.limit) query.set("limit", String(params.limit));
+    if (params?.search) query.set("search", params.search);
+    if (params?.sortBy) query.set("sortBy", params.sortBy);
+    if (params?.sortOrder) query.set("sortOrder", params.sortOrder);
+
+    return http.get(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.classroom.classroom}?${query.toString()}`,
       getInitialOptions,
-    )(),
+    )();
+  },
   get: (id: number) =>
     http.get<BaseResponse<ClassroomDataModel>>(
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.classroom.classroom,
@@ -65,10 +80,8 @@ export const classroomService = {
     if (params?.search) searchParams.append("search", params.search);
 
     return http.get<BaseResponse<any[]>>(
-      `${API_CONFIG.baseUrl}${
-        SERVICE_ENDPOINTS.classroom.classroom
-      }/${id}/siswa${
-        searchParams.toString() ? `?${searchParams.toString()}` : ""
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.classroom.classroom
+      }/${id}/siswa${searchParams.toString() ? `?${searchParams.toString()}` : ""
       }`,
       getInitialOptions,
     )();
