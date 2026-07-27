@@ -3,6 +3,8 @@ import { http } from "@itokun99/http";
 import { API_CONFIG, SERVICE_ENDPOINTS } from "../configs/app";
 import { BaseResponse } from "../models/http";
 import { getInitialOptions } from "../utils/http";
+import { withQuery } from "../utils/withQuery";
+import { getToken } from "@/features/auth";
 
 export const cardsService = {
   all: http.get<BaseResponse<any[]>>(
@@ -14,6 +16,36 @@ export const cardsService = {
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.cards.get,
       getInitialOptions,
     )({ path: String(id) }),
+  getPaginated: async (params: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+    [key: string]: any;
+  }) => {
+    const query = {
+      ...params,
+    };
+
+    if (!query.search) {
+      delete query.search;
+    }
+
+    const url = withQuery(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.cards.get}`,
+      query,
+    );
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    return await response.json();
+  },
   create: (data: any) => {
     return http.post<{ message: string }, any>(
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.cards.create,

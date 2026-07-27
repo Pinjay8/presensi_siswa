@@ -36,7 +36,7 @@ export const licensingColumns = ({
 
         const visibleIndex = table
           .getRowModel()
-          .rows.findIndex((r) => r.id === row.id);
+          .rows.findIndex((r: any) => r.id === row.id);
 
         return pageIndex * pageSize + visibleIndex + 1;
       },
@@ -44,10 +44,11 @@ export const licensingColumns = ({
     {
       accessorKey: "alasan",
       accessorFn: (row: any) => row.alasan,
+      enableSorting: false,
       header: ({ column }: any) => {
         return (
           <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {lang.text("reason")}
           </BaseTableHeader>
@@ -60,11 +61,11 @@ export const licensingColumns = ({
     {
       accessorKey: "BiodataSiswa.user.name",
       accessorFn: (row: any) => row.BiodataSiswa.user.name,
+      enableSorting: false,
 
       header: ({ column }: any) => {
         return (
           <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {lang.text("name")}
           </BaseTableHeader>
@@ -77,51 +78,35 @@ export const licensingColumns = ({
     {
       accessorKey: "statusPengajuan",
       accessorFn: (row: any) => row.statusPengajuan,
-      meta: {
-        filterVariant: "select",
-        filterLabel: lang.text("statusLicensing"),
-        filterPlaceholder: "Pilih Status",
-        filterOptions: [
-          {
-            label: lang.text("pending"),
-            value: "pending",
-          },
-          {
-            label: lang.text("approved"),
-            value: "disetujui",
-          },
-          {
-            label: lang.text("rejected"),
-            value: "ditolak",
-          },
-        ],
-      },
-      header: ({ column }: any) => (
+      header: ({ column }) => (
         <BaseTableHeader
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           {lang.text("statusLicensing")}
         </BaseTableHeader>
       ),
-      cell: ({ row }: any) => {
-        const status = row.original.statusPengajuan;
+      cell: ({ row }) => {
+        const status = row.original.statusPengajuan?.toLowerCase();
+
         const statusMap = {
           pending: {
             label: lang.text("pending"),
-            className: "bg-amber-100 text-amber-700 border border-amber-200",
+            className:
+              "bg-amber-100 text-amber-700 border border-amber-200",
           },
           disetujui: {
             label: lang.text("approved"),
-            className: "bg-green-100 text-green-700 border border-green-200",
+            className:
+              "bg-green-100 text-green-700 border border-green-200",
           },
           ditolak: {
             label: lang.text("rejected"),
-            className: "bg-red-100 text-red-700 border border-red-200",
+            className:
+              "bg-red-100 text-red-700 border border-red-200",
           },
-        };
+        } as const;
 
-        const config =
-          statusMap[status?.toLowerCase() as keyof typeof statusMap];
+        const config = statusMap[status as keyof typeof statusMap];
 
         return (
           <span
@@ -129,7 +114,7 @@ export const licensingColumns = ({
               "bg-gray-100 text-gray-700 border border-gray-200"
               }`}
           >
-            {config?.label ?? status}
+            {config?.label ?? row.original.statusPengajuan}
           </span>
         );
       },
@@ -137,10 +122,11 @@ export const licensingColumns = ({
     {
       accessorKey: "tanggalMulai",
       accessorFn: (row: any) => row.tanggalMulai,
+      enableSorting: false,
       header: ({ column }: any) => {
         return (
           <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {lang.text("startDate")}
           </BaseTableHeader>
@@ -153,10 +139,11 @@ export const licensingColumns = ({
     {
       accessorKey: "tanggalSelesai",
       accessorFn: (row: any) => row.tanggalSelesai,
+      enableSorting: false,
       header: ({ column }: any) => {
         return (
           <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {lang.text("endDate")}
           </BaseTableHeader>

@@ -293,6 +293,7 @@ export const studentColumnWithFilter = ({
     },
 
     {
+      accessorKey: "biodataSiswa.kelas.namaKelas",
       accessorFn: (row) =>
         row.biodataSiswa?.[0]?.kelas?.namaKelas ||
         row.original?.namaKelas ||
@@ -301,30 +302,10 @@ export const studentColumnWithFilter = ({
       cell: ({ row }) => (
         <span>
           {
-            row.original.namaKelas ||
+            row.original.biodataSiswa?.[0]?.kelas?.namaKelas ||
             "-"}
         </span>
       ),
-      meta: {
-        filterLabel: lang.text("classroom"),
-        filterPlaceholder: lang.text("selectClassroom"),
-        filterVariant: "select",
-        filterOptions: classroomOptions,
-      },
-      id: "kelasId",
-    },
-    {
-      accessorKey: "sekolah.namaSekolah",
-      accessorFn: (row) => row.sekolah?.namaSekolah || "-",
-      header: () => <BaseTableHeader>{lang.text("school")}</BaseTableHeader>,
-      cell: ({ row }) => <span>{(row.original?.namaSekolah) || "-"}</span>,
-      meta: {
-        filterLabel: lang.text("school"),
-        filterPlaceholder: lang.text("selectSchool"),
-        filterVariant: "select",
-        filterOptions: schoolOptions,
-      },
-      id: "sekolahId",
     },
     ...(noStatus === false || noStatus === undefined
       ? [

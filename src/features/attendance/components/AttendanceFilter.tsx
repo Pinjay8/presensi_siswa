@@ -51,7 +51,7 @@ export const AttendanceFilter = ({
         aria-label="attendanceCount"
         className="cursor-default hover:bg-transparent"
       >
-        {lang.text("present")}: {attendanceCount}
+        Count : {attendanceCount}
       </Button>
     </div>
   );

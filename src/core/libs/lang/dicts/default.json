@@ -139,6 +139,10 @@
     "en": "Card",
     "id": "Kartu"
   },
+  "attendanceStatus": {
+    "en": "Attendance Status",
+    "id": "Status Kehadiran"
+  },
   "editEvent": {
     "en": "Edit Event",
     "id": "Ubah Acara"

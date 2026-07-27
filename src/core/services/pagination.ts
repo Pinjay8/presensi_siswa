@@ -7,22 +7,21 @@ import { getToken } from "@/features/auth";
 
 export interface GetPaginatedStudentParams {
   page: number;
-  size: number;
-  sekolahId?: number;
-  kelasId?: number;
-  keyword?: string;
+  limit: number;
+  idKelas?: number;
+  search?: string;
 }
 export const studentService = {
   getPaginated: async (
     params: GetPaginatedStudentParams,
   ): Promise<StudentPaginationResponse> => {
     const query = {
-      page: params.page,
-      size: params.size,
-      ...(params.sekolahId && { sekolahId: params.sekolahId }),
-      ...(params.kelasId !== undefined && { kelasId: params.kelasId }),
-      // ...(params.keyword && { keyword: params.keyword }),
+      ...params,
     };
+
+    if (!query.search) {
+      delete query.search;
+    }
 
     const url = withQuery(
       `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.student.list}`,
@@ -38,8 +37,8 @@ export const studentService = {
       },
     });
 
-
     const json = await response.json();
+
     return {
       students: json.data,
       pagination: json.pagination,
@@ -76,45 +75,16 @@ export interface GetAttendanceParams {
 }
 
 export const attendanceService = {
-  getPaginated: async (params: GetAttendanceParams): Promise<any> => {
+  getPaginated: async (
+    params: GetAttendanceParams,
+  ): Promise<any> => {
     const query = {
-      filter: params.filter,
-      page: params.page,
-      limit: params.limit,
-      type: params.type,
-
-      ...(params.kelasId !== undefined && {
-        kelasId: params.kelasId,
-      }),
-
-      ...(params.sekolahId !== undefined && {
-        sekolahId: params.sekolahId,
-      }),
-
-      ...(params.startDate && {
-        startDate: params.startDate,
-      }),
-
-      ...(params.endDate && {
-        endDate: params.endDate,
-      }),
-
-      ...(params.tanggal && {
-        tanggal: params.tanggal,
-      }),
-
-      ...(params.sortBy && {
-        sortBy: params.sortBy,
-      }),
-
-      ...(params.sortDir && {
-        sortDir: params.sortDir,
-      }),
-
-      ...(params.search && {
-        search: params.search,
-      }),
+      ...params,
     };
+
+    if (!query.search) {
+      delete query.search;
+    }
 
     const url = withQuery(
       `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.attendances.list}`,
@@ -128,9 +98,7 @@ export const attendanceService = {
       },
     });
 
-    const json = await response.json();
-
-    return json;
+    return await response.json();
   },
 
   exportExcel: async (params: GetAttendanceParams): Promise<Blob> => {

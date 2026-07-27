@@ -76,6 +76,7 @@ export const SERVICE_ENDPOINTS = {
   },
   users: {
     parents: "/api/all-orang-tua",
+    parentsById: "/api/orang-tua",
     teachers: "/api/get-all-guru",
     students: "/api/get-biodata-siswa",
     notifParents: "/api/user/notif-ortu/{user_id}",

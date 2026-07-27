@@ -122,11 +122,11 @@ export const courseColumns = ({
       cell: ({ row, table }) => {
         const { pageIndex, pageSize } = table.getState().pagination;
 
-        return (
-          <div className="text-start">
-            {pageIndex * pageSize + row.index + 1}
-          </div>
-        );
+        const visibleIndex = table
+          .getRowModel()
+          .rows.findIndex((r) => r.id === row.id);
+
+        return pageIndex * pageSize + visibleIndex + 1;
       },
     },
     {
@@ -148,6 +148,7 @@ export const courseColumns = ({
     {
       accessorKey: "kode",
       accessorFn: (row) => row.kode,
+      enableSorting: false,
       header: ({ column }) => {
         return (
           <BaseTableHeader
@@ -164,6 +165,7 @@ export const courseColumns = ({
     {
       accessorKey: "kelompok",
       accessorFn: (row) => row.kelompok,
+      enableSorting: false,
       header: ({ column }) => {
         return (
           <BaseTableHeader

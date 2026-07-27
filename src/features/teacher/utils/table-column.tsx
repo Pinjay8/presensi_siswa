@@ -123,7 +123,7 @@ export const teacherColumnWithFilter = ({
   onAssignSchedule?: (teacher: any) => void;
   onDelete?: (teacher: any) => void;
   onRegisterFace?: (teacher: any) => void;
-}): ColumnDef<BiodataGuru>[] => {
+}): ColumnDef<any>[] => {
   return [
     {
       id: "no",
@@ -141,8 +141,8 @@ export const teacherColumnWithFilter = ({
       },
     },
     {
-      accessorKey: "user.name",
-      accessorFn: (row) => row.user?.name,
+      accessorKey: "name",
+      accessorFn: (row) => row.name,
       header: ({ column }) => {
         return (
           <BaseTableHeader
@@ -154,7 +154,7 @@ export const teacherColumnWithFilter = ({
       },
       enableGlobalFilter: true,
       cell: ({ row }) => {
-        const nameArr = row.original.user?.name?.split(" ") || [];
+        const nameArr = row.original.name?.split(" ") || [];
         const initialName =
           nameArr && nameArr.length > 0
             ? `${nameArr?.[0]?.[0]?.toUpperCase() || ""}${nameArr?.[1]?.[0]?.toUpperCase() || ""}`
@@ -170,22 +170,23 @@ export const teacherColumnWithFilter = ({
                     ? getStaticFile(String(row.original.user.image))
                     : "")
                 }
-                alt={row.original?.user?.name}
+                alt={row.original?.name}
               />
               <AvatarFallback>{initialName}</AvatarFallback>
             </Avatar>
-            <p>{row.original.user?.name}</p>
+            <p>{row.original.name}</p>
           </div>
         );
       },
     },
     {
-      accessorKey: "user.email",
-      accessorFn: (row) => row.user?.email,
+      accessorKey: "email",
+      accessorFn: (row) => row.email,
+      enableSorting: false,
       header: ({ column }) => {
         return (
           <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {lang.text("email")}
           </BaseTableHeader>
@@ -193,12 +194,13 @@ export const teacherColumnWithFilter = ({
       },
     },
     {
-      accessorKey: "user.nip",
-      accessorFn: (row) => row.user?.nip,
+      accessorKey: "nip",
+      accessorFn: (row) => row.nip,
+      enableSorting: false,
       header: ({ column }) => {
         return (
           <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {"NIP"}
           </BaseTableHeader>
@@ -206,12 +208,13 @@ export const teacherColumnWithFilter = ({
       },
     },
     {
-      accessorKey: "user.nrk",
-      accessorFn: (row) => row.user?.nrk,
+      accessorKey: "nrk",
+      accessorFn: (row) => row.nrk,
+      enableSorting: false,
       header: ({ column }) => {
         return (
           <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {`NRK`}
           </BaseTableHeader>
@@ -219,31 +222,49 @@ export const teacherColumnWithFilter = ({
       },
     },
     {
-      accessorKey: "user.sekolah.namaSekolah",
-      accessorFn: (row) => row.user?.sekolah?.namaSekolah,
-      meta: {
-        filterLabel: lang.text("school"),
-        filterPlaceholder: lang.text("selectSchool"),
-        filterVariant: "select",
-        filterOptions: schoolOptions,
-      },
+      accessorKey: "nikki",
+      accessorFn: (row) => row.nikki,
+      enableSorting: false,
       header: ({ column }) => {
         return (
           <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {`NIKKI`}
+          </BaseTableHeader>
+        );
+      },
+    },
+    {
+      accessorKey: "sekolah.namaSekolah",
+      accessorFn: (row) => row.sekolah?.namaSekolah,
+      // meta: {
+      //   filterLabel: lang.text("school"),
+      //   filterPlaceholder: lang.text("selectSchool"),
+      //   filterVariant: "select",
+      //   filterOptions: schoolOptions,
+      // },
+      enableSorting: false,
+
+      header: ({ column }) => {
+        return (
+          <BaseTableHeader
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {lang.text("schoolName")}
           </BaseTableHeader>
         );
       },
     },
+
     {
       accessorKey: "Schedule.name",
-      accessorFn: (row) => row.attendanceSchedule?.name,
+      accessorFn: (row) => row.attendanceScheduleName,
+      enableSorting: false,
       header: ({ column }) => {
         return (
           <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {"Schedule"}
           </BaseTableHeader>
@@ -253,8 +274,34 @@ export const teacherColumnWithFilter = ({
         return (
           <div className="flex items-center gap-2">
             <div className="text-sm font-medium">
-              {row.original.attendanceSchedule?.name || "-"}
+              {row.original.attendanceScheduleName || "-"}
             </div>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "waliKelas",
+      header: () => (
+        <BaseTableHeader>
+          Wali Kelas
+        </BaseTableHeader>
+      ),
+      enableSorting: false,
+      cell: ({ row }) => {
+        const waliKelas = row.original.waliKelas ?? [];
+
+        return (
+          <div className="flex flex-wrap gap-1">
+            {waliKelas.length > 0 ? (
+              waliKelas.map((item: any) => (
+                <Badge key={item.kelasId} variant="secondary">
+                  {item.namaKelas}
+                </Badge>
+              ))
+            ) : (
+              <span>-</span>
+            )}
           </div>
         );
       },
@@ -268,8 +315,8 @@ export const teacherColumnWithFilter = ({
       cell: ({ row }) => {
         const encryptPayload = simpleEncode(
           JSON.stringify({
-            id: row.original.userId,
-            text: row.original.user?.name,
+            id: row.original.id,
+            text: row.original.name,
           }),
         );
         return (

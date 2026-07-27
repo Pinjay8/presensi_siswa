@@ -1,5 +1,5 @@
-import { useBiodataGuru, useUserCreation } from "@/features/user/hooks";
-import { BaseDataTable, useAlert } from "@/features/_global";
+import { useBiodataGuru, useBiodataGuruPaginated, useUserCreation } from "@/features/user/hooks";
+import { BaseDataTable, useAlert, useDataTableController } from "@/features/_global";
 import { distinctObjectsByProperty, lang } from "@/core/libs";
 import { useSchool } from "@/features/schools";
 import { useMemo, useState } from "react";
@@ -12,14 +12,6 @@ import { useClassroom } from "@/features/classroom";
 import { teacherService } from "@/core/services/teacher";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ModalAssignSchedule from "../components/modalAssignSchedule";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
 import { FaPlus } from "react-icons/fa";
 import RegisterFaceDialog from "@/features/_global/components/dashboard/usermenu/components/RegisterFaceDialog";
 import { userService } from "@/core/services";
@@ -30,8 +22,41 @@ import { cdnService } from "@/core/services/cdn";
 import { DeleteDialog } from "@/features/cards/components/DeleteCardDialog";
 
 export function TeacherTable() {
-  const biodata = useBiodataGuru();
+  // const biodata = useBiodataGuru();
+  const {
+    global,
+    setGlobal,
+    sorting,
+    pagination,
+    filter,
+    setFilter,
+    onSortingChange,
+    onPaginationChange,
+  } = useDataTableController({
+    defaultPageSize: 10,
+    defaultSorting: [
+      {
+        id: "updatedAt",
+        desc: true,
+      },
+    ],
+  });
+
+
+
+  const params: any = {
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+    search: global,
+    sortBy: sorting?.[0]?.id,
+    sortOrder: sorting?.[0]?.desc ? "desc" : "asc",
+    ...filter,
+  };
+
+  const biodata = useBiodataGuruPaginated(params);
+
   const school = useSchool();
+  const classRoom = useClassroom();
   const navigate = useNavigate();
   const [teacher, setTeacher] = useState(false);
   const [openWaliKelas, setOpenWaliKelas] = useState(false);
@@ -45,13 +70,11 @@ export function TeacherTable() {
 
   const handleOpenRegisterFace = (teacher: any) => {
     setSelectedTeacher(teacher);
-    console.log("selected Teacher", selectedTeacher);
     setOpenRegisterFace(true);
   };
 
   const handleSubmitRegisterFace = async (file: File) => {
     try {
-      // Upload file ke CDN
       const uploadFormData = new FormData();
 
       uploadFormData.append("file", file);
@@ -64,7 +87,6 @@ export function TeacherTable() {
         throw new Error("Failed to upload image");
       }
 
-      // Register face menggunakan URL hasil upload
       await userService.registerFaceTeacher({
         userId: selectedTeacher.user?.id,
         fotoTampakDepan: fileUrl,
@@ -82,14 +104,6 @@ export function TeacherTable() {
   const columns = useMemo(
     () =>
       teacherColumnWithFilter({
-        schoolOptions: distinctObjectsByProperty(
-          school.data?.map((d) => ({
-            label: d.namaSekolah,
-            value: d.namaSekolah,
-          })) || [],
-          "value",
-        ),
-
         onWaliKelas: (teacher: any) => {
           setSelectedTeacher(teacher);
           setOpenWaliKelas(true);
@@ -241,30 +255,28 @@ export function TeacherTable() {
         globalSearch
         searchParamPagination
         showFilterButton
-        initialState={{
-          sorting: [
-            {
-              id: "user_name",
-              desc: false,
-            },
-          ],
-        }}
+        sorting={sorting}
+        onSortingChange={onSortingChange}
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
+        globalFilter={global}
+        onGlobalFilterChange={setGlobal}
         actions={[
           ...(!isRole
             ? [
               {
-                title: "Unduh Template Excel",
+                title: lang.text("downloadTemplateExcel"),
                 icon: <Download />,
                 onClick: handleDownloadTemplate,
-                variant: "default",
+                variant: "default" as const,
                 className: "bg-green-500 text-white hover:bg-green-600",
               },
 
               {
-                title: "Unggah Excel",
+                title: lang.text("uploadExcel"),
                 icon: <UploadCloud />,
                 onClick: () => setIsUploadModalOpen(true),
-                variant: "outline",
+                variant: "outline" as const,
                 className:
                   "border-green-500 text-green-500 hover:bg-green-50",
               },
@@ -278,6 +290,19 @@ export function TeacherTable() {
         ]}
         searchPlaceholder={lang.text("search") + " " + lang.text("teacher")}
         isLoading={biodata.query.isLoading}
+        filters={[
+          {
+            id: "kelasId",
+            label: lang.text("classroom"),
+            variant: "select",
+            placeholder: lang.text("chooseClassroom"),
+            options: classRoom.data?.map((d) => ({
+              label: d.namaKelas,
+              value: String(d.id),
+            })),
+          },
+        ]}
+        onFilterChange={setFilter}
       />
 
       <RegisterFaceDialog

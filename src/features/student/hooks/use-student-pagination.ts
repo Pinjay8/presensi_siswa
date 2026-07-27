@@ -51,6 +51,8 @@
 //     });
 //   };
 
+
+
 import { StudentPaginationResponse } from "@/core/models/pagination";
 import {
   GetPaginatedStudentParams,
@@ -64,9 +66,6 @@ export const useStudentPagination = (params: any) => {
     queryFn: () => {
       return studentService.getPaginated(params);
     },
-
-    // keepPreviousData: true,
     enabled: true,
-    // staleTime: 1000,
   });
 };

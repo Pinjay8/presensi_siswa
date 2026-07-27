@@ -105,7 +105,6 @@ export const studentAttendanceColumn = ({
       header: ({ column }) => {
         return (
           <BaseTableHeader
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {lang.text("student")}
           </BaseTableHeader>
@@ -125,19 +124,6 @@ export const studentAttendanceColumn = ({
         );
       },
     },
-    // {
-    //   accessorKey: "user.email",
-    //   accessorFn: (row) => row.siswa?.email,
-    //   header: ({ column }) => {
-    //     return (
-    //       <BaseTableHeader
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //       >
-    //         {"Email"}
-    //       </BaseTableHeader>
-    //     );
-    //   },
-    // },
     {
       accessorKey: "user.nis",
       accessorFn: (row) => row.siswa?.nis,
@@ -164,31 +150,31 @@ export const studentAttendanceColumn = ({
         );
       },
     },
-    {
-      accessorKey: "user.sekolah.namaSekolah",
+    // {
+    //   accessorKey: "user.sekolah.namaSekolah",
 
-      accessorFn: (row) => row.siswa?.sekolah ?? "-",
+    //   accessorFn: (row) => row.siswa?.sekolah ?? "-",
 
-      ...(schoolOptions?.length > 0 && {
-        meta: {
-          filterLabel: lang.text("school"),
-          filterPlaceholder: lang.text("selectSchool"),
-          filterVariant: "select",
-          filterOptions: schoolOptions,
-          filterColumnVisible: false,
-        },
-      }),
+    //   ...(schoolOptions?.length > 0 && {
+    //     meta: {
+    //       filterLabel: lang.text("school"),
+    //       filterPlaceholder: lang.text("selectSchool"),
+    //       filterVariant: "select",
+    //       filterOptions: schoolOptions,
+    //       filterColumnVisible: false,
+    //     },
+    //   }),
 
-      header: ({ column }) => (
-        <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("schoolName")}
-        </BaseTableHeader>
-      ),
+    //   header: ({ column }) => (
+    //     <BaseTableHeader
+    //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //     >
+    //       {lang.text("schoolName")}
+    //     </BaseTableHeader>
+    //   ),
 
-      cell: ({ row }) => <span>{row.original.siswa?.sekolah ?? "-"}</span>,
-    },
+    //   cell: ({ row }) => <span>{row.original.siswa?.sekolah ?? "-"}</span>,
+    // },
     // {
     //   accessorKey: "siswa.kelas",
     //   accessorFn: (row) => row.siswa.kelas,

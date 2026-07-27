@@ -20,10 +20,10 @@ import {
 
 import { dayjs, lang } from "@/core/libs";
 import { useAlert, useParamDecode } from "@/features/_global/hooks";
-import { useSchool } from "@/features/schools";
 import {
   GENDER_OPTIONS,
   STATUS_OPTIONS,
+  useBiodataGuruById,
   useUserCreation,
   useUserDetail,
 } from "@/features/user";
@@ -41,9 +41,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 export const TeacherCreationForm = ({ id }: any) => {
   const { decodeParams } = useParamDecode();
+  const userId = decodeParams?.id ? Number(decodeParams.id) : undefined;
 
-  // const school = useSchool();
-  const detail = useUserDetail(Number(decodeParams?.id));
+  const detail = useBiodataGuruById(userId);
   const creation = useUserCreation();
   const navigate = useNavigate();
   const alert = useAlert();
@@ -69,7 +69,7 @@ export const TeacherCreationForm = ({ id }: any) => {
       // image: detail.data?.image || "",
       nis: detail.data?.nis || "",
       nip: detail.data?.nip || "",
-      nik: detail.data?.nik || "",
+      // nik: detail.data?.nik || "",
       noTlp: detail.data?.noTlp || "",
       isVerified: detail.data?.isVerified || false,
       isActive: detail.data?.isActive || 0,
@@ -89,7 +89,7 @@ export const TeacherCreationForm = ({ id }: any) => {
       ...(data.nis ? { nis: data.nis } : {}),
       ...(data.noTelegram ? { noTelegram: data.noTelegram } : {}),
       ...(data.nip ? { nip: data.nip } : {}),
-      ...(data.nik ? { nik: data.nik } : {}),
+      // ...(data.nik ? { nik: data.nik } : {}),
       ...(data.noTlp ? { noTlp: data.noTlp } : {}),
       ...(data.alamat ? { alamat: data.alamat } : {}),
       ...(data.tanggalLahir ? { tanggalLahir: data.tanggalLahir } : {}),
@@ -101,7 +101,6 @@ export const TeacherCreationForm = ({ id }: any) => {
         : {}),
     };
 
-    console.time("update");
 
     try {
       if (decodeParams?.id) {
@@ -116,15 +115,13 @@ export const TeacherCreationForm = ({ id }: any) => {
           : lang.text("successCreate", { context: lang.text("teacher") }),
       );
 
-      console.timeEnd("update");
-
       navigate(-1);
     } catch (err: any) {
       alert.error(
         err?.message ||
-          (decodeParams?.id
-            ? lang.text("failUpdate", { context: lang.text("teacher") })
-            : lang.text("failCreate", { context: lang.text("teacher") })),
+        (decodeParams?.id
+          ? lang.text("failUpdate", { context: lang.text("teacher") })
+          : lang.text("failCreate", { context: lang.text("teacher") })),
       );
     }
   }
@@ -133,35 +130,6 @@ export const TeacherCreationForm = ({ id }: any) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="mb-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 max-w-lg gap-6">
-          {/* <FormField
-            control={form.control}
-            name="sekolahId"
-            render={({ field, fieldState }) => (
-              <FormItem className="mb-2">
-                <FormLabel>{lang.text("school")}</FormLabel>
-                <Select
-                  value={field.value ? String(field.value) : undefined}
-                  onValueChange={(x) => field.onChange(Number(x))}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder={lang.text("selectSchool")} />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {school.data.map((option, i) => {
-                      return (
-                        <SelectItem key={i} value={String(option.id)}>
-                          {option.namaSekolah}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-                <FormMessage>{fieldState.error?.message}</FormMessage>
-              </FormItem>
-            )}
-          /> */}
           <FormField
             control={form.control}
             name="name"
@@ -246,6 +214,25 @@ export const TeacherCreationForm = ({ id }: any) => {
               </FormItem>
             )}
           />
+{/* 
+          <FormField
+            control={form.control}
+            name="nik"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>NIK</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder={"NIK"}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage>{fieldState.error?.message}</FormMessage>
+              </FormItem>
+            )}
+          /> */}
+
 
           <FormField
             control={form.control}

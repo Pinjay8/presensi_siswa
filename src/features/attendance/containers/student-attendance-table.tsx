@@ -7,26 +7,35 @@ import { useMemo } from "react";
 import { studentAttendanceColumn } from "../utils";
 
 interface StudentAttendanceTableProps {
-  data: BiodataSiswa[]; // Terima data yang difilter
+  data: BiodataSiswa[];
   isLoading?: boolean;
   totalAttedance?: boolean;
   pagination: any;
   onPaginationChange: any;
   rowCount: number;
+  global: any;
+  setGlobal: any;
+  sorting: any;
+  onSortingChange: any;
+  filter?: any;
+  setFilter: any
 }
 
 export function StudentAttendanceTable({
   data,
   totalAttedance,
   isLoading,
-  // pagination,
-  // sorting,
-  // onSortingChange,
   pagination,
   onPaginationChange,
   rowCount,
+  global,
+  setGlobal,
+  sorting,
+  onSortingChange,
+  filter,
+  setFilter,
+
 }: StudentAttendanceTableProps) {
-  const school = useSchool();
   const classroom = useClassroom();
 
   const columns = useMemo(
@@ -39,15 +48,9 @@ export function StudentAttendanceTable({
           })) || [],
           "value",
         ),
-        schoolOptions: distinctObjectsByProperty(
-          school.data?.map((d) => ({
-            label: d.namaSekolah,
-            value: d.namaSekolah,
-          })) || [],
-          "value",
-        ),
+
       }),
-    [school.data, classroom.data],
+    [classroom.data],
   );
 
   return (
@@ -58,26 +61,55 @@ export function StudentAttendanceTable({
         dataFallback={columns}
         globalSearch
         searchParamPagination
-        // initialState={{ sorting }}
         manualPagination
         pagination={pagination}
         onPaginationChange={onPaginationChange}
         rowCount={rowCount}
         showFilterButton
-        initialState={{
-          columnVisibility: {
-            user_email: false,
-            user_nis: false,
-            user_nisn: false,
+        globalFilter={global}
+        onGlobalFilterChange={setGlobal}
+        sorting={sorting}
+        onSortingChange={onSortingChange}
+        onFilterChange={setFilter}
+        filters={[
+          {
+            id: "kelasId",
+            label: lang.text("classroom"),
+            variant: "select",
+            options: classroom.data?.map((d) => ({
+              label: d.namaKelas,
+              value: d.id,
+            })),
           },
-          sorting: [
-            {
-              id: "createdAt",
-              desc: true,
-            },
-          ],
-        }}
-        searchPlaceholder={lang.text("search")}
+          {
+            id: "statusKehadiran",
+            label: lang.text("attendanceStatus"),
+            variant: "select",
+            options: [
+              {
+                label: lang.text("present"),
+                value: "hadir",
+              },
+              {
+                label: lang.text("late"),
+                value: "terlambat",
+              },
+              {
+                label: lang.text("alfa"),
+                value: "alfa",
+              },
+              {
+                label: lang.text("sick"),
+                value: "sakit",
+              },
+              {
+                label: lang.text("permit"),
+                value: "izin",
+              },
+            ],
+          },
+        ]}
+        searchPlaceholder={lang.text("search") + " " + lang.text("student")}
         isLoading={isLoading}
       />
     </div>

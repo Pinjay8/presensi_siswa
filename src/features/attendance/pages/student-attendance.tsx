@@ -43,27 +43,47 @@ export const StudentAttendance = () => {
     dayjs().tz("Asia/Jakarta").format("YYYY-MM"),
   );
 
-  const [filters, setFilter] = useState<
+  const [filters, setFilters] = useState<
     "harian" | "mingguan" | "bulanan" | "tahunan"
   >("harian");
 
   const {
     global,
+    setGlobal,
     sorting,
     filter,
+    setFilter,
     pagination,
     onSortingChange,
     onPaginationChange,
   } = useDataTableController({
     defaultPageSize: 10,
+    defaultSorting: [{ id: "createdAt", desc: true }],
   });
 
-  const attendanceParams = {
-    filter: filters,
-    page: pagination.pageIndex + 1,
-    limit: pagination.pageSize,
-    type: "siswa",
-  };
+  const attendanceParams = useMemo(
+    () => ({
+      filter: filters,
+      page: pagination.pageIndex + 1,
+      limit: pagination.pageSize,
+      type: "siswa",
+
+      search: global,
+
+      sortBy: sorting?.[0]?.id,
+      sortOrder: sorting?.[0]?.desc ? "desc" : "asc",
+
+      ...filter,
+    }),
+    [
+      filters,
+      pagination.pageIndex,
+      pagination.pageSize,
+      global,
+      sorting,
+      filter,
+    ],
+  );
 
   const {
     data: attendanceData,
@@ -185,7 +205,7 @@ export const StudentAttendance = () => {
           value: "harian" | "bulanan" | "mingguan" | "tahunan",
         ) => {
           setDataMode(value);
-          setFilter(value);
+          setFilters(value);
         }}
       />
 
@@ -193,9 +213,20 @@ export const StudentAttendance = () => {
         totalAttedance={true}
         data={filteredData}
         isLoading={isLoading || isFetching}
+        global={global}
+        setGlobal={setGlobal}
+
+        sorting={sorting}
+        onSortingChange={onSortingChange}
+
+        filter={filter}
+        setFilter={setFilter}
+
         pagination={pagination}
         onPaginationChange={onPaginationChange}
+
         rowCount={attendanceData?.pagination?.total ?? 0}
+
       />
       <ExportFilterModal
         open={isModalOpen}

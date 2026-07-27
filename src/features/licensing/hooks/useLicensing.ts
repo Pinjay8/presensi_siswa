@@ -31,3 +31,48 @@ export const useLicensing = () => {
     refetch: query.refetch,
   };
 };
+
+
+
+interface LicensingParams {
+  page: number;
+  limit: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  [key: string]: any;
+}
+
+export const useLicensingPaginated = (params: LicensingParams) => {
+  const auth = useAuth();
+  const profile: any = useProfile();
+
+  const enabled =
+    auth.isAuthenticated() &&
+    Boolean(profile.user?.id);
+
+  const query = useQuery({
+    enabled,
+    queryKey: [
+      "licensing",
+      params.page,
+      params.limit,
+      params.search,
+      params.sortBy,
+      params.sortOrder,
+      params,
+    ],
+    queryFn: () => dispensasiService.getPaginated(params),
+  });
+
+  return {
+    query,
+    data: query.data?.data ?? [],
+    pagination: query.data?.pagination,
+    isLoading:
+      query.isLoading ||
+      query.isFetching ||
+      query.isPending,
+    refetch: query.refetch,
+  };
+};

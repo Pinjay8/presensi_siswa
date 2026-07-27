@@ -23,7 +23,7 @@ import { useForm } from "react-hook-form";
 
 interface ModalAssignWaliKelasProps {
   open: boolean;
-  teacher?: BiodataGuru | null;
+  teacher?: any | null;
   kelasOptions: {
     label: string;
     value: string;
@@ -51,7 +51,7 @@ export function ModalAssignWaliKelas({
 
   const handleSubmit = (values: FormValues) => {
     onSubmit({
-      guruId: teacher?.id ?? 0,
+      guruId: teacher?.guruId ?? 0,
       kelasId: Number(values.kelasId),
     });
 
@@ -75,7 +75,7 @@ export function ModalAssignWaliKelas({
             <label className="text-sm font-medium">Nama Guru</label>
 
             <div className="mt-1 rounded border p-2 bg-muted">
-              {teacher?.user?.name ?? "-"}
+              {teacher?.name ?? "-"}
             </div>
           </div>
 

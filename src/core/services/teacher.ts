@@ -10,6 +10,9 @@ import {
 } from "../models/schools";
 
 export const teacherService = {
+
+  // get teacher by id
+  
   all: http.get<BaseResponse<SchoolDataModel[]>>(
     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.teacher.waliKelas,
     getInitialOptions,

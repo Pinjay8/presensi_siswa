@@ -10,6 +10,5 @@ export const useStudentAttendance = (params: any) => {
     queryKey: ["studentsPaginated", params],
     queryFn: () => attendanceService.getPaginated(params),
     // keepPreviousData: true,
-    enabled: !!params.page && !!params.limit,
   });
 };

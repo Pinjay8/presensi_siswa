@@ -115,7 +115,7 @@ export const parentColumnWithFilter = ({
     },
     {
       accessorKey: "school.namaSekolah",
-      accessorFn: (row) => row.school?.namaSekolah,
+      accessorFn: (row) => row.sekolah.namaSekolah,
       ...(columnFilter?.schoolOptions &&
         columnFilter.schoolOptions.length > 0 && {
         meta: {

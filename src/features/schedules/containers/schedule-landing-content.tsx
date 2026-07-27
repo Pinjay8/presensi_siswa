@@ -100,18 +100,29 @@ export function ScheduleLandingContent() {
 
   const {
     global,
-    sorting,
+    setGlobal,
+    sorting = [],
     filter,
     pagination,
     onSortingChange,
     onPaginationChange,
   } = useDataTableController({
     defaultPageSize: 10,
+    defaultSorting: [
+      {
+        id: "updatedAt",
+        desc: true,
+      },
+    ],
   });
 
-  const params = {
+
+  const params: any = {
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
+    search: global,
+    sortBy: sorting[0]?.id,
+    sortOrder: sorting[0]?.desc ? "desc" : "asc",
   };
 
   const {
@@ -174,7 +185,6 @@ export function ScheduleLandingContent() {
         kelasId: item.kelasId,
         mataPelajaranId: item.mataPelajaranId,
       };
-      console.log("QR ITEM", item);
 
       setSelectedQr({
         kelasId: item.kelasId,
@@ -207,12 +217,14 @@ export function ScheduleLandingContent() {
   const filteredTeachers = useMemo(() => {
     return (
       teachers?.data?.filter((teacher: any) =>
-        teacher.namaGuru.toLowerCase().includes(searchTeacher.toLowerCase()),
+        // teacher.namaGuru.toLowerCase().includes(searchTeacher.toLowerCase()),
+        teacher.name.includes(searchTeacher),
+
       ) || []
     );
   }, [teachers?.data, searchTeacher]);
 
-  // Download Excel template
+
   const handleDownloadTemplate = () => {
     try {
       const link = document.createElement("a");
@@ -265,9 +277,9 @@ export function ScheduleLandingContent() {
     } catch (err: any) {
       alert.error(
         err?.message ??
-          lang.text("failedImportData", {
-            context: lang.text("scheduleMapel"),
-          }),
+        lang.text("failedImportData", {
+          context: lang.text("scheduleMapel"),
+        }),
       );
     }
   };
@@ -339,11 +351,11 @@ export function ScheduleLandingContent() {
       // alert.error("Error deleting schedule:", err);
       alert.error(
         err?.message ||
-          lang.text("failed", {
-            context: lang.text("dataFailDelete", {
-              context: lang.text("scheduleMapel"),
-            }),
+        lang.text("failed", {
+          context: lang.text("dataFailDelete", {
+            context: lang.text("scheduleMapel"),
           }),
+        }),
       );
     }
   };
@@ -399,9 +411,9 @@ export function ScheduleLandingContent() {
     } catch (err: any) {
       alert.error(
         err?.message ||
-          lang.text("failed", {
-            context: lang.text("scheduleFailCreate", { context: "" }),
-          }),
+        lang.text("failed", {
+          context: lang.text("scheduleFailCreate", { context: "" }),
+        }),
       );
     }
   };
@@ -455,9 +467,9 @@ export function ScheduleLandingContent() {
     } catch (err: any) {
       alert.error(
         err?.message ||
-          lang.text("failed", {
-            context: lang.text("scheduleFailUpdate", { context: "" }),
-          }),
+        lang.text("failed", {
+          context: lang.text("scheduleFailUpdate", { context: "" }),
+        }),
       );
     }
   };
@@ -539,11 +551,14 @@ export function ScheduleLandingContent() {
           dataFallback={classroomDataFallback}
           globalSearch
           // showFilterButton
-          searchParamPagination
-          searchPlaceholder={lang.text("search")}
-          isLoading={isLoading}
+          sorting={sorting}
+          onSortingChange={onSortingChange}
+          globalFilter={global}
+          onGlobalFilterChange={setGlobal}
           manualPagination
-          enableRowSelection
+          searchParamPagination
+          searchPlaceholder={lang.text("search") + " " + lang.text("classRoom")}
+          isLoading={isLoading}
           rowCount={paginationInfo?.total ?? 0}
           pagination={pagination}
           onPaginationChange={onPaginationChange}

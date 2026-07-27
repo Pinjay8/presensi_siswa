@@ -48,8 +48,8 @@ import { StudentPhoto } from "../components";
 import { useStudentDetail } from "../hooks";
 import { studentEditSchema } from "../utils";
 import { debounce } from "lodash";
-import { Divider } from "@mui/material";
-export interface StudentInformationProps {}
+export interface StudentInformationProps { }
+
 
 export const StudentInformation = () => {
   const { decodeParams } = useParamDecode();
@@ -185,7 +185,7 @@ export const StudentInformation = () => {
     if (detail.data && userDetail.data && classroom.data && !isEditMode) {
       const validKelasId =
         detail.data?.idKelas &&
-        classroom.data.some((kelas) => kelas.id === detail.data.idKelas)
+          classroom.data.some((kelas) => kelas.id === detail.data.idKelas)
           ? String(detail.data.idKelas)
           : "";
 
@@ -317,7 +317,7 @@ export const StudentInformation = () => {
     } catch (err: any) {
       alert.error(
         err?.message ||
-          lang.text("failUpdate", { context: lang.text("student") }),
+        lang.text("failUpdate", { context: lang.text("student") }),
       );
     }
   }
@@ -340,7 +340,7 @@ export const StudentInformation = () => {
         <div>
           <StudentPhoto
             title={detail.data?.user?.name || "-"}
-            image={detail.data?.fotoTampakDepan || detail.data?.user?.image}
+            image={detail.data?.fotoTampakDepan}
           />
         </div>
         <div className="md:col-span-2 lg:col-span-3">
@@ -478,12 +478,12 @@ export const StudentInformation = () => {
                   type="email"
                   isEditMode={isEditMode}
                 />
-                <NonEditableInfoItem
+                {/* <NonEditableInfoItem
                   icon={<Mail size={24} />}
                   label={lang.text("school")}
                   value={detail.data?.user?.sekolah?.namaSekolah}
                   isEditMode={isEditMode}
-                />
+                /> */}
                 <EditableInfoItem
                   control={form.control}
                   icon={<MapPin size={24} />}
@@ -538,14 +538,14 @@ export const StudentInformation = () => {
                   options={verificationOptions}
                   isEditMode={isEditMode}
                 /> */}
-                <EditableInfoItem
+                {/* <EditableInfoItem
                   control={form.control}
                   icon={<TabletSmartphone size={24} />}
                   label={lang.text("deviceId")}
                   value={userDetail.data?.noTlp}
                   name="noTlp"
                   isEditMode={isEditMode}
-                />
+                /> */}
                 {/* <EditableInfoItem
                   control={form.control}
                   icon={<IdCard size={24} />}

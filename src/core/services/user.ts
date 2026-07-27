@@ -5,6 +5,7 @@ import { BaseResponse, BaseResponseQr } from "../models/http";
 import { UserCreationModel, UserDataModel } from "../models/user";
 import { Profile } from "../models/profile";
 import { getToken } from "@/features/auth";
+import { withQuery } from "../utils/withQuery";
 
 export const userService = {
   getProfile: http.get<BaseResponse<Profile>>(
@@ -92,13 +93,50 @@ export const userService = {
     getInitialOptions,
   ),
 
+  getParentsPaginated: async (params: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  }): Promise<BaseResponse<UserDataModel[]>> => {
+    const query = {
+      page: params.page,
+      limit: params.limit,
+      search: params.search,
+      sortBy: params.sortBy,
+      sortOrder: params.sortOrder,
+    };
+
+    const url = withQuery(
+      API_CONFIG.baseUrl + SERVICE_ENDPOINTS.users.parents,
+      query,
+    );
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    return await response.json();
+  },
+
+  // getParentsById
+  getParentsById: (id: number) =>
+    http.get<BaseResponse<UserDataModel>>(
+      API_CONFIG.baseUrl + SERVICE_ENDPOINTS.users.parentsById,
+      getInitialOptions,
+    )({ path: String(id) }),
+
   updateNotifParents: (userId: number, data: { notifOrtuEnabled: boolean }) =>
     http.put<BaseResponse<any>>(
       API_CONFIG.baseUrl +
-        SERVICE_ENDPOINTS.users.notifParents.replace(
-          "{user_id}",
-          String(userId),
-        ),
+      SERVICE_ENDPOINTS.users.notifParents.replace(
+        "{user_id}",
+        String(userId),
+      ),
       getInitialOptions,
     )(data),
 

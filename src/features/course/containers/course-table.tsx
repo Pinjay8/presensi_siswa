@@ -28,27 +28,36 @@ import { useQueryClient } from "@tanstack/react-query";
 export const CourseTable = () => {
   const {
     global,
+    setGlobal,
     sorting,
-    filter,
     pagination,
     onSortingChange,
     onPaginationChange,
   } = useDataTableController({
     defaultPageSize: 10,
+    defaultSorting: [
+      {
+        id: "updatedAt",
+        desc: true,
+      },
+    ]
   });
 
-  const params = {
+  const params: any = {
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
+    search: global,
+    sortBy: sorting?.[0]?.id,
+    sortOrder: sorting?.[0]?.desc ? "desc" : "asc",
   };
 
-  // const resource = useCourse();
   const {
     data: resource,
     pagination: paginationInfo,
     isLoading,
     query,
   } = useCoursePagination(params);
+
   const school = useSchool();
   const classroom = useClassroom();
   const [createCourse, setCreateCourse] = useState(false);
@@ -142,7 +151,20 @@ export const CourseTable = () => {
         data={filteredCourseData}
         dataFallback={courseDataFallback}
         globalSearch
-        // showFilterButton
+        searchParamPagination
+
+        sorting={sorting}
+        onSortingChange={onSortingChange}
+
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
+
+        globalFilter={global}
+        onGlobalFilterChange={setGlobal}
+
+        rowCount={paginationInfo?.total ?? 0}
+        manualPagination
+
         actions={[
           ...(!isRole
             ? [
@@ -156,10 +178,7 @@ export const CourseTable = () => {
             ]
             : []),
         ]}
-        searchParamPagination
-        rowCount={paginationInfo?.total ?? 0}
-        pagination={pagination}
-        onPaginationChange={onPaginationChange}
+
         searchPlaceholder={lang.text("search")}
         isLoading={isLoading}
       />

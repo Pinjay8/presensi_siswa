@@ -25,6 +25,13 @@ interface StudentAttendanceTableProps {
   pagination: any;
   onPaginationChange: any;
   rowCount: number;
+  isLoading?: boolean;
+  global: any;
+  setGlobal: any;
+  sorting: any;
+  onSortingChange: any;
+  filter?: any;
+  setFilter: any;
 }
 
 export function SubjectAttendanceTable({
@@ -33,6 +40,13 @@ export function SubjectAttendanceTable({
   pagination,
   onPaginationChange,
   rowCount,
+  isLoading,
+  global,
+  setGlobal,
+  sorting,
+  onSortingChange,
+  filter,
+  setFilter
 }: StudentAttendanceTableProps) {
   const queryClient = useQueryClient();
   const alert = useAlert();
@@ -81,27 +95,19 @@ export function SubjectAttendanceTable({
         dataFallback={columns}
         globalSearch
         searchParamPagination
-        showFilterButton
+        // showFilterButton
         enableRowSelection={false}
         manualPagination
+        globalFilter={global}
+        onGlobalFilterChange={setGlobal}
+        sorting={sorting}
+        onSortingChange={onSortingChange}
         pagination={pagination}
         onPaginationChange={onPaginationChange}
+        onFilterChange={setFilter}
         rowCount={rowCount}
-        initialState={{
-          columnVisibility: {
-            user_email: false,
-            user_nis: false,
-            user_nisn: false,
-          },
-          sorting: [
-            {
-              id: "createdAt",
-              desc: true,
-            },
-          ],
-        }}
         searchPlaceholder={lang.text("search")}
-        isLoading={data.length > 0 ? false : true}
+        isLoading={isLoading}
       />
       <Backdrop
         open={loadingAttendance}

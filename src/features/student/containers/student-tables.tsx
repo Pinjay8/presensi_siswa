@@ -53,50 +53,38 @@ export const StudentLandingTables = () => {
 
   const {
     global,
+    setGlobal,
     sorting,
     filter,
+    setFilter,
     pagination,
     onSortingChange,
     onPaginationChange,
-  } = useDataTableController({ defaultPageSize: 10 });
+  } = useDataTableController({
+    defaultPageSize: 10,
+    defaultSorting: [
+      {
+        id: "updatedAt",
+        desc: true,
+      },
+    ]
+  });
 
-  // const studentParams = useMemo(
-  //   () => ({
-  //     page: pagination.pageIndex + 1,
-  //     size: pagination.pageSize,
-  //   }),
-  //   [pagination.pageIndex, pagination.pageSize],
-  // );
+  const studentParams = useMemo(() => ({
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+    search: global,
+    sortBy: sorting?.[0]?.id,
+    sortOrder: sorting?.[0]?.desc ? "desc" : "asc",
+    ...filter,
+  }), [
+    pagination.pageIndex,
+    pagination.pageSize,
+    global,
+    sorting,
+    filter,
+  ]);
 
-  const [searchParams] = useSearchParams();
-
-  const filters = useMemo(() => {
-    const filter = searchParams.get("filter");
-    return filter ? JSON.parse(filter) : [];
-  }, [searchParams]);
-
-  // const studentParams = useMemo(() => {
-  //   const filterParams = Object.fromEntries(
-  //     filters.map((item: any) => [item.id, item.value])
-  //   );
-
-  //   return {
-  //     page: pagination.pageIndex + 1,
-  //     size: pagination.pageSize,
-  //     ...filterParams,
-  //   };
-  // }, [pagination.pageIndex, pagination.pageSize, filters]);
-
-
-  const studentParams = useMemo(() => {
-    const params = Object.fromEntries(searchParams.entries());
-
-    return {
-      page: pagination.pageIndex + 1,
-      size: pagination.pageSize,
-      ...params,
-    };
-  }, [pagination.pageIndex, pagination.pageSize, searchParams]);
 
   const { data, isLoading, refetch } = useStudentPagination(studentParams);
 
@@ -362,7 +350,16 @@ export const StudentLandingTables = () => {
         refetch={refetch}
         pagination={pagination}
         onPaginationChange={onPaginationChange}
-        rowCount={data?.pagination?.totalItems ?? 0}
+        rowCount={data?.pagination?.total ?? 0}
+
+        global={global}
+        setGlobal={setGlobal}
+
+        sorting={sorting}
+        onSortingChange={onSortingChange}
+
+        filter={filter}
+        setFilter={setFilter}
       />
 
       <StudentFormDialog

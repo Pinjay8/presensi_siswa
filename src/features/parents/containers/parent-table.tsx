@@ -1,10 +1,10 @@
 import { useBiodata, useUserCreation } from "@/features/user/hooks";
 import { parentColumnWithFilter } from "../utils";
-import { BaseDataTable, useAlert } from "@/features/_global";
+import { BaseDataTable, useAlert, useDataTableController } from "@/features/_global";
 import { distinctObjectsByProperty } from "@/core/libs";
 import { useSchool } from "@/features/schools";
 import { useEffect, useMemo, useState } from "react";
-import { useParent } from "../hooks";
+import { useParent, useParentPagination } from "../hooks";
 import { useNavigate } from "react-router-dom";
 import { lang } from "@/core/libs";
 import { ModalCreateParents } from "../components/ModalCreateParents";
@@ -23,9 +23,35 @@ import { UploadScheduleDialog } from "@/features/schedules/components/UploadSche
 import { uploadExcelService } from "@/core/services/excel";
 export function ParentTable() {
   const alert = useAlert();
-  const parent = useParent();
 
-  const student = useBiodata();
+  const {
+    global,
+    setGlobal,
+    sorting,
+    filter,
+    pagination,
+    onSortingChange,
+    onPaginationChange,
+  } = useDataTableController({
+    defaultPageSize: 10,
+    defaultSorting: [
+      {
+        id: "updatedAt",
+        desc: true,
+      },
+    ],
+  });
+
+  const params = {
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+    search: global,
+    sortBy: sorting?.[0]?.id,
+    sortOrder: sorting?.[0]?.desc ? "desc" : "asc",
+  }
+  // const parent = useParent();
+
+  const parent = useParentPagination(params);
   const navigate = useNavigate();
   const school = useSchool();
   const userDelete = useUserCreation();
@@ -53,28 +79,7 @@ export function ParentTable() {
     });
   }, [school.data]);
 
-  const biodataStudents = useMemo(() => {
-    try {
-      return typeof student.data === "string"
-        ? JSON.parse(student.data)
-        : student.data || [];
-    } catch (error) {
-      console.error("Failed parse biodata", error);
-      return [];
-    }
-  }, [student.data]);
 
-  const datas = useMemo(() => {
-    return parent.data?.map((d) => {
-      return {
-        ...d,
-        student: biodataStudents?.find((e: any) =>
-          Boolean(e.orangTua?.find((f: any) => f.user?.nik === d.nik)),
-        ),
-        school: school?.data?.find((e) => Number(e.id) === Number(d.sekolahId)),
-      };
-    });
-  }, [parent.data, student.data, school.data]);
 
   const [parents, setParents] = useState(false);
 
@@ -159,17 +164,20 @@ export function ParentTable() {
       }
       <BaseDataTable
         columns={columns}
-        data={datas}
-        dataFallback={[]}
+        data={parent.data || []}
+        dataFallback={columns}
         globalSearch
-        initialState={{
-          sorting: [{ id: "name", desc: false }],
-        }}
+        onGlobalFilterChange={setGlobal}
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
+        rowCount={parent.pagination?.total ?? 0}
+        sorting={sorting}
+        onSortingChange={onSortingChange}
         actions={[
           ...(!isRole
             ? [
               {
-                title: "Unduh Template Excel",
+                title: lang.text("downloadTemplateExcel"),
                 icon: <Download />,
                 onClick: handleDownloadTemplate,
                 variant: "default" as const,
@@ -177,7 +185,7 @@ export function ParentTable() {
               },
 
               {
-                title: "Unggah Excel",
+                title: lang.text("uploadExcel"),
                 icon: <UploadCloud />,
                 onClick: () => setIsUploadModalOpen(true),
                 variant: "outline" as const,
@@ -194,9 +202,9 @@ export function ParentTable() {
         ]}
         searchParamPagination
         showFilterButton
-        searchPlaceholder={lang.text("search")}
+        searchPlaceholder={lang.text("search") + " " + lang.text("parent")}
         isLoading={
-          parent.query.isLoading || student.isLoading || school.isLoading
+          parent.query.isLoading
         }
       />
 
@@ -246,6 +254,8 @@ export function ParentTable() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      
     </>
   );
 }

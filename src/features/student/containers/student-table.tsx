@@ -26,9 +26,18 @@ interface StudentTableProps {
   data: any;
   isLoading: boolean;
   refetch: () => void;
+
   pagination: any;
   onPaginationChange: any;
   rowCount: number;
+
+  global: string;
+  setGlobal: (value: string) => void;
+
+  sorting: any;
+  onSortingChange: any;
+  filter?: any;
+  setFilter: (value: any) => void;
 }
 
 export const useAssignCard = () => {
@@ -55,7 +64,16 @@ export function StudentTable({
   onPaginationChange,
   rowCount,
   refetch,
+
+  global,
+  setGlobal,
+
+  sorting,
+  onSortingChange,
+  filter,
+  setFilter,
 }: StudentTableProps) {
+  console.log("data", data);
   const schoolOptions = useSchoolOptions();
   const classroomOptions = useClassroomOptions();
   const { handleAttend } = useAttendanceActions();
@@ -216,17 +234,68 @@ export function StudentTable({
       <BaseDataTable
         columns={columns}
         data={data}
-        globalSearch
         dataFallback={columns}
-        // searchParamPagination
-        searchPlaceholder={lang.text("search") + " " + lang.text("student")}
+
+        globalSearch
         searchParamPagination
         showFilterButton
-        isLoading={isLoading}
-        manualPagination
+
+        globalFilter={global}
+        onGlobalFilterChange={setGlobal}
+
+        sorting={sorting}
+        onSortingChange={onSortingChange}
+
         pagination={pagination}
         onPaginationChange={onPaginationChange}
+
+        onFilterChange={setFilter}
+
+        filters={[
+          {
+            id: "idKelas",
+            label: lang.text("classroom"),
+            variant: "select",
+            options: classroomOptions,
+          },
+          {
+            id: "statusKehadiran",
+            label: lang.text("attendanceStatus"),
+            variant: "select",
+            options: [
+              {
+                label: lang.text("present"),
+                value: "hadir",
+              },
+
+              {
+                label: lang.text("permit"),
+                value: "izin",
+              },
+              {
+                label: lang.text("sick"),
+                value: "sakit",
+              },
+              {
+                label: lang.text("alfa"),
+                value: "alfa",
+              },
+              {
+                label: lang.text("late"),
+                value: "terlambat",
+              },
+              {
+                label: "Belum Hadir",
+                value: "belum hadir",
+              },
+            ],
+          },
+        ]}
+
+        manualPagination
         rowCount={rowCount}
+        isLoading={isLoading}
+        searchPlaceholder={lang.text("search") + " " + lang.text("student")}
       />
 
       <RegisterFaceDialog

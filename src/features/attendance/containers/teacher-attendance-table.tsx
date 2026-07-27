@@ -3,31 +3,20 @@ import {
   dayjs,
   distinctObjectsByProperty,
   lang,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
 } from "@/core/libs";
-import { BiodataGuru } from "@/core/models/biodata-guru";
 import { BaseDataTable, useDataTableController } from "@/features/_global";
 import { useSchool } from "@/features/schools";
 import { useBiodataGuru } from "@/features/user/hooks";
-import jsPDF from "jspdf";
 import "jspdf-autotable";
-import autoTable from "jspdf-autotable";
-import Papa from "papaparse";
 import { useEffect, useMemo, useState } from "react";
-import * as XLSX from "xlsx";
 import { teacherAttendanceColumn } from "../utils";
-import { FaFilePdf } from "react-icons/fa";
 import { useStudentAttendance } from "../hooks/useStudentAttedance";
 import { io } from "socket.io-client";
 import { AttendanceFilter } from "../components/AttendanceFilter";
 import { TeacherExportModal } from "../components/TeacherExportDialog";
 import { attendanceService } from "@/core/services/pagination";
-import { schoolService } from "@/core/services";
 import { classroomService } from "@/core/services/classroom";
+import { useClassroom } from "@/features/classroom";
 
 interface attedanceProps {
   totalAttedance?: boolean;
@@ -44,6 +33,7 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
 
   const biodata = useBiodataGuru();
   const school = useSchool();
+  const classroom = useClassroom();
 
   const columns = useMemo(
     () =>
@@ -63,27 +53,48 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
     "harian" | "mingguan" | "bulanan" | "tahunan"
   >("harian");
 
-  const [filters, setFilter] = useState<
+  const [filters, setFilters] = useState<
     "harian" | "mingguan" | "bulanan" | "tahunan"
   >("harian");
 
   const {
     global,
+    setGlobal,
     sorting,
     filter,
+    setFilter,
     pagination,
     onSortingChange,
     onPaginationChange,
   } = useDataTableController({
     defaultPageSize: 10,
+    defaultSorting: [{ id: "createdAt", desc: true }],
   });
 
-  const attendanceParams = {
-    filter: filters,
-    page: pagination.pageIndex + 1,
-    limit: pagination.pageSize,
-    type: "guru",
-  };
+  const attendanceParams = useMemo(
+    () => ({
+      filter: filters,
+      page: pagination.pageIndex + 1,
+      limit: pagination.pageSize,
+      type: "guru",
+
+      search: global,
+
+      sortBy: sorting?.[0]?.id,
+      sortOrder: sorting?.[0]?.desc ? "desc" : "asc",
+
+      ...filter,
+    }),
+    [
+      filters,
+      pagination.pageIndex,
+      pagination.pageSize,
+      global,
+      sorting,
+      filter,
+    ],
+  );
+
   const {
     data: attendanceData,
     isLoading,
@@ -211,7 +222,7 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
           value: "harian" | "bulanan" | "mingguan" | "tahunan",
         ) => {
           setDataMode(value);
-          setFilter(value);
+          setFilters(value);
         }}
       />
 
@@ -226,22 +237,66 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
         pagination={pagination}
         onPaginationChange={onPaginationChange}
         rowCount={attendanceData?.pagination?.total ?? 0}
-        initialState={{
-          columnVisibility: {
-            user_email: false,
-            user_nrk: false,
-            user_nip: false,
-            user_nikki: false,
-          },
-          sorting: [
-            {
-              id: "createdAt",
-              desc: true,
-            },
-          ],
-        }}
-        searchPlaceholder={lang.text("search")}
+        globalFilter={global}
+        onGlobalFilterChange={setGlobal}
+
+        sorting={sorting}
+        onSortingChange={onSortingChange}
+        onFilterChange={setFilter}
+        // initialState={{
+        //   columnVisibility: {
+        //     user_email: false,
+        //     user_nrk: false,
+        //     user_nip: false,
+        //     user_nikki: false,
+        //   },
+        //   sorting: [
+        //     {
+        //       id: "createdAt",
+        //       desc: true,
+        //     },
+        //   ],
+        // }}
+        searchPlaceholder={lang.text("search") + " " + lang.text("teacher")}
         isLoading={biodata.query.isLoading}
+        filters={[
+          {
+            id: "kelasId",
+            label: lang.text("classroom"),
+            variant: "select",
+            options: classroom.data?.map((d) => ({
+              label: d.namaKelas,
+              value: d.id,
+            })),
+          },
+          {
+            id: "statusKehadiran",
+            label: lang.text("attendanceStatus"),
+            variant: "select",
+            options: [
+              {
+                label: lang.text("present"),
+                value: "hadir",
+              },
+              {
+                label: lang.text("late"),
+                value: "terlambat",
+              },
+              {
+                label: lang.text("alfa"),
+                value: "alfa",
+              },
+              {
+                label: lang.text("sick"),
+                value: "sakit",
+              },
+              {
+                label: lang.text("permit"),
+                value: "izin",
+              },
+            ],
+          },
+        ]}
       />
 
       <TeacherExportModal

@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { createGmapUrl, dayjs, lang } from "@/core/libs";
 import { Link } from "react-router-dom";
-import { useBiodataGuru, useUserDetail } from "@/features/user";
+import { useBiodataGuru, useBiodataGuruById, useUserDetail } from "@/features/user";
 import { useMemo } from "react";
 
 export interface TeacherInformationProps {
@@ -30,21 +30,9 @@ export interface TeacherInformationProps {
 }
 
 export const TeacherInformation = (props: TeacherInformationProps) => {
-  const teacher = useBiodataGuru();
-  const userDetail = useUserDetail(Number(props.id));
-  const currentTeacher = useMemo(() => {
-    const d = teacher.data?.find((d) => d.userId === props.id);
-    return {
-      ...d,
-      user: {
-        ...d,
-        ...userDetail?.data,
-      },
-    };
-  }, [props.id, teacher.data, userDetail.data]);
-
+  const userDetail = useBiodataGuruById(props.id);
   const detail = {
-    data: currentTeacher,
+    data: userDetail.data,
   };
 
   return (
@@ -66,27 +54,27 @@ export const TeacherInformation = (props: TeacherInformationProps) => {
               <InfoItem
                 icon={<User size={24} />}
                 label={lang.text("fullName")}
-                value={detail.data?.user?.name || "-"}
+                value={detail.data?.name || "-"}
               />
               <InfoItem
                 icon={<IdCard size={24} />}
                 label="NIP"
-                value={detail.data?.user?.nip || "-"}
+                value={detail.data?.nip || "-"}
               />
               <InfoItem
                 icon={<IdCard size={24} />}
                 label="NRK"
-                value={detail.data?.user?.nrk || "-"}
+                value={detail.data?.nrk || "-"}
               />
               <InfoItem
                 icon={<Mail size={24} />}
                 label="Email"
-                value={detail.data?.user?.email || "-"}
+                value={detail.data?.email || "-"}
               />
               <InfoItem
                 icon={<Mail size={24} />}
                 label={lang.text("school")}
-                value={detail.data?.user?.sekolah?.namaSekolah || "-"}
+                value={detail.data?.sekolah?.namaSekolah || "-"}
               />
               <InfoItem
                 icon={<Table size={24} />}
@@ -96,23 +84,23 @@ export const TeacherInformation = (props: TeacherInformationProps) => {
               <InfoItem
                 icon={<MapPin size={24} />}
                 label={lang.text("address")}
-                value={detail.data?.user?.alamat || "-"}
+                value={detail.data?.alamat || "-"}
               />
               <InfoItem
                 icon={<MapPin size={24} />}
                 label={lang.text("hobby")}
-                value={detail.data?.user?.hobi || "-"}
+                value={detail.data?.hobi || "-"}
               />
               <InfoItem
                 icon={<PersonStanding size={24} />}
                 label={lang.text("gender")}
-                value={formatGender(detail.data?.user?.jenisKelamin) || "-"}
+                value={formatGender(detail.data?.jenisKelamin) || "-"}
               />
               <InfoItem
                 icon={<CheckIcon size={24} />}
                 label={lang.text("status")}
                 value={
-                  detail.data?.user?.isActive === 2
+                  detail.data?.isActive === 2
                     ? lang.text("active")
                     : lang.text("nonActive")
                 }
@@ -120,7 +108,7 @@ export const TeacherInformation = (props: TeacherInformationProps) => {
               <InfoItem
                 icon={<LogInIcon size={24} />}
                 label={lang.text("lastLogin")}
-                value={dayjs(detail.data?.user?.lastLogin).format(
+                value={dayjs(detail.data?.lastLogin).format(
                   "HH:mm, DD MMM YYYY",
                 )}
               />
@@ -128,7 +116,7 @@ export const TeacherInformation = (props: TeacherInformationProps) => {
                 icon={<VerifiedIcon size={24} />}
                 label={lang.text("verificationStatus")}
                 value={
-                  detail.data?.user?.isVerified
+                  detail.data?.isVerified
                     ? lang.text("isVerified")
                     : lang.text("isNotVerified")
                 }
@@ -136,7 +124,7 @@ export const TeacherInformation = (props: TeacherInformationProps) => {
               <InfoItem
                 icon={<Phone size={24} />}
                 label={lang.text("noHP")}
-                value={detail.data?.user?.noTlp || "-"}
+                value={detail.data?.noTlp || "-"}
               />
               <InfoItem
                 icon={<TabletSmartphone size={24} />}

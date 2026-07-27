@@ -65,6 +65,7 @@ export const cardColumns = (
     {
       accessorKey: "tipe",
       accessorFn: (row) => row.tipe,
+      enableSorting: false,
       header: ({ column }) => {
         return (
           <BaseTableHeader
@@ -81,6 +82,7 @@ export const cardColumns = (
     {
       accessorKey: "ketersediaan",
       accessorFn: (row) => row.ketersediaan,
+      enableSorting: false,
       header: ({ column }) => {
         return (
           <BaseTableHeader

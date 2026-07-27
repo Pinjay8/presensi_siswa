@@ -73,6 +73,17 @@ interface ColFilter extends ColumnFilter {
   label: string;
 }
 
+export interface BaseDataTableFilter {
+  id: string;
+  label: string;
+  variant: "text" | "select" | "number";
+  placeholder?: string;
+  options?: {
+    label: string;
+    value: string | number;
+  }[];
+}
+
 type ColFilterState = ColFilter[];
 
 export interface BaseDataTableProps {
@@ -87,6 +98,8 @@ export interface BaseDataTableProps {
   searchParamPagination?: boolean;
   showFilterButton?: boolean;
   pageSize?: number;
+  filters?: BaseDataTableFilter[];
+  onFilterChange?: (filters: Record<string, any>) => void;
   className?: string;
   rowClassName?: string;
   cellClassName?: string;
@@ -127,6 +140,8 @@ export const BaseDataTable = ({
   enableRowSelection,
   searchParamPagination,
   showFilterButton,
+  filters,
+  onFilterChange,
   actions,
   pageSize,
   onSelectionChange,
@@ -389,126 +404,171 @@ export const BaseDataTable = ({
     );
   };
 
-  const renderContentFilterDialog = useCallback(() => {
+  // const renderContentFilterDialog = useCallback(() => {
+  //   return (
+  //     <div className="grid grid-cols-1 gap-2 md:gap-4">
+  //       {table.getHeaderGroups().map((headerGroup) => (
+  //         <React.Fragment key={headerGroup.id}>
+  //           {headerGroup.headers.map((header) => {
+  //             const columnFilterValue = header.column.getFilterValue();
+
+  //             const {
+  //               filterLabel,
+  //               filterOptions,
+  //               filterVariant,
+  //               filterPlaceholder,
+  //             } = header.column.columnDef.meta ?? {};
+
+  //             const isCanFilter =
+  //               !header.isPlaceholder &&
+  //               header.column.getCanFilter() &&
+  //               Boolean(filterVariant);
+
+  //             return !isCanFilter ? null : (
+  //               <FormItem key={header.id}>
+  //                 {filterVariant === "text" && (
+  //                   <>
+  //                     <Label>{filterLabel}</Label>
+  //                     <Input
+  //                       value={String(columnFilterValue || "")}
+  //                       type="text"
+  //                       placeholder={filterPlaceholder}
+  //                     />
+  //                   </>
+  //                 )}
+
+  //                 {filterVariant === "select" && (
+  //                   <>
+  //                     <Label>{filterLabel}</Label>
+  //                     <Select
+  //                       value={
+  //                         columnFilterValue
+  //                           ? String(columnFilterValue)
+  //                           : undefined
+  //                       }
+  //                       onValueChange={(v) => {
+  //                         // const k = header.column.id;
+  //                         // const _v = !Number.isNaN(Number(v)) ? Number(v) : v;
+  //                         // let newFilter = [...columnFilters];
+
+  //                         // if (newFilter.find((d) => d.id === k)) {
+  //                         //   newFilter = newFilter.filter((d) => d.id !== k);
+  //                         //   newFilter = [
+  //                         //     ...newFilter,
+  //                         //     { id: k, value: _v, label: filterLabel || "" },
+  //                         //   ];
+  //                         // } else {
+  //                         //   newFilter = [
+  //                         //     ...newFilter,
+  //                         //     { id: k, value: _v, label: filterLabel || "" },
+  //                         //   ];
+  //                         // }
+
+  //                         // setSearchParams({
+  //                         //   ...searchParamsToObject(searchParams.toString()),
+  //                         //   filter: jsonHelper.string(newFilter),
+  //                         // } as URLSearchParamsInit);
+
+  //                         // const params = searchParamsToObject(searchParams.toString());
+
+  //                         // // hapus filter lama
+  //                         // delete params.filter;
+
+  //                         // // masukkan filter satu-satu
+  //                         // newFilter.forEach((item) => {
+  //                         //   params[item.id] = String(item.value);
+  //                         // });
+
+  //                         // setSearchParams(params as URLSearchParamsInit);
+  //                         const k = header.column.id;
+  //                         const _v = !Number.isNaN(Number(v)) ? Number(v) : v;
+
+  //                         let newFilter = [...pendingFilters];
+
+  //                         if (newFilter.find((d) => d.id === k)) {
+  //                           newFilter = newFilter.filter((d) => d.id !== k);
+  //                         }
+
+  //                         newFilter.push({
+  //                           id: k,
+  //                           value: _v,
+  //                           label: filterLabel || "",
+  //                         });
+
+  //                         setPendingFilters(newFilter);
+  //                       }}
+
+  //                     >
+  //                       <SelectTrigger>
+  //                         <SelectValue placeholder={filterPlaceholder} />
+  //                       </SelectTrigger>
+  //                       <SelectContent className="max-h-64">
+  //                         {filterOptions?.map((option, i) => {
+  //                           return (
+  //                             <SelectItem key={i} value={String(option.value)}>
+  //                               {option.label}
+  //                             </SelectItem>
+  //                           );
+  //                         })}
+  //                       </SelectContent>
+  //                     </Select>
+  //                   </>
+  //                 )
+  //                 }
+  //               </FormItem>
+  //             );
+  //           })}
+  //         </React.Fragment>
+  //       ))
+  //       }
+  //     </div >
+  //   );
+  // }, [columnFilters, setSearchParams, table, searchParams]);
+
+
+  const renderContentFilterDialog = () => {
     return (
-      <div className="grid grid-cols-1 gap-2 md:gap-4">
-        {table.getHeaderGroups().map((headerGroup) => (
-          <React.Fragment key={headerGroup.id}>
-            {headerGroup.headers.map((header) => {
-              const columnFilterValue = header.column.getFilterValue();
+      <div className="grid grid-cols-1 gap-4">
+        {filters?.map((filter) => (
+          <FormItem key={filter.id}>
+            <Label>{filter.label}</Label>
 
-              const {
-                filterLabel,
-                filterOptions,
-                filterVariant,
-                filterPlaceholder,
-              } = header.column.columnDef.meta ?? {};
+            {filter.variant === "select" && (
+              <Select
+                onValueChange={(v) => {
+                  const value = isNaN(Number(v)) ? v : Number(v);
 
-              const isCanFilter =
-                !header.isPlaceholder &&
-                header.column.getCanFilter() &&
-                Boolean(filterVariant);
+                  setPendingFilters((prev) => [
+                    ...prev.filter((x) => x.id !== filter.id),
+                    {
+                      id: filter.id,
+                      value,
+                      label: filter.label,
+                    },
+                  ]);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={filter.placeholder} />
+                </SelectTrigger>
 
-              return !isCanFilter ? null : (
-                <FormItem key={header.id}>
-                  {filterVariant === "text" && (
-                    <>
-                      <Label>{filterLabel}</Label>
-                      <Input
-                        value={String(columnFilterValue || "")}
-                        type="text"
-                        placeholder={filterPlaceholder}
-                      />
-                    </>
-                  )}
-
-                  {filterVariant === "select" && (
-                    <>
-                      <Label>{filterLabel}</Label>
-                      <Select
-                        value={
-                          columnFilterValue
-                            ? String(columnFilterValue)
-                            : undefined
-                        }
-                        onValueChange={(v) => {
-                          // const k = header.column.id;
-                          // const _v = !Number.isNaN(Number(v)) ? Number(v) : v;
-                          // let newFilter = [...columnFilters];
-
-                          // if (newFilter.find((d) => d.id === k)) {
-                          //   newFilter = newFilter.filter((d) => d.id !== k);
-                          //   newFilter = [
-                          //     ...newFilter,
-                          //     { id: k, value: _v, label: filterLabel || "" },
-                          //   ];
-                          // } else {
-                          //   newFilter = [
-                          //     ...newFilter,
-                          //     { id: k, value: _v, label: filterLabel || "" },
-                          //   ];
-                          // }
-
-                          // setSearchParams({
-                          //   ...searchParamsToObject(searchParams.toString()),
-                          //   filter: jsonHelper.string(newFilter),
-                          // } as URLSearchParamsInit);
-
-                          // const params = searchParamsToObject(searchParams.toString());
-
-                          // // hapus filter lama
-                          // delete params.filter;
-
-                          // // masukkan filter satu-satu
-                          // newFilter.forEach((item) => {
-                          //   params[item.id] = String(item.value);
-                          // });
-
-                          // setSearchParams(params as URLSearchParamsInit);
-                          const k = header.column.id;
-                          const _v = !Number.isNaN(Number(v)) ? Number(v) : v;
-
-                          let newFilter = [...pendingFilters];
-
-                          if (newFilter.find((d) => d.id === k)) {
-                            newFilter = newFilter.filter((d) => d.id !== k);
-                          }
-
-                          newFilter.push({
-                            id: k,
-                            value: _v,
-                            label: filterLabel || "",
-                          });
-
-                          setPendingFilters(newFilter);
-                        }}
-
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder={filterPlaceholder} />
-                        </SelectTrigger>
-                        <SelectContent className="max-h-64">
-                          {filterOptions?.map((option, i) => {
-                            return (
-                              <SelectItem key={i} value={String(option.value)}>
-                                {option.label}
-                              </SelectItem>
-                            );
-                          })}
-                        </SelectContent>
-                      </Select>
-                    </>
-                  )
-                  }
-                </FormItem>
-              );
-            })}
-          </React.Fragment>
-        ))
-        }
-      </div >
+                <SelectContent>
+                  {filter.options?.map((option) => (
+                    <SelectItem
+                      key={option.value}
+                      value={String(option.value)}
+                    >
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </FormItem>
+        ))}
+      </div>
     );
-  }, [columnFilters, setSearchParams, table, searchParams]);
+  };
 
   const { pageIndex: currentPageIndex, pageSize: currentPageSize } =
     table.getState().pagination;
@@ -659,7 +719,7 @@ export const BaseDataTable = ({
         content={renderContentFilterDialog()}
         footer={
           <div className="flex flex-col gap-2 sm:flex-row">
-            <Button onClick={() => {
+            {/* <Button onClick={() => {
               const params = searchParamsToObject(searchParams.toString());
 
               table.getAllColumns().forEach((column) => {
@@ -674,6 +734,33 @@ export const BaseDataTable = ({
               filterDialog.close();
             }}
               className="w-full">
+              {lang.text("apply")}
+            </Button> */}
+            <Button
+              className="w-full"
+              onClick={() => {
+                const params = searchParamsToObject(searchParams.toString());
+
+                table.getAllColumns().forEach((column) => {
+                  delete params[column.id];
+                });
+
+                pendingFilters.forEach((item) => {
+                  params[item.id] = String(item.value);
+                });
+
+                setSearchParams(params as URLSearchParamsInit);
+
+                onFilterChange?.(
+                  pendingFilters.reduce((acc, item) => {
+                    acc[item.id] = item.value;
+                    return acc;
+                  }, {} as Record<string, any>)
+                );
+
+                filterDialog.close();
+              }}
+            >
               {lang.text("apply")}
             </Button>
             <Button

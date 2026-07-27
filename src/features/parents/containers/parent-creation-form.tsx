@@ -39,11 +39,13 @@ import { parentEditSchema } from "../utils";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
+import { useParentById } from "../hooks/use-parent-id";
 
 export const ParentCreationForm = () => {
   const { decodeParams } = useParamDecode();
 
-  const detail = useUserDetail(Number(decodeParams?.id));
+  // const detail = useUserDetail(Number(decodeParams?.id));
+  const detail = useParentById({ id: Number(decodeParams?.id) });
   const creation = useUserCreation();
 
   const student = useBiodata();

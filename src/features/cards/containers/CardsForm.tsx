@@ -20,6 +20,7 @@ import { z } from "zod";
 import { useCardCreation } from "../hooks/useCardCreation";
 import { useCards } from "../hooks/useCards";
 import { useCardById } from "../hooks/useCardsById";
+import { useQueryClient } from "@tanstack/react-query";
 
 const cardCreateSchema = z.object({
   nomorKartu: z.string().min(1, "Nomor kartu wajib diisi"),
@@ -32,13 +33,10 @@ export const CardsForm = ({
   onClose: () => void;
   cardId?: number;
 }) => {
-  const params = useParams();
-
   const detail = useCardById(cardId);
-
   const creation = useCardCreation();
-  const resource = useCards();
   const alert = useAlert();
+  const queryClient = useQueryClient();
 
   const isEdit = Boolean(detail?.data?.id);
 
@@ -60,26 +58,24 @@ export const CardsForm = ({
       alert.success(
         isEdit
           ? lang.text("successUpdate", {
-              context: lang.text("cards"),
-            })
+            context: lang.text("cards"),
+          })
           : lang.text("successCreate", {
-              context: lang.text("cards"),
-            }),
+            context: lang.text("cards"),
+          }),
       );
-
-      await resource.query.refetch();
-
+      await queryClient.invalidateQueries({ queryKey: ["cards"] });
       onClose();
     } catch (err: any) {
       alert.error(
         err?.message ||
-          (isEdit
-            ? lang.text("failUpdate", {
-                context: lang.text("cards"),
-              })
-            : lang.text("failCreate", {
-                context: lang.text("cards"),
-              })),
+        (isEdit
+          ? lang.text("failUpdate", {
+            context: lang.text("cards"),
+          })
+          : lang.text("failCreate", {
+            context: lang.text("cards"),
+          })),
       );
     }
   }

@@ -1,9 +1,9 @@
 import { distinctObjectsByProperty, lang } from "@/core/libs";
-import { BaseDataTable, useAlert } from "@/features/_global";
+import { BaseDataTable, useAlert, useDataTableController } from "@/features/_global";
 import { useSchool } from "@/features/schools";
 import { useMemo, useState } from "react";
 import { useProfile } from "@/features/profile";
-import { useCards } from "../hooks/useCards";
+import { useCards, useCardsPaginated } from "../hooks/useCards";
 import { cardColumns, cardSFallback } from "../utils/table-column";
 import { ModalCreateCards } from "../components/modalCreateClass";
 import { CardsForm } from "./CardsForm";
@@ -19,7 +19,33 @@ import { Download, UploadCloud } from "lucide-react";
 
 export const CardViewTable = () => {
   //   const resource = useClassroom();
-  const resource = useCards();
+  // const resource = useCards();
+  const {
+    global,
+    setGlobal,
+    sorting,
+    pagination,
+    onSortingChange,
+    onPaginationChange,
+  } = useDataTableController({
+    defaultPageSize: 10,
+    defaultSorting: [
+      {
+        id: "updatedAt",
+        desc: true,
+      },
+    ],
+  });
+
+  const params: any = {
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+    search: global,
+    sortBy: sorting?.[0]?.id,
+    sortOrder: sorting?.[0]?.desc ? "desc" : "asc",
+  };
+
+  const resource = useCardsPaginated(params);
   const [cards, setCards] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const userDelete = useUserCreation();
@@ -126,39 +152,46 @@ export const CardViewTable = () => {
       <BaseDataTable
         columns={columns}
         data={resource.data}
-        dataFallback={[]}
+        dataFallback={columns}
         globalSearch
-        showFilterButton
+        sorting={sorting}
+        onSortingChange={onSortingChange}
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
+        globalFilter={global}
+        onGlobalFilterChange={setGlobal}
+        rowCount={resource.pagination?.total ?? 0}
+        manualPagination
         actions={[
           ...(!isRole
             ? [
-                {
-                  title: "Unduh Template Excel",
-                  icon: <Download />,
-                  onClick: handleDownloadTemplate,
-                  variant: "default",
-                  className: "bg-green-500 text-white hover:bg-green-600",
-                },
+              {
+                title: "Unduh Template Excel",
+                icon: <Download />,
+                onClick: handleDownloadTemplate,
+                variant: "default" as const,
+                className: "bg-green-500 text-white hover:bg-green-600",
+              },
 
-                {
-                  title: "Unggah Excel",
-                  icon: <UploadCloud />,
-                  onClick: () => setIsUploadModalOpen(true),
-                  variant: "outline",
-                  className:
-                    "border-green-500 text-green-500 hover:bg-green-50",
-                },
-                {
-                  title: lang.text("addCards"),
-                  icon: <FaPlus />,
-                  onClick: () => setCards(!cards),
-                },
-              ]
+              {
+                title: "Unggah Excel",
+                icon: <UploadCloud />,
+                onClick: () => setIsUploadModalOpen(true),
+                variant: "outline" as const,
+                className:
+                  "border-green-500 text-green-500 hover:bg-green-50",
+              },
+              {
+                title: lang.text("addCards"),
+                icon: <FaPlus />,
+                onClick: () => setCards(!cards),
+              },
+            ]
             : []),
         ]}
         searchParamPagination
-        searchPlaceholder={lang.text("search")}
-        isLoading={resource.query.isLoading}
+        searchPlaceholder={lang.text("search") + " " + lang.text("cards")}
+        isLoading={resource.isLoading}
       />
       <UploadScheduleDialog
         open={isUploadModalOpen}

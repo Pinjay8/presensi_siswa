@@ -69,28 +69,46 @@ export const MatkulAttendance = () => {
       new Set(resource.data?.map((course) => course.namaMataPelajaran) || []),
     );
   }, [resource.data]);
-  const [filters, setFilter] = useState<
+  const [filters, setFilters] = useState<
     "harian" | "mingguan" | "bulanan" | "tahunan"
   >("harian");
 
   const {
     global,
+    setGlobal,
     sorting,
     filter,
+    setFilter,
     pagination,
     onSortingChange,
     onPaginationChange,
-  } = useDataTableController({ defaultPageSize: 10 });
+  } = useDataTableController({
+    defaultPageSize: 10,
+  });
 
   const debouncedSearchStudentName = useDebounce(searchStudentName, 500);
+  const attendanceParams = useMemo(
+    () => ({
+      filter: filters,
+      page: pagination.pageIndex + 1,
+      limit: pagination.pageSize,
 
-  const attendanceParams = {
-    filter: filters,
-    page: pagination.pageIndex + 1,
-    limit: pagination.pageSize,
-    kelasId: selectedClasses !== "all" ? selectedClasses : undefined,
-    search: debouncedSearchStudentName || undefined,
-  };
+      search: global || undefined,
+
+      sortBy: sorting?.[0]?.id,
+      sortDir: sorting?.[0]?.desc ? "desc" : "asc",
+
+      ...filter,
+    }),
+    [
+      filters,
+      pagination.pageIndex,
+      pagination.pageSize,
+      global,
+      sorting,
+      filter,
+    ],
+  );
 
   const {
     data: mapelData,
@@ -149,7 +167,7 @@ export const MatkulAttendance = () => {
       // }),
     };
 
-    console.log("selected classes", selectedClasses);
+    // console.log("selected classes", selectedClasses);
 
     if (type === "excel") {
       handleExportExcel(params);
@@ -193,7 +211,7 @@ export const MatkulAttendance = () => {
           selectedStatus={selectedStatus}
           setSelectedStatus={setSelectedStatus}
           filters={filters}
-          setFilter={setFilter}
+          setFilter={setFilters}
           listClassRoom={listClassRoom}
           courseOptions={courseOptions}
           resetFilters={resetFilters}
@@ -222,9 +240,19 @@ export const MatkulAttendance = () => {
           </div>
           <MatpelAttendanceTable
             data={filteredData}
+            isLoading={isLoading || isFetching}
+
             pagination={pagination}
             onPaginationChange={onPaginationChange}
             rowCount={mapelData?.pagination?.total ?? 0}
+
+            global={global}
+            setGlobal={setGlobal}
+
+            sorting={sorting}
+            onSortingChange={onSortingChange}
+
+            setFilter={setFilter}
           />
         </div>
 
@@ -278,7 +306,7 @@ export const MatkulAttendance = () => {
                 <Button
                   onClick={() => handleExport("excel")}
                   className="w-full rounded-lg bg-green-500 px-4 py-2 text-white transition hover:bg-green-600"
-                  // variant="secondary"
+                // variant="secondary"
                 >
                   Export Excel
                 </Button>

@@ -32,3 +32,38 @@ export const useParent = () => {
     isLoading,
   };
 };
+
+
+export const useParentPagination = (params: {
+  page: number;
+  limit: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: any;
+}) => {
+  const auth = useAuth();
+  const profile = useProfile();
+
+  const enabled = auth.isAuthenticated() && Boolean(profile.user?.id);
+
+  const query = useQuery({
+    enabled,
+    queryKey: [
+      "parents",
+      params.page,
+      params.limit,
+      params.search,
+      params.sortBy,
+      params.sortOrder,
+    ],
+    queryFn: () => userService.getParentsPaginated(params),
+  });
+
+  return {
+    query,
+    data: query.data?.data ?? [],
+    pagination: query.data?.pagination,
+    isLoading: query.isLoading || query.isFetching || query.isPending,
+  };
+};
+

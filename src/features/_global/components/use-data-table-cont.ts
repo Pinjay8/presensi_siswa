@@ -18,9 +18,19 @@ export function useDataTableController({ defaultPageSize = 10, defaultSorting }:
 
   // ✅ Filter
   const filterParam = searchParams.get("filter");
+  // const parsedFilter = useMemo(() => {
+  //   return filterParam ? jsonHelper.parse(filterParam) : [];
+  // }, [filterParam]);
   const parsedFilter = useMemo(() => {
-    return filterParam ? jsonHelper.parse(filterParam) : [];
-  }, [filterParam]);
+    const params = searchParamsToObject(searchParams.toString());
+
+    delete params.pageIndex;
+    delete params.pageSize;
+    delete params.search;
+    delete params.sort;
+
+    return params;
+  }, [searchParams]);
 
   // ✅ Sorting
   const sortParam = searchParams.get("sort");
@@ -32,6 +42,32 @@ export function useDataTableController({ defaultPageSize = 10, defaultSorting }:
   //     }]
   //     : [];
   // }, [sortParam]);
+
+  const setFilter = useCallback(
+    (filters: Record<string, any>) => {
+      const params = searchParamsToObject(searchParams.toString());
+
+      // daftar param yang BUKAN filter
+      const reserved = ["pageIndex", "pageSize", "search", "sort"];
+
+      // hapus semua filter lama
+      Object.keys(params).forEach((key) => {
+        if (!reserved.includes(key)) {
+          delete params[key];
+        }
+      });
+
+      // tambahkan filter baru
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          params[key] = String(value);
+        }
+      });
+
+      setSearchParams(params);
+    },
+    [searchParams, setSearchParams]
+  );
 
   // ✅ Pagination from URL
   const paginationSearchParams = useMemo(() => ({
@@ -146,6 +182,7 @@ export function useDataTableController({ defaultPageSize = 10, defaultSorting }:
     setGlobal,
     sorting,
     filter: parsedFilter,
+    setFilter,
     pagination,
     onSortingChange,
     onPaginationChange,

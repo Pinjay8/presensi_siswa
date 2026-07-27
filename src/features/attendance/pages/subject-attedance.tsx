@@ -39,25 +39,44 @@ export const SubjectAttendance = () => {
     dayjs().tz("Asia/Jakarta").format("YYYY-MM"),
   );
 
-  const [filters, setFilter] = useState<
+  const [filters, setFilters] = useState<
     "harian" | "mingguan" | "bulanan" | "tahunan"
   >("harian");
 
   const {
     global,
+    setGlobal,
     sorting,
     filter,
+    setFilter,
     pagination,
     onSortingChange,
     onPaginationChange,
-  } = useDataTableController({ defaultPageSize: 10 });
+  } = useDataTableController({
+    defaultPageSize: 10,
+    defaultSorting: [{ id: "createdAt", desc: true }],
+  });
 
-  const attendanceParams = {
-    // filter: filters,
-    page: pagination.pageIndex + 1,
-    limit: pagination.pageSize,
-    search: global.search,
-  };
+  const attendanceParams = useMemo(
+    () => ({
+      page: pagination.pageIndex + 1,
+      limit: pagination.pageSize,
+
+      search: global,
+
+      sortBy: sorting?.[0]?.id,
+      sortDir: sorting?.[0]?.desc ? "desc" : "asc",
+
+      ...filter,
+    }),
+    [
+      pagination.pageIndex,
+      pagination.pageSize,
+      global,
+      sorting,
+      filter,
+    ],
+  );
 
   const {
     data: attendanceData,
@@ -142,7 +161,16 @@ export const SubjectAttendance = () => {
         data={filteredData}
         pagination={pagination}
         onPaginationChange={onPaginationChange}
+        isLoading={isLoading || isFetching}
         rowCount={attendanceData?.pagination?.total ?? 0}
+
+        global={global}
+        setGlobal={setGlobal}
+
+        sorting={sorting}
+        onSortingChange={onSortingChange}
+
+        setFilter={setFilter}
       />
     </DashboardPageLayout>
   );

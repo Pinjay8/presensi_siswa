@@ -48,9 +48,10 @@ export const ekstrakurikulerColumns = ({
     {
       accessorKey: "jenis",
       accessorFn: (row) => row.jenis,
+      enableSorting: false,
       header: ({ column }) => (
         <BaseTableHeader
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           {lang.text("jenis")}
         </BaseTableHeader>
