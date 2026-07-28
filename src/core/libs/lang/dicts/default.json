@@ -891,12 +891,12 @@
     "en": "Search Student"
   },
   "successImportData": {
-    "id": "Berhasil mengimpor data {context}",
-    "en": "{context} imported successfully"
+    "id": "Berhasil mengimpor data [context]",
+    "en": "[context] imported successfully"
   },
   "failedImportData": {
-    "id": "Gagal mengimpor data {context}",
-    "en": "Failed to import data {context}"
+    "id": "Gagal mengimpor data [context]",
+    "en": "Failed to import data [context]"
   },
   "failedRegisterFace": {
     "id": "Gagal mendaftarkan wajah",
@@ -915,12 +915,12 @@
     "en": "Password must be at least 8 characters long"
   },
   "successDownloadTemplateExcel": {
-    "id": "Berhasil mengunduh template Excel {context}",
-    "en": "Successfully downloaded {context} Excel template"
+    "id": "Berhasil mengunduh template Excel [context]",
+    "en": "Successfully downloaded [context] Excel template"
   },
   "failedDownloadTemplateExcel": {
-    "id": "Gagal mengunduh template Excel {context}",
-    "en": "Failed to download {context} Excel template"
+    "id": "Gagal mengunduh template Excel [context]",
+    "en": "Failed to download [contex]} Excel template"
   },
 
   "importCompletedWithSkipped": {
