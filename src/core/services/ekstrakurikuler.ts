@@ -2,9 +2,19 @@ import { http } from "@itokun99/http";
 import { API_CONFIG, SERVICE_ENDPOINTS } from "../configs/app";
 import { BaseResponse } from "../models/http";
 import { getInitialOptions } from "../utils/http";
-import { CourseCreationModel, CourseDataModel } from "../models/course";
 import { withQuery } from "../utils/withQuery";
 import { getToken } from "@/features/auth";
+
+export interface GetMemberParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  status?: string;
+
+  [key: string]: any;
+}
 
 export const ekstrakurikulerService = {
   all: http.get<BaseResponse<any[]>>(
@@ -65,34 +75,20 @@ export const ekstrakurikulerService = {
   // get member
   getMember: async (
     id: number,
-    params?: {
-      page?: number;
-      limit?: number;
-      search?: string;
-    },
+    params?: GetMemberParams,
   ): Promise<any> => {
-    const hasParams =
-      params &&
-      Object.values(params).some(
-        (value) => value !== undefined && value !== "",
-      );
+    const query = {
+      ...params,
+    };
 
-    const url = hasParams
-      ? withQuery(
-          `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.ekstrakurikuler.all}/${id}/anggota`,
-          {
-            ...(params.page !== undefined && {
-              page: params.page,
-            }),
-            ...(params.limit !== undefined && {
-              limit: params.limit,
-            }),
-            ...(params.search !== undefined && {
-              search: params.search,
-            }),
-          },
-        )
-      : `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.ekstrakurikuler.all}/${id}/anggota`;
+    if (!query?.search) {
+      delete query.search;
+    }
+
+    const url = withQuery(
+      `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.ekstrakurikuler.all}/${id}/anggota`,
+      query,
+    );
 
     const response = await fetch(url, {
       headers: {

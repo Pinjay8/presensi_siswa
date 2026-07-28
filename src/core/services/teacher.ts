@@ -12,7 +12,7 @@ import {
 export const teacherService = {
 
   // get teacher by id
-  
+
   all: http.get<BaseResponse<SchoolDataModel[]>>(
     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.teacher.waliKelas,
     getInitialOptions,
@@ -30,14 +30,20 @@ export const teacherService = {
   ),
 
   //   update
-  update: (id: number, data: any) => {
-    return http.put<{ message: string; sekolahId: number }, any>(
+  // update: (id: number, data: any) => {
+  //   return http.put<{ message: string; }, any>(
+  //     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.teacher.waliKelas,
+  //     getInitialOptions,
+  //   )(data, { path: String(id) });
+  // },
+  update: (data: { guruId: number; kelasId: number[] }) => {
+    return http.put(
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.teacher.waliKelas,
       getInitialOptions,
-    )(data, { path: String(id) });
+    )(data);
   },
 
-  qrCodeGenerate : http.post(
+  qrCodeGenerate: http.post(
     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.teacher.generateQrCode,
     getInitialOptions,
   ),

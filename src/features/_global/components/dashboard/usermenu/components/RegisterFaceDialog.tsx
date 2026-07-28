@@ -10,6 +10,7 @@ import { XIcon } from "lucide-react";
 import { Button, lang } from "@/core/libs";
 import { FileUploader } from "../../../file-uploader";
 import { useAlert } from "@/features/_global/hooks";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface RegisterFaceDialogProps {
   open: boolean;
@@ -26,6 +27,7 @@ export default function RegisterFaceDialog({
   const [previewImage, setPreviewImage] = useState("");
   const [loading, setLoading] = useState(false);
   const alert = useAlert();
+  const queryClient = useQueryClient();
 
   const handleSubmit = async () => {
     if (!fotoTampakDepan) {
@@ -40,6 +42,7 @@ export default function RegisterFaceDialog({
       setFotoTampakDepan(null);
       setPreviewImage("");
       onClose();
+
     } finally {
       setLoading(false);
     }

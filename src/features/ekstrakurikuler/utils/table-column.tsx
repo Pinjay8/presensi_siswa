@@ -6,6 +6,7 @@ import {
   BaseTableHeader,
 } from "@/features/_global";
 import { useProfile } from "@/features/profile";
+import { Chip } from "@mui/material";
 import { ColumnDef } from "@tanstack/react-table";
 
 export const ekstrakurikulerColumns = ({
@@ -171,7 +172,27 @@ export const memberEkstrakurikulerColumns = ({
           {lang.text("status")}
         </BaseTableHeader>
       ),
-      cell: ({ row }) => row.original?.status || "-",
+      cell: ({ row }) => {
+        const status = row.original?.status;
+
+        if (!status) return "-";
+
+        const isActive = status.toLowerCase() === "aktif";
+
+        return (
+          <Chip
+            label={status}
+            size="small"
+            sx={{
+              bgcolor: isActive ? "#E8F5E9" : "#FFEBEE",
+              color: isActive ? "#2E7D32" : "#C62828",
+              borderRadius: "8px",
+              fontWeight: 600,
+              textTransform: 'capitalize'
+            }}
+          />
+        );
+      },
     },
     {
       accessorKey: "id",
@@ -180,7 +201,15 @@ export const memberEkstrakurikulerColumns = ({
       enableSorting: false,
       header: () => lang.text("action"),
       cell: ({ row }) => {
-        return <BaseActionTable onRemove={() => onRemove?.(row.original)} />;
+        const isInactive =
+          row.original?.status?.toLowerCase() === "nonaktif";
+
+        return (
+          <BaseActionTable
+            disableRemove={isInactive}
+            onRemove={() => onRemove?.(row.original)}
+          />
+        );
       },
     },
   ];

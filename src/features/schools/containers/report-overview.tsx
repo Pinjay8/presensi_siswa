@@ -1,4 +1,4 @@
-import { APP_CONFIG } from "@/core/configs";
+import { API_CONFIG, APP_CONFIG } from "@/core/configs";
 import {
   Button,
   CardTitle,
@@ -18,12 +18,15 @@ import { DashboardPageLayout } from "@/features/_global";
 import { useBiodata } from "@/features/user";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaArrowDown, FaChevronDown, FaFilePdf } from "react-icons/fa";
 import { ChartSemiCircle } from "../components";
 import { calculateAttendanceStats } from "../utils";
 import { SchoolByProvinceTable } from "./school-by-province-table";
 import { Box, Typography } from "@mui/material";
+import { useProfile } from "@/features/profile";
+import { LicenseDoughnut } from "../components/LicenseDoughnut";
+import { LicenseInfoCard } from "../components/LicenseInfoCard";
 
 interface ReportOverviewProps {
   selectedSchool?: string;
@@ -44,6 +47,22 @@ export const ReportOverview = ({
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>(
     undefined,
   );
+
+  const profile = useProfile();
+  const isAdmin = profile?.user?.role === "admin" || profile?.user?.role === "superAdmin";
+  //   const [loading, setLoading] = useState<boolean>(false);
+  const [status, setStatus] = useState<any>(null);
+  const fetchStatus = async () => {
+    try {
+      const response = await fetch(`${API_CONFIG.baseUrl}/license/status`);
+      const data = await response.json();
+      setStatus(data);
+    } catch (error) { }
+  };
+
+  useEffect(() => {
+    fetchStatus();
+  }, []);
 
   return (
     <DashboardPageLayout
@@ -120,14 +139,13 @@ export const ReportOverview = ({
             <Typography variant="h6" className="mb-0 bold">
               {lang.text("ReportOverview")}
             </Typography>
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="flex items-center gap-2">
                   {selectedStatus || lang.text("selectDay")} <FaChevronDown />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                {/* <DropdownMenuLabel>Hari</DropdownMenuLabel> */}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => setSelectedStatus("Aktif")}>
                   {lang.text("today")}
@@ -140,26 +158,11 @@ export const ReportOverview = ({
                   {lang.text("thisYear")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
           </Box>
           <Box></Box>
         </Box>
         <div className="mt-3 w-full flex gap-8 flex-wrap">
-          {/* Left - Table */}
-          {/* <Card className="w-full lg:w-[calc(50%-1rem)] bg-theme-color-primary/5">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0">
-              <h3 className="text-lg font-semibold">{lang.text("schoolData")}</h3>
-              <h3 className="text-lg font-semibold">
-                {lang.text("percentagePresent")}
-              </h3>
-
-              <h3 className="text-lg font-semibold">{lang.text("schoolData")}</h3>
-            </CardHeader>
-            <CardContent>
-              <SchoolByProvinceTable status={selectedStatus} />
-            </CardContent>
-          </Card> */}
-
           <Card className="w-full lg:w-[calc(50%-1rem)] bg-theme-color-primary/5">
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
               <div>
@@ -308,6 +311,14 @@ export const ReportOverview = ({
               </div>
             </CardContent>
           </Card>
+
+          {/* License */}
+          {isAdmin && (
+            <LicenseInfoCard
+              status={status}
+              isLoading={!status}
+            />
+          )}
         </div>
       </Card>
     </DashboardPageLayout>

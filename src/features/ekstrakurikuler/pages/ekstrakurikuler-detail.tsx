@@ -76,20 +76,30 @@ export const EkstrakurikulerDetail = () => {
 
   const {
     global,
+    setGlobal,
     sorting,
     filter,
+    setFilter,
     pagination,
     onSortingChange,
     onPaginationChange,
   } = useDataTableController({
     defaultPageSize: 10,
+    defaultSorting: [{ id: "updatedAt", desc: false }],
   });
 
-  const memberResource = useMemberEkstrakurikulerDetail({
-    id: Number(decodeParams.id),
+  const memberParams: any = {
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
     search: global,
+    sortBy: sorting?.[0]?.id,
+    sortOrder: sorting?.[0]?.desc ? "desc" : "asc",
+    ...filter,
+  };
+
+  const memberResource = useMemberEkstrakurikulerDetail({
+    id: Number(decodeParams.id),
+    ...memberParams,
   });
 
   const absensiSource = useAbsensiEkskul({
@@ -229,8 +239,7 @@ export const EkstrakurikulerDetail = () => {
 
           <TabsContent value="member">
             {/* ASSIGN Member */}
-
-            <Typography sx={{ mb: 2 }} variant="h6" fontWeight={"semibold"}>
+            <Typography sx={{ mb: 1 }} variant="h6" fontWeight={"semibold"}>
               {lang.text("listMember")}
             </Typography>
 
@@ -247,23 +256,56 @@ export const EkstrakurikulerDetail = () => {
                 columns={columns}
                 data={memberResource.data}
                 dataFallback={columns}
+
                 manualPagination
                 searchParamPagination
+                showFilterButton
+
+                pagination={pagination}
                 onPaginationChange={onPaginationChange}
+
+                globalFilter={global}
+                onGlobalFilterChange={setGlobal}
+
+                sorting={sorting}
+                onSortingChange={onSortingChange}
+
+                onFilterChange={setFilter}
+
                 rowCount={memberResource?.pagination?.total ?? 0}
-                searchPlaceholder={lang.text("search")}
+
+                searchPlaceholder={lang.text("search") + " " + lang.text("name")}
+
                 actions={[
                   ...(isRole
                     ? [
-                        {
-                          title: lang.text("addMember"),
-                          icon: <FaPlus />,
-                          onClick: () => {
-                            setMemberAssignDialog(true);
-                          },
+                      {
+                        title: lang.text("addMember"),
+                        icon: <FaPlus />,
+                        onClick: () => {
+                          setMemberAssignDialog(true);
                         },
-                      ]
+                      },
+                    ]
                     : []),
+                ]}
+
+                filters={[
+                  {
+                    id: "status",
+                    label: lang.text("status"),
+                    variant: "select",
+                    options: [
+                      {
+                        label: lang.text("active"),
+                        value: "aktif",
+                      },
+                      {
+                        label: lang.text("inactive"),
+                        value: "nonaktif",
+                      },
+                    ],
+                  },
                 ]}
               />
             </div>
@@ -292,14 +334,14 @@ export const EkstrakurikulerDetail = () => {
               actions={[
                 ...(isRole
                   ? [
-                      {
-                        title: lang.text("createAbsent"),
-                        icon: <FaPlus />,
-                        onClick: () => {
-                          setAbsensiAssingDialog(true);
-                        },
+                    {
+                      title: lang.text("createAbsent"),
+                      icon: <FaPlus />,
+                      onClick: () => {
+                        setAbsensiAssingDialog(true);
                       },
-                    ]
+                    },
+                  ]
                   : []),
               ]}
             />

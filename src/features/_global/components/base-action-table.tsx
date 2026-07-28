@@ -54,6 +54,7 @@ export interface BaseActionTableProps {
   onReject?: any;
   onAbsenManual?: any;
   onRemove?: any;
+  disableRemove?: boolean;
 }
 
 export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
@@ -172,7 +173,8 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
             </DropdownMenuItem>
           )}
           {props.onRemove && (
-            <DropdownMenuItem onClick={props.onRemove}>
+            <DropdownMenuItem onClick={!props.disableRemove ? props.onRemove : undefined}
+              disabled={props.disableRemove}>
               <XIcon className="h-4 w-4" />
               {lang.text("removeAssign")}
             </DropdownMenuItem>
@@ -254,7 +256,7 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
               <Box sx={{ mb: 2 }}>
                 <>
                   <label className="text-black text-md font-semibold mb-2 flex items-center gap-2">
-                    Siswa
+                    {lang.text("student")}
                   </label>
                   <Select
                     fullWidth

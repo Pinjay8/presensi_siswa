@@ -1,11 +1,10 @@
-import { API_CONFIG, APP_CONFIG } from "@/core/configs";
+
 import { Button, Card, CardContent, CardHeader, lang } from "@/core/libs";
 import { DashboardPageLayout } from "@/features/_global";
 import { StudentDemographicsCharts } from "@/features/dashboard/containers";
 import { useProfile } from "@/features/profile";
 import React, { useEffect, useState } from "react";
 import { AttedancesReport, ReportOverview } from "../containers";
-import { useSchool } from "../hooks";
 import { useAbsensiCount } from "../hooks/useAbsensiCount";
 import { AttedancesTeacherReport } from "../containers/attedance-teacher-dashboard";
 import { ReportTeacher } from "../containers/ReportTeacher";
@@ -155,75 +154,9 @@ export const SchoolDistribution = () => {
         loadingTitle={profileLoading}
       >
         {/* <Box display={"flex"} justifyContent={"space-between"} width="100%"> */}
-          <Typography color="text.secondary">
-            {lang.text("subTitleDashboard")}
-          </Typography>
-          {/* <Typography color="text.secondary">
-            Expired Date:{" "}
-            {status?.data.expiryDate
-              ? new Date(status.data.expiryDate).toLocaleString("id-ID", {
-                  dateStyle: "long",
-                  timeStyle: "medium",
-                })
-              : "-"}
-          </Typography>
-        </Box> */}
-        {/* {ROLE === "superAdmin" ? (
-          <>
-            <div className="w-full mt-6 flex justify-between items-baseline">
-              <div className="w-max flex items-baseline">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="flex items-center gap-5 px-5"
-                    >
-                      {selectedSchool || "Pilih Sekolah"} <FaChevronDown />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="ml-10 max-h-[250px] overflow-y-auto scroll-smooth no-scrollbar">
-                    <DropdownMenuLabel>Sekolah</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {schools && schools.data.length > 0 ? (
-                      <div>
-                        {schools?.data?.map((data, index) => (
-                          <DropdownMenuItem
-                            key={index}
-                            onClick={() => setSelectedSchool(data.namaSekolah)}
-                          >
-                            {data.namaSekolah}
-                          </DropdownMenuItem>
-                        ))}
-                      </div>
-                    ) : (
-                      <DropdownMenuItem onClick={() => setSelectedSchool("")}>
-                        Tidak Tersedia
-                      </DropdownMenuItem>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                {selectedSchool ? (
-                  <Button
-                    variant="outline"
-                    onClick={() => setSelectedSchool("")}
-                    className="ml-4"
-                  >
-                    {lang.text("reset")}
-                  </Button>
-                ) : (
-                  <></>
-                )}
-              </div>
-              <div className="flex items-center">
-                <Button variant="outline" disabled className="ml-4 px-6">
-                  {dayjs().tz("Asia/Jakarta").format("MMMM")}
-                </Button>
-              </div>
-            </div>
-          </>
-        ) : (
-          <></>
-        )} */}
+        <Typography color="text.secondary">
+          {lang.text("subTitleDashboard")}
+        </Typography>
         {ROLE === "superAdmin" ||
           (ROLE === "admin" && (
             <>
@@ -297,11 +230,10 @@ export const SchoolDistribution = () => {
                         className={`
             relative cursor-pointer rounded-2xl border p-4
             transition-all hover:shadow-md
-            ${
-              isSelected
-                ? "border-primary ring-2 ring-primary/20 bg-primary/5"
-                : "border-gray-200"
-            }
+            ${isSelected
+                            ? "border-primary ring-2 ring-primary/20 bg-primary/5"
+                            : "border-gray-200"
+                          }
           `}
                       >
                         {isSelected && (

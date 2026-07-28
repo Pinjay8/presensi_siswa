@@ -656,9 +656,21 @@
     "id": "Ekspor",
     "en": "Export"
   },
+  "expiryDate": {
+    "id": "Tanggal Kadaluarsa",
+    "en": "Expiry Date"
+  },
   "selectProvince": {
     "id": "Pilih Provinsi",
     "en": "Select Province"
+  },
+  "expired": {
+    "id": "Kadaluarsa",
+    "en": "Expired"
+  },
+  "infoLicense": {
+    "id": "Informasi Lisensi",
+    "en": "License Information"
   },
   "province": {
     "id": "Provinsi",
@@ -1020,8 +1032,8 @@
     "en": "List Member"
   },
   "upload": {
-    "id": "Kirim surat sekarang",
-    "en": "Send letter for dispensation"
+    "id": "Upload",
+    "en": "Upload"
   },
 
   "startDispen": {
@@ -1850,7 +1862,7 @@
     "en": "Add Member"
   },
   "removeAssign": {
-    "id": "Hapus Anggota",
+    "id": "Nonaktif Anggota",
     "en": "Remove Member"
   },
   "successRemove": {

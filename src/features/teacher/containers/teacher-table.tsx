@@ -76,26 +76,19 @@ export function TeacherTable() {
   const handleSubmitRegisterFace = async (file: File) => {
     try {
       const uploadFormData = new FormData();
-
       uploadFormData.append("file", file);
-
       const uploadResponse = await cdnService.uploadFile(uploadFormData);
-
       const fileUrl = uploadResponse?.collection?.data?.[0]?.fileUrl;
 
       if (!fileUrl) {
         throw new Error("Failed to upload image");
       }
-
       await userService.registerFaceTeacher({
-        userId: selectedTeacher.user?.id,
+        userId: selectedTeacher.id,
         fotoTampakDepan: fileUrl,
       });
 
-      await queryClient.invalidateQueries({
-        queryKey: ["biodata-guru"],
-      });
-
+      biodata.query.refetch();
       alert.success(lang.text("successRegister"));
     } catch (error: any) {
       alert.error(error?.message || lang.text("failedRegisterFace"));
@@ -125,8 +118,15 @@ export function TeacherTable() {
   const isRole =
     profile?.user?.role === "guru" || profile?.user?.role === "siswa";
   const assignWaliKelasMutation = useMutation({
-    mutationFn: (payload: { guruId: number; kelasId: number }) => {
-      return teacherService.create(payload);
+    mutationFn: (payload: {
+      guruId: number;
+      kelasId: number[];
+    }) => {
+      const hasData = (selectedTeacher?.waliKelas?.length ?? 0) > 0;
+
+      return hasData
+        ? teacherService.update(payload)
+        : teacherService.create(payload);
     },
 
     onSuccess: () => {
@@ -243,7 +243,7 @@ export function TeacherTable() {
             })) ?? []
           }
           onClose={() => setOpenWaliKelas(false)}
-          onSubmit={(payload) => {
+          onSubmit={(payload: any) => {
             assignWaliKelasMutation.mutate(payload);
           }}
         />

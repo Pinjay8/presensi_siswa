@@ -266,7 +266,7 @@ export const teacherColumnWithFilter = ({
           <BaseTableHeader
           // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            {"Schedule"}
+            {lang.text("scheduler")}
           </BaseTableHeader>
         );
       },
