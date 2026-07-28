@@ -18,7 +18,7 @@ interface StudentAttendanceTableProps {
   sorting: any;
   onSortingChange: any;
   filter?: any;
-  setFilter: any
+  onFilterChange: any;
 }
 
 export function StudentAttendanceTable({
@@ -33,7 +33,7 @@ export function StudentAttendanceTable({
   sorting,
   onSortingChange,
   filter,
-  setFilter,
+  onFilterChange,
 
 }: StudentAttendanceTableProps) {
   const classroom = useClassroom();
@@ -52,6 +52,7 @@ export function StudentAttendanceTable({
       }),
     [classroom.data],
   );
+  const isPeriodSelected = !!filter?.filter;
 
   return (
     <div>
@@ -70,8 +71,37 @@ export function StudentAttendanceTable({
         onGlobalFilterChange={setGlobal}
         sorting={sorting}
         onSortingChange={onSortingChange}
-        onFilterChange={setFilter}
+        onFilterChange={onFilterChange}
         filters={[
+          {
+            id: "filter",
+            label: lang.text("period"),
+            variant: "select",
+            placeholder: lang.text("selectPeriod"),
+            options: [
+              { label: lang.text("daily"), value: "harian" },
+              { label: lang.text("yesterday"), value: "kemarin" },
+              { label: lang.text("weeks"), value: "mingguan" },
+              { label: lang.text("lastWeek"), value: "minggu_lalu" },
+              { label: lang.text("months"), value: "bulanan" },
+              { label: lang.text("lastMonth"), value: "bulanan_lalu" },
+              { label: lang.text("years"), value: "tahunan" },
+              { label: lang.text("lastYear"), value: "tahunan_lalu" },
+
+            ],
+          },
+          {
+            id: "startDate",
+            label: lang.text("startDate"),
+            variant: "date",
+            disabled: isPeriodSelected,
+          },
+          {
+            id: "endDate",
+            label: lang.text("endDate"),
+            variant: "date",
+            disabled: isPeriodSelected,
+          },
           {
             id: "kelasId",
             label: lang.text("classroom"),

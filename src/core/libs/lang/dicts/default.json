@@ -347,6 +347,23 @@
     "en": "Years",
     "id": "Tahunan"
   },
+  "lastYear": {
+    "en": "Last Year",
+    "id": "Tahun Lalu"
+  },
+  "yesterday": {
+    "en": "Yesterday",
+    "id": "Kemarin"
+  },
+  "lastWeek": {
+    "en": "Last Week",
+    "id": "Minggu Lalu"
+  },
+  "lastMonth": {
+    "en": "Last Month",
+    "id": "Bulan Lalu"
+  },
+
   "selectStudent": {
     "id": "Pilih Siswa",
     "en": "Select Student"
@@ -2523,6 +2540,10 @@
   "selectJakartaArea": {
     "id": "Pilih Wilayah Jakarta",
     "en": "Select the Jakarta area"
+  },
+  "period": {
+    "id": "Periode",
+    "en": "Period"
   },
   "AbsenteeDataAbsent": {
     "id": "Total Data Alpa",

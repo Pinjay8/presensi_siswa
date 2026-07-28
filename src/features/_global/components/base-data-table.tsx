@@ -76,8 +76,9 @@ interface ColFilter extends ColumnFilter {
 export interface BaseDataTableFilter {
   id: string;
   label: string;
-  variant: "text" | "select" | "number";
+  variant: "text" | "select" | "number" | "date";
   placeholder?: string;
+  disabled?: boolean;
   options?: {
     label: string;
     value: string | number;
@@ -195,6 +196,29 @@ export const BaseDataTable = ({
     }),
     [searchParams],
   );
+
+  const getFiltersFromSearchParams = React.useCallback((): ColFilterState => {
+    if (!filters) return [];
+
+    return filters.flatMap((filter) => {
+      const value = searchParams.get(filter.id);
+
+      if (value == null) return [];
+
+      return [{
+        id: filter.id,
+        value: isNaN(Number(value)) ? value : Number(value),
+        label: filter.label,
+      }];
+    });
+  }, [filters, searchParams]);
+
+  React.useEffect(() => {
+    if (filterDialog.visible) {
+      setPendingFilters(getFiltersFromSearchParams());
+    }
+  }, [filterDialog.visible, getFiltersFromSearchParams]);
+
 
   const [pendingFilters, setPendingFilters] = React.useState<ColFilterState>([]);
 
@@ -527,6 +551,18 @@ export const BaseDataTable = ({
 
 
   const renderContentFilterDialog = () => {
+    const selectedPeriod = pendingFilters.find(
+      (x) => x.id === "filter"
+    )?.value;
+
+
+
+    const hasDateRange =
+      pendingFilters.some(
+        (x) =>
+          (x.id === "startDate" || x.id === "endDate") &&
+          x.value
+      );
     return (
       <div className="grid grid-cols-1 gap-4">
         {filters?.map((filter) => (
@@ -535,6 +571,10 @@ export const BaseDataTable = ({
 
             {filter.variant === "select" && (
               <Select
+                disabled={filter.id === "filter" && hasDateRange}
+                value={String(
+                  pendingFilters.find((x) => x.id === filter.id)?.value ?? ""
+                )}
                 onValueChange={(v) => {
                   const value = isNaN(Number(v)) ? v : Number(v);
 
@@ -564,11 +604,40 @@ export const BaseDataTable = ({
                 </SelectContent>
               </Select>
             )}
+            {filter.variant === "date" && (
+              <Input
+                type="date"
+                disabled={
+                  filter.disabled ||
+                  ((filter.id === "startDate" || filter.id === "endDate") &&
+                    !!selectedPeriod)
+                }
+                value={
+                  String(
+                    pendingFilters.find((x) => x.id === filter.id)?.value ?? ""
+                  )
+                }
+                onChange={(e) =>
+                  setPendingFilters((prev) => [
+                    ...prev.filter((x) => x.id !== filter.id),
+                    {
+                      id: filter.id,
+                      value: e.target.value,
+                      label: filter.label,
+                    },
+                  ])
+                }
+              />
+            )}
+
           </FormItem>
-        ))}
-      </div>
+        ))
+        }
+      </div >
     );
   };
+
+
 
   const { pageIndex: currentPageIndex, pageSize: currentPageSize } =
     table.getState().pagination;

@@ -14,10 +14,10 @@ export const GENDER_OPTIONS = [
 export const STATUS_OPTIONS = [
   {
     label: lang.text("active"),
-    value: 2,
+    value: 1,
   },
   {
     label: lang.text("nonActive"),
-    value: 1,
+    value: 0,
   },
 ];

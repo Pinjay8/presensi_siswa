@@ -32,7 +32,7 @@ export const AttendanceFilter = ({
           {lang.text("export")} Data
           <FaFilePdf />
         </Button>
-        <Select value={period} onValueChange={onPeriodChange}>
+        {/* <Select value={period} onValueChange={onPeriodChange}>
           <SelectTrigger className="w-[120px]">
             <SelectValue placeholder={lang.text("selectPeriod")} />
           </SelectTrigger>
@@ -43,16 +43,16 @@ export const AttendanceFilter = ({
             <SelectItem value="bulanan">{lang.text("months")}</SelectItem>
             <SelectItem value="tahunan">{lang.text("years")}</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
 
-      <Button
+      {/* <Button
         variant="outline"
         aria-label="attendanceCount"
         className="cursor-default hover:bg-transparent"
       >
         Count : {attendanceCount}
-      </Button>
+      </Button> */}
     </div>
   );
 };

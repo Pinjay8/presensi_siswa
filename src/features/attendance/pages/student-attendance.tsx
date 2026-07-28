@@ -43,9 +43,9 @@ export const StudentAttendance = () => {
     dayjs().tz("Asia/Jakarta").format("YYYY-MM"),
   );
 
-  const [filters, setFilters] = useState<
-    "harian" | "mingguan" | "bulanan" | "tahunan"
-  >("harian");
+  // const [filters, setFilters] = useState<
+  //   "harian" | "mingguan" | "bulanan" | "tahunan"
+  // >("harian");
 
   const {
     global,
@@ -63,7 +63,8 @@ export const StudentAttendance = () => {
 
   const attendanceParams = useMemo(
     () => ({
-      filter: filters,
+      // filter: filters,
+      // filter: filter.filter,
       page: pagination.pageIndex + 1,
       limit: pagination.pageSize,
       type: "siswa",
@@ -73,10 +74,13 @@ export const StudentAttendance = () => {
       sortBy: sorting?.[0]?.id,
       sortOrder: sorting?.[0]?.desc ? "desc" : "asc",
 
+
+      ...(filter.filter && { filter: filter.filter }),
+
       ...filter,
     }),
     [
-      filters,
+      // filters,
       pagination.pageIndex,
       pagination.pageSize,
       global,
@@ -95,7 +99,7 @@ export const StudentAttendance = () => {
   const filteredData = attendanceData?.data || [];
 
   useEffect(() => {
-    const socket = io("https://presensi-api.app.bio-experience.com", {
+    const socket = io(import.meta.env.VITE_API_BASE_URL, {
       transports: ["websocket"],
     });
 
@@ -108,8 +112,6 @@ export const StudentAttendance = () => {
     });
 
     socket.on("absen-barcode", async (data) => {
-      console.log("[BARCODE]", data);
-
       await refetch();
     });
 
@@ -151,7 +153,7 @@ export const StudentAttendance = () => {
 
     const link = document.createElement("a");
     link.href = fileUrl;
-    link.download = "attendance.pdf";
+    link.download = "attendance-student.pdf";
 
     document.body.appendChild(link);
     link.click();
@@ -204,8 +206,8 @@ export const StudentAttendance = () => {
         onPeriodChange={(
           value: "harian" | "bulanan" | "mingguan" | "tahunan",
         ) => {
-          setDataMode(value);
-          setFilters(value);
+          // setDataMode(value);
+          // setFilters(value);
         }}
       />
 
@@ -215,23 +217,23 @@ export const StudentAttendance = () => {
         isLoading={isLoading || isFetching}
         global={global}
         setGlobal={setGlobal}
-
         sorting={sorting}
         onSortingChange={onSortingChange}
-
         filter={filter}
-        setFilter={setFilter}
-
+        onFilterChange={setFilter}
         pagination={pagination}
         onPaginationChange={onPaginationChange}
-
         rowCount={attendanceData?.pagination?.total ?? 0}
 
       />
       <ExportFilterModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        dataMode={dataMode}
+        dataMode={(filter.filter ?? "harian") as
+          | "harian"
+          | "mingguan"
+          | "bulanan"
+          | "tahunan"}
         selectedStartMonth={selectedStartMonth}
         selectedEndMonth={selectedEndMonth}
         selectedClass={selectedClass}

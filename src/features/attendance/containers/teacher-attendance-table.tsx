@@ -53,9 +53,9 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
     "harian" | "mingguan" | "bulanan" | "tahunan"
   >("harian");
 
-  const [filters, setFilters] = useState<
-    "harian" | "mingguan" | "bulanan" | "tahunan"
-  >("harian");
+  // const [filters, setFilters] = useState<
+  //   "harian" | "mingguan" | "bulanan" | "tahunan"
+  // >("harian");
 
   const {
     global,
@@ -73,7 +73,7 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
 
   const attendanceParams = useMemo(
     () => ({
-      filter: filters,
+      // filter: filters,
       page: pagination.pageIndex + 1,
       limit: pagination.pageSize,
       type: "guru",
@@ -82,11 +82,11 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
 
       sortBy: sorting?.[0]?.id,
       sortOrder: sorting?.[0]?.desc ? "desc" : "asc",
-
+      ...(filter.filter && { filter: filter.filter }),
       ...filter,
     }),
     [
-      filters,
+      filter,
       pagination.pageIndex,
       pagination.pageSize,
       global,
@@ -103,7 +103,7 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
   } = useStudentAttendance(attendanceParams);
 
   useEffect(() => {
-    const socket = io("https://presensi-api.app.bio-experience.com", {
+    const socket = io(import.meta.env.VITE_API_BASE_URL, {
       transports: ["websocket"],
     });
 
@@ -116,7 +116,7 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
     });
 
     socket.on("absen-barcode", async (data) => {
-      console.log("[BARCODE]", data);
+      // console.log("[BARCODE]", data);
 
       await refetch();
     });
@@ -159,7 +159,7 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
 
     const link = document.createElement("a");
     link.href = fileUrl;
-    link.download = "attendance.pdf";
+    link.download = "attendance-teacher.pdf";
 
     document.body.appendChild(link);
     link.click();
@@ -212,6 +212,8 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
     fetchData();
   }, []);
 
+  const isPeriodSelected = !!filter?.filter;
+
   return (
     <>
       <AttendanceFilter
@@ -222,14 +224,14 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
           value: "harian" | "bulanan" | "mingguan" | "tahunan",
         ) => {
           setDataMode(value);
-          setFilters(value);
+          // setFilters(value);
         }}
       />
 
       <BaseDataTable
         columns={columns}
         data={filteredData}
-        dataFallback={[]}
+        dataFallback={columns}
         globalSearch
         searchParamPagination
         showFilterButton
@@ -239,27 +241,40 @@ export function TeacherAttendanceTable({ totalAttedance }: attedanceProps) {
         rowCount={attendanceData?.pagination?.total ?? 0}
         globalFilter={global}
         onGlobalFilterChange={setGlobal}
-
         sorting={sorting}
         onSortingChange={onSortingChange}
         onFilterChange={setFilter}
-        // initialState={{
-        //   columnVisibility: {
-        //     user_email: false,
-        //     user_nrk: false,
-        //     user_nip: false,
-        //     user_nikki: false,
-        //   },
-        //   sorting: [
-        //     {
-        //       id: "createdAt",
-        //       desc: true,
-        //     },
-        //   ],
-        // }}
         searchPlaceholder={lang.text("search") + " " + lang.text("teacher")}
         isLoading={biodata.query.isLoading}
         filters={[
+          {
+            id: "filter",
+            label: lang.text("period"),
+            variant: "select",
+            placeholder: lang.text("selectPeriod"),
+            options: [
+              { label: lang.text("daily"), value: "harian" },
+              { label: lang.text("yesterday"), value: "kemarin" },
+              { label: lang.text("weeks"), value: "mingguan" },
+              { label: lang.text("lastWeek"), value: "minggu_lalu" },
+              { label: lang.text("months"), value: "bulanan" },
+              { label: lang.text("lastMonth"), value: "bulanan_lalu" },
+              { label: lang.text("years"), value: "tahunan" },
+              { label: lang.text("lastYear"), value: "tahunan_lalu" },
+            ],
+          },
+          {
+            id: "startDate",
+            label: lang.text("startDate"),
+            variant: "date",
+            disabled: isPeriodSelected,
+          },
+          {
+            id: "endDate",
+            label: lang.text("endDate"),
+            variant: "date",
+            disabled: isPeriodSelected,
+          },
           {
             id: "kelasId",
             label: lang.text("classroom"),

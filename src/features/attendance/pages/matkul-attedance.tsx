@@ -69,9 +69,9 @@ export const MatkulAttendance = () => {
       new Set(resource.data?.map((course) => course.namaMataPelajaran) || []),
     );
   }, [resource.data]);
-  const [filters, setFilters] = useState<
-    "harian" | "mingguan" | "bulanan" | "tahunan"
-  >("harian");
+  // const [filters, setFilters] = useState<
+  //   "harian" | "mingguan" | "bulanan" | "tahunan"
+  // >("harian");
 
   const {
     global,
@@ -84,12 +84,12 @@ export const MatkulAttendance = () => {
     onPaginationChange,
   } = useDataTableController({
     defaultPageSize: 10,
+    defaultSorting: [{ id: "updatedAt", desc: true }],
   });
 
-  const debouncedSearchStudentName = useDebounce(searchStudentName, 500);
   const attendanceParams = useMemo(
     () => ({
-      filter: filters,
+      // filter: filters,
       page: pagination.pageIndex + 1,
       limit: pagination.pageSize,
 
@@ -97,11 +97,10 @@ export const MatkulAttendance = () => {
 
       sortBy: sorting?.[0]?.id,
       sortDir: sorting?.[0]?.desc ? "desc" : "asc",
-
+      // ...(filter.filter && { filter: filter.filter }),
       ...filter,
     }),
     [
-      filters,
       pagination.pageIndex,
       pagination.pageSize,
       global,
@@ -201,7 +200,7 @@ export const MatkulAttendance = () => {
         transition={{ duration: 0.3 }}
       >
         {/* Filters */}
-        <AttendanceMapelFilter
+        {/* <AttendanceMapelFilter
           searchStudentName={searchStudentName}
           setSearchStudentName={setSearchStudentName}
           selectedClasses={selectedClasses}
@@ -215,18 +214,14 @@ export const MatkulAttendance = () => {
           listClassRoom={listClassRoom}
           courseOptions={courseOptions}
           resetFilters={resetFilters}
-        />
+        /> */}
 
         {/* Table */}
         <div className="mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              {selectedDateRange === "today"
-                ? "Kehadiran Hari Ini (18 Mei 2026)"
-                : selectedDateRange === "month"
-                  ? "Kehadiran Bulan Mei 2026"
-                  : "Kehadiran Tahun 2026"}
-            </h3>
+          <div className="flex justify-between items-center mb-2">
+            {/* <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              List  Data {lang.text("coursePresences")}
+            </h3> */}
             <div className="flex gap-4">
               <Button
                 variant="destructive"
@@ -241,18 +236,23 @@ export const MatkulAttendance = () => {
           <MatpelAttendanceTable
             data={filteredData}
             isLoading={isLoading || isFetching}
-
             pagination={pagination}
             onPaginationChange={onPaginationChange}
             rowCount={mapelData?.pagination?.total ?? 0}
-
             global={global}
             setGlobal={setGlobal}
-
             sorting={sorting}
             onSortingChange={onSortingChange}
-
+            filter={filter}
             setFilter={setFilter}
+            classroomOptions={listClassRoom.map((x) => ({
+              label: x.namaKelas,
+              value: String(x.id),
+            }))}
+            courseOptions={courseOptions.map((x) => ({
+              label: x,
+              value: x,
+            }))}
           />
         </div>
 

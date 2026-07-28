@@ -4,7 +4,7 @@ import { cn } from "@/core/libs/shadcn/lib/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+  extends React.InputHTMLAttributes<HTMLInputElement> { }
 
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
   ({ className, type, ...props }, ref) => {

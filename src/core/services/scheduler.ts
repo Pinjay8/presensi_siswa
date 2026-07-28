@@ -3,13 +3,49 @@ import { http } from "@itokun99/http";
 import { API_CONFIG, SERVICE_ENDPOINTS } from "../configs/app";
 import { BaseResponse } from "../models/http";
 import { getInitialOptions } from "../utils/http";
-import {  SchedulerDataModel,SchedulerCreationModel } from "../models";
+import { SchedulerDataModel, SchedulerCreationModel } from "../models";
+import { withQuery } from "../utils/withQuery";
+import { getToken } from "@/features/auth";
+export interface GetSchedulerParams {
+    page?: number;
+    limit?: number;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
 
-export const schedulerService={
+    [key: string]: any;
+}
+
+export const schedulerService = {
     all: http.get<BaseResponse<SchedulerDataModel[]>>(
         API_CONFIG.baseUrl + SERVICE_ENDPOINTS.scheduler.main,
         getInitialOptions,
     ),
+    getPaginated: async (
+        params: GetSchedulerParams,
+    ): Promise<any> => {
+        const query = {
+            ...params,
+        };
+
+        if (!query.search) {
+            delete query.search;
+        }
+
+        const url = withQuery(
+            `${API_CONFIG.baseUrl}${SERVICE_ENDPOINTS.scheduler.main}`,
+            query,
+        );
+
+        const response = await fetch(url, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        return await response.json();
+    },
     get: (id: number) =>
         http.get<BaseResponse<SchedulerDataModel>>(
             API_CONFIG.baseUrl + SERVICE_ENDPOINTS.scheduler.main,
@@ -44,5 +80,5 @@ export const schedulerService={
             getInitialOptions,
         )();
     }
-    
+
 }

@@ -275,9 +275,12 @@ export const attendanceService = {
 export const attendanceServiceMataPelajaran = {
   getPaginated: async (params: GetAttendanceParams): Promise<any> => {
     const query = {
-      filter: params.filter,
       page: params.page,
       limit: params.limit,
+
+      ...(params.filter && {
+        filter: params.filter,
+      }),
 
       ...(params.kelasId !== undefined && {
         kelasId: params.kelasId,

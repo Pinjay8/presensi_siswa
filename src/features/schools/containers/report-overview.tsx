@@ -61,8 +61,10 @@ export const ReportOverview = ({
   };
 
   useEffect(() => {
-    fetchStatus();
-  }, []);
+    if (isAdmin) {
+      fetchStatus();
+    }
+  }, [isAdmin]);
 
   return (
     <DashboardPageLayout

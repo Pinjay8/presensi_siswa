@@ -58,10 +58,7 @@ export const StudentInformation = () => {
   const userDetail = useUserDetail(decodeParams?.id);
   const classroom = useClassroom();
   const creation = useUserCreation();
-  const biodata = useBiodata();
-  if (typeof biodata.data === "string") {
-    biodata.data = JSON.parse(biodata.data);
-  }
+
 
   const alert = useAlert();
   const [isEditMode, setIsEditMode] = useState(false);
@@ -101,7 +98,6 @@ export const StudentInformation = () => {
       noTlp: "",
       isVerified: false,
       isActive: 0,
-      sekolahId: 0,
     },
   });
 
@@ -177,9 +173,6 @@ export const StudentInformation = () => {
     return true;
   };
 
-  // console.log('userDetail', userDetail)
-  // console.log('detail', detail)
-
   // Populate form and store initial values
   useEffect(() => {
     if (detail.data && userDetail.data && classroom.data && !isEditMode) {
@@ -193,7 +186,7 @@ export const StudentInformation = () => {
         kelasId: validKelasId,
         name: detail.data?.user?.name || userDetail.data?.name || "",
         email: userDetail.data?.email || "",
-        alamat: userDetail.data?.alamat || "",
+        alamat: detail.data?.user?.alamat || "",
         hobi: userDetail.data?.hobi || "",
         jenisKelamin: userDetail.data?.jenisKelamin || "",
         tanggalLahir: userDetail.data?.tanggalLahir || "",
@@ -300,7 +293,6 @@ export const StudentInformation = () => {
         }
       }
       updatedData.kelasId = Number(data.kelasId);
-      // console.log("Data yang dikirim saat submit:", updatedData);
 
       await creation.update(decodeParams?.id!, updatedData);
       setIsEditMode(false);
@@ -309,7 +301,6 @@ export const StudentInformation = () => {
       );
       setIsSubmitting(false);
       await Promise.all([
-        biodata.query.refetch(),
         detail.query.refetch(),
         userDetail.query.refetch(),
       ]);
@@ -488,7 +479,7 @@ export const StudentInformation = () => {
                   control={form.control}
                   icon={<MapPin size={24} />}
                   label={lang.text("address")}
-                  value={userDetail.data?.alamat}
+                  value={detail.data?.user?.alamat}
                   name="alamat"
                   isEditMode={isEditMode}
                 />

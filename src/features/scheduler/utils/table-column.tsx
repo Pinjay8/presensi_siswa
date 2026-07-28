@@ -1,14 +1,29 @@
 import { lang, simpleEncode } from "@/core/libs";
 import { SchedulerDataModel } from "@/core/models";
 import {
-  BaseActionTable,
-  BaseTableFilter,
-  BaseTableHeader,
+    BaseActionTable,
+    BaseTableFilter,
+    BaseTableHeader,
 } from "@/features/_global";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const schedulerColumns = ({columnFilter, onDelete}: {columnFilter?: BaseTableFilter, onDelete?: (scheduler: any)=> void}): ColumnDef<SchedulerDataModel>[] => {
+export const schedulerColumns = ({ columnFilter, onDelete }: { columnFilter?: BaseTableFilter, onDelete?: (scheduler: any) => void }): ColumnDef<SchedulerDataModel>[] => {
     return [
+        {
+            id: "no",
+            header: "No",
+            size: 60,
+            enableSorting: false,
+            cell: ({ row, table }) => {
+                const { pageIndex, pageSize } = table.getState().pagination;
+
+                const visibleIndex = table
+                    .getRowModel()
+                    .rows.findIndex((r) => r.id === row.id);
+
+                return pageIndex * pageSize + visibleIndex + 1;
+            },
+        },
         {
             accessorKey: "namaSchedule",
             accessorFn: (row) => row.name,
@@ -36,49 +51,52 @@ export const schedulerColumns = ({columnFilter, onDelete}: {columnFilter?: BaseT
                 );
             },
             cell: ({ row }) => {
-                return <span>{row.original.description}</span>
+                return <span>{row.original.description || "-"}</span>
             },
         },
         {
             accessorKey: "scheduleType",
             // size: 100,
             accessorFn: (row) => row.type,
+            enableSorting: false,
             header: ({ column }) => {
                 return (
                     <BaseTableHeader
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+
                     >
                         {lang.text("schedulerType")}</BaseTableHeader>
                 );
             },
             cell: ({ row }) => {
-                return <span>{row.original.type}</span>
+                return <span style={{ textTransform: 'capitalize !important' }}>{row.original.type}</span>
             },
         },
         {
-      accessorKey: "id",
-      accessorFn: (row) => row.id,
-      size: 50,
-      enableSorting: false,
-      header: () => {
-        return null;
-      },
-      cell: ({ row }) => {
-        const encryptPayload = simpleEncode(
-          JSON.stringify({ id: row.original.id, text: row.original.name }),
-        );
-        // console.log("encrypt payload: ",encryptPayload)
-        // const encryptPayload = JSON.stringify({ id: row.original.id, text: row.original.namaKelas })
-        return (
-          <BaseActionTable
-            detailPath={`/scheduler/${encryptPayload}`}
-            editPath={`/scheduler/edit/${encryptPayload}`}
-            // deletePath={`/scheduler/delete/${encryptPayload}`}
-            onDelete={() => onDelete?.(row.original)}
-          />
-        );
-      },
-    },
+            accessorKey: "id",
+            accessorFn: (row) => row.id,
+            size: 50,
+            enableSorting: false,
+            header: () => {
+                return (
+                    <BaseTableHeader>{lang.text("action")}</BaseTableHeader>
+                )
+            },
+            cell: ({ row }) => {
+                const encryptPayload = simpleEncode(
+                    JSON.stringify({ id: row.original.id, text: row.original.name }),
+                );
+                // console.log("encrypt payload: ",encryptPayload)
+                // const encryptPayload = JSON.stringify({ id: row.original.id, text: row.original.namaKelas })
+                return (
+                    <BaseActionTable
+                        detailPath={`/scheduler/${encryptPayload}`}
+                        editPath={`/scheduler/edit/${encryptPayload}`}
+                        // deletePath={`/scheduler/delete/${encryptPayload}`}
+                        onDelete={() => onDelete?.(row.original)}
+                    />
+                );
+            },
+        },
     ]
 }
 
