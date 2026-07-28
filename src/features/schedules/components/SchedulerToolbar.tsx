@@ -45,75 +45,79 @@ export function ScheduleToolbar({
 }: ScheduleToolbarProps) {
   return (
     <div
-      className={`w-full mb-4 flex items-center gap-2 flex-wrap xl:flex-nowrap ${
-        isRoleAdmin ? "justify-between" : "justify-end"
-      }`}
+      className={`w-full mb-4 flex items-center gap-2 flex-wrap xl:flex-nowrap ${selectedClassId > 0 ? "" : 'mt-12'} ${isRoleAdmin ? "justify-between" : "justify-end"
+        }`}
     >
-      {!isRoleSiswa && !isRoleGuru && !isRoleOrangTua && (
-        <div className="flex gap-2 flex-wrap xl:flex-nowrap">
-          <Button variant="default" onClick={openAddModal}>
-            <Plus />
-            {lang.text("addNewSchedule")}
-          </Button>
+      {!isRoleSiswa &&
+        !isRoleGuru &&
+        !isRoleOrangTua &&
+        selectedClassId > 0 && (
+          <div className="flex gap-2 flex-wrap xl:flex-nowrap">
+            <Button variant="default" onClick={openAddModal}>
+              <Plus />
+              {lang.text("addNewSchedule")}
+            </Button>
 
-          <div className="mx-2 flex h-[36px] items-center justify-center py-1">
-            <p>{lang.text("or")}</p>
+            <div className="mx-2 flex h-[36px] items-center justify-center py-1">
+              <p>{lang.text("or")}</p>
+            </div>
+
+            <Button
+              className="bg-green-500 text-white"
+              onClick={handleDownloadTemplate}
+            >
+              <Download />
+              {lang.text("downloadTemplateExcel")}
+            </Button>
+
+            <Button
+              variant="outline"
+              className="border-green-500 text-green-500"
+              onClick={() => setIsUploadModalOpen(true)}
+            >
+              <UploadCloud />
+              {lang.text("uploadExcelCourse")}
+            </Button>
           </div>
-
-          <Button
-            className="bg-green-500 text-white"
-            onClick={handleDownloadTemplate}
-          >
-            <Download />
-            {lang.text("downloadTemplateExcel")}
-          </Button>
-
-          <Button
-            variant="outline"
-            className="border-green-500 text-green-500"
-            onClick={() => setIsUploadModalOpen(true)}
-          >
-            <UploadCloud />
-            {lang.text("uploadExcelCourse")}
-          </Button>
-        </div>
-      )}
-
-      <div className="flex items-center gap-4">
-        {!isRoleSiswa && (
-          <Select
-            value={selectedClassId.toString()}
-            onValueChange={(value) => setSelectedClassId(Number(value))}
-          >
-            <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder={lang.text("selectClassRoom")} />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="0">{lang.text("allClasses")}</SelectItem>
-
-              {classData.map((kelas: any) => (
-                <SelectItem key={kelas.id} value={kelas.id.toString()}>
-                  {kelas.namaKelas}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
         )}
 
-        <Button
-          variant="outline"
-          className="lg:w-[200px] justify-between"
-          onClick={() => setIsDayFilterOpen(true)}
-        >
-          {selectedDays.length === daysOrder.length
-            ? lang.text("allDays")
-            : selectedDays.length === 0
-              ? lang.text("selectDays")
-              : selectedDays.join(", ")}
+      <div className="flex items-center gap-4">
+        {!isRoleSiswa &&
+          selectedClassId > 0 && (
+            <Select
+              value={selectedClassId.toString()}
+              onValueChange={(value) => setSelectedClassId(Number(value))}
+            >
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder={lang.text("selectClassRoom")} />
+              </SelectTrigger>
 
-          <ChevronDown />
-        </Button>
+              <SelectContent>
+                <SelectItem value="0">{lang.text("allClasses")}</SelectItem>
+
+                {classData.map((kelas: any) => (
+                  <SelectItem key={kelas.id} value={kelas.id.toString()}>
+                    {kelas.namaKelas}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        {selectedClassId > 0 && (
+          <Button
+            variant="outline"
+            className="lg:w-[200px] justify-between"
+            onClick={() => setIsDayFilterOpen(true)}
+          >
+            {selectedDays.length === daysOrder.length
+              ? lang.text("allDays")
+              : selectedDays.length === 0
+                ? lang.text("selectDays")
+                : selectedDays.join(", ")}
+
+            <ChevronDown />
+          </Button>
+        )}
       </div>
     </div>
   );

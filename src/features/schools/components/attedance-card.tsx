@@ -9,6 +9,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
+  useTheme,
 } from "@/core/libs";
 import { Card, CardContent, CardHeader } from "@/core/libs";
 import dayjs from "dayjs";
@@ -270,13 +271,16 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({
       }));
   }, [dayData, activeTab]);
 
+  const { theme, setTheme } = useTheme();
+  const isDark = theme === "dark";
   return (
     <>
       <Card className="w-full bg-theme-color-primary/5">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div className="flex items-center gap-2">
-            <span className="text-md font-medium  text-black">{label}</span>
-          </div>
+            <span className="text-md font-medium text-black dark:text-white">
+              {label}
+            </span>          </div>
           {/* <FaEye
             className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
             onClick={() => setIsSheetOpen(true)}
@@ -286,7 +290,10 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4 justify-between">
-            <div className="text-3xl font-normal text-[#000]">
+            <div
+              className={`text-3xl font-normal ${theme === "dark" ? "text-white" : "text-[#000]"
+                }`}
+            >
               {isLoading || value === null || value === undefined ? (
                 <FaSpinner className="animate-spin duration-1500 opacity-30" />
               ) : (
@@ -464,7 +471,7 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({
                   <CardContent>
                     <div className="space-y-3">
                       {todayEarliestAndLatest.earliest ||
-                      yesterdayEarliestAndLatest.earliest ? (
+                        yesterdayEarliestAndLatest.earliest ? (
                         <>
                           {todayEarliestAndLatest.earliest && (
                             <Badge
@@ -540,7 +547,7 @@ const AttendanceCard: React.FC<AttendanceCardProps> = ({
                   <CardContent>
                     <div className="space-y-3">
                       {todayEarliestAndLatest.latest ||
-                      yesterdayEarliestAndLatest.latest ? (
+                        yesterdayEarliestAndLatest.latest ? (
                         <>
                           {todayEarliestAndLatest.latest && (
                             <Badge

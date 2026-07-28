@@ -106,52 +106,6 @@ export const AttendanceDashboard: React.FC<AttendanceDashboardProps> = ({
   return (
     // <div className="flex gap-4 w-full justify-between flex-wrap lg:flex-nowrap">
     <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
-      {/* <AttendanceCard
-        dayData={dayData}
-        yesterdayData={yesterdayData}
-        isLoading={isLoading}
-        label={lang.text("presence")}
-        value={stats.totalHadir}
-        // percentage={changes.hadir.percentage}
-        // trend={changes.hadir.trend}
-        // bgColor={changes.hadir.trend === "neutral" ? "#FFC107" : "#0f4d3f"}
-        // textColor={changes.hadir.trend === "neutral" ? "#000000" : "#3ee07a"}
-      />
-      <AttendanceCard
-        dayData={dayData}
-        yesterdayData={yesterdayData}
-        isLoading={isLoading}
-        label={lang.text("absentee")}
-        value={stats.totalAlpa}
-        // percentage={changes.alpa.percentage}
-        // trend={changes.alpa.trend}
-        // bgColor={changes.alpa.trend === "neutral" ? "#FFC107" : "#6f1e2a"}
-        // textColor={changes.alpa.trend === "neutral" ? "#000000" : "#e04a6a"}
-      />
-      <AttendanceCard
-        dayData={dayData}
-        yesterdayData={yesterdayData}
-        isLoading={isLoading}
-        label={lang.text("sickness")}
-        value={stats.totalSakit}
-        // percentage={changes.sakit.percentage}
-        // trend={changes.sakit.trend}
-        // bgColor={changes.sakit.trend === "neutral" ? "#FFC107" : "#0f4d3f"}
-        // textColor={changes.sakit.trend === "neutral" ? "#000000" : "#3ee07a"}
-      />
-      <AttendanceCard
-        dayData={dayData}
-        yesterdayData={yesterdayData}
-        isLoading={isLoading}
-        label={lang.text("dispensation")}
-        value={stats.totalDispensasi}
-        // percentage={changes.dispensasi.percentage}
-        // trend={changes.dispensasi.trend}
-        // bgColor={changes.dispensasi.trend === "neutral" ? "#FFC107" : "#0f4d3f"}
-        // textColor={
-        //   changes.dispensasi.trend === "neutral" ? "#000000" : "#3ee07a"
-        // }
-      /> */}
       {isLoading ? (
         <>
           {[...Array(5)].map((_, index) => (

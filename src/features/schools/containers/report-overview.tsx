@@ -163,7 +163,7 @@ export const ReportOverview = ({
           <Card className="w-full lg:w-[calc(50%-1rem)] bg-theme-color-primary/5">
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
               <div>
-                <span className="inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-white">
+                <span className="inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-white dark:text-black">
                   {lang.text("percentagePresent")}
                 </span>
               </div>
@@ -246,7 +246,7 @@ export const ReportOverview = ({
           <Card className="w-full lg:w-[calc(50%-1rem)] bg-theme-color-primary/5">
             <CardHeader>
               <div>
-                <span className="inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-white">
+                <span className="inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-white dark:text-black">
                   {lang.text("distributePresent")}
                 </span>
               </div>

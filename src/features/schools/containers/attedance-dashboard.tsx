@@ -8,9 +8,6 @@ import { useStudents } from "@/features/parents/hooks/useStudent";
 import { useProfile } from "@/features/profile";
 import { useClassroom } from "@/features/classroom";
 import { AttendanceDashboard } from "../components";
-import { any } from "zod";
-import { dashboardService } from "@/core/services/dashboard";
-import { Skeleton, Typography } from "@mui/material";
 
 interface AttedancesReportProps {
   selectedSchool?: string;
@@ -62,30 +59,6 @@ export const AttedancesReport = ({
 
     return clearTimeout;
   };
-
-  // const [showLoading, setShowLoading] = useState(true);
-
-  // useEffect(() => {
-  //   if (!isLoading) {
-  //     const timer = setTimeout(() => {
-  //       setShowLoading(false);
-  //     }, 300);
-
-  //     return () => clearTimeout(timer);
-  //   }S
-
-  //   setShowLoading(true);
-  // }, [isLoading]);
-
-  // if (showLoading) {
-  //   return (
-  //     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-  //       {[...Array(5)].map((_, i) => (
-  //         <Skeleton key={i} className="h-28 w-full rounded-xl" />
-  //       ))}
-  //     </div>
-  //   );
-  // }
 
   return (
     <>
