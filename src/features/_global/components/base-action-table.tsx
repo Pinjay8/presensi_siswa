@@ -186,7 +186,7 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
               {lang.text("homeroom-teacher")}
             </DropdownMenuItem>
           )}
-          {props.onRegisterFace && (
+          {!isRoleTeacher && props.onRegisterFace && (
             <DropdownMenuItem onClick={props.onRegisterFace}>
               <ScanFace className="h-4 w-4" />
               {lang.text("RegisterFace")}
@@ -198,19 +198,20 @@ export const BaseActionTable = React.memo((props: BaseActionTableProps) => {
               {lang.text("assignSchedule")}
             </DropdownMenuItem>
           )}
-          {props.onDelete && (
+          {!isRoleTeacher && props.onDelete && (
             <DropdownMenuItem onClick={props.onDelete}>
               <Trash className="h-4 w-4" />
               {lang.text("delete")}
             </DropdownMenuItem>
           )}
-          {props.onAssignCard && (
+          {!isRoleTeacher && props.onAssignCard && (
             <DropdownMenuItem onClick={props.onAssignCard}>
               <IdCard className="h-4 w-4" />
               {lang.text("assignCard")}
             </DropdownMenuItem>
           )}
-          {props.unAssignCard && (
+
+          {!isRoleTeacher && props.unAssignCard && (
             <DropdownMenuItem onClick={props.unAssignCard}>
               <IdCard className="h-4 w-4" />
               {lang.text("unAssignCard")}

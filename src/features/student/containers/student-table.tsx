@@ -132,7 +132,7 @@ export function StudentTable({
   };
 
   const profile = useProfile();
-  const isAdmin = profile?.user?.role === "admin";
+  const isAdmin = profile?.user?.role === "admin" || profile?.user?.role === "guru";
 
   const columns = useMemo(
     () =>

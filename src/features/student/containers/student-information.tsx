@@ -48,6 +48,7 @@ import { StudentPhoto } from "../components";
 import { useStudentDetail } from "../hooks";
 import { studentEditSchema } from "../utils";
 import { debounce } from "lodash";
+import { useProfile } from "@/features/profile";
 export interface StudentInformationProps { }
 
 
@@ -58,8 +59,6 @@ export const StudentInformation = () => {
   const userDetail = useUserDetail(decodeParams?.id);
   const classroom = useClassroom();
   const creation = useUserCreation();
-
-
   const alert = useAlert();
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,14 +66,9 @@ export const StudentInformation = () => {
   const [initialValues, setInitialValues] = useState<z.infer<
     typeof studentEditSchema
   > | null>(null);
+  const profile = useProfile();
+  const isAdmin = profile?.user?.role === "admin" || profile?.user?.role === "superAdmin";
 
-  // Validasi ID
-  useEffect(() => {
-    if (!decodeParams?.id) {
-      alert.error("ID siswa atau biodata tidak valid");
-      navigate("/students");
-    }
-  }, [decodeParams?.id, alert, navigate]);
 
   const form = useForm<z.infer<typeof studentEditSchema>>({
     resolver: zodResolver(studentEditSchema),
@@ -199,7 +193,7 @@ export const StudentInformation = () => {
         nik: userDetail.data?.nik || "",
         noTlp: userDetail.data?.noTlp || "",
         isVerified: userDetail.data?.isVerified || false,
-        isActive: userDetail.data?.isActive || 0,
+        isActive: userDetail.data?.isActive || 1,
         sekolahId: userDetail.data?.sekolahId || 0,
       };
 
@@ -416,13 +410,17 @@ export const StudentInformation = () => {
                     </Button>
                   </>
                 ) : (
-                  <Button
-                    type="button"
-                    size="lg"
-                    onClick={() => setIsEditMode(true)}
-                  >
-                    {lang.text("edit")}
-                  </Button>
+                  <>
+                    {isAdmin && (
+                      <Button
+                        type="button"
+                        size="lg"
+                        onClick={() => setIsEditMode(true)}
+                      >
+                        {lang.text("edit")}
+                      </Button>
+                    )}
+                  </>
                 )}
               </div>
             </CardHeader>
