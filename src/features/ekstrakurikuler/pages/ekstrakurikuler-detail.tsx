@@ -37,7 +37,11 @@ export const EkstrakurikulerDetail = () => {
   if (!decodeParams?.id || !decodeParams?.text) {
     return <Navigate to="/404" replace />;
   }
-
+  const [memberAssignDialog, setMemberAssignDialog] = useState(false);
+  const [absensiAssingDialog, setAbsensiAssingDialog] = useState(false);
+  const profile = useProfile();
+  const isRole =
+    profile?.user?.role === "admin" || profile?.user?.role === "guru";
   const { data, isLoading } = useEkstrakurikulerDetail({
     id: Number(decodeParams.id),
   });
@@ -65,11 +69,11 @@ export const EkstrakurikulerDetail = () => {
       alert.error(error.message);
     }
   };
-
   const columns = useMemo(
     () =>
       memberEkstrakurikulerColumns({
         onRemove: handleRemove,
+        isRole,
       }),
     [],
   );
@@ -123,19 +127,15 @@ export const EkstrakurikulerDetail = () => {
     { value: 6, label: "Sabtu" },
   ];
 
-  const [memberAssignDialog, setMemberAssignDialog] = useState(false);
-  const [absensiAssingDialog, setAbsensiAssingDialog] = useState(false);
-  const profile = useProfile();
-  const isRole =
-    profile?.user?.role === "admin" || profile?.user?.role === "guru";
 
-  if (isLoading) {
-    return (
-      <div>
-        <CircularProgress />
-      </div>
-    );
-  }
+
+  // if (isLoading) {
+  //   return (
+  //     <div>
+  //       <CircularProgress />
+  //     </div>
+  //   );
+  // }
 
   return (
     <DashboardPageLayout

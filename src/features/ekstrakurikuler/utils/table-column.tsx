@@ -119,7 +119,9 @@ export const ekstrakurikulerColumns = ({
 export const ekstrakurikulerDataFallback: any[] = [];
 
 export const memberEkstrakurikulerColumns = ({
+
   onRemove,
+  isRole,
 }: any & {}): ColumnDef<any>[] => {
   const columns: ColumnDef<any>[] = [
     {
@@ -194,24 +196,28 @@ export const memberEkstrakurikulerColumns = ({
         );
       },
     },
-    {
-      accessorKey: "id",
-      accessorFn: (row) => row.id,
-      size: 50,
-      enableSorting: false,
-      header: () => lang.text("action"),
-      cell: ({ row }) => {
-        const isInactive =
-          row.original?.status?.toLowerCase() === "nonaktif";
+    ...(isRole
+      ? [
+        {
+          accessorKey: "id",
+          accessorFn: (row: any) => row.id,
+          size: 50,
+          enableSorting: false,
+          header: () => lang.text("action"),
+          cell: ({ row }) => {
+            const isInactive =
+              row.original?.status?.toLowerCase() === "nonaktif";
 
-        return (
-          <BaseActionTable
-            disableRemove={isInactive}
-            onRemove={() => onRemove?.(row.original)}
-          />
-        );
-      },
-    },
+            return (
+              <BaseActionTable
+                disableRemove={isInactive}
+                onRemove={() => onRemove?.(row.original)}
+              />
+            );
+          },
+        },
+      ]
+      : []),
   ];
 
   return columns;

@@ -5,7 +5,6 @@ import { AttendanceCreationForm } from "../containers";
 
 export const AttendanceCreate = () => {
 
-  const target = localStorage.getItem("attendanceTarget") || "students"; // default: students
 
   return (
     <DashboardPageLayout

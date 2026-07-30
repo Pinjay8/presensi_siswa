@@ -28,9 +28,7 @@ export const SubjectAttendance = () => {
     "harian" | "mingguan" | "bulanan" | "tahunan"
   >("harian");
 
-  useEffect(() => {
-    localStorage.setItem("attendanceTarget", "students");
-  }, []);
+
 
   const [selectedStartMonth, setSelectedStartMonth] = useState<string>(
     dayjs().tz("Asia/Jakarta").startOf("month").format("YYYY-MM"),

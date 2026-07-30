@@ -33,6 +33,7 @@ interface ScheduleBoardProps {
   classroom: any[];
   isRole: boolean;
   isRoleGuru: boolean;
+  isRoleOrangTua: boolean;
   isRoleSiswa: boolean;
 
   showRef: React.MutableRefObject<any>;
@@ -50,6 +51,7 @@ export function ScheduleBoard({
   classroom,
   isRole,
   isRoleGuru,
+  isRoleOrangTua,
   isRoleSiswa,
   showRef,
   handleShowQr,
@@ -97,7 +99,7 @@ export function ScheduleBoard({
                       <TableHead>{lang.text("nameMapel")}</TableHead>
                       <TableHead>{lang.text("nameTeacher")}</TableHead>
 
-                      {!isRoleSiswa && (
+                      {!isRoleSiswa || !isRoleOrangTua && (
                         <TableHead>{lang.text("actions")}</TableHead>
                       )}
                     </TableRow>
@@ -129,7 +131,7 @@ export function ScheduleBoard({
                               </Button>
                             )}
 
-                            {!isRoleGuru && (
+                            {!isRoleGuru || !isRoleOrangTua && (
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -139,7 +141,7 @@ export function ScheduleBoard({
                               </Button>
                             )}
 
-                            {!isRoleGuru && (
+                            {!isRoleGuru || !isRoleOrangTua && (
                               <Button
                                 variant="destructive"
                                 size="sm"

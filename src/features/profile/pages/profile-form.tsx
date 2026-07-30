@@ -28,34 +28,8 @@ import { dayjs, forwardDateDisabled } from "@/core/libs";
 import { DashboardPageLayout, useAlert } from "@/features/_global";
 import { useNavigate } from "react-router-dom";
 import { CalendarIcon } from "lucide-react";
-const updateProfileSchema = z.object({
-  nama: z
-    .string()
-    .min(1, { message: "Nama harus minimal 1 karakter" })
-    .optional(),
-  jk: z
-    .enum(["Pria", "Wanita"], {
-      message: "Jenis kelamin harus Pria atau Wanita",
-    })
-    .optional(),
-  agama: z.string().optional(),
-  tempat_lahir: z.string().optional(),
-  tgl_lahir: z.string().optional(),
-  alamat_dom: z.string().optional(),
-  jml_anak: z.number().nullable().optional(),
-  no_hp: z.string().optional(),
-  email: z
-    .string()
-    .email({ message: "Format email tidak valid, silahkan cek kembali!" })
-    .optional(),
-  kontak_darurat: z.string().optional(),
-  alamat_ktp: z.string().optional(),
-  status: z
-    .enum(["Menikah", "Lajang"], {
-      message: "Status harus Menikah atau Lajang",
-    })
-    .optional(),
-});
+import { updateProfileSchema } from "../types/ProfileSchema";
+
 
 type ProfileFormValues = z.infer<typeof updateProfileSchema>;
 
@@ -67,6 +41,8 @@ export function EditProfileForm() {
     () => (profile.user ? JSON.stringify(profile.user) : ""),
     [profile.user],
   );
+
+
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(updateProfileSchema),

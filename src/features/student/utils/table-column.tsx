@@ -180,6 +180,7 @@ export const studentClassroomColumn = ({ }: {}): ColumnDef<any>[] => {
 };
 
 export const studentColumnWithFilter = ({
+  isAdmin,
   noStatus = false,
   handleAttend,
   onRegisterFace,
@@ -189,6 +190,7 @@ export const studentColumnWithFilter = ({
   schoolOptions = [],
   classroomOptions = [],
 }: {
+  isAdmin?: any;
   noStatus?: boolean;
   handleAttend?: (row: any) => void;
   onRegisterFace?: any;
@@ -359,51 +361,60 @@ export const studentColumnWithFilter = ({
             );
           },
         },
+        ...(isAdmin
+          ? [
+            {
+              accessorKey: "absen",
+              header: () => <BaseTableHeader>Absen</BaseTableHeader>,
+              cell: ({ row }: any) => (
+                <Button
+                  onClick={() => {
+                    if (handleAttend) {
+                      handleAttend(row.original?.id);
+                    }
+                  }}
+                  disabled={
+                    row.original.statusKehadiranHariIni !== "belum hadir" &&
+                    row.original.statusKehadiranHariIni !== "Belum Hadir"
+                  }
+                >
+                  {lang.text("attend")}
+                </Button>
+              ),
+            },
+          ]
+          : []),
+
+      ]
+      : []),
+    ...(isAdmin
+      ? [
         {
-          accessorKey: "absen",
-          header: () => <BaseTableHeader>Absen</BaseTableHeader>,
-          cell: ({ row }: any) => (
-            <Button
-              onClick={() => {
-                if (handleAttend) {
-                  handleAttend(row.original?.id);
-                }
-              }}
-              disabled={
-                row.original.statusKehadiranHariIni !== "belum hadir" &&
-                row.original.statusKehadiranHariIni !== "Belum Hadir"
-              }
-            >
-              {lang.text("attend")}
-            </Button>
-          ),
+          accessorKey: "id",
+          enableSorting: false,
+          header: () => lang.text("action"),
+          cell: ({ row }: any) => {
+            const encryptPayload = simpleEncode(
+              JSON.stringify({
+                id: row.original.id,
+                // biodataId: row.original.id,
+                text: row.original.name,
+              }),
+            );
+
+            return (
+              <BaseActionTable
+                detailPath={`/students/${encryptPayload}`}
+                onRegisterFace={() => onRegisterFace?.(row.original)}
+                onAssignCard={() => onAssignCard?.(row.original.id)}
+                unAssignCard={() => unAssignCard?.(row.original)}
+                onDelete={() => onDelete?.(row.original)}
+              />
+            );
+          },
         },
       ]
       : []),
-    {
-      accessorKey: "id",
-      enableSorting: false,
-      header: () => lang.text("action"),
-      cell: ({ row }) => {
-        const encryptPayload = simpleEncode(
-          JSON.stringify({
-            id: row.original.id,
-            // biodataId: row.original.id,
-            text: row.original.name,
-          }),
-        );
-
-        return (
-          <BaseActionTable
-            detailPath={`/students/${encryptPayload}`}
-            onRegisterFace={() => onRegisterFace?.(row.original)}
-            onAssignCard={() => onAssignCard?.(row.original.id)}
-            unAssignCard={() => unAssignCard?.(row.original)}
-            onDelete={() => onDelete?.(row.original)}
-          />
-        );
-      },
-    },
     // {
     //   accessorKey: "id",
     //   accessorFn: (row) =>

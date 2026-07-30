@@ -100,7 +100,7 @@ export const DashboardLayout = React.memo(
             data.title === "Scan Schedule" ||
             data.title === lang.text("cardStudent") ||
             data.title === lang.text("libraryManagement") ||
-            data.title === lang.text("locationDistribution") 
+            data.title === lang.text("locationDistribution")
             // data.title === lang.text("scanAttendanceMapel")
           ) {
             return null;
@@ -184,6 +184,7 @@ export const DashboardLayout = React.memo(
                   lang.text("classRoom"),
                   lang.text("course"),
                   lang.text("cards"),
+                  lang.text("graduation")
                 ].includes(item.title ?? "")
               ) {
                 return false;

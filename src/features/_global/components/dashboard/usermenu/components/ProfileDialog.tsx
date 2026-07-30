@@ -1,5 +1,6 @@
 import { API_CONFIG } from "@/core/configs";
-import { lang } from "@/core/libs";
+import { Button, lang } from "@/core/libs";
+import { useAlert } from "@/features/_global/hooks";
 import {
   Avatar,
   Box,
@@ -14,7 +15,7 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
-import { XIcon } from "lucide-react";
+import { Trash2, Upload, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface ProfileDialogProps {
@@ -39,6 +40,7 @@ export default function ProfileDialog({
   const isAdmin = profile?.user?.role === "admin";
   //   const [loading, setLoading] = useState<boolean>(false);
   const [status, setStatus] = useState<any>(null);
+  const alert = useAlert();
   const fetchStatus = async () => {
     try {
       setLoading(true);
@@ -53,6 +55,42 @@ export default function ProfileDialog({
   useEffect(() => {
     fetchStatus();
   }, []);
+
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const handleUpload = async () => {
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      await new Promise((r) => setTimeout(r, 1000));
+
+      const formData = new FormData();
+      formData.append("license", file);
+
+      const response = await fetch(`${API_CONFIG.baseUrl}/license/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const res = await response.json();
+
+      if (res.success) {
+        // navigate("/", { replace: true });
+        window.location.href = "/";
+        alert.success("Successfully activate license");
+      } else {
+        alert.error(res.message);
+      }
+
+      // await fetchStatus();
+    } catch (error: any) {
+      alert.error(error.message || "Failed to upload license");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <Dialog
       open={open}
@@ -132,26 +170,10 @@ export default function ProfileDialog({
                 <Divider />
                 {isAdmin && (
                   <>
+
                     <Box>
                       <Typography variant="body1" color="text.secondary">
-                        {lang.text("license")}
-                      </Typography>
-                      <Typography color="text.secondary">
-                        {status?.data.expiryDate
-                          ? new Date(status.data.expiryDate).toLocaleString(
-                              "id-ID",
-                              {
-                                dateStyle: "long",
-                                timeStyle: "medium",
-                              },
-                            )
-                          : "-"}
-                      </Typography>
-                    </Box>
-                    <Divider />
-                    <Box>
-                      <Typography variant="body1" color="text.secondary">
-                       {lang.text("school")}
+                        {lang.text("school")}
                       </Typography>
                       <Typography>
                         {user?.sekolah?.namaSekolah || "-"}
@@ -169,9 +191,80 @@ export default function ProfileDialog({
                         onChange={(e) => handleToggle(e.target.checked)}
                       />
 
+                      {/*  */}
+
                       {loading && (
                         <span className="text-xs text-gray-400">Saving...</span>
                       )}
+                      <Divider />
+                      <Box>
+                        <Typography variant="body1" color="text.secondary">
+                          {lang.text("license")}
+                        </Typography>
+                        <Typography color="text.secondary">
+                          {status?.data.expiryDate
+                            ? new Date(status.data.expiryDate).toLocaleString(
+                              "id-ID",
+                              {
+                                dateStyle: "long",
+                                timeStyle: "medium",
+                              },
+                            )
+                            : "-"}
+                        </Typography>
+                        <div className="rounded-xl border-2 mt-2 border-dashed border-muted-foreground/30 p-8 text-center">
+                          <Upload className="mx-auto mb-4 h-12 w-12 text-primary" />
+
+                          <h3 className="text-lg font-semibold">Upload License</h3>
+
+                          <p className="mt-2 text-sm text-muted-foreground">
+                            Select your <strong>.lic</strong> file to activate this
+                            application.
+                          </p>
+
+                          <label className="mt-6 inline-block cursor-pointer">
+                            <input
+                              type="file"
+                              accept=".lic"
+                              className="hidden"
+                              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                            />
+
+                            <div className="rounded-lg border px-5 py-2 hover:bg-muted transition">
+                              Choose License File
+                            </div>
+                          </label>
+
+                          {file && (
+                            <div className="mt-5 rounded-lg border bg-muted/40 p-4">
+                              <div className="font-medium">{file.name}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {(file.size / 1024).toFixed(2)} KB
+                              </div>
+
+                              <Button
+                                type="button"
+                                variant="outline"
+                                className="mt-3"
+                                onClick={() => setFile(null)}
+                                icon={<Trash2 className="mr-2 h-4 w-4" />}
+                              >
+                                Remove File
+                              </Button>
+                            </div>
+                          )}
+
+                          <Button
+                            className="mt-6 w-full"
+                            onClick={handleUpload}
+                            disabled={!file || uploading}
+                          >
+                            <Upload className="mr-2 h-4 w-4" />
+                            {uploading ? "Uploading License..." : "Activate License"}
+                          </Button>
+                        </div>
+                      </Box>
+                      <Divider />
                     </div>
                   </>
                 )}

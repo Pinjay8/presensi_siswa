@@ -21,6 +21,7 @@ import UnassignCardDialog from "../components/UnassignCardDialog";
 import { useUserCreation } from "@/features/user/hooks";
 import { cdnService } from "@/core/services/cdn";
 import { DeleteDialog } from "@/features/cards/components/DeleteCardDialog";
+import { useProfile } from "@/features/profile";
 
 interface StudentTableProps {
   data: any;
@@ -73,7 +74,6 @@ export function StudentTable({
   filter,
   setFilter,
 }: StudentTableProps) {
-  console.log("data", data);
   const schoolOptions = useSchoolOptions();
   const classroomOptions = useClassroomOptions();
   const { handleAttend } = useAttendanceActions();
@@ -131,9 +131,13 @@ export function StudentTable({
     }
   };
 
+  const profile = useProfile();
+  const isAdmin = profile?.user?.role === "admin";
+
   const columns = useMemo(
     () =>
       studentColumnWithFilter({
+        isAdmin,
         handleAttend,
         onRegisterFace: handleOpenRegisterFace,
         onAssignCard: handleOpenAssignCard,

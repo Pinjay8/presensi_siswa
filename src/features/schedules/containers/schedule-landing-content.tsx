@@ -592,6 +592,7 @@ export function ScheduleLandingContent() {
           isRole={isRole}
           isRoleGuru={isRoleGuru}
           isRoleSiswa={isRoleSiswa}
+          isRoleOrangTua={isRoleOrangTua}
           showRef={showRef}
           handleShowQr={handleShowQr}
           openEditModal={openEditModal || undefined}

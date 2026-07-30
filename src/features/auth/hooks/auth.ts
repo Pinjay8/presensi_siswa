@@ -53,7 +53,7 @@ export const useAuth = () => {
     setTimeout(() => {
       storage.delete("auth.token");
       storage.delete("token");
-      localStorage.removeItem("auth.token");
+      storage.delete("lang");
       localStorage.removeItem("lang");
       localStorage.removeItem("token");
       queryClient.clear();
