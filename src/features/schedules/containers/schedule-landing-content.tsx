@@ -197,7 +197,7 @@ export function ScheduleLandingContent() {
         hari: item.hari,
       });
 
-      console.log("QR PAYLOAD", payload);
+      // console.log("QR PAYLOAD", payload);
 
       setIsQrModalOpen(true);
 
@@ -681,7 +681,7 @@ export function ScheduleLandingContent() {
         }
       />
 
-    
+
       <UploadScheduleDialog
         open={isUploadModalOpen}
         onOpenChange={(open) => {

@@ -46,15 +46,6 @@ export function ModalAssignWaliKelas({
   onClose,
   onSubmit,
 }: ModalAssignWaliKelasProps) {
-  // const form = useForm<FormValues>({
-  //   defaultValues: {
-  //     kelasId: "",
-  //   },
-  // });
-
-
-  console.log(kelasOptions);
-
   const form = useForm<FormValues>({
     defaultValues: {
       kelasId: [],

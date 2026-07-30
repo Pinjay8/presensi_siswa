@@ -131,7 +131,7 @@ export function ScheduleBoard({
                               </Button>
                             )}
 
-                            {!isRoleGuru || !isRoleOrangTua && (
+                            {!isRoleGuru && !isRoleOrangTua && (
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -141,7 +141,7 @@ export function ScheduleBoard({
                               </Button>
                             )}
 
-                            {!isRoleGuru || !isRoleOrangTua && (
+                            {!isRoleGuru && !isRoleOrangTua && (
                               <Button
                                 variant="destructive"
                                 size="sm"

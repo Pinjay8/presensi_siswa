@@ -128,12 +128,12 @@ export const LoginPage = () => {
           {auth.isLoading ? lang.text("pleaseWait") : lang.text("login")}
         </Button>
         <div className="flex gap-1">
-          <p className="text-sm ">
+          <p className="text-sm">
             <span className=" font-medium opacity-50">
               {lang.text("doesntHaveAccount")}
             </span>{" "}
           </p>
-          <span className="underline text-primary text-sm">
+          <span className="underline text-primary text-sm pointer">
             {lang.text("callAdmin")}
           </span>
         </div>

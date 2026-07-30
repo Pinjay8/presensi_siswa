@@ -44,19 +44,6 @@ interface EkstrakurikulerInitialData {
   kontak?: string;
 }
 
-// Fungsi untuk menghasilkan template Excel dari file di public folder
-const generateCourseTemplateExcel = () => {
-  const templatePath = "/template_jadwal.xlsx"; // Path relatif dari public
-  fetch(templatePath)
-    .then((response) => response.arrayBuffer())
-    .then((arrayBuffer) => {
-      const wb = XLSX.read(arrayBuffer, { type: "buffer" });
-      XLSX.writeFile(wb, "Template_Upload_Mata_Pelajaran.xlsx");
-    })
-    .catch((error) => {
-      console.error("Error loading template file:", error);
-    });
-};
 
 export const EkstrakurikulerForm = ({
   onClose,
