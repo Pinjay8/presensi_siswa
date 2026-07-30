@@ -95,7 +95,7 @@ export default function StudentFormDialog({
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="Email" {...field} />
+                        <Input placeholder={lang.text("inputEmail")} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -105,13 +105,13 @@ export default function StudentFormDialog({
                 <FormField
                   control={form.control}
                   name="nis"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem>
                       <FormLabel>NIS</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} placeholder={lang.text("inputNis")} />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage>{fieldState.error?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -123,7 +123,7 @@ export default function StudentFormDialog({
                     <FormItem>
                       <FormLabel>NISN</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} placeholder={lang.text("inputNisn")} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -135,9 +135,9 @@ export default function StudentFormDialog({
                   name="noTlpOrtu"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nomor Telepon Ortu</FormLabel>
+                      <FormLabel>{lang.text("numberParent")}</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} placeholder={lang.text("inputNumberParent")} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -151,7 +151,7 @@ export default function StudentFormDialog({
                     <FormItem>
                       <FormLabel>{lang.text("noHP")}</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} placeholder={lang.text("inputNumberPhone")} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -163,9 +163,9 @@ export default function StudentFormDialog({
                   name="alamat"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Alamat</FormLabel>
+                      <FormLabel>{lang.text("address")}</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} placeholder={lang.text("inputAddress")} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -177,9 +177,9 @@ export default function StudentFormDialog({
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>{lang.text("password")}</FormLabel>
                       <FormControl>
-                        <Input type="password" {...field} />
+                        <Input type="password" {...field} placeholder={lang.text("inputPassword")} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

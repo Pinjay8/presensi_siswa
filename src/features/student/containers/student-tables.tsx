@@ -115,6 +115,8 @@ export const StudentLandingTables = () => {
 
   const form = useForm<CreateSiswaFormValues>({
     resolver: zodResolver(createSiswaSchema),
+    mode: "all",
+    reValidateMode: "onChange",
     defaultValues,
   });
 

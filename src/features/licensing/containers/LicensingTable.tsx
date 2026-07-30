@@ -13,12 +13,15 @@ import { useLicensing, useLicensingPaginated } from "../hooks/useLicensing";
 import { licensingColumns } from "../utils/table-column";
 import { dispensasiService } from "@/core/services/dispensasi";
 import {
+  Backdrop,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
+  Portal,
   TextField,
 } from "@mui/material";
 
@@ -58,6 +61,7 @@ export function LicensingTable() {
   const [rejectDialog, setRejectDialog] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [note, setNote] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const openRejectDialog = (id: number) => {
     setSelectedId(id);
@@ -66,17 +70,24 @@ export function LicensingTable() {
 
   const handleApprove = async (id: number) => {
     try {
+      setLoading(true);
+
       await dispensasiService.approve(id);
+
       alert.success(lang.text("licensingApproveSuccess"));
       resource.refetch();
     } catch (error: any) {
-      alert.error(error?.message);
+      alert.error(error?.message || "Failed to approve");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSubmitReject = async () => {
     try {
       if (!selectedId) return;
+
+      setLoading(true);
 
       await dispensasiService.reject(selectedId, {
         catatanPenolakan: note,
@@ -90,7 +101,9 @@ export function LicensingTable() {
 
       resource.refetch();
     } catch (error: any) {
-      alert.error(error?.message);
+      alert.error(error?.message || "Failed to reject");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -219,6 +232,18 @@ export function LicensingTable() {
           </Button>
         </DialogActions>
       </Dialog>
+      <Portal>
+        <Backdrop
+          open={loading}
+          sx={{
+            zIndex: 999999999,
+            position: 'fixed',
+            margin: '0 auto',
+          }}
+        >
+          <CircularProgress color="primary" />
+        </Backdrop>
+      </Portal>
     </>
   );
 }

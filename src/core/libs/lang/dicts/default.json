@@ -1512,6 +1512,14 @@
     "id": "NIS harus diisi",
     "en": "NIS is required"
   },
+  "nisMust5Number": {
+    "id": "NIS harus terdiri dari 5 digit angka",
+    "en": "NIS must be 5 digits long number"
+  },
+  "nisMustNumber": {
+    "id": "NIS hanya boleh berupa angka",
+    "en": "NIS must be a number"
+  },
   "nameValidation": {
     "id": "Nama harus diisi",
     "en": "Name is required"
@@ -2305,6 +2313,30 @@
     "id": "Masukan nama siswa",
     "en": "Insert student name"
   },
+  "numberParent": {
+    "id": "Nomor Telepon Orang Tua",
+    "en": "Parent's Phone Number"
+  },
+  "inputNumberParent": {
+    "id": "Masukan Nomor Telepon Orang Tua",
+    "en": "Insert Parent's Phone Number"
+  },
+  "inputNumberPhone": {
+    "id": "Masukan Nomor Telepon",
+    "en": "Insert Phone Number"
+  },
+  "inputAddress" :{
+    "id": "Masukan Alamat",
+    "en": "Insert Address"
+  },
+  "inputNisn": {
+    "id": "Masukan NISN",
+    "en": "Insert NISN"
+  },
+  "inputNis": {
+    "id": "Masukan NIS",
+    "en": "Insert NIS"
+  },
   "male": {
     "id": "Laki-laki",
     "en": "Male"
@@ -2888,6 +2920,10 @@
   "uploadExcel": {
     "id": "Unggah Excel",
     "en": "Upload Excel"
+  },
+  "from": {
+    "id": "Dari",
+    "en": "From"
   },
   "uploadExcelFromFile": {
     "id": "Unggah Excel dari file",

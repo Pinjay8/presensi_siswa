@@ -186,7 +186,15 @@ export const licensingColumns = ({
           accessorFn: (row: any) => row.id,
           size: 50,
           enableSorting: false,
-          header: () => null,
+          header: ({ column }: any) => {
+            return (
+              <BaseTableHeader
+              // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              >
+                {lang.text("action")}
+              </BaseTableHeader>
+            );
+          },
           cell: ({ row }: any) => (
             <BaseActionTable
               onApprove={() => onApprove?.(row.original.id)}

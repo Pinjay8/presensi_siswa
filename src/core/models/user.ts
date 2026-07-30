@@ -84,7 +84,10 @@ import { z } from "zod";
 export const createSiswaSchema = z.object({
   name: z.string().min(1, lang.text("nameValidation")),
   email: z.string().min(1, lang.text("emailValidation")).email(lang.text("emailValidation2")),
-  nis: z.string().min(1, lang.text("nisValidation")),
+  nis: z
+    .string()
+    .length(5, lang.text("nisMust5Number"))
+    .regex(/^\d+$/, lang.text("nisMustNumber")),
   nisn: z
     .string()
     .min(1, lang.text("nisnValidation2"))

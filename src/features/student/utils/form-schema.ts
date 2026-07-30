@@ -28,7 +28,10 @@ export const studentEditSchema = z.object({
   nikki: z.string().optional(),
   image: z.string().optional(),
   noTlpOrtu: z.string().optional(),
-  nis: z.string().optional(),
+  nis: z
+    .string()
+    .min(5, "NIS harus terdiri dari 5 digit")
+    .max(5, "NIS harus terdiri dari 5 digit"),
   nip: z.string().optional(),
   nik: z.string().optional(),
   noTlp: z.string().optional(),

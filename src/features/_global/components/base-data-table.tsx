@@ -668,8 +668,9 @@ export const BaseDataTable = ({
                     />
                   </div>
                   {showFilterButton && (
-                    <Button onClick={filterDialog.open} size="icon">
+                    <Button onClick={filterDialog.open} size="sm" className="gap-2">
                       <Filter size={16} />
+                      <span>Filter</span>
                     </Button>
                   )}
                 </div>
@@ -743,7 +744,7 @@ export const BaseDataTable = ({
             {/* {`${table.getFilteredRowModel().rows.length} - ${
               data.length
             } ${lang.text("data")}`} */}
-            {`${start} - ${end} dari ${total} data`}
+            {lang.text("show")} {` ${start} - ${end} ${lang.text("from")} ${total} data`}
           </div>
           <div className="flex flex-row gap-2">
             <Button
