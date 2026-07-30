@@ -1,9 +1,12 @@
+import { useProfile } from "@/features/profile";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import { storage } from "@itokun99/secure-storage";
 export const useLicenseGuard = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const profile = useProfile();
+  const role = profile?.user?.role;
 
   useEffect(() => {
     const originalFetch = window.fetch;
@@ -24,7 +27,7 @@ export const useLicenseGuard = () => {
       }
 
       if (response.status === 402) {
-        const role = localStorage.getItem("role");
+        // const role = localStorage.getItem("role");
 
         // Sudah berada di halaman tujuan? Jangan navigate lagi.
         if (
@@ -37,6 +40,9 @@ export const useLicenseGuard = () => {
         if (role === "admin") {
           navigate("/license", { replace: true });
         } else {
+          localStorage.removeItem("token");
+          localStorage.removeItem('auth.token')
+          storage.delete("auth.token");
           navigate("/auth/login", {
             replace: true,
             state: {

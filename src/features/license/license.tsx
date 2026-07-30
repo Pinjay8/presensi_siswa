@@ -31,14 +31,18 @@ const LicenseLanding = () => {
   const alert = useAlert();
 
   const navigate = useNavigate();
-
   const fetchStatus = async () => {
     try {
       setLoading(true);
 
       const response = await fetch(`${API_CONFIG.baseUrl}/license/status`);
+      const result = await response.json();
 
-      setStatus(response.data);
+      setStatus(result.data);
+
+      if (result.data?.isValid) {
+        navigate("/", { replace: true });
+      }
     } finally {
       setLoading(false);
     }
@@ -47,6 +51,7 @@ const LicenseLanding = () => {
   useEffect(() => {
     fetchStatus();
   }, []);
+
 
   const handleUpload = async () => {
     if (!file) return;
@@ -96,11 +101,10 @@ const LicenseLanding = () => {
           ) : (
             <>
               <div
-                className={`rounded-lg border p-4 ${
-                  status?.isValid
-                    ? "border-green-200 bg-green-50"
-                    : "border-red-200 bg-red-50"
-                }`}
+                className={`rounded-lg border p-4 ${status?.isValid
+                  ? "border-green-200 bg-green-50"
+                  : "border-red-200 bg-red-50"
+                  }`}
               >
                 <div className="flex items-center gap-2">
                   {status?.isValid ? (
@@ -126,9 +130,8 @@ const LicenseLanding = () => {
 
                 <Info
                   label="WA Usage"
-                  value={`${status?.currentWaCount ?? 0} / ${
-                    status?.maxWaDaily ?? 0
-                  }`}
+                  value={`${status?.currentWaCount ?? 0} / ${status?.maxWaDaily ?? 0
+                    }`}
                 />
 
                 <Info

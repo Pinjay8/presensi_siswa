@@ -52,10 +52,10 @@ export const useAuth = () => {
     logoutMutation.mutateAsync();
     setTimeout(() => {
       storage.delete("auth.token");
-      storage.delete("role");
       storage.delete("token");
+      localStorage.removeItem("auth.token");
+      localStorage.removeItem("lang");
       localStorage.removeItem("token");
-      localStorage.removeItem("role");
       queryClient.clear();
       navigate?.("/auth/login", { replace: true });
     }, 10);

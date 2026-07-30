@@ -13,7 +13,7 @@ export const AttendanceCreate = () => {
       breadcrumbs={[
         {
           label: lang.text("attendance"),
-          url: `/attendance/${target}`,
+          url: `/attendance `,
         },
         {
           label: lang.text("addAttendance"),

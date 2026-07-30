@@ -30,7 +30,7 @@ export const LoginPage = () => {
       }
 
       localStorage.setItem("token", token);
-      localStorage.setItem("role", role);
+      // localStorage.setItem("role", role);
 
       // Cek license sebelum masuk dashboard
       const response = await fetch(`${API_CONFIG.baseUrl}/license/status`, {

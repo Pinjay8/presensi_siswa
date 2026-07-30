@@ -23,7 +23,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useProfile } from "../hooks";
-import { UserModel } from "@/core/models";
+// import { UserModel } from "@/core/models";
 import { dayjs, forwardDateDisabled } from "@/core/libs";
 import { DashboardPageLayout, useAlert } from "@/features/_global";
 import { useNavigate } from "react-router-dom";
@@ -91,7 +91,7 @@ export function EditProfileForm() {
 
   useEffect(() => {
     if (!form.formState.isDirty && userDataJson) {
-      const userData: UserModel = JSON.parse(userDataJson);
+      const userData: any = JSON.parse(userDataJson);
       formResetRef.current?.({
         nama: userData.nama || "",
         jk: (userData.jk as "Pria" | "Wanita") || undefined,
