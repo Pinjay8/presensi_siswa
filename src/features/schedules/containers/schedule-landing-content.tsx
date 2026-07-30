@@ -91,7 +91,7 @@ export function ScheduleLandingContent() {
   const [excelFile, setExcelFile] = useState<File | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const teacherSearchInputRef = useRef<HTMLInputElement>(null);
-  const [formData, setFormData] = useState<NewScheduleForm>({
+  const [formData, setFormData] = useState<any>({
     mapelKelasId: null,
     hari: "",
     jamMulai: "",
@@ -201,7 +201,7 @@ export function ScheduleLandingContent() {
 
       setIsQrModalOpen(true);
 
-      const result = await teacherService.qrCodeGenerate(payload);
+      const result: any = await teacherService.qrCodeGenerate(payload);
 
       setQrCode(result?.data?.qrCodeData ?? result?.collection?.qrCode ?? "");
     } catch (err: any) {
@@ -387,7 +387,7 @@ export function ScheduleLandingContent() {
       return;
     }
 
-    const payload = {
+    const payload: any = {
       ...formData,
     };
     try {
@@ -445,7 +445,7 @@ export function ScheduleLandingContent() {
       return;
     }
 
-    const payload = { ...formData };
+    const payload: any = { ...formData };
     try {
       await creation.update(editScheduleId, payload);
       alert.success(
@@ -680,6 +680,7 @@ export function ScheduleLandingContent() {
         }
       />
 
+    
       <UploadScheduleDialog
         open={isUploadModalOpen}
         onOpenChange={(open) => {

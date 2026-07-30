@@ -17,10 +17,17 @@ export const useMapel = ({ kelasId, search }: UseMapelProps = {}) => {
     enabled: auth.isAuthenticated() && Boolean(profile.user?.id),
     queryKey: ["mapel-kelas", kelasId, search],
     queryFn: async () => {
-      const res = await courseService.getMapelKelaas({
-        kelasId,
-        search,
-      });
+      const params: any = {};
+
+      if (kelasId) {
+        params.kelasId = kelasId;
+      }
+
+      if (search) {
+        params.search = search;
+      }
+
+      const res = await courseService.getMapelKelaas(params);
 
       return res;
     },

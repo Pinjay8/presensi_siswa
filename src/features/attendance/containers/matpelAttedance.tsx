@@ -34,18 +34,13 @@ export function MatpelAttendanceTable({
   pagination,
   onPaginationChange,
   rowCount,
-
   global,
   setGlobal,
-
   sorting,
   onSortingChange,
-
   setFilter,
-
   isLoading,
   filter,
-
   classroomOptions,
   courseOptions
 }: MatpelAttendanceTableProps) {
