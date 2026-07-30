@@ -387,8 +387,8 @@ export const EkstrakurikulerForm = ({
                           </FormControl>
                           <SelectContent>
                             {teacher?.data?.map((item) => (
-                              <SelectItem key={item.id} value={String(item.id)}>
-                                {item.namaGuru}
+                              <SelectItem key={item.id} value={String(item.guruId)}>
+                                {item.name}
                               </SelectItem>
                             ))}
                           </SelectContent>

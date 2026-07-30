@@ -485,9 +485,9 @@ export const CourseCreationForm = ({
                             {teacher.data.map((option) => (
                               <SelectItem
                                 key={option.id}
-                                value={String(option.id)}
+                                value={String(option.guruId)}
                               >
-                                {option.namaGuru}
+                                {option.name}
                               </SelectItem>
                             ))}
                           </SelectContent>

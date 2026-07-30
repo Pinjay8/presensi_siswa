@@ -33,7 +33,7 @@ import { Brand } from "./_components/Brand";
 import { Divider } from "@mui/material";
 // import { SidebarContext } from "@/features/_global";
 
-export const DefaultSidebar = React.memo((props: SidebarProps) => {
+export const DefaultSidebar = React.memo((props: any) => {
   // const { visible } = useContext(SidebarContext);
   // const [visible, setVisible] = useState(false)
 

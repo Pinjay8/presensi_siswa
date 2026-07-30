@@ -52,6 +52,9 @@ export function ModalAssignWaliKelas({
   //   },
   // });
 
+
+  console.log(kelasOptions);
+
   const form = useForm<FormValues>({
     defaultValues: {
       kelasId: [],
@@ -102,45 +105,21 @@ export function ModalAssignWaliKelas({
               onSubmit={form.handleSubmit(handleSubmit)}
               className="space-y-4"
             >
-              {/* <FormField
-                control={form.control}
-                name="kelasId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Kelas</FormLabel>
-
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Pilih Kelas" />
-                        </SelectTrigger>
-                      </FormControl>
-
-                      <SelectContent>
-                        {kelasOptions.map((item) => (
-                          <SelectItem key={item.value} value={item.value}>
-                            {item.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
+              <FormLabel>{lang.text("classRoom")}</FormLabel>
               <FormField
                 control={form.control}
                 name="kelasId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{lang.text("classRoom")}</FormLabel>
+                render={({ field }) => {
 
+                  return (
                     <Autocomplete
                       multiple
+                      disablePortal
                       options={kelasOptions}
-                      isOptionEqualToValue={(option, value) => option.value === value.value}
                       getOptionLabel={(option) => option.label}
+                      isOptionEqualToValue={(option, value) =>
+                        option.value === value.value
+                      }
                       value={kelasOptions.filter((o) =>
                         (field.value ?? []).includes(o.value)
                       )}
@@ -154,8 +133,8 @@ export function ModalAssignWaliKelas({
                         />
                       )}
                     />
-                  </FormItem>
-                )}
+                  );
+                }}
               />
 
               <Divider />

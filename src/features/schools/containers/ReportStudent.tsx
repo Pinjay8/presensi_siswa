@@ -150,14 +150,14 @@ export const ReportStudent = ({
       title={lang.text("ReportOverview")}
     >
       <div className="mt-2 grid grid-cols-1 lg:grid-cols-12 gap-4">
-        <Card className="lg:col-span-3 bg-theme-color-primary/5">
+        <Card className="lg:col-span-6 xl:col-span-3  bg-theme-color-primary/5">
           <CardHeader>
             <h3 className="text-lg font-semibold">
               {lang.text("jadwalKelasHariIni")}
             </h3>
           </CardHeader>
 
-          <CardContent className="min-h-[220px]">
+          <CardContent className="min-h-[220px] p-4">
             {jadwalHariIni.length === 0 ? (
               <p className="text-muted-foreground">Tidak ada jadwal hari ini</p>
             ) : (
@@ -192,14 +192,14 @@ export const ReportStudent = ({
             )}
           </CardContent>
         </Card>
-        <Card className="lg:col-span-3 bg-theme-color-primary/5">
+        <Card className="lg:col-span-6 xl:col-span-3  bg-theme-color-primary/5">
           <CardHeader>
             <h3 className="text-lg font-semibold">
               {lang.text("subjectAttendanceToday")}
             </h3>
           </CardHeader>
 
-          <CardContent className="min-h-[220px]">
+          <CardContent className="min-h-[220px] p-4">
             {kehadiranMapelToday.length === 0 ? (
               <div className="flex items-center justify-center min-h-[120px]">
                 <p className="text-muted-foreground text-center">
@@ -230,10 +230,9 @@ export const ReportStudent = ({
                             {item.jamMulai} - {item.jamSelesai}
                           </p>
                           <p
-                            className={`inline-flex min-w-[110px] capitalize justify-center rounded-full px-3 py-1 mt-1 text-xs font-medium ${
-                              config?.className ??
+                            className={`inline-flex min-w-[110px] capitalize justify-center rounded-full px-3 py-1 mt-1 text-xs font-medium ${config?.className ??
                               "bg-gray-100 text-gray-700 border border-gray-200"
-                            }`}
+                              }`}
                           >
                             {item.statusKehadiran}
                           </p>
@@ -247,39 +246,38 @@ export const ReportStudent = ({
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-3 bg-theme-color-primary/5">
+        <Card className="lg:col-span-6 xl:col-span-3 flex flex-col bg-theme-color-primary/5">
           <CardHeader>
             <h3 className="text-lg font-semibold">{lang.text("clockIn")}</h3>
           </CardHeader>
 
-          <CardContent className="flex flex-col items-center justify-center min-h-[220px]">
-            <p className="text-5xl font-bold tracking-tight">
+          <CardContent className="flex flex-1 flex-col items-center justify-center">
+            <p className="text-5xl font-bold tracking-tight text-center">
               {todayAbsen?.jamMasuk ?? "--:--"}
             </p>
 
             <span
-              className={`mt-4 inline-flex min-w-[120px] justify-center rounded-full px-3 py-1 text-xs font-medium ${
-                attendanceConfig.className
-              }`}
+              className={`mt-4 inline-flex min-w-[120px] justify-center rounded-full px-3 py-1 text-xs font-medium ${attendanceConfig.className}`}
             >
               {attendanceConfig.label}
             </span>
           </CardContent>
+
         </Card>
 
-        <Card className="lg:col-span-3 bg-theme-color-primary/5">
+        <Card className="lg:col-span-6 xl:col-span-3 flex flex-col bg-theme-color-primary/5">
           <CardHeader>
-            <h3 className="text-lg font-semibold">{lang.text("clockOut")}</h3>
+            <h3 className="text-lg font-semibold">{lang.text("clockIn")}</h3>
           </CardHeader>
 
-          <CardContent className="flex items-center justify-center min-h-[220px]">
-            <p className="text-5xl font-bold tracking-tight">
+          <CardContent className="flex flex-1 flex-col items-center justify-center">
+            <p className="text-5xl font-bold tracking-tight text-center">
               {todayAbsen?.jamPulang ?? "--:--"}
             </p>
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-6 bg-theme-color-primary/5">
+        <Card className="xl:col-span-6 bg-theme-color-primary/5">
           <CardHeader>
             <h3 className="text-lg font-semibold">
               {lang.text("dispensation")}
@@ -318,10 +316,9 @@ export const ReportStudent = ({
                             )}
                           </p>
                           <p
-                            className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 mt-1 text-xs font-medium ${
-                              config?.className ??
+                            className={`inline-flex min-w-[110px] justify-center rounded-full px-3 py-1 mt-1 text-xs font-medium ${config?.className ??
                               "bg-gray-100 text-gray-700 border border-gray-200"
-                            }`}
+                              }`}
                           >
                             {config?.label}
                           </p>
@@ -367,13 +364,13 @@ export const ReportStudent = ({
                               {item.isHariIni
                                 ? "Hari Ini"
                                 : new Date(item.tanggal).toLocaleDateString(
-                                    "id-ID",
-                                    {
-                                      day: "numeric",
-                                      month: "short",
-                                      year: "numeric",
-                                    },
-                                  )}
+                                  "id-ID",
+                                  {
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                  },
+                                )}
                             </p>
                             <p className="text-xs text-muted-foreground mt-1">
                               {lang.text("limitEntry")}:{" "}
@@ -393,9 +390,8 @@ export const ReportStudent = ({
                             </div>
 
                             <ChevronDown
-                              className={`h-5 w-5 text-slate-500 transition-transform duration-200 ${
-                                isExpanded ? "rotate-180" : ""
-                              }`}
+                              className={`h-5 w-5 text-slate-500 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""
+                                }`}
                             />
                           </div>
                         </div>

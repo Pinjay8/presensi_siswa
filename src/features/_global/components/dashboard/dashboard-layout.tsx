@@ -70,7 +70,7 @@ export const DashboardLayout = React.memo(
       loadEvents();
     }, []);
 
-    const filteredMenus = useMemo(() => {
+    const filteredMenus: any = useMemo(() => {
       const role = profile?.user?.role;
 
       if (!role) return [];
@@ -198,6 +198,7 @@ export const DashboardLayout = React.memo(
                   lang.text("history"),
                   lang.text("classRoom"),
                   lang.text("cards"),
+                  lang.text("graduation")
                 ].includes(item.title ?? "")
               ) {
                 return false;
