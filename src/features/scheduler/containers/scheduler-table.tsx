@@ -78,26 +78,19 @@ export const SchedulerTable = () => {
         columns={columns}
         data={resource.data}
         dataFallback={schedulerDataFallback}
-
         globalSearch
         searchParamPagination
         showFilterButton
-
         globalFilter={global}
         onGlobalFilterChange={setGlobal}
-
         sorting={sorting}
         onSortingChange={onSortingChange}
-
         pagination={pagination}
         onPaginationChange={onPaginationChange}
-
         onFilterChange={setFilter}
-
         manualPagination
         rowCount={resource.pagination?.total ?? 0}
-
-        searchPlaceholder={lang.text("search")}
+        searchPlaceholder={lang.text("search") + " " + lang.text("scheduler")}
         isLoading={resource.isLoading}
         actions={[
           ...(!isRole
@@ -111,6 +104,23 @@ export const SchedulerTable = () => {
             ]
             : []
           )
+        ]}
+        filters={[
+          {
+            id: "type",
+            label: "Tipe",
+            variant: "select",
+            options: [
+              {
+                label: "Guru",
+                value: "guru",
+              },
+              {
+                label: "Siswa",
+                value: "siswa",
+              },
+            ],
+          },
         ]}
       />
 

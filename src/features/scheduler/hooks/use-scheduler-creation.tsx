@@ -1,11 +1,12 @@
 import { SchedulerCreationModel } from "@/core/models";
 import { GetSchedulerParams, schedulerService } from "@/core/services";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/features/auth";
 import { useProfile } from "@/features/profile";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useMemo } from "react";
+import { lang } from "@/core/libs";
 
 export const useSchedulerCreation = (
     params: GetSchedulerParams = {},
@@ -44,6 +45,8 @@ export const useSchedulerCreation = (
         queryFn: () => schedulerService.getPaginated(params),
     });
 
+    const queryClient = useQueryClient();
+
     // CREATE
     const createMutation = useMutation({
         mutationFn: (vars: { payload: SchedulerCreationModel }) =>
@@ -63,9 +66,13 @@ export const useSchedulerCreation = (
     const updateMutation = useMutation({
         mutationFn: (vars: { id: number, payload: SchedulerCreationModel }) =>
             schedulerService.update(vars.id, vars.payload),
-        onSuccess: () => {
-            toast.success("Data berhasil diperbarui!");
+
+        onSuccess: async () => {
+            toast.success(lang.text("scheduleSuccessUpdate"));
             query.refetch();
+            await queryClient.invalidateQueries({
+                queryKey: ["schedulers"],
+            });
         },
         onError: (error) => {
             toast.error(error.message || "Gagal memperbarui data");
@@ -79,9 +86,12 @@ export const useSchedulerCreation = (
     const deleteMutation = useMutation({
         mutationFn: (vars: { id: number }) =>
             schedulerService.delete(vars.id),
-        onSuccess: () => {
+        onSuccess: async () => {
             toast.success("Data berhasil dihapus!");
             query.refetch();
+            await queryClient.invalidateQueries({
+                queryKey: ["schedulers"],
+            });
         },
         onError: (error) => {
             toast.error(error.message || "Gagal menghapus data");
@@ -108,7 +118,7 @@ export const useSchedulerCreation = (
         createMutation.isPending ||
         updateMutation.isPending ||
         deleteMutation.isPending;
-        
+
     return {
         query,
         data,

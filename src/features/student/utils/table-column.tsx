@@ -277,7 +277,7 @@ export const studentColumnWithFilter = ({
       header: () => <BaseTableHeader>NISN</BaseTableHeader>,
       cell: ({ row }) => {
         const nisn = row.original.user?.nisn || row.original.nisn;
-        return <span>{nisn ? String(nisn) : "-"}</span>; // Ubah nisn menjadi string
+        return <span>{nisn ? String(nisn) : "-"}</span>; 
       },
     },
     {
@@ -377,9 +377,6 @@ export const studentColumnWithFilter = ({
                   }}
                   icon={<LogIn className="mr-2 h-4 w-4" />}
                   disabled={
-                    // row.original.statusKehadiranHariIni !== "belum hadir" &&
-                    // row.original.statusKehadiranHariIni !== "Belum Hadir" 
-                    // row.original.isPulang === false
                     !!row.original.jamMasuk
                   }
                 >
@@ -401,10 +398,6 @@ export const studentColumnWithFilter = ({
                     }
                   }}
                   disabled={
-                    // row.original.statusKehadiranHariIni == "hadir" ||
-                    // row.original.statusKehadiranHariIni == "belum hadir" ||
-                    // row.original.statusKehadiranHariIni == "terlambat" ||
-                    // row.original.isPulang === true
                     !row.original.jamMasuk || !!row.original.jamPulang
                   }
                 >

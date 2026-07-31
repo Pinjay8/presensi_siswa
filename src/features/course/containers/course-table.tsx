@@ -179,7 +179,7 @@ export const CourseTable = () => {
             : []),
         ]}
 
-        searchPlaceholder={lang.text("search")}
+        searchPlaceholder={lang.text("search") + " " + lang.text("course")}
         isLoading={isLoading}
       />
       <DeleteDialog

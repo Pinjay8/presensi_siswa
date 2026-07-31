@@ -167,7 +167,7 @@ export const EkstrakurikulerTable = () => {
         onGlobalFilterChange={setGlobal}
         onPaginationChange={onPaginationChange}
         rowCount={resource?.pagination?.total ?? 0}
-        searchPlaceholder={lang.text("search")}
+        searchPlaceholder={lang.text("search") + " " + lang.text("ekstrakurikuler")}
         isLoading={resource.query.isLoading}
         actionContent={
           <Select

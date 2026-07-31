@@ -67,9 +67,18 @@ export const schedulerColumns = ({ columnFilter, onDelete }: { columnFilter?: Ba
                         {lang.text("schedulerType")}</BaseTableHeader>
                 );
             },
+            // cell: ({ row }) => {
+            //     return <span style={{ textTransform: 'capitalize !important' }}>{row.original.type}</span>
+            // },
             cell: ({ row }) => {
-                return <span style={{ textTransform: 'capitalize !important' }}>{row.original.type}</span>
-            },
+                const type = row.original.type;
+
+                return (
+                    <span>
+                        {type?.charAt(0).toUpperCase() + type?.slice(1).toLowerCase()}
+                    </span>
+                );
+            }
         },
         {
             accessorKey: "id",
