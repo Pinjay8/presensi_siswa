@@ -41,6 +41,7 @@ export const SERVICE_ENDPOINTS = {
   },
   attedance: {
     createAttedance: "/api/absen-masuk-manual",
+    createPulangAttedance: "/api/absen-pulang-manual",
   },
   excel: {
     importExcel: "/api/upload-excel",

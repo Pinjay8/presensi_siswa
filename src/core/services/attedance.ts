@@ -16,10 +16,20 @@ export interface GetMapelHarianParams {
 export const attendanceService = {
   create: (data: attendanceCreationModel) => {
     return http.post<
-      { message: string; sekolahId: number },
+      { message: string; userId: number },
       attendanceCreationModel
     >(
       API_CONFIG.baseUrl + SERVICE_ENDPOINTS.attedance.createAttedance,
+      getInitialOptions,
+    )(data);
+  },
+
+  createPulang: (data: attendanceCreationModel) => {
+    return http.post<
+      { message: string; userId: number },
+      attendanceCreationModel
+    >(
+      API_CONFIG.baseUrl + SERVICE_ENDPOINTS.attedance.createPulangAttedance,
       getInitialOptions,
     )(data);
   },

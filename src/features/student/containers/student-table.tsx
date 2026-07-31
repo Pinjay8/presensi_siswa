@@ -76,7 +76,7 @@ export function StudentTable({
 }: StudentTableProps) {
   const schoolOptions = useSchoolOptions();
   const classroomOptions = useClassroomOptions();
-  const { handleAttend } = useAttendanceActions();
+  const { handleAttend, handlePulangAttend } = useAttendanceActions();
   const [openRegisterFace, setOpenRegisterFace] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [selectedUser, setSelectedUser] = useState<any>(null);
@@ -139,6 +139,7 @@ export function StudentTable({
       studentColumnWithFilter({
         isAdmin,
         handleAttend,
+        handlePulangAttend,
         onRegisterFace: handleOpenRegisterFace,
         onAssignCard: handleOpenAssignCard,
         unAssignCard: handleOpenUnassignCard,

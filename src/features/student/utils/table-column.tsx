@@ -27,7 +27,7 @@ import {
 } from "@/features/attendance/components";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
-import { Star } from "lucide-react";
+import { LogIn, LogOut, Star } from "lucide-react";
 // import { FormRfid } from "../components"
 // import { QueryClient, useQueryClient } from "@tanstack/react-query"
 // Pastikan ada komponen Modal
@@ -183,6 +183,7 @@ export const studentColumnWithFilter = ({
   isAdmin,
   noStatus = false,
   handleAttend,
+  handlePulangAttend,
   onRegisterFace,
   onAssignCard,
   unAssignCard,
@@ -193,6 +194,7 @@ export const studentColumnWithFilter = ({
   isAdmin?: any;
   noStatus?: boolean;
   handleAttend?: (row: any) => void;
+  handlePulangAttend?: (row: any) => void;
   onRegisterFace?: any;
   onAssignCard?: any;
   unAssignCard?: any;
@@ -365,7 +367,7 @@ export const studentColumnWithFilter = ({
           ? [
             {
               accessorKey: "absen",
-              header: () => <BaseTableHeader>Absen</BaseTableHeader>,
+              header: () => <BaseTableHeader>{lang.text("checkIn")}</BaseTableHeader>,
               cell: ({ row }: any) => (
                 <Button
                   onClick={() => {
@@ -373,12 +375,35 @@ export const studentColumnWithFilter = ({
                       handleAttend(row.original?.id);
                     }
                   }}
+                  icon={<LogIn className="mr-2 h-4 w-4" />}
                   disabled={
                     row.original.statusKehadiranHariIni !== "belum hadir" &&
                     row.original.statusKehadiranHariIni !== "Belum Hadir"
                   }
                 >
                   {lang.text("attend")}
+                </Button>
+              ),
+            },
+            {
+              accessorKey: "absenPulang",
+              header: () => <BaseTableHeader>{lang.text("checkOut")}</BaseTableHeader>,
+              cell: ({ row }: any) => (
+                <Button
+                  // variant={"outline"}
+                  variant={"destructive"}
+                  icon={<LogOut className="mr-2 h-4 w-4" />}
+                  onClick={() => {
+                    if (handlePulangAttend) {
+                      handlePulangAttend(row.original?.id);
+                    }
+                  }}
+                  disabled={
+                    row.original.statusKehadiranHariIni !== "hadir" &&
+                    row.original.statusKehadiranHariIni !== "hadir"
+                  }
+                >
+                  {lang.text("exit")}
                 </Button>
               ),
             },

@@ -31,6 +31,15 @@
     "en": "Third YouTube URL",
     "id": "URL Youtube 3"
   },
+  "checkIn": {
+    "id": "Absen Masuk",
+    "en": "Arrival"
+  },
+  "checkOut": {
+    "id": "Absen Pulang",
+    "en": "Departure"
+  },
+
   "code": {
     "en": "Code",
     "id": "Kode"
@@ -1299,6 +1308,10 @@
     "id": "Masuk",
     "en": "Attend"
   },
+  "exit": {
+    "id": "Pulang",
+    "en": "Depart"
+  },
   "locationDistribution": {
     "id": "Sebaran lokasi",
     "en": "Location distribution"
@@ -2325,7 +2338,7 @@
     "id": "Masukan Nomor Telepon",
     "en": "Insert Phone Number"
   },
-  "inputAddress" :{
+  "inputAddress": {
     "id": "Masukan Alamat",
     "en": "Insert Address"
   },

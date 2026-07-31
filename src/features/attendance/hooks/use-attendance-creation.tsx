@@ -7,14 +7,23 @@ export const useAttendanceCreation = () => {
     mutationFn: (vars: attendanceCreationModel) => attendanceService.create(vars)
   });
 
+  const createPulangMutation = useMutation({
+    mutationFn: (vars: attendanceCreationModel) => attendanceService.createPulang(vars)
+  });
+
   const create = (form: attendanceCreationModel) =>
     createMutation.mutateAsync(form);
 
+  const createPulang = (form: attendanceCreationModel) =>
+    createPulangMutation.mutateAsync(form);
+
+
   const isLoading =
-    createMutation.isPending
+    createMutation.isPending || createPulangMutation.isPending;
 
   return {
     isLoading,
     create,
+    createPulang
   };
 };
