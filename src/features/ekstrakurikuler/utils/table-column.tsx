@@ -61,19 +61,19 @@ export const ekstrakurikulerColumns = ({
         row.original.jenis?.charAt(0).toUpperCase() +
         row.original.jenis?.slice(1).toLowerCase(),
     },
-    {
-      accessorKey: "lokasi",
-      accessorFn: (row) => row.lokasi,
-      enableSorting: false,
-      header: ({ column }) => (
-        <BaseTableHeader
-        // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {lang.text("location")}
-        </BaseTableHeader>
-      ),
-      cell: ({ row }) => row.original.lokasi,
-    },
+    // {
+    //   accessorKey: "lokasi",
+    //   accessorFn: (row) => row.lokasi,
+    //   enableSorting: false,
+    //   header: ({ column }) => (
+    //     <BaseTableHeader
+    //     // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //     >
+    //       {lang.text("location")}
+    //     </BaseTableHeader>
+    //   ),
+    //   cell: ({ row }) => row.original.lokasi,
+    // },
     {
       accessorKey: "pembina",
       enableSorting: false,
