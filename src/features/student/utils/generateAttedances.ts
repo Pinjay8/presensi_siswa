@@ -77,7 +77,7 @@ export const generateAttendancePDF = async ({
       throw new Error("Data siswa tidak ditemukan dalam respons");
     }
 
-    console.log("Daftar siswa:", studentList);
+    // console.log("Daftar siswa:", studentList);
 
     const fullAttendanceResult = checkAttendance(attendanceData, studentList);
     console.log("Hasil kehadiran lengkap:", fullAttendanceResult);

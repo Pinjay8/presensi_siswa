@@ -147,7 +147,7 @@ export function TeacherTable() {
 
   async function handleDelete() {
     try {
-      await userDelete.deleteUser(Number(selectedTeacher?.userId));
+      await userDelete.deleteUser(Number(selectedTeacher?.id));
       alert.success(lang.text("successDelete"));
       biodata.query.refetch();
       setOpenDelete(false);

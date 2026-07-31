@@ -1,5 +1,5 @@
 import { get } from "lodash";
-
+import { getConfig } from "./runtime-config";
 export const APP_CONFIG = {
   appName: import.meta.env.VITE_APP_NAME,
   appDesc: import.meta.env.VITE_APP_DESCRIPTION,
@@ -13,6 +13,18 @@ export const API_CONFIG = {
   baseUrl: import.meta.env.VITE_API_BASE_URL,
   baseCDN: import.meta.env.VITE_CDN_BASE_URL,
 };
+
+// export const API_CONFIG = {
+//   get baseUrl() {
+//     return getConfig().VITE_API_BASE_URL;
+//   },
+
+//   get baseCDN() {
+//     return getConfig().VITE_CDN_BASE_URL;
+//   },
+// };
+
+
 
 export const QUERY_CONFIG = {
   persistorThrottleTime: 1000,
