@@ -27,6 +27,8 @@ import { useEkstrakurikuler } from "../hooks";
 import { ekstrakurikulerColumns } from "../utils";
 import { EkstrakurikulerForm } from "./EkstrakurikulerForm";
 import { ekstrakurikulerService } from "@/core/services/ekstrakurikuler";
+import { Divider } from "@mui/material";
+import { EditEkstrakurikulerDialog } from "../components/modalEditEkstra";
 
 export const EkstrakurikulerTable = () => {
   const {
@@ -115,14 +117,16 @@ export const EkstrakurikulerTable = () => {
         show={createCourse}
         onClose={() => setCreateCourse(false)}
       />
-      <Dialog
+      {/* <Dialog
         open={!!editEkstrakurikuler}
         onOpenChange={() => setEditEkstrakurikuler(null)}
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{lang.text("editEkstrakurikuler")}</DialogTitle>
+            <DialogTitle style={{ marginTop: '12px' }}>{lang.text("editEkstrakurikuler")}</DialogTitle>
           </DialogHeader>
+          <Divider />
+
           {editEkstrakurikuler && (
             <EkstrakurikulerForm
               onClose={() => setEditEkstrakurikuler(null)}
@@ -139,7 +143,14 @@ export const EkstrakurikulerTable = () => {
             />
           )}
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
+
+      <EditEkstrakurikulerDialog
+        open={!!editEkstrakurikuler}
+        data={editEkstrakurikuler}
+        onClose={() => setEditEkstrakurikuler(null)}
+        lang={lang}
+      />
       <BaseDataTable
         columns={columns}
         data={filteredCourseData}

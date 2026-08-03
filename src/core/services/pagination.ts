@@ -273,7 +273,7 @@ export const attendanceService = {
 };
 
 export const attendanceServiceMataPelajaran = {
-  getPaginated: async (params: GetAttendanceParams): Promise<any> => {
+  getPaginated: async (params: any): Promise<any> => {
     const query = {
       page: params.page,
       limit: params.limit,
@@ -284,6 +284,10 @@ export const attendanceServiceMataPelajaran = {
 
       ...(params.kelasId !== undefined && {
         kelasId: params.kelasId,
+      }),
+
+      ...(params.mataPelajaranId !== undefined && {
+        mataPelajaranId: params.mataPelajaranId,
       }),
 
       ...(params.sekolahId !== undefined && {

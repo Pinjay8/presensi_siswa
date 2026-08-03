@@ -7,7 +7,7 @@ import { withQuery } from "../utils/withQuery";
 import { getToken } from "@/features/auth";
 
 export const courseService = {
-  all: http.get<BaseResponse<CourseDataModel[]>>(
+  all: http.get<BaseResponse<any[]>>(
     API_CONFIG.baseUrl + SERVICE_ENDPOINTS.school.courses,
     getInitialOptions,
   ),

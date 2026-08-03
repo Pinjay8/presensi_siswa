@@ -204,7 +204,7 @@ export const memberEkstrakurikulerColumns = ({
           size: 50,
           enableSorting: false,
           header: () => lang.text("action"),
-          cell: ({ row }) => {
+          cell: ({ row }: any) => {
             const isInactive =
               row.original?.status?.toLowerCase() === "nonaktif";
 

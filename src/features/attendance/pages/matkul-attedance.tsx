@@ -50,6 +50,7 @@ export const MatkulAttendance = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [listClassRoom, setListClassRoom] = useState<any[]>([]);
+  // const [courseOptions, setCourseOptions] = useState<any[]>([]);
 
   const resource = useCourse();
   const biodata = useBiodata();
@@ -58,20 +59,17 @@ export const MatkulAttendance = () => {
   }
 
   const classRoom = useClassroom();
-  const profile = useProfile();
 
   useMemo(() => {
     setListClassRoom(classRoom?.data || []);
   }, [classRoom.data]);
 
   const courseOptions = useMemo(() => {
-    return Array.from(
-      new Set(resource.data?.map((course) => course.namaMataPelajaran) || []),
-    );
+    return (resource.data ?? []).map((item) => ({
+      value: item.id,
+      label: item.namaMataPelajaran,
+    }));
   }, [resource.data]);
-  // const [filters, setFilters] = useState<
-  //   "harian" | "mingguan" | "bulanan" | "tahunan"
-  // >("harian");
 
   const {
     global,
@@ -250,8 +248,8 @@ export const MatkulAttendance = () => {
               value: String(x.id),
             }))}
             courseOptions={courseOptions.map((x) => ({
-              label: x,
-              value: x,
+              label: x.label,
+              value: x.value,
             }))}
           />
         </div>

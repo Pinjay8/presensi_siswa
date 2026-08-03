@@ -307,7 +307,7 @@ export const CourseCreationForm = ({
         </>
       )}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="mb-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="mb-0">
           <div className="max-w-2xl gap-6">
             <div className="basis-1">
               {/* <div className="flex flex-col gap-4 mb-4">
