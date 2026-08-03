@@ -151,6 +151,7 @@ export const BaseDataTable = ({
   onSortingChange,
   globalFilter,
   onGlobalFilterChange,
+  onPaginationChange,
 }: BaseDataTableProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [keyword, setKeyword] = React.useState(globalFilter ?? "");
@@ -746,39 +747,65 @@ export const BaseDataTable = ({
             } ${lang.text("data")}`} */}
             {lang.text("show")} {` ${start} - ${end} ${lang.text("from")} ${total} data`}
           </div>
-          <div className="flex flex-row gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleFirstPage}
-              disabled={!table.getCanPreviousPage()}
-            >
-              {lang.text("first")}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handlePrevPage}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <ArrowLeft />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleNextPage}
-              disabled={!table.getCanNextPage()}
-            >
-              <ArrowRight />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleLastPage}
-              disabled={!table.getCanNextPage()}
-            >
-              {lang.text("last")}
-            </Button>
+          <div className="flex  gap-2  md:flex-row flex-col md:items-center">
+            <div>
+              <Select
+                value={String(currentPageSize)}
+                onValueChange={(value) => {
+                  const pageSize = Number(value);
+
+                  onPaginationChange?.({
+                    pageIndex: 0,
+                    pageSize,
+                  });
+                }}
+              >
+                <SelectTrigger className="w-20">
+                  <SelectValue />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="25">25</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                  <SelectItem value="100">100</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleFirstPage}
+                disabled={!table.getCanPreviousPage()}
+              >
+                {lang.text("first")}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePrevPage}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <ArrowLeft />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleNextPage}
+                disabled={!table.getCanNextPage()}
+              >
+                <ArrowRight />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLastPage}
+                disabled={!table.getCanNextPage()}
+              >
+                {lang.text("last")}
+              </Button>
+            </div>
           </div>
         </div>
       </div>

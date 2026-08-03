@@ -81,14 +81,14 @@ export function ScheduleToolbar({
           </div>
         )}
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-1 flex-wrap xl:flex-nowrap">
         {!isRoleSiswa &&
           selectedClassId > 0 && (
             <Select
               value={selectedClassId.toString()}
               onValueChange={(value) => setSelectedClassId(Number(value))}
             >
-              <SelectTrigger className="w-[200px]">
+              <SelectTrigger >
                 <SelectValue placeholder={lang.text("selectClassRoom")} />
               </SelectTrigger>
 
@@ -106,7 +106,7 @@ export function ScheduleToolbar({
         {selectedClassId > 0 && (
           <Button
             variant="outline"
-            className="lg:w-[200px] justify-between"
+            className=" justify-between"
             onClick={() => setIsDayFilterOpen(true)}
           >
             {selectedDays.length === daysOrder.length

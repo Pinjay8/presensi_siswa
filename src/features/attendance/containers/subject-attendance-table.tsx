@@ -106,7 +106,7 @@ export function SubjectAttendanceTable({
         onPaginationChange={onPaginationChange}
         onFilterChange={setFilter}
         rowCount={rowCount}
-        searchPlaceholder={lang.text("search")}
+        searchPlaceholder={lang.text("search") + " " + lang.text("name")}
         isLoading={isLoading}
       />
       <Backdrop

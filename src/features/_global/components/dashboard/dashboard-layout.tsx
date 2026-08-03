@@ -134,7 +134,7 @@ export const DashboardLayout = React.memo(
             const filteredItems = data.items.filter((item) => {
               if (
                 role === "superAdmin" &&
-                ["Acara", "Kelulusan"].includes(item.title ?? "")
+                ["Acara", "Kelulusan", lang.text("history")].includes(item.title ?? "")
               ) {
                 return false;
               }
