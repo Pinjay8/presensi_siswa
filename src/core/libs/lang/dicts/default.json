@@ -160,6 +160,7 @@
     "en": "Add Event",
     "id": "Tambah Acara"
   },
+
   "noSignatureAvailable": {
     "en": "No signature available",
     "id": "Tidak ada tanda tangan yang tersedia"
@@ -2097,6 +2098,11 @@
   "editCourse": {
     "id": "Edit Mata Pelajaran",
     "en": "Edit Course"
+  },
+
+  "editSchedules": {
+    "id": "Edit Jadwal",
+    "en": "Edit Schedule"
   },
   "schoolDetail": {
     "id": "Detail Sekolah",

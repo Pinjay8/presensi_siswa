@@ -386,7 +386,7 @@ export function ScheduleLandingContent() {
       <ScheduleEkstrakurikulerFormDialog
         open={isAddModalOpen}
         onOpenChange={setIsAddModalOpen}
-        title="Tambah Jadwal"
+        title={lang.text("addSchedule")}
         formData={formData}
         setFormData={setFormData}
         onSubmit={handleAddSchedule}
@@ -400,7 +400,7 @@ export function ScheduleLandingContent() {
       <ScheduleEkstrakurikulerFormDialog
         open={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
-        title="Edit Jadwal"
+        title={lang.text("editSchedules")}
         formData={formData}
         setFormData={setFormData}
         onSubmit={handleEditSchedule}
@@ -461,9 +461,9 @@ export function ScheduleLandingContent() {
                           <TableCell>{item.ekstrakurikuler.jenis}</TableCell>
 
                           {isAdmin && (
-                            <TableCell className="flex gap-2">
+                            <TableCell className="flex gap-1">
                               <Button
-                                variant="outline"
+                                variant="default"
                                 size="sm"
                                 onClick={() => openEditModal(day, item)}
                               >

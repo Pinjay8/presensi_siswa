@@ -57,8 +57,8 @@ export const CourseTable = () => {
     query,
   } = useCoursePagination(params);
 
-  const school = useSchool();
-  const classroom = useClassroom();
+  // const school = useSchool();
+  // const classroom = useClassroom();
   const [createCourse, setCreateCourse] = useState(false);
   const [editCourse, setEditCourse] = useState<any | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
@@ -151,7 +151,7 @@ export const CourseTable = () => {
         dataFallback={courseDataFallback}
         globalSearch
         searchParamPagination
-
+          
         sorting={sorting}
         onSortingChange={onSortingChange}
 

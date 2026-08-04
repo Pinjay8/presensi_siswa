@@ -99,9 +99,10 @@ export function ScheduleBoard({
                       <TableHead>{lang.text("nameMapel")}</TableHead>
                       <TableHead>{lang.text("nameTeacher")}</TableHead>
 
-                      {!isRoleSiswa || !isRoleOrangTua && (
-                        <TableHead>{lang.text("actions")}</TableHead>
-                      )}
+                      {!isRoleSiswa ||
+                        (!isRoleOrangTua && (
+                          <TableHead>{lang.text("actions")}</TableHead>
+                        ))}
                     </TableRow>
                   </TableHeader>
 
@@ -119,7 +120,7 @@ export function ScheduleBoard({
                         <TableCell>{item.guru.namaGuru}</TableCell>
 
                         {!isRoleSiswa && (
-                          <TableCell className="flex gap-2">
+                          <TableCell className="flex gap-1">
                             {!isRole && (
                               <Button
                                 variant="default"
@@ -133,7 +134,8 @@ export function ScheduleBoard({
 
                             {!isRoleGuru && !isRoleOrangTua && (
                               <Button
-                                variant="outline"
+                                variant="default"
+                                // style={{ backgroundColor: "orange" }}
                                 size="sm"
                                 onClick={() => openEditModal(day, item)}
                               >
