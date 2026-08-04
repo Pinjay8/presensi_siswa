@@ -48,6 +48,7 @@ import { Link, URLSearchParamsInit, useSearchParams } from "react-router-dom";
 import { useVokadialog } from "../hooks/use-vokadialog";
 import { Vokadialog } from "./dialog";
 import { useDebounce } from "../hooks";
+import { Skeleton } from "@mui/material";
 
 declare module "@tanstack/react-table" {
   //allows us to define custom properties for our columns
@@ -206,11 +207,13 @@ export const BaseDataTable = ({
 
       if (value == null) return [];
 
-      return [{
-        id: filter.id,
-        value: isNaN(Number(value)) ? value : Number(value),
-        label: filter.label,
-      }];
+      return [
+        {
+          id: filter.id,
+          value: isNaN(Number(value)) ? value : Number(value),
+          label: filter.label,
+        },
+      ];
     });
   }, [filters, searchParams]);
 
@@ -220,8 +223,9 @@ export const BaseDataTable = ({
     }
   }, [filterDialog.visible, getFiltersFromSearchParams]);
 
-
-  const [pendingFilters, setPendingFilters] = React.useState<ColFilterState>([]);
+  const [pendingFilters, setPendingFilters] = React.useState<ColFilterState>(
+    [],
+  );
 
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: searchParamPagination ? paginationSearchParams.pageIndex : 0,
@@ -254,11 +258,11 @@ export const BaseDataTable = ({
     // getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     // onRowSelectionChange: setRowSelection,
-    onPaginationChange: searchParamPagination ? () => { } : setPagination,
+    onPaginationChange: searchParamPagination ? () => {} : setPagination,
     enableGlobalFilter: globalSearch,
     // onGlobalFilterChange: setGlobalFilter,
     onGlobalFilterChange,
-    onColumnFiltersChange: () => { },
+    onColumnFiltersChange: () => {},
     // debugAll: true,
     enableHiding: true,
     enableColumnFilters: true,
@@ -327,7 +331,6 @@ export const BaseDataTable = ({
     table.lastPage();
   }, [table, searchParamPagination, searchParams, setSearchParams]);
 
-
   React.useEffect(() => {
     const row = table
       .getRowModel()
@@ -356,9 +359,9 @@ export const BaseDataTable = ({
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                 </TableHead>
               );
             })}
@@ -372,11 +375,15 @@ export const BaseDataTable = ({
     if (isLoading) {
       return (
         <TableBody>
-          <TableRow>
-            <TableCell colSpan={columns.length} className="h-24 text-center">
-              {lang.text("loadData")}
-            </TableCell>
-          </TableRow>
+          {Array.from({ length: 10 }).map((_, rowIndex) => (
+            <TableRow key={rowIndex}>
+              {columns.map((_, colIndex) => (
+                <TableCell key={colIndex}>
+                  <Skeleton variant="text" height={28} animation="wave" />
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
         </TableBody>
       );
     }
@@ -550,20 +557,12 @@ export const BaseDataTable = ({
   //   );
   // }, [columnFilters, setSearchParams, table, searchParams]);
 
-
   const renderContentFilterDialog = () => {
-    const selectedPeriod = pendingFilters.find(
-      (x) => x.id === "filter"
-    )?.value;
+    const selectedPeriod = pendingFilters.find((x) => x.id === "filter")?.value;
 
-
-
-    const hasDateRange =
-      pendingFilters.some(
-        (x) =>
-          (x.id === "startDate" || x.id === "endDate") &&
-          x.value
-      );
+    const hasDateRange = pendingFilters.some(
+      (x) => (x.id === "startDate" || x.id === "endDate") && x.value,
+    );
     return (
       <div className="grid grid-cols-1 gap-4">
         {filters?.map((filter) => (
@@ -574,7 +573,7 @@ export const BaseDataTable = ({
               <Select
                 disabled={filter.id === "filter" && hasDateRange}
                 value={String(
-                  pendingFilters.find((x) => x.id === filter.id)?.value ?? ""
+                  pendingFilters.find((x) => x.id === filter.id)?.value ?? "",
                 )}
                 onValueChange={(v) => {
                   const value = isNaN(Number(v)) ? v : Number(v);
@@ -595,10 +594,7 @@ export const BaseDataTable = ({
 
                 <SelectContent>
                   {filter.options?.map((option) => (
-                    <SelectItem
-                      key={option.value}
-                      value={String(option.value)}
-                    >
+                    <SelectItem key={option.value} value={String(option.value)}>
                       {option.label}
                     </SelectItem>
                   ))}
@@ -613,11 +609,9 @@ export const BaseDataTable = ({
                   ((filter.id === "startDate" || filter.id === "endDate") &&
                     !!selectedPeriod)
                 }
-                value={
-                  String(
-                    pendingFilters.find((x) => x.id === filter.id)?.value ?? ""
-                  )
-                }
+                value={String(
+                  pendingFilters.find((x) => x.id === filter.id)?.value ?? "",
+                )}
                 onChange={(e) =>
                   setPendingFilters((prev) => [
                     ...prev.filter((x) => x.id !== filter.id),
@@ -630,15 +624,11 @@ export const BaseDataTable = ({
                 }
               />
             )}
-
           </FormItem>
-        ))
-        }
-      </div >
+        ))}
+      </div>
     );
   };
-
-
 
   const { pageIndex: currentPageIndex, pageSize: currentPageSize } =
     table.getState().pagination;
@@ -669,7 +659,11 @@ export const BaseDataTable = ({
                     />
                   </div>
                   {showFilterButton && (
-                    <Button onClick={filterDialog.open} size="sm" className="gap-2">
+                    <Button
+                      onClick={filterDialog.open}
+                      size="sm"
+                      className="gap-2"
+                    >
                       <Filter size={16} />
                       <span>Filter</span>
                     </Button>
@@ -745,7 +739,8 @@ export const BaseDataTable = ({
             {/* {`${table.getFilteredRowModel().rows.length} - ${
               data.length
             } ${lang.text("data")}`} */}
-            {lang.text("show")} {` ${start} - ${end} ${lang.text("from")} ${total} data`}
+            {lang.text("show")}{" "}
+            {` ${start} - ${end} ${lang.text("from")} ${total} data`}
           </div>
           <div className="flex  gap-2  md:flex-row flex-col md:items-center">
             <div>
@@ -849,10 +844,13 @@ export const BaseDataTable = ({
                 setSearchParams(params as URLSearchParamsInit);
 
                 onFilterChange?.(
-                  pendingFilters.reduce((acc, item) => {
-                    acc[item.id] = item.value;
-                    return acc;
-                  }, {} as Record<string, any>)
+                  pendingFilters.reduce(
+                    (acc, item) => {
+                      acc[item.id] = item.value;
+                      return acc;
+                    },
+                    {} as Record<string, any>,
+                  ),
                 );
 
                 filterDialog.close();
